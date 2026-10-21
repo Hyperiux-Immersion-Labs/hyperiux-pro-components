@@ -1,7 +1,7 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { NextResponse } from "next/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { sendEmail } from "@/lib/resend";
 
 // "Send password reset" in the Users tab's Manage drawer. Clerk can't send a reset from
@@ -16,7 +16,7 @@ const APP_URL = () => process.env.NEXT_PUBLIC_APP_URL || "https://vault.hyperiux
 const escape = (value) => String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.reset"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

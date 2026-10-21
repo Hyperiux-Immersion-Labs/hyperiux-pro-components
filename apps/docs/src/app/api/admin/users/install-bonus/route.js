@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { todayUTC } from "@/lib/install-limit";
 
@@ -8,7 +8,7 @@ import { todayUTC } from "@/lib/install-limit";
 // daily limit until midnight UTC (lib/install-limit installBonusToday). 0 takes it away.
 // Nothing in the install history changes.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.support"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

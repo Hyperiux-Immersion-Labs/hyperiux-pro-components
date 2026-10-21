@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requireAdminAccess } from "@/lib/admin";
 import { getCreditBalance } from "@/lib/template-credits";
 import { installBonusToday, resolveSignedInIdentity, todayUTC } from "@/lib/install-limit";
 
 // The Manage drawer's Support section (super admins): template credits, templates owned,
 // today's installs against the daily limit (with any extra allowed for today).
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requireAdminAccess())) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const clerkUserId = new URL(request.url).searchParams.get("clerkUserId");

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { getCreditBalance } from "@/lib/template-credits";
 
@@ -8,7 +8,7 @@ import { getCreditBalance } from "@/lib/template-credits";
 // the credits ledger, like the ones expireCredits writes; the reason goes in the audit log.
 // Credits still lapse when a plan ends.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.support"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

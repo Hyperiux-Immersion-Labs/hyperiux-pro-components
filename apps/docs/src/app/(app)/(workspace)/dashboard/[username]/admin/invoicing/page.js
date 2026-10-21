@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
-import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, Pager, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
-import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
-import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
+import { ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, HEAD_ROW, Pager, ROW, STICKY_END, STICKY_START, TABLE, TableScroll, TD, TH } from "@/components/Dashboard/DashboardUI";
+import Button from "@/homepage/components/Button";
+import { Bar, SkeletonCard, ToolbarBars } from "@/components/Dashboard/DashboardSkeletons";
+import { STAT_EACH, StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { refreshDashboard, useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { UserAvatar } from "@/components/admin/UserAvatar";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
-import { useAdminRole } from "@/lib/useAdminRole";
 import { TEMPLATES } from "@/lib/mock-templates";
 import { getDashboardPreview, sampleAdminInvoicing, sampleSubscriptionHealth } from "@/lib/dev/dashboardPreview";
 
@@ -54,6 +54,24 @@ function rangeParams(dates) {
     params.set("range", dates.preset);
   }
   return params;
+}
+
+// Fetches one ledger ("invoices" | "templates") into the page's data; returns the effect's
+// cleanup, so a stale response never lands
+function loadLedger(key, url, { setData, setFailed, setLedgerLoading }) {
+  let active = true;
+  setLedgerLoading(true);
+  fetch(url)
+    .then((res) => res.json().then((json) => (res.ok ? json : Promise.reject(new Error(json.error || url)))))
+    .then((json) => active && setData((current) => ({ invoices: null, templates: null, ...current, [key]: json })))
+    .catch((error) => {
+      console.error(error);
+      if (active) setFailed(true);
+    })
+    .finally(() => active && setLedgerLoading(false));
+  return () => {
+    active = false;
+  };
 }
 
 // "Exclude from revenue" / "Include" on a ledger row, asked once inline. The payment stays
@@ -109,7 +127,7 @@ function RevenueToggle({ row, kind, onChange }) {
 // A plain figure card, in the stat cards' style (no trend: these are counts right now)
 function FigureCard({ label, value, note, className = "" }) {
   return (
-    <section aria-label={label} className={`flex min-w-0 flex-col gap-1 bg-foreground p-[calc(var(--cvw)*1.6)] text-ink ring-1 ring-inset ring-black/10 max-lg:p-6 max-md:p-5 ${className}`}>
+    <section aria-label={label} className={`flex min-w-0 flex-col gap-1 bg-foreground p-[calc(var(--cvw)*1.6)] text-ink ring-1 ring-inset ring-black/10 max-lg:p-6 max-md:p-4 ${className}`}>
       <p className="type-label pb-[calc(var(--cvw)*0.6)] text-black/60 max-lg:pb-2">{label}</p>
       <p className="type-h2">{value}</p>
       {note && <p className="type-small text-black/60">{note}</p>}
@@ -122,8 +140,9 @@ const TIERS = { pro: "Pro", pro_plus: "Pro+" };
 // One subscription in the Renewing / Needs attention lists
 function SubscriptionRow({ item, extra }) {
   return (
-    <li className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-t border-black/10 py-3 first:border-t-0">
-      <span className="flex min-w-0 items-center gap-3">
+    // the amount and date stay on the right; a long reason wraps in the left column (phones)
+    <li className="flex items-start justify-between gap-4 border-t border-black/10 py-3 first:border-t-0">
+      <span className="flex min-w-0 flex-1 items-start gap-3">
         <UserAvatar name={item.userName} email={item.userEmail} className="size-8" />
         <span className="flex min-w-0 flex-col">
           <span className="type-body truncate">{item.userName || item.userEmail || item.userId}</span>
@@ -133,7 +152,7 @@ function SubscriptionRow({ item, extra }) {
           </span>
         </span>
       </span>
-      <span className="flex flex-col items-end">
+      <span className="flex shrink-0 flex-col items-end">
         <span className="type-body font-aeonik">{money(item.amount, item.currency, true)}</span>
         <span className="type-small text-black/60">{formatDate(item.periodEnd)}</span>
       </span>
@@ -151,13 +170,12 @@ function SubscriptionsSection({ audience, whole }) {
     return res.json();
   });
   const ROW = "flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3";
-  const EACH = "flex-1 max-lg:w-[calc((100%-0.75rem)/2)] max-lg:flex-none max-md:w-full";
 
   if (!data) {
     return (
       <div className={ROW}>
         {[0, 1, 2, 3].map((i) => (
-          <SkeletonCard key={i} className={`gap-2 ${EACH}`}>
+          <SkeletonCard key={i} className={`gap-2 ${STAT_EACH}`}>
             <Bar type="type-label" className="w-[45%]" />
             <Bar type="type-h2" className="w-[35%]" />
           </SkeletonCard>
@@ -171,15 +189,15 @@ function SubscriptionsSection({ audience, whole }) {
   return (
     <>
       <div className={ROW}>
-        <FigureCard className={EACH} label="INR MRR" value={whole(mrrOf("INR") / 100, "INR")} note="Monthly recurring revenue" />
-        <FigureCard className={EACH} label="USD MRR" value={whole(mrrOf("USD") / 100, "USD")} note="Monthly recurring revenue" />
+        <FigureCard className={STAT_EACH} label="INR MRR" value={whole(mrrOf("INR") / 100, "INR")} note="A month, incl. 18% GST · counts plans cancelling at period end" />
+        <FigureCard className={STAT_EACH} label="USD MRR" value={whole(mrrOf("USD") / 100, "USD")} note="A month · counts plans cancelling at period end" />
         <FigureCard
-          className={EACH}
+          className={STAT_EACH}
           label="Subscribers"
           value={subscribers}
           note={`${data.active.pro} Pro · ${data.active.pro_plus} Pro+${data.active.granted ? ` · ${data.active.granted} given free` : ""}`}
         />
-        <FigureCard className={EACH} label="Ended" value={data.ended30d} note="Cancelled, refunded or expired in the last 30 days" />
+        <FigureCard className={STAT_EACH} label="Ended" value={data.ended30d} note="Cancelled, refunded or expired in the last 30 days" />
       </div>
 
       <section aria-label="Renewals and attention" className={`${CARD} ${CARD_PAD} grid grid-cols-2 gap-[calc(var(--cvw)*2.4)] max-lg:grid-cols-1 max-lg:gap-8`}>
@@ -250,8 +268,9 @@ function LedgerRowsSkeleton() {
 }
 
 export default function AdminInvoicingPage() {
-  const { path, isSuperAdmin } = useDashboard();
-  const role = useAdminRole();
+  const { path, can, accessLoaded } = useDashboard();
+  // Needs finance.view (lib/admin-permissions); the API checks it again
+  const allowed = can("finance.view");
   const router = useRouter();
 
   const [dates, setDates] = useState(ALL_DATES);
@@ -274,7 +293,7 @@ export default function AdminInvoicingPage() {
 
   // The stat cards for the window: cached (skeleton on a window's first load only)
   const statsQuery = rangeParams(dates).toString();
-  const { data: stats } = useDashboardData(isSuperAdmin ? `admin-revenue:${statsQuery}:${audience}` : null, async () => {
+  const { data: stats } = useDashboardData(allowed ? `admin-revenue:${statsQuery}:${audience}` : null, async () => {
     if (getDashboardPreview()) return sampleAdminInvoicing().stats;
     const params = rangeParams(dates);
     params.set("audience", audience);
@@ -283,43 +302,45 @@ export default function AdminInvoicingPage() {
     return res.json();
   });
 
-  // Not a super admin: back to Users rather than an empty page
+  // Without the permission: back to Users rather than an empty page
   useEffect(() => {
-    if (!role.loading && !isSuperAdmin) router.replace(path("admin/users"));
-  }, [role.loading, isSuperAdmin, router, path]);
+    if (accessLoaded && !allowed) router.replace(path("admin/users"));
+  }, [accessLoaded, allowed, router, path]);
+
+  // The two ledgers load on their own: paging one (or the template filter) refetches only
+  // that one. Both start again on a new window or audience, or a retry.
+  const [attempt, setAttempt] = useState(0);
+  const invoicesPage = ledger === "subscriptions" ? page : 0;
+  const templatesPage = ledger === "templates" ? page : 0;
+  const datesKey = rangeParams(dates).toString();
 
   useEffect(() => {
-    if (!isSuperAdmin) return undefined;
+    if (!allowed || !getDashboardPreview()) return undefined;
     let active = true;
-    if (getDashboardPreview()) {
-      requestAnimationFrame(() => active && setData(sampleAdminInvoicing()));
-      return () => {
-        active = false;
-      };
-    }
-    const subs = rangeParams(dates);
-    subs.set("audience", audience);
-    subs.set("limit", String(PER_PAGE));
-    subs.set("offset", String(ledger === "subscriptions" ? page * PER_PAGE : 0));
-    const tpl = rangeParams(dates);
-    tpl.set("audience", audience);
-    if (template !== "all") tpl.set("template", template);
-    tpl.set("limit", String(PER_PAGE));
-    tpl.set("offset", String(ledger === "templates" ? page * PER_PAGE : 0));
-    const get = (url) => fetch(url).then((res) => res.json().then((json) => (res.ok ? json : Promise.reject(new Error(json.error || url)))));
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setLedgerLoading(true);
-    Promise.all([get(`/api/admin/invoices?${subs}`), get(`/api/admin/template-purchases?${tpl}`)])
-      .then(([invoices, templates]) => active && setData({ invoices, templates }))
-      .catch((error) => {
-        console.error(error);
-        if (active) setFailed(true);
-      })
-      .finally(() => active && setLedgerLoading(false));
+    requestAnimationFrame(() => active && setData(sampleAdminInvoicing()));
     return () => {
       active = false;
     };
-  }, [isSuperAdmin, dates, ledger, template, page, audience]);
+  }, [allowed]);
+
+  useEffect(() => {
+    if (!allowed || getDashboardPreview()) return undefined;
+    const params = new URLSearchParams(datesKey);
+    params.set("audience", audience);
+    params.set("limit", String(PER_PAGE));
+    params.set("offset", String(invoicesPage * PER_PAGE));
+    return loadLedger("invoices", `/api/admin/invoices?${params}`, { setData, setFailed, setLedgerLoading });
+  }, [allowed, datesKey, audience, invoicesPage, attempt]);
+
+  useEffect(() => {
+    if (!allowed || getDashboardPreview()) return undefined;
+    const params = new URLSearchParams(datesKey);
+    params.set("audience", audience);
+    if (template !== "all") params.set("template", template);
+    params.set("limit", String(PER_PAGE));
+    params.set("offset", String(templatesPage * PER_PAGE));
+    return loadLedger("templates", `/api/admin/template-purchases?${params}`, { setData, setFailed, setLedgerLoading });
+  }, [allowed, datesKey, audience, template, templatesPage, attempt]);
 
   // Any filter change starts again from the first page
   const filter = (set) => (value) => {
@@ -331,7 +352,15 @@ export default function AdminInvoicingPage() {
     return (
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load the payments.</p>
-        <p className="type-body text-black/60">Check your connection and reload the page.</p>
+        <p className="type-body text-black/60">Check your connection and try again.</p>
+        <Button
+          text="Try again"
+          preventDefault
+          onClick={() => {
+            setFailed(false);
+            setAttempt((n) => n + 1);
+          }}
+        />
       </div>
     );
   }
@@ -349,25 +378,21 @@ export default function AdminInvoicingPage() {
     </div>
   );
   const ROW = "flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3";
-  const EACH = "flex-1 max-lg:w-[calc((100%-0.75rem)/2)] max-lg:flex-none max-md:w-full";
 
   // First load: the cards and the ledger in their own shapes
-  if (!isSuperAdmin || !data || !stats) {
+  if (!allowed || !data?.invoices || !data?.templates || !stats) {
     return (
       <div aria-busy="true" aria-label="Loading payments" className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
         {header}
         <div className={ROW}>
           {[0, 1, 2, 3].map((i) => (
-            <StatCardSkeleton key={i} className={EACH} />
+            <StatCardSkeleton key={i} className={STAT_EACH} />
           ))}
         </div>
         <SkeletonCard className="gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-          <div className="flex justify-between gap-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <Bar type="type-h3" className="w-24" />
-            <div className="flex gap-[calc(var(--cvw)*0.7)]">
-              <Bar className="h-9.5 w-[calc(var(--cvw)*13)] max-lg:w-48" />
-              <Bar className="h-9.5 w-60" />
-            </div>
+            <ToolbarBars segment menus={1} />
           </div>
           <LedgerRowsSkeleton />
         </SkeletonCard>
@@ -380,7 +405,9 @@ export default function AdminInvoicingPage() {
   // Cards show whole amounts; the ledger keeps the cents
   const whole = (amount, currency) => new Intl.NumberFormat(currency === "INR" ? "en-IN" : "en-US", { style: "currency", currency, maximumFractionDigits: 0 }).format(amount || 0);
   const split = (stat) =>
-    `${whole(stat.subscriptions, stat.currency)} subscriptions · ${whole(stat.templates, stat.currency)} templates${stat.refunded > 0 ? ` · ${whole(stat.refunded, stat.currency)} refunded` : ""}`;
+    // Refunds are counted on the date of the payment they returned; INR is what was charged,
+    // GST included
+    `${whole(stat.subscriptions, stat.currency)} subscriptions · ${whole(stat.templates, stat.currency)} templates${stat.refunded > 0 ? ` · ${whole(stat.refunded, stat.currency)} of this window's payments refunded` : ""}${stat.currency === "INR" ? " · incl. GST" : ""}`;
   // A row's exclusion changed: update it in place (the cards refetch on their own). By the
   // row's own kind, not the ledger on screen - that may have switched while it saved.
   const setExcluded = (kind, id, excluded) =>
@@ -402,10 +429,10 @@ export default function AdminInvoicingPage() {
       {/* revenue in each currency (never added together), then the counts - each with its
           change against the previous period and its line */}
       <div className={ROW}>
-        <StatCard className={EACH} label="USD revenue" value={whole(k.usd.value, "USD")} note={split(k.usd)} stat={k.usd} comparison={k.comparison} />
-        <StatCard className={EACH} label="INR revenue" value={whole(k.inr.value, "INR")} note={split(k.inr)} stat={k.inr} comparison={k.comparison} />
-        <StatCard className={EACH} label="Subscriptions" value={count(k.subscriptions.value)} note="Paid invoices" stat={k.subscriptions} comparison={k.comparison} />
-        <StatCard className={EACH} label="Template sales" value={count(k.templateSales.value)} note="Paid, not credits" stat={k.templateSales} comparison={k.comparison} />
+        <StatCard className={STAT_EACH} label="USD revenue" value={whole(k.usd.value, "USD")} note={split(k.usd)} stat={k.usd} comparison={k.comparison} />
+        <StatCard className={STAT_EACH} label="INR revenue" value={whole(k.inr.value, "INR")} note={split(k.inr)} stat={k.inr} comparison={k.comparison} />
+        <StatCard className={STAT_EACH} label="Subscriptions" value={count(k.subscriptions.value)} note="Paid invoices" stat={k.subscriptions} comparison={k.comparison} />
+        <StatCard className={STAT_EACH} label="Template sales" value={count(k.templateSales.value)} note="Paid, not credits" stat={k.templateSales} comparison={k.comparison} />
       </div>
 
       {/* subscriptions right now: MRR, subscribers, renewals, what needs attention */}
@@ -440,14 +467,14 @@ export default function AdminInvoicingPage() {
         <TableScroll>
           <table className={TABLE}>
             <thead>
-              <tr className="type-label border-b border-black/10 text-black/60">
-                <th className="py-3 pr-4 font-normal">User</th>
-                <th className="py-3 pr-4 font-normal">{ledger === "subscriptions" ? "Plan" : "Template"}</th>
-                <th className="py-3 pr-4 text-right font-normal">Amount</th>
-                <th className="py-3 pr-4 font-normal">Payment ID</th>
-                <th className="py-3 pr-4 font-normal">Date</th>
-                <th className="py-3 pr-4 text-right font-normal">Receipt</th>
-                <th className={`py-3 text-right font-normal ${STICKY_END}`}>Revenue</th>
+              <tr className={HEAD_ROW}>
+                <th className={`${TH} ${STICKY_START}`}>User</th>
+                <th className={TH}>{ledger === "subscriptions" ? "Plan" : "Template"}</th>
+                <th className={`${TD} text-right font-normal`}>Amount</th>
+                <th className={TH}>Payment ID</th>
+                <th className={TH}>Date</th>
+                <th className={`${TD} text-right font-normal`}>Receipt</th>
+                <th className={`${TH} ${STICKY_END} text-right`}>Revenue</th>
               </tr>
             </thead>
             <tbody>
@@ -468,16 +495,16 @@ export default function AdminInvoicingPage() {
                   const href = receiptHref(row);
                   return (
                     <tr key={row.id} className={`border-b border-black/10 last:border-b-0 ${row.excluded ? "text-black/40 [&_*]:text-black/40" : ""}`}>
-                      <td className="py-[calc(var(--cvw)*0.7)] pr-4 max-lg:py-3">
+                      <td className={`${TD} ${STICKY_START}`}>
                         <UserCell row={row} />
                       </td>
-                      <td className="py-3 pr-4">
+                      <td className={`${TD}`}>
                         <span className="flex flex-col">
                           <span className="type-body">{ledger === "subscriptions" ? row.planLabel || "Vault Pro" : row.templateTitle}</span>
                           {ledger === "subscriptions" && <span className="type-small text-black/60">{INTERVALS[row.billingInterval] || "—"}</span>}
                         </span>
                       </td>
-                      <td className="py-3 pr-4 text-right">
+                      <td className={`${TD} text-right`}>
                         <span className="flex flex-col items-end">
                           <span className={`type-body whitespace-nowrap font-aeonik ${row.status === "refunded" ? "text-black/40 line-through" : ""}`}>
                             {row.redeemedWithCredit ? "1 credit" : money(row.amount, row.currency, ledger === "subscriptions")}
@@ -486,13 +513,13 @@ export default function AdminInvoicingPage() {
                           {row.excluded && <span className="type-small">Excluded</span>}
                         </span>
                       </td>
-                      <td className="type-small py-3 pr-4 text-black/60">
+                      <td className={`type-small ${TD} text-black/60`}>
                         <span className="font-mono" title={row.paymentId}>
                           {row.paymentId || "—"}
                         </span>
                       </td>
-                      <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{formatDate(row.createdAt)}</td>
-                      <td className="py-3 pr-4 text-right">
+                      <td className={`type-small whitespace-nowrap ${TD} text-black/60`}>{formatDate(row.createdAt)}</td>
+                      <td className={`${TD} text-right`}>
                         {href ? (
                           <a href={href} target="_blank" rel="noopener noreferrer" className="type-small text-ink underline underline-offset-3 transition-colors duration-300 hover:text-primary">
                             View
@@ -502,9 +529,10 @@ export default function AdminInvoicingPage() {
                         )}
                       </td>
                       <td className={`py-3 text-right ${STICKY_END}`}>
-                        {/* Credit redemptions and refunds aren't revenue to begin with */}
-                        {row.redeemedWithCredit || row.status === "refunded" ? (
-                          <span className="type-small text-black/20">—</span>
+                        {/* Credit redemptions and refunds aren't revenue to begin with; excluding
+                            a payment needs finance.manage */}
+                        {row.redeemedWithCredit || row.status === "refunded" || !can("finance.manage") ? (
+                          <span className="type-small text-black/20">{row.excluded ? "Excluded" : "—"}</span>
                         ) : (
                           <RevenueToggle row={row} kind={ledger === "subscriptions" ? "subscription" : "template"} onChange={setExcluded} />
                         )}

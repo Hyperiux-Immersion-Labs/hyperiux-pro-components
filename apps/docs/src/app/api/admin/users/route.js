@@ -1,8 +1,7 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { getRole, isSuperAdminUser } from "@/lib/admin";
+import { accessOf, can, getRole, requireAdminAccess } from "@/lib/admin";
 import { resolveDateBounds } from "@/lib/admin-activity";
 import { fetchAllRows, fetchInstalls, getAdminUserList, internalReason, parseAudience } from "@/lib/admin-data";
 import { getInternalLists } from "@/lib/app-settings";
@@ -58,7 +57,7 @@ async function readActivityCounts() {
   };
 }
 
-function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { installsById, webById, cliById, mcpById, savesById }, lists) {
+function shapeUser({ clerkUser, sub, currentPlan }, seesMoney, { installsById, webById, cliById, mcpById, savesById }, lists) {
   const role = getRole(clerkUser);
 
   const base = {
@@ -85,10 +84,10 @@ function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { instal
     internal: internalReason(clerkUser, lists),
   };
 
-  // Billing/payment detail is super-admin only - a regular admin gets user
-  // identity + plan but no subscription status, renewal date, or Razorpay
-  // IDs, enforced here rather than only hidden in the UI.
-  if (!viewerIsSuperAdmin) return base;
+  // Billing/payment detail needs finance.view - without it an admin gets identity + plan
+  // but no subscription status, renewal date, or Razorpay IDs, enforced here rather than
+  // only hidden in the UI.
+  if (!seesMoney) return base;
 
   return {
     ...base,
@@ -101,17 +100,12 @@ function shapeUser({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin, { instal
 }
 
 export async function GET(request) {
-  const { userId } = await auth();
-  if (!userId) {
+  // Every admin sees the list; billing fields need finance.view, and each admin's access (roles, grants) is for the owner, who manages it
+  const access = await requireAdminAccess();
+  if (!access) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
-  const clerk = await clerkClient();
-  const viewer = await clerk.users.getUser(userId);
-  if (getRole(viewer) === null) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  const viewerIsSuperAdmin = isSuperAdminUser(viewer);
+  const seesMoney = can(access, "finance.view");
 
   try {
     const { searchParams } = new URL(request.url);
@@ -137,7 +131,8 @@ export async function GET(request) {
         audience: parseAudience(searchParams),
         search: searchParams.get("search") || "",
         plan: PLAN_OPTIONS.has(rawPlan) ? rawPlan : "all",
-        role: ROLE_OPTIONS.has(rawRole) ? rawRole : "all",
+        // "role:<id>": admins with one admin role (lib/admin-data getAdminUserList)
+        role: ROLE_OPTIONS.has(rawRole) || /^role:[a-z0-9-]{1,60}$/.test(rawRole) ? rawRole : "all",
         startISO,
         endISO,
       }),
@@ -157,7 +152,11 @@ export async function GET(request) {
     }
 
     const lists = await getInternalLists();
-    const users = list.slice(offset, offset + limit).map((entry) => shapeUser(entry, viewerIsSuperAdmin, counts, lists));
+    // The owner manages access, so they get each admin's roles, grants and removals
+    const users = list.slice(offset, offset + limit).map((entry) => {
+      const user = shapeUser(entry, seesMoney, counts, lists);
+      return access.owner ? { ...user, owner: user.role === "super_admin", adminAccess: accessOf(entry.clerkUser) } : user;
+    });
     return NextResponse.json({ users, total: list.length });
   } catch (error) {
     console.error("ADMIN_USERS_ERROR:", error);

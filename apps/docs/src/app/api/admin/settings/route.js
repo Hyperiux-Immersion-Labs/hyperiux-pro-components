@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { getAppSettings, isInstallLimitEnforced, setAppSetting } from "@/lib/app-settings";
 import { clearClerkUsersCache, INTERNAL_EMAILS, INTERNAL_EMAIL_DOMAINS } from "@/lib/admin-data";
@@ -15,7 +15,7 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const DOMAIN = /^[a-z0-9-]+(\.[a-z0-9-]+)+$/;
 
 export async function GET() {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("settings.manage"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
   const settings = await getAppSettings();
@@ -36,7 +36,7 @@ export async function GET() {
 }
 
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("settings.manage"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

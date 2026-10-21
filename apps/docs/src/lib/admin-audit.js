@@ -11,10 +11,17 @@ import { supabase } from "@/lib/supabase";
 // What each action is called in the log, and how the dashboard words it
 export const ADMIN_ACTIONS = {
   "plan.update": "Changed plan",
+  // Before roles: Admin / Super Admin. Kept so older entries still read right
   "role.update": "Changed role",
+  "access.update": "Changed admin access",
+  "role.create": "Created a role",
+  "role.edit": "Edited a role",
+  "role.delete": "Deleted a role",
   "account.suspend": "Suspended account",
   "account.restore": "Restored account",
+  "account.delete": "Deleted account",
   "password.reset_sent": "Sent password reset",
+  "user.create": "Created an account",
   "internal.mark": "Marked internal",
   "internal.unmark": "Counted as customer",
   "payment.exclude": "Excluded payment from revenue",

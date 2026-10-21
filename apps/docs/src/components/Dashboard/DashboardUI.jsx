@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LoaderCircle } from "lucide-react";
+import { LoaderCircle, Search } from "lucide-react";
 import { BUTTON_SIZE, ButtonChrome, buttonClassName } from "@/homepage/components/Button";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
@@ -21,6 +21,93 @@ export const CARD_PAD = "p-[calc(var(--cvw)*1.6)] max-lg:p-6 max-md:p-5";
 export const TABLE = "w-full min-w-max border-collapse text-left [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap";
 export const STICKY_END =
   "sticky right-0 z-1 bg-foreground pl-4 transition-shadow duration-300 group-data-[clipped]/scroll:shadow-[-14px_0_14px_-14px_rgba(0,0,0,0.3)]";
+// The first column (who the row is about) stays pinned to the left edge the same way, so
+// sideways scrolling - even a slightly diagonal trackpad swipe - never cuts off the avatar
+// and name; its shadow shows once the table is scrolled. Not on phones, where it'd take
+// half the width.
+export const STICKY_START =
+  "md:sticky md:left-0 md:z-1 bg-foreground transition-shadow duration-300 md:group-data-[scrolled]/scroll:shadow-[14px_0_14px_-14px_rgba(0,0,0,0.3)]";
+
+// Every dashboard table's rows and cells, so lists read the same on every tab: a quiet
+// header row, a hairline between rows, the same room between columns. Text cells don't
+// wrap (TABLE), so on tablets and phones the card scrolls the table sideways instead of
+// squeezing it. NUM right-aligns a number column.
+export const HEAD_ROW = "type-label border-b border-black/10 text-black/60";
+export const TH = "py-3 pr-[calc(var(--cvw)*2)] font-normal last:pr-0 max-lg:pr-6";
+export const ROW = "border-b border-black/10 last:border-b-0";
+export const TD = "py-[calc(var(--cvw)*0.8)] pr-[calc(var(--cvw)*2)] align-middle last:pr-0 max-lg:py-3 max-lg:pr-6";
+export const NUM = " tabular-nums";
+
+// A card's filter row (search, segments, menus, per page): wraps on tablets; on phones it
+// takes the card's width, so the search box spans it and the rest wrap in even rows.
+// Top-aligned: every control is the same height (h-9.5), and a custom date range puts its
+// calendar button under the date menu - the controls beside it (the sort button) stay
+// level with the menu instead of centring on both
+// On phones a two-column grid: search, segments ([role=group]) and rows per page take a full
+// row; dropdowns pair up two to a row (dense, so a pair fills in around a full-width item)
+export const TOOLBAR = "flex flex-wrap items-start gap-[calc(var(--cvw)*0.7)] max-lg:gap-3 max-md:grid max-md:w-full max-md:grid-flow-row-dense max-md:grid-cols-2 max-md:items-center max-md:gap-[2.5vw] max-md:[&>[role=group]]:col-span-2";
+
+// The search box every list's toolbar uses; the whole row on phones
+export function SearchField({ value, onChange, placeholder, label, className = "" }) {
+  return (
+    <label className={`type-small flex h-9.5 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary max-md:col-span-2 max-md:w-full ${className}`}>
+      <Search className="size-3.5 shrink-0" aria-hidden="true" />
+      <span className="sr-only">{label}</span>
+      <input value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} className="w-[calc(var(--cvw)*12)] min-w-0 bg-transparent text-ink outline-none placeholder:text-black/40 max-lg:w-40 max-md:flex-1" />
+    </label>
+  );
+}
+
+// Payments - the account's Invoicing receipts and an admin's view of one user: what, amount
+// and status first (what a phone shows before scrolling), then when, the Razorpay payment
+// id (with showPaymentId) and the receipt. Rows:
+// { id, date, description, paymentId?, amount (formatted), status, url }.
+const PAID = new Set(["paid", "redeemed"]);
+const formatPaymentDate = (value) => (value ? new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value)) : "—");
+
+export function PaymentsTable({ rows, showPaymentId = false }) {
+  return (
+    <TableScroll>
+      <table className={TABLE}>
+        <thead>
+          <tr className={HEAD_ROW}>
+            <th className={TH}>Description</th>
+            <th className={`${TH} ${NUM}`}>Amount</th>
+            <th className={TH}>Status</th>
+            <th className={TH}>Date</th>
+            {showPaymentId && <th className={TH}>Payment ID</th>}
+            <th className={`${TH} ${STICKY_END} text-right`}>Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.id} className={ROW}>
+              <td className={`type-body ${TD} max-w-80 truncate max-md:max-w-40`}>{row.description}</td>
+              <td className={`type-body ${TD} ${NUM} font-aeonik`}>{row.amount}</td>
+              <td className={TD}>
+                <span className="type-small inline-flex items-center gap-1.5 capitalize">
+                  <span aria-hidden="true" className={`size-1.5 rounded-full ${PAID.has(row.status) ? "bg-primary" : "bg-black/20"}`} />
+                  {row.status || "unknown"}
+                </span>
+              </td>
+              <td className={`type-small ${TD} text-black/60`}>{formatPaymentDate(row.date)}</td>
+              {showPaymentId && <td className={`type-small ${TD} font-mono text-black/60`}>{row.paymentId || "—"}</td>}
+              <td className={`${TD} ${STICKY_END} text-right`}>
+                {row.url ? (
+                  <a href={row.url} target="_blank" rel="noopener noreferrer" className="type-small text-ink underline underline-offset-3 transition-colors duration-300 hover:text-primary">
+                    View
+                  </a>
+                ) : (
+                  <span className="type-small text-black/20">—</span>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </TableScroll>
+  );
+}
 
 // A table with nothing to show ("No users match these filters.") keeps at least 20vh, its
 // message centred - as a block, or as the one <td> of an empty <tbody>
@@ -30,10 +117,14 @@ export const EMPTY_CELL = "type-body h-[20vh] text-center align-middle text-blac
 export function TableScroll({ children, className = "" }) {
   const ref = useRef(null);
   const [clipped, setClipped] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return undefined;
-    const update = () => setClipped(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+    const update = () => {
+      setClipped(el.scrollWidth - el.clientWidth - el.scrollLeft > 1);
+      setScrolled(el.scrollLeft > 1);
+    };
     update();
     el.addEventListener("scroll", update, { passive: true });
     const observer = new ResizeObserver(update);
@@ -45,7 +136,7 @@ export function TableScroll({ children, className = "" }) {
     };
   }, []);
   return (
-    <div ref={ref} data-clipped={clipped || undefined} className={`group/scroll overflow-x-auto overscroll-x-contain ${className}`}>
+    <div ref={ref} data-clipped={clipped || undefined} data-scrolled={scrolled || undefined} className={`group/scroll overflow-x-auto overscroll-x-contain ${className}`}>
       {children}
     </div>
   );
@@ -87,7 +178,9 @@ export function CardLink({ href, children, tone = "light", onClick, arrow = true
       arrowRight
       underlineClassName="mt-0.5"
       colorClassName={LINK_TONES[tone]}
-      className={[inline ? "" : "type-label", className].filter(Boolean).join(" ")}
+      // One line, never squeezed: beside a long heading on a phone the label would wrap,
+      // and its rolling animation clips everything after the first line ("All Usage" → "All")
+      className={[inline ? "" : "type-label shrink-0 whitespace-nowrap", className].filter(Boolean).join(" ")}
     />
   );
 }
@@ -110,7 +203,12 @@ export function TextButton({ children, onClick, disabled = false, tone = "dark",
 }
 
 // The width of the dashboard's dropdown filters (trigger and panel alike)
-export const FILTER_WIDTH = "w-[calc(var(--cvw)*13)] max-lg:w-48";
+// On phones a dropdown takes an even share of its toolbar row, never under 40%: two side by
+// side, a lone one the whole row - so options like "Last 30 days" never wrap and no menu
+// stretches across the card while its neighbour is squeezed
+export const FILTER_WIDTH = "w-[calc(var(--cvw)*13)] max-lg:w-48 max-md:w-auto max-md:min-w-[40%] max-md:flex-1";
+// A right-aligned dropdown panel with a long list: a fixed height, scrolling inside
+export const SCROLL_PANEL = "left-auto! right-0 max-h-[20vw] overflow-y-auto max-lg:max-h-[50vh]";
 
 // "14 of 14 saved": the shown count big and dark, the rest quiet - as the effects listing's count
 export function FilteredCount({ shown, total, noun }) {
@@ -150,7 +248,11 @@ export function resolveDateRange({ preset, from, to }) {
 export function DateRangeFilter({ label, value, onChange, widthClassName = FILTER_WIDTH, className = "" }) {
   // The trigger and its panel share one width
   return (
-    <div className={`flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw] ${className}`}>
+    // On phones the wrapper steps aside (contents): the dropdown sits in the row beside its
+    // neighbour (the audience filter, or the toolbar's other menus) and a custom range's
+    // "Pick a date range" takes a full-width line of its own below, so its calendar opens
+    // centred on the screen
+    <div className={`flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:contents ${className}`}>
       <FilterMenu
         tone="light"
         variant="label"
@@ -165,13 +267,16 @@ export function DateRangeFilter({ label, value, onChange, widthClassName = FILTE
         onSelect={(preset) => onChange({ preset, from: preset === "custom" ? value.from : "", to: preset === "custom" ? value.to : "" })}
       />
       {value.preset === "custom" && (
-        <DateRangeCalendarPicker
-          tone="light"
-          from={value.from}
-          to={value.to}
-          onChange={(range) => onChange({ ...value, ...range })}
-          onClear={() => onChange(ALL_DATES)}
-        />
+        // the full row on phones: a grid's both columns, or a flex row's whole width
+        <div className="flex max-md:col-span-2 max-md:w-full max-md:basis-full">
+          <DateRangeCalendarPicker
+            tone="light"
+            from={value.from}
+            to={value.to}
+            onChange={(range) => onChange({ ...value, ...range })}
+            onClear={() => onChange(ALL_DATES)}
+          />
+        </div>
       )}
     </div>
   );
@@ -243,17 +348,21 @@ export function Pager({ page, pages, total, noun, onPage }) {
 
 // How many rows a table shows a page
 export const PER_PAGE_OPTIONS = [10, 50, 100, 150, 200];
+// The admin tables: at least 25 a page, 50 to start
+export const ADMIN_PER_PAGE_OPTIONS = [25, 50, 100, 150, 200];
+export const ADMIN_PER_PAGE = 50;
 
-export function PerPageMenu({ value, onChange }) {
+export function PerPageMenu({ value, onChange, options = PER_PAGE_OPTIONS }) {
   return (
-    <div className="flex items-center gap-3">
+    // the last full row of a toolbar on phones
+    <div className="flex items-center gap-3 max-md:col-span-2 max-md:justify-between">
       <span className="type-small text-black/60">Per page</span>
       <FilterMenu
         tone="light"
         variant="label"
         widthClassName="w-24"
         label="Rows per page"
-        options={PER_PAGE_OPTIONS.map(String)}
+        options={options.map(String)}
         categoryFilter={String(value)}
         activeFilter={null}
         getLabel={(id) => id}

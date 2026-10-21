@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Eye } from "lucide-react";
-import { ACTION_LINE, CARD, CARD_PAD, EMPTY_CELL, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
+import { ACTION_LINE, ADMIN_PER_PAGE, ADMIN_PER_PAGE_OPTIONS, CARD, CARD_PAD, EMPTY_CELL, FILTER_WIDTH, HEAD_ROW, Pager, PerPageMenu, ROW, SearchField, STICKY_END, STICKY_START, TABLE, TableScroll, TD, TH, TOOLBAR } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { useLenisLock } from "@/hooks/useLenisLock";
+import { useRouter } from "next/navigation";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
 
 // Every email Vault has sent (sent_emails, logged by lib/resend), for admins: filter by
 // type and delivery, page through, and open one to see it as it was sent.
@@ -20,6 +22,7 @@ const TYPES = {
   password_reset_otp: "Password reset code",
   pro_unlocked: "Pro unlocked",
   invitations: "Invitations",
+  exit_intent_invite: "Exit-intent invite",
   subscription_invoice: "Invoice",
   custom_animation_request: "Animation request",
   custom_animation_request_confirmation: "Animation request confirmation",
@@ -33,7 +36,8 @@ const TYPES = {
   new_device_sign_in: "New device sign-in",
   transactional: "Transactional",
 };
-const STATUSES = { all: "Delivered and failed", success: "Delivered", failed: "Failed" };
+// "Sent" is Resend accepting the email; bounces and spam reports aren't tracked here
+const STATUSES = { all: "Sent and failed", success: "Sent", failed: "Failed" };
 
 const subscribeNever = () => () => {};
 const number = (n) => new Intl.NumberFormat("en").format(n || 0);
@@ -72,7 +76,7 @@ function EmailPreview({ emailId, onClose }) {
         aria-label={email?.subject || "Email"}
         data-lenis-prevent
         onClick={(event) => event.stopPropagation()}
-        className="relative flex max-h-[90svh] w-[min(52vw,48rem)] flex-col border border-white/20 bg-background text-foreground max-lg:w-[85%] max-md:w-full"
+        className="relative flex max-h-[80svh] w-[min(52vw,48rem)] flex-col border border-white/20 bg-background text-foreground max-lg:w-[85%] max-md:w-full"
       >
         <div className="flex items-start justify-between gap-4 border-b border-white/10 p-6 pr-20">
           {email ? (
@@ -122,7 +126,7 @@ function EmailPreview({ emailId, onClose }) {
 // The table's rows while they load: recipient, subject, type, status, sent, preview
 function RowsSkeleton({ count }) {
   return Array.from({ length: Math.min(count, 8) }, (_, i) => (
-    <tr key={i} className="border-b border-black/10 last:border-b-0">
+    <tr key={i} className={ROW}>
       <td colSpan={6} className="py-3">
         <div className="flex items-center gap-4">
           <Bar type="type-body" className="w-[18%]" />
@@ -138,16 +142,30 @@ function RowsSkeleton({ count }) {
 }
 
 export default function AdminEmailsPage() {
+  // Needs emails.view (lib/admin-permissions); the API checks it again
+  const { path, can, accessLoaded } = useDashboard();
+  const allowed = can("emails.view");
+  const router = useRouter();
+  useEffect(() => {
+    if (accessLoaded && !allowed) router.replace(path("admin/users"));
+  }, [accessLoaded, allowed, router, path]);
   const [emails, setEmails] = useState([]);
   // Counts across every email matching the filters, not just this page
   const [counts, setCounts] = useState(null);
   const [loading, setLoading] = useState(true);
   const [type, setType] = useState("all");
   const [status, setStatus] = useState("all");
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(ADMIN_PER_PAGE);
   const [page, setPage] = useState(0);
   const [previewId, setPreviewId] = useState(null);
   const [error, setError] = useState(null);
+  // Recipient search: what's typed, and what's searched for after a short pause
+  const [search, setSearch] = useState("");
+  const [recipient, setRecipient] = useState("");
+  useEffect(() => {
+    const timer = setTimeout(() => setRecipient(search.trim()), 300);
+    return () => clearTimeout(timer);
+  }, [search]);
 
   // Any filter change starts again from the first page
   const filter = (set) => (value) => {
@@ -162,6 +180,7 @@ export default function AdminEmailsPage() {
       const params = new URLSearchParams({ limit: String(pageSize), offset: String(page * pageSize) });
       if (type !== "all") params.set("type", type);
       if (status !== "all") params.set("status", status);
+      if (recipient) params.set("to", recipient);
       const res = await fetch(`/api/admin/emails?${params}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Couldn’t load the email log.");
@@ -174,13 +193,14 @@ export default function AdminEmailsPage() {
     } finally {
       setLoading(false);
     }
-  }, [type, status, pageSize, page]);
+  }, [type, status, recipient, pageSize, page]);
 
   useEffect(() => {
+    if (!allowed) return;
     // Fetches in response to filter / page changes - an external-system sync
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchEmails();
-  }, [fetchEmails]);
+  }, [fetchEmails, allowed]);
 
   const total = counts?.total || 0;
   const pages = Math.max(1, Math.ceil(total / pageSize));
@@ -189,11 +209,11 @@ export default function AdminEmailsPage() {
     <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
       {previewId && <EmailPreview emailId={previewId} onClose={() => setPreviewId(null)} />}
 
-      {/* sent, delivered, failed - for the filters below */}
+      {/* matching, sent, failed - for the filters below */}
       <div className="flex gap-[calc(var(--cvw)*0.8)] max-md:flex-col max-lg:gap-3">
         {[
-          ["Sent", counts?.total, "Emails matching the filters"],
-          ["Delivered", counts?.delivered, "Accepted by Resend"],
+          ["Emails", counts?.total, "Matching the filters"],
+          ["Sent", counts?.delivered, "Accepted by Resend - bounces aren't tracked"],
           ["Failed", counts?.failed, "Not sent - see the reason on the row"],
         ].map(([label, value, note]) =>
           counts ? (
@@ -217,7 +237,16 @@ export default function AdminEmailsPage() {
           <h2 id="emails-h" className="type-h3">
             Emails
           </h2>
-          <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
+          <div className={TOOLBAR}>
+            <SearchField
+              value={search}
+              onChange={(next) => {
+                setSearch(next);
+                setPage(0);
+              }}
+              placeholder="Recipient email"
+              label="Search by recipient"
+            />
             <FilterMenu
               tone="light"
               variant="label"
@@ -235,7 +264,7 @@ export default function AdminEmailsPage() {
               tone="light"
               variant="label"
               alignRight
-              label="Delivery"
+              label="Status"
               widthClassName={FILTER_WIDTH}
               panelClassName="left-auto! right-0"
               options={Object.keys(STATUSES)}
@@ -244,7 +273,7 @@ export default function AdminEmailsPage() {
               getLabel={(id) => STATUSES[id]}
               onSelect={filter(setStatus)}
             />
-            <PerPageMenu value={pageSize} onChange={filter(setPageSize)} />
+            <PerPageMenu value={pageSize} onChange={filter(setPageSize)} options={ADMIN_PER_PAGE_OPTIONS} />
           </div>
         </div>
 
@@ -253,13 +282,13 @@ export default function AdminEmailsPage() {
         <TableScroll>
           <table className={TABLE}>
             <thead>
-              <tr className="type-label border-b border-black/10 text-black/60">
-                <th className="py-3 pr-4 font-normal">Recipient</th>
-                <th className="py-3 pr-4 font-normal">Subject</th>
-                <th className="py-3 pr-4 font-normal">Type</th>
-                <th className="py-3 pr-4 font-normal">Status</th>
-                <th className="py-3 pr-4 font-normal">Sent</th>
-                <th className={`py-3 text-right font-normal ${STICKY_END}`}>
+              <tr className={HEAD_ROW}>
+                <th className={`${TH} ${STICKY_START}`}>Recipient</th>
+                <th className={TH}>Subject</th>
+                <th className={TH}>Type</th>
+                <th className={TH}>Status</th>
+                <th className={TH}>Sent</th>
+                <th className={`${TH} ${STICKY_END} text-right`}>
                   <span className="sr-only">Preview</span>
                 </th>
               </tr>
@@ -277,22 +306,22 @@ export default function AdminEmailsPage() {
                 emails.map((email) => {
                   const failed = email.status === "failed";
                   return (
-                    <tr key={email.id} className="border-b border-black/10 last:border-b-0">
-                      <td className="type-small max-w-48 truncate py-[calc(var(--cvw)*0.7)] pr-4 text-ink max-lg:py-3">{email.recipient_email}</td>
-                      <td className="py-3 pr-4">
+                    <tr key={email.id} className={ROW}>
+                      <td className={`type-small max-w-48 truncate ${TD} text-ink ${STICKY_START}`}>{email.recipient_email}</td>
+                      <td className={`${TD}`}>
                         <span className="flex max-w-80 flex-col">
                           <span className="type-body truncate">{email.subject}</span>
                           {email.error_message && <span className="type-small truncate text-danger-strong">{email.error_message}</span>}
                         </span>
                       </td>
-                      <td className="type-small py-3 pr-4 text-black/60">{TYPES[email.email_type] || email.email_type}</td>
-                      <td className="py-3 pr-4">
+                      <td className={`type-small ${TD} text-black/60`}>{TYPES[email.email_type] || email.email_type}</td>
+                      <td className={`${TD}`}>
                         <span className={`type-small inline-flex items-center gap-1.5 ${failed ? "text-danger-strong" : "text-ink"}`}>
                           <span aria-hidden="true" className={`size-1.5 rounded-full ${failed ? "bg-danger-strong" : "bg-success-strong"}`} />
-                          {failed ? "Failed" : "Delivered"}
+                          {failed ? "Failed" : "Sent"}
                         </span>
                       </td>
-                      <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{formatDate(email.sent_at)}</td>
+                      <td className={`type-small whitespace-nowrap ${TD} text-black/60`}>{formatDate(email.sent_at)}</td>
                       <td className={`py-3 text-right ${STICKY_END}`}>
                         <button type="button" onClick={() => setPreviewId(email.id)} className={ACTION_LINE}>
                           <Eye aria-hidden="true" />

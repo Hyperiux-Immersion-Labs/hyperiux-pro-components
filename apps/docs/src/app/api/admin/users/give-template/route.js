@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { redeemTemplateCredit } from "@/lib/template-credits";
 import { TEMPLATES } from "@/lib/mock-templates";
@@ -9,7 +9,7 @@ import { TEMPLATES } from "@/lib/mock-templates";
 // added and redeemed for them through the same atomic redemption a customer uses, so it
 // shows up everywhere a credit redemption does. Already owned: the credit is taken back.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.support"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -6,28 +6,33 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 import { AnimatePresence, motion } from "motion/react";
-import { Search, X, Upload, CheckCircle2, XCircle, UserCog, Download, Mail, UserPlus, LoaderCircle } from "lucide-react";
+import { X, Upload, CheckCircle2, XCircle, UserCog, Download, UserPlus, UserRoundKey, LoaderCircle, Trash2 } from "lucide-react";
 import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
+import { DeleteAccountsModal } from "@/components/admin/DeleteAccountsModal";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { getDashboardPreview, sampleAdminUsers } from "@/lib/dev/dashboardPreview";
-import Button from "@/homepage/components/Button";
+import Button, { BUTTON_SIZE } from "@/homepage/components/Button";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
-import { ACTION_LINE, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, Pager, PerPageMenu, STICKY_END, TABLE, TableScroll } from "@/components/Dashboard/DashboardUI";
-import { StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
+import { ACTION_LINE, ADMIN_PER_PAGE, ADMIN_PER_PAGE_OPTIONS, ALL_DATES, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_CELL, FILTER_WIDTH, HEAD_ROW, NUM, Pager, PerPageMenu, ROW, SCROLL_PANEL, SearchField, STICKY_END, STICKY_START, TABLE, TableScroll, TD, TH, TOOLBAR } from "@/components/Dashboard/DashboardUI";
+import { STAT_EACH, StatCard, StatCardSkeleton } from "@/components/Dashboard/TrendStat";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ManageUserDrawer } from "@/components/admin/ManageUserDrawer";
+import { CreateUserModal } from "@/components/admin/CreateUserModal";
 import { UserAvatar } from "@/components/admin/UserAvatar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { buildUserActivityPath } from "@/lib/user-slug";
+import { useLenisLock } from "@/hooks/useLenisLock";
 
-const DEFAULT_PAGE_SIZE = 10;
+const DEFAULT_PAGE_SIZE = ADMIN_PER_PAGE;
+
 
 // An icon-only action beside the date filter, as tall as it
 const ICON_BUTTON = "grid size-9.5 cursor-pointer place-items-center bg-foreground text-black/60 ring-1 ring-inset ring-black/10 transition-[color,box-shadow] duration-300 hover:text-primary hover:ring-primary [&_svg]:size-4";
 
 // The plan each account has now (an expired plan is Free)
 const PLAN_FILTERS = { all: "All plans", pro_plus: "Pro+", pro: "Pro", free: "Free" };
-const ROLE_FILTERS = { all: "All roles", user: "User", admin: "Admin", super_admin: "Super admin" };
+const ROLE_FILTERS = { all: "All roles", user: "Not an admin", admin: "Any admin", super_admin: "Super admin" };
 const SORTS = { newest: "Newest", installs: "Most installs", web: "Most web", cli: "Most CLI", mcp: "Most MCP", saves: "Most saves" };
 
 function formatDate(value) {
@@ -101,20 +106,19 @@ function UserStatsTiles({ dates, audience }) {
   const isAllTime = dates.preset === "all";
   const cards = data?.kpis
     ? [
-        [isAllTime ? "Total users" : "New users", data.kpis.users, "Accounts"],
-        [isAllTime ? "Paid users" : "New paid users", data.kpis.paidUsers, "On Pro or Pro+ now"],
-        ["Installs", data.kpis.installs, "Web, CLI and MCP"],
-        ["Saves", data.kpis.saves, "Effects saved"],
+        [isAllTime ? "Total users" : "New users", data.kpis.users, isAllTime ? "Accounts" : "Joined in this window"],
+        // The plan today, for both windows: older signups have had longer to upgrade
+        [isAllTime ? "Paid users" : "New paid users", data.kpis.paidUsers, isAllTime ? "On Pro or Pro+ now" : "Joined in this window, on Pro or Pro+ now"],
+        // Installs and saves are on the Activity tab
       ]
     : null;
   const ROW = "flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3";
-  const EACH = "flex-1 max-lg:w-[calc((100%-0.75rem)/2)] max-lg:flex-none max-md:w-full";
 
   if (!cards) {
     return (
       <div className={ROW}>
-        {[0, 1, 2, 3].map((i) => (
-          <StatCardSkeleton key={i} className={EACH} />
+        {[0, 1].map((i) => (
+          <StatCardSkeleton key={i} className={STAT_EACH} />
         ))}
       </div>
     );
@@ -123,7 +127,7 @@ function UserStatsTiles({ dates, audience }) {
   return (
     <div className={ROW}>
       {cards.map(([label, stat, note]) => (
-        <StatCard key={label} className={EACH} label={label} value={new Intl.NumberFormat("en").format(stat.value || 0)} note={note} stat={stat} comparison={data.kpis.comparison} />
+        <StatCard key={label} className={STAT_EACH} label={label} value={new Intl.NumberFormat("en").format(stat.value || 0)} note={note} stat={stat} comparison={data.kpis.comparison} />
       ))}
     </div>
   );
@@ -331,7 +335,7 @@ function InviteModal({ onClose }) {
 
   return (
     <motion.div
-      className="fixed inset-0 z-900 flex items-center justify-center bg-black/60 px-4 backdrop-blur-lg"
+      className="fixed inset-0 z-9999 flex items-center justify-center bg-black/60 px-4 backdrop-blur-lg"
       onClick={onClose}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -339,7 +343,8 @@ function InviteModal({ onClose }) {
       transition={{ duration: 0.22, ease: "easeOut" }}
     >
       <motion.div
-        className="relative w-full max-w-lg border border-white/10 bg-background p-6 text-foreground"
+        data-lenis-prevent
+        className="relative max-h-[80svh] w-full max-w-lg overflow-y-auto overscroll-contain border border-white/10 bg-background p-6 text-foreground"
         onClick={(e) => e.stopPropagation()}
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -378,7 +383,7 @@ function InviteModal({ onClose }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="max-h-[calc(var(--cvw)*30)] overflow-y-auto border border-white/10 bg-white/5 p-2 focus-within:border-white/25">
+          <div data-lenis-prevent className="max-h-[calc(var(--cvw)*30)] overflow-y-auto border border-white/10 bg-white/5 p-2 focus-within:border-white/25">
             {emails.length > 0 && (
               <div className="mb-2 flex flex-wrap gap-1.5 px-1 pt-1">
                 {emails.map((e) => (
@@ -412,9 +417,10 @@ function InviteModal({ onClose }) {
             />
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <label className={`inline-flex items-center gap-2  border border-white/15 px-3 py-[calc(var(--cvw)*.8)] text-[calc(var(--cvw)*1.1)] max-md:text-[min(3.5vw,15px)] max-lg:text-[2.5vw] font-medium text-white/70 transition ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
-              <Upload className="h-5 w-5" />
+          {/* Upload CSV is the site Button's size (BUTTON_SIZE); on phones both are full width */}
+          <div className="flex flex-wrap items-center justify-between gap-3 max-md:flex-col max-md:items-stretch">
+            <label className={`inline-flex items-center justify-center gap-2 border border-white/15 px-(--pad) font-avenir font-medium tracking-wide text-white/70 transition [--pad:calc(var(--hx-vw,1vw)*1.2)] max-md:w-full max-md:[--pad:24px] ${BUTTON_SIZE} ${atDailyLimit ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:border-white/30 hover:text-white"}`}>
+              <Upload className="size-4 shrink-0" />
               Upload CSV
               <input
                 type="file"
@@ -431,6 +437,7 @@ function InviteModal({ onClose }) {
               disabled={sending || pendingCount === 0 || atDailyLimit}
               onClick={handleSubmit}
               variant="orange"
+              className="max-md:w-full"
               text={
                 sending
                   ? "Sending…"
@@ -457,7 +464,7 @@ function InviteModal({ onClose }) {
           </p>
         )}
         {results && results.length > 0 && (
-          <ul className="mt-3 max-h-40 space-y-1 overflow-y-auto  border border-white/10 bg-white/3 p-2">
+          <ul data-lenis-prevent className="mt-3 max-h-40 space-y-1 overflow-y-auto border border-white/10 bg-white/3 p-2">
             {results.map((r) => (
               <li key={r.email} className="flex items-center gap-2 px-1.5 py-1 text-xs">
                 {r.success ? (
@@ -479,8 +486,27 @@ function InviteModal({ onClose }) {
 }
 
 export default function AdminPage() {
-  // isSuperAdmin: the development preview stands in for one
-  const { path, isSuperAdmin } = useDashboard();
+  // What this admin may do (lib/admin-permissions; the development preview has everything):
+  // the billing columns need finance.view, the toolbar's buttons their own permission.
+  // Everyone gets Manage - the drawer shows only the sections they can use.
+  const { path, can, isSuperAdmin } = useDashboard();
+  // Super admins can also filter by one admin role (the Roles tab's): "role:<id>"
+  const [roleFilters, setRoleFilters] = useState(ROLE_FILTERS);
+  useEffect(() => {
+    if (!isSuperAdmin || getDashboardPreview()) return undefined;
+    let active = true;
+    fetch("/api/admin/roles", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((json) => {
+        if (!active || !json?.roles) return;
+        setRoleFilters({ ...ROLE_FILTERS, ...Object.fromEntries(json.roles.map((role) => [`role:${role.id}`, `${role.name} admins`])) });
+      })
+      .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [isSuperAdmin]);
+  const seesMoney = can("finance.view");
   const { user: viewer } = useUser();
   const [users, setUsers] = useState([]);
   const [total, setTotal] = useState(0);
@@ -499,7 +525,11 @@ export default function AdminPage() {
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [error, setError] = useState(null);
   const [showInviteModal, setShowInviteModal] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
   const [manageUser, setManageUser] = useState(null);
+  // Super admins: rows picked with the checkboxes, and whether the delete dialog is open
+  const [selected, setSelected] = useState(() => new Set());
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [prevSearch, setPrevSearch] = useState(search);
   const [prevPlanFilter, setPrevPlanFilter] = useState(planFilter);
@@ -536,16 +566,9 @@ export default function AdminPage() {
     setCurrentPage(1);
   }
 
-  useEffect(() => {
-    if (!showInviteModal && !manageUser) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [showInviteModal, manageUser]);
+  // The page holds still behind the invite and create-user modals without losing its
+  // scrollbar's width (lib hooks/useLenisLock); the Manage drawer holds it itself
+  useLenisLock(showInviteModal || showCreateModal, { closeMs: 250 });
 
   // Guards against out-of-order responses: a broad, slow request (e.g. no
   // search text, a large page size) can resolve *after* a narrower, faster
@@ -600,6 +623,8 @@ export default function AdminPage() {
       if (requestId !== requestIdRef.current) return;
       setUsers(json.users || []);
       setTotal(json.total || 0);
+      // A new page or filter: nothing picked
+      setSelected(new Set());
     } catch (err) {
       if (requestId !== requestIdRef.current) return;
       setError(err.message);
@@ -654,34 +679,70 @@ export default function AdminPage() {
     setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...patch } : u)));
   }
 
+  // Who can be deleted: super admins only, never your own account or another super admin's
+  // (the API checks again)
+  const deletable = (user) => isSuperAdmin && user.id !== viewer?.id && user.role !== "super_admin";
+  const pickable = users.filter(deletable);
+  const picked = users.filter((user) => selected.has(user.id));
+  const allPicked = pickable.length > 0 && pickable.every((user) => selected.has(user.id));
+  const toggle = (id) =>
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  function deletionDone({ deleted, failed }) {
+    setConfirmDelete(false);
+    setSelected(new Set());
+    if (deleted.length) {
+      setUsers((current) => current.filter((user) => !deleted.includes(user.id)));
+      setTotal((current) => Math.max(0, current - deleted.length));
+    }
+    showToast(
+      failed.length
+        ? { title: deleted.length ? `${deleted.length} Deleted, ${failed.length} Not` : "Couldn’t Delete", description: failed[0].error, tone: "error" }
+        : { title: deleted.length === 1 ? "Account Deleted" : `${deleted.length} Accounts Deleted`, description: "Gone for good: they can’t be restored." },
+    );
+    fetchUsers();
+  }
+
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  const columns = isSuperAdmin ? 8 : 5;
+  const columns = seesMoney ? 9 : 8;
 
   return (
     <>
     <ToastViewport toast={toast} onDismiss={dismissToast} />
     <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
-      {/* the window and whose accounts, left; export, the email log, invite, whose accounts and the date, right */}
+      {/* the window and whose accounts, left; export, invite, create, whose accounts and the date, right */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="type-label text-black/60">
           {dates.preset === "custom" ? "Custom range" : `${DATE_PRESETS[dates.preset]}`} · {audience === "all" ? "every account" : audience === "internal" ? "internal accounts" : "customers"}
         </p>
-        <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
-          <Tooltip label="Export CSV">
-            <button type="button" onClick={handleExport} disabled={exporting} aria-label="Export CSV" className={ICON_BUTTON}>
-              {exporting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Download aria-hidden="true" />}
-            </button>
-          </Tooltip>
-          <Tooltip label="Email log">
-            <Link href={path("admin/emails")} aria-label="Email log" className={ICON_BUTTON}>
-              <Mail aria-hidden="true" />
-            </Link>
-          </Tooltip>
-          <Tooltip label="Invite">
-            <button type="button" onClick={() => setShowInviteModal(true)} aria-label="Invite people" className={ICON_BUTTON}>
-              <UserPlus aria-hidden="true" />
-            </button>
-          </Tooltip>
+        {/* not the table's toolbar grid: the icon actions stay in one row, the filters below */}
+        <div className="flex flex-wrap items-start gap-[calc(var(--cvw)*0.7)] max-lg:gap-3 max-md:w-full">
+          {can("users.export") && (
+            <Tooltip label="Export CSV">
+              <button type="button" onClick={handleExport} disabled={exporting} aria-label="Export CSV" className={ICON_BUTTON}>
+                {exporting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Download aria-hidden="true" />}
+              </button>
+            </Tooltip>
+          )}
+          {can("users.invite") && (
+            <Tooltip label="Invite">
+              <button type="button" onClick={() => setShowInviteModal(true)} aria-label="Invite people" className={ICON_BUTTON}>
+                <UserPlus aria-hidden="true" />
+              </button>
+            </Tooltip>
+          )}
+          {/* an account with a password the admin sets (users.create) */}
+          {can("users.create") && (
+            <Tooltip label="Create user">
+              <button type="button" onClick={() => setShowCreateModal(true)} aria-label="Create user" className={ICON_BUTTON}>
+                <UserRoundKey aria-hidden="true" />
+              </button>
+            </Tooltip>
+          )}
           <div className={AUDIENCE_PAIR}>
             <AdminAudienceFilter widthClassName={PAIR_WIDTH} />
             <DateRangeFilter label="Joined" value={dates} onChange={setDates} widthClassName={PAIR_WIDTH} className="min-w-0" />
@@ -693,24 +754,21 @@ export default function AdminPage() {
 
       <section aria-label="Users" className={`${CARD} ${CARD_PAD} gap-[calc(var(--cvw)*1.2)] max-lg:gap-4`}>
         {/* search and filters */}
-        <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
-          <label className="type-small flex h-9.5 min-w-40 flex-1 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary">
-            <Search className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">Search users</span>
-            <input type="text" placeholder="Search by name or email" value={search} onChange={(e) => setSearch(e.target.value)} className="min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-black/40" />
-          </label>
+        <div className={TOOLBAR}>
+          <SearchField value={search} onChange={setSearch} placeholder="Search by name or email" label="Search users" className="min-w-40 flex-1" />
+          {/* phones: plans and sort side by side, roles on its own row below */}
           {[
-            [PLAN_FILTERS, planFilter, setPlanFilter, "all"],
-            [ROLE_FILTERS, roleFilter, setRoleFilter, "all"],
-            [SORTS, sortBy, setSortBy, "newest"],
-          ].map(([labels, value, set, idle]) => (
+            [PLAN_FILTERS, planFilter, setPlanFilter, "all", ""],
+            [roleFilters, roleFilter, setRoleFilter, "all", "max-md:order-1 max-md:col-span-2"],
+            [SORTS, sortBy, setSortBy, "newest", ""],
+          ].map(([labels, value, set, idle, phone]) => (
             <FilterMenu
               key={Object.values(labels)[0]}
               tone="light"
               variant="label"
               alignRight
-              widthClassName={FILTER_WIDTH}
-              panelClassName="left-auto! right-0"
+              widthClassName={`${FILTER_WIDTH} ${phone}`}
+              panelClassName={SCROLL_PANEL}
               options={Object.keys(labels)}
               categoryFilter={value}
               activeFilter={value === idle ? null : value}
@@ -718,38 +776,76 @@ export default function AdminPage() {
               onSelect={set}
             />
           ))}
-          <div className="ml-auto">
-            <PerPageMenu value={pageSize} onChange={setPageSize} />
+          <div className="ml-auto max-md:order-2 max-md:col-span-2 max-md:ml-0">
+            <PerPageMenu value={pageSize} onChange={setPageSize} options={ADMIN_PER_PAGE_OPTIONS} />
           </div>
         </div>
 
         {error && <p className="type-small bg-primary/10 px-4 py-3 text-ink ring-1 ring-inset ring-primary/30">{error}</p>}
 
+        {/* picked rows: how many, and Delete (super admins) */}
+        {picked.length > 0 && (
+          // the site's dark surface (#111111) with the orange action, as the dashboard's own bars
+          <div role="region" aria-label="Selected accounts" className="flex flex-wrap items-center justify-between gap-3 bg-background px-4 py-3 text-foreground max-md:flex-col max-md:items-stretch">
+            <p className="type-body">
+              {picked.length} selected
+              <button type="button" onClick={() => setSelected(new Set())} className="type-small ml-3 cursor-pointer text-foreground/70 underline underline-offset-3 transition-colors duration-300 hover:text-primary">
+                Clear
+              </button>
+            </p>
+            <button
+              type="button"
+              onClick={() => setConfirmDelete(true)}
+              className={`type-label inline-flex cursor-pointer items-center justify-center gap-2 bg-primary px-5 ${BUTTON_SIZE} text-black transition-colors duration-300 hover:bg-primary-hover [&_svg]:size-4`}
+            >
+              <Trash2 aria-hidden="true" />
+              Delete Permanently
+            </button>
+          </div>
+        )}
+
         {/* the table */}
         <TableScroll>
           <table className={TABLE}>
             <thead>
-              <tr className="type-label border-b border-black/10 text-black/60">
-                <th className="py-3 pr-4 font-normal">User</th>
-                <th className="py-3 pr-4 font-normal">Joined</th>
-                <th className="py-3 pr-4 font-normal">Plan</th>
-                <th className="py-3 pr-4 font-normal">Installs (web / CLI / MCP)</th>
-                <th className="py-3 pr-4 font-normal">Saves</th>
-                {isSuperAdmin && (
-                  <>
-                    <th className="py-3 pr-4 font-normal">Valid until</th>
-                    <th className="py-3 pr-4 font-normal">Customer ID</th>
-                    <th className={`py-3 text-right font-normal ${STICKY_END}`}>
-                      <span className="sr-only">Manage</span>
-                    </th>
-                  </>
-                )}
+              <tr className={HEAD_ROW}>
+                <th className={`${TH} ${STICKY_START}`}>
+                  <span className="flex items-center gap-3">
+                    {isSuperAdmin && (
+                      <Checkbox
+                        label="Select every account on this page"
+                        checked={allPicked}
+                        disabled={!pickable.length}
+                        onChange={() => setSelected(allPicked ? new Set() : new Set(pickable.map((user) => user.id)))}
+                      />
+                    )}
+                    User
+                  </span>
+                </th>
+                <th className={TH}>Joined</th>
+                <th className={TH}>Plan</th>
+                {/* installs by source, in the charts' colours (Web ink, CLI orange, MCP grey) */}
+                <th className={`${TH} ${NUM}`}>
+                  <span className="inline-flex items-center gap-1.5"><span aria-hidden="true" className="size-2 bg-ink" />Web</span>
+                </th>
+                <th className={`${TH} ${NUM}`}>
+                  <span className="inline-flex items-center gap-1.5"><span aria-hidden="true" className="size-2 bg-primary" />CLI</span>
+                </th>
+                <th className={`${TH} ${NUM}`}>
+                  <span className="inline-flex items-center gap-1.5"><span aria-hidden="true" className="size-2 bg-black/30" />MCP</span>
+                </th>
+                <th className={`${TH} ${NUM}`}>Saves</th>
+                {/* the Razorpay customer ID is in the Manage drawer (Plan & access), so the table fits */}
+                {seesMoney && <th className={TH}>Valid until</th>}
+                <th className={`${TH} ${STICKY_END} text-right`}>
+                  <span className="sr-only">Manage</span>
+                </th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
                 Array.from({ length: Math.min(pageSize, 6) }, (_, i) => (
-                  <tr key={i} className="border-b border-black/10 last:border-b-0">
+                  <tr key={i} className={ROW}>
                     <td colSpan={columns} className="py-3">
                       <Skeleton className="h-9 w-full" />
                     </td>
@@ -763,9 +859,18 @@ export default function AdminPage() {
                 </tr>
               ) : (
                 users.map((user) => (
-                  <tr key={user.id} className="border-b border-black/10 last:border-b-0">
-                    <td className="py-[calc(var(--cvw)*0.7)] pr-4 max-lg:py-3">
+                  <tr key={user.id} className={ROW}>
+                    <td className={`${TD} ${STICKY_START}`}>
                       <div className="flex items-center gap-3">
+                        {isSuperAdmin && (
+                          <Checkbox
+                            label={`Select ${displayName(user)}`}
+                            checked={selected.has(user.id)}
+                            disabled={!deletable(user)}
+                            title={deletable(user) ? undefined : user.id === viewer?.id ? "Your own account can't be deleted here" : "Super admins can't be deleted"}
+                            onChange={() => toggle(user.id)}
+                          />
+                        )}
                         <UserAvatar name={user.name} email={user.email} imageUrl={user.imageUrl} className="size-9" />
                         <div className="flex min-w-0 flex-col">
                           <span className="flex items-center gap-1.5">
@@ -773,47 +878,31 @@ export default function AdminPage() {
                               {displayName(user)}
                             </Link>
                             {user.role && user.role !== "user" && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60">{user.role === "super_admin" ? "Super admin" : "Admin"}</span>}
-                            {isSuperAdmin && user.id === viewer?.id && <span className="type-small shrink-0 text-black/40">(you)</span>}
+                            {user.id === viewer?.id && <span className="type-small shrink-0 text-black/40">(you)</span>}
                             {user.suspended && <span className="type-small shrink-0 bg-danger-strong/10 px-1.5 text-danger-strong">Suspended</span>}
-                            {user.internal && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60" title="Kept out of the customer numbers">Internal</span>}
+                            {/* admins are internal anyway: their role tag says enough */}
+                            {user.internal && !(user.role && user.role !== "user") && <span className="type-small shrink-0 bg-black/5 px-1.5 text-black/60" title="Kept out of the customer numbers">Internal</span>}
                           </span>
                           <span className="type-small truncate text-black/60">{user.email || user.id}</span>
                         </div>
                       </div>
                     </td>
-                    <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{formatDate(user.joinedAt)}</td>
-                    <td className="py-3 pr-4">
+                    <td className={`type-small whitespace-nowrap ${TD} text-black/60`}>{formatDate(user.joinedAt)}</td>
+                    <td className={`${TD}`}>
                       <PlanBadge plan={user.plan} tier={user.tier} />
                     </td>
-                    <td className="type-body whitespace-nowrap py-3 pr-4">
-                      <span title="All installs" className="text-ink">{user.installsCount ?? 0}</span>
-                      <span className="type-small text-black/60"> (</span>
-                      <span title="Web installs">{user.webCount ?? 0}</span>
-                      <span className="text-black/20"> / </span>
-                      <span title="CLI installs" className="text-primary">{user.cliCount ?? 0}</span>
-                      <span className="text-black/20"> / </span>
-                      <span title="MCP installs" className="text-black/60">{user.mcpCount ?? 0}</span>
-                      <span className="type-small text-black/60">)</span>
+                    <td className={`type-body ${TD} ${NUM} text-center text-ink`}>{user.webCount ?? 0}</td>
+                    <td className={`type-body ${TD} ${NUM} text-center text-primary`}>{user.cliCount ?? 0}</td>
+                    <td className={`type-body ${TD} ${NUM} text-center text-black/50`}>{user.mcpCount ?? 0}</td>
+                    <td className={`type-body ${TD} ${NUM} text-center`}>{user.savesCount ?? 0}</td>
+                    {seesMoney && <td className={`type-small whitespace-nowrap text-center ${TD} text-black/60`}>{user.plan === "pro" ? formatDate(user.planValidUntil) : "—"}</td>}
+                    <td className={`py-3 text-right ${STICKY_END}`}>
+                      {/* icon only on phones, where the pinned column would take a third of the row */}
+                      <button type="button" onClick={() => setManageUser(user)} aria-label={`Manage ${user.name || user.email}`} className={`${ACTION_LINE} max-md:px-3`}>
+                        <UserCog aria-hidden="true" />
+                        <span className="max-md:hidden">Manage</span>
+                      </button>
                     </td>
-                    <td className="type-body py-3 pr-4">{user.savesCount ?? 0}</td>
-                    {isSuperAdmin && (
-                      <>
-                        <td className="type-small whitespace-nowrap py-3 pr-4 text-black/60">{user.plan === "pro" ? formatDate(user.planValidUntil) : "—"}</td>
-                        <td className="type-small py-3 pr-4 text-black/60">
-                          {user.razorpayCustomerId ? (
-                            <span className="font-mono">{user.razorpayCustomerId}</span>
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-                        <td className={`py-3 text-right ${STICKY_END}`}>
-                          <button type="button" onClick={() => setManageUser(user)} className={ACTION_LINE}>
-                            <UserCog aria-hidden="true" />
-                            Manage
-                          </button>
-                        </td>
-                      </>
-                    )}
                   </tr>
                 ))
               )}
@@ -828,6 +917,8 @@ export default function AdminPage() {
       {showInviteModal && (
         <InviteModal onClose={() => setShowInviteModal(false)} />
       )}
+      {confirmDelete && picked.length > 0 && <DeleteAccountsModal users={picked} onClose={() => setConfirmDelete(false)} onDone={deletionDone} />}
+      {showCreateModal && <CreateUserModal onClose={() => setShowCreateModal(false)} onCreated={fetchUsers} />}
 
     </AnimatePresence>
     <ManageUserDrawer

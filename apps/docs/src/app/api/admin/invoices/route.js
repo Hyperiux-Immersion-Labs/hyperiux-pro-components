@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { resolveDateBounds } from "@/lib/admin-activity";
 import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/lib/admin-data";
 
@@ -16,7 +16,7 @@ import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/li
 // this table is meant to reflect real billing history, not QA data.
 
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -50,13 +50,19 @@ export async function GET(request) {
         .order("created_at", { ascending: false })
     );
 
+    // The window's totals read every invoice in it, so they're only worked out when asked
+    // for (?stats=1) - the Invoicing tab's cards come from /api/admin/invoices/stats, and
+    // this runs again on every page of the ledger
+    const withStats = searchParams.get("stats") === "1";
     const [{ data: pageRows, error: pageError, count }, realRows] = await Promise.all([
       query.range(offset, offset + limit - 1),
       // Stats always reflect every real invoice in the same window (every
       // row, not the first 1000), independent of the current page, so the
       // top-line numbers don't shift while paging.
       // Revenue: refunded and excluded payments left out
-      fetchAllRows(() => scoped(supabase.from("invoices").select("amount, currency").neq("status", "refunded").eq("excluded", false))),
+      withStats
+        ? fetchAllRows(() => scoped(supabase.from("invoices").select("amount, currency").neq("status", "refunded").eq("excluded", false)))
+        : Promise.resolve(null),
     ]);
 
     if (pageError) {
@@ -113,13 +119,15 @@ export async function GET(request) {
     return NextResponse.json({
       invoices,
       total: count || 0,
-      stats: {
-        totalInvoices: (realRows || []).length,
-        revenueByCurrency: Object.entries(revenueByCurrencyMap).map(([currency, amount]) => ({
-          currency,
-          amount,
-        })),
-      },
+      ...(withStats && {
+        stats: {
+          totalInvoices: realRows.length,
+          revenueByCurrency: Object.entries(revenueByCurrencyMap).map(([currency, amount]) => ({
+            currency,
+            amount,
+          })),
+        },
+      }),
     });
   } catch (error) {
     console.error("ADMIN_INVOICES_ERROR:", error);

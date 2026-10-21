@@ -43,9 +43,24 @@ export async function GET(request) {
       fetchInstalls(userId ? { startISO, endISO, clerkUserId: userId } : { startISO, endISO, audience }),
       getAllSanityEffectEntries(),
     ]);
-    const matching = installs.filter(
-      (row) => (!source || source === "all" || row.source === source) && (!search || row.effectSlug.toLowerCase().includes(search))
+
+    const sanityEffectsBySlug = new Map(
+      buildEffectsFromSanity(sanityEntries).map((effect) => [effect.name, effect])
     );
+    function resolveTitle(slug) {
+      return sanityEffectsBySlug.get(slug)?.title || getEffectMetadata(slug)?.title || slug;
+    }
+
+    // The search box matches the effect (its title or slug) or the person (name or email):
+    // "rolling text", "rolling-text" and "priya@" all find what they look like
+    const people = new Map(audience.users.map((user) => [user.id, `${displayName(user)} ${(user.emailAddresses || []).map((e) => e.emailAddress).join(" ")}`.toLowerCase()]));
+    const words = search.replace(/-/g, " ");
+    const matchesSearch = (row) =>
+      !search ||
+      row.effectSlug.toLowerCase().includes(search) ||
+      resolveTitle(row.effectSlug).toLowerCase().includes(words) ||
+      Boolean(row.clerkUserId && people.get(row.clerkUserId)?.includes(search));
+    const matching = installs.filter((row) => (!source || source === "all" || row.source === source) && matchesSearch(row));
     const count = matching.length;
     const rows = matching.slice(offset, offset + limit).map((row) => ({
       id: `${row.identityKey || row.clerkUserId}|${row.effectSlug}|${row.day}`,
@@ -55,13 +70,6 @@ export async function GET(request) {
       effect_slug: row.effectSlug,
       source: row.source,
     }));
-
-    const sanityEffectsBySlug = new Map(
-      buildEffectsFromSanity(sanityEntries).map((effect) => [effect.name, effect])
-    );
-    function resolveTitle(slug) {
-      return sanityEffectsBySlug.get(slug)?.title || getEffectMetadata(slug)?.title || slug;
-    }
 
     const clerkUserIds = [...new Set((rows || []).map((r) => r.clerk_user_id).filter(Boolean))];
     let clerkMap = {};

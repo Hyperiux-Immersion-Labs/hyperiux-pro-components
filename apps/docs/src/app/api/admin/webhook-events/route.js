@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { displayName } from "@/lib/display-name";
 import { resolveDateBounds } from "@/lib/admin-activity";
 import { WEBHOOK_OUTCOMES } from "@/lib/webhook-log";
@@ -13,7 +13,7 @@ import { WEBHOOK_OUTCOMES } from "@/lib/webhook-log";
 const MAX_LIMIT = 200;
 
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

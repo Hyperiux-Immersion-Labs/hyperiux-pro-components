@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { clearClerkUsersCache, internalReason } from "@/lib/admin-data";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { getInternalLists } from "@/lib/app-settings";
@@ -12,7 +12,7 @@ import { getInternalLists } from "@/lib/app-settings";
 // internal for another reason (an admin role, a team email or domain) stay
 // internal whatever this flag says.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.internal"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -216,7 +216,7 @@ describe("admin/installs route", () => {
       }),
     ];
 
-    const res = await GET(makeRequest());
+    const res = await GET(makeRequest("?limits=1"));
     const body = await res.json();
 
     expect(body.stats.allowedCount).toBe(1);
@@ -275,10 +275,20 @@ describe("admin/installs route", () => {
     isAdminResult = true;
     eventRows = [makeEvent({ enforced: false }), makeEvent({ enforced: true })];
 
-    const res = await GET(makeRequest());
+    const res = await GET(makeRequest("?limits=1"));
     const body = await res.json();
 
     expect(body.stats.enforced).toBe(true);
+  });
+
+  it("skips the install_events read unless the limits analysis is asked for", async () => {
+    isAdminResult = true;
+    eventRows = [makeEvent({ decision: "allowed" })];
+
+    const body = await (await GET(makeRequest())).json();
+
+    expect(body.stats.allowedCount).toBeUndefined();
+    expect(body.planBreakdown).toBeUndefined();
   });
 
   it("reports the always-today count (install_unlocks) independently of the selected range", async () => {

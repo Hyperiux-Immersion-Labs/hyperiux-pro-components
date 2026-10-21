@@ -54,6 +54,10 @@ export function TrendLine({ series = [], current, previous, className = "" }) {
 
 // In a row of three stat cards, the width of two (two cards plus the gap between them),
 // so a wide card in the next row lines up with the row above
+// A stat card's width in a row of them: the row on desktop, two to a row on tablets and
+// phones (a card holds one number, so a whole phone row each was mostly empty)
+export const STAT_EACH = "flex-1 max-lg:w-[calc((100%-0.75rem)/2)] max-lg:flex-none max-md:w-full";
+
 export const TWO_OF_THREE = "w-[calc((100%-var(--cvw)*1.6)*2/3+var(--cvw)*0.8)] max-lg:w-full";
 
 /**
@@ -63,7 +67,7 @@ export const TWO_OF_THREE = "w-[calc((100%-var(--cvw)*1.6)*2/3+var(--cvw)*0.8)] 
  */
 export function StatCard({ label, value, note, stat, comparison, className = "", children }) {
   return (
-    <section aria-label={label} className={`flex min-w-0 flex-col gap-(--cvw) bg-foreground p-[calc(var(--cvw)*1.6)] text-ink ring-1 ring-inset ring-black/10 max-lg:gap-3 max-lg:p-6 max-md:p-5 ${className}`}>
+    <section aria-label={label} className={`flex min-w-0 flex-col gap-(--cvw) bg-foreground p-[calc(var(--cvw)*1.6)] text-ink ring-1 ring-inset ring-black/10 max-lg:gap-3 max-lg:p-6 max-md:gap-2 max-md:p-4 ${className}`}>
       <p className="type-label text-black/60">{label}</p>
       <div className="flex flex-wrap items-end justify-between gap-x-[calc(var(--cvw)*2)] gap-y-3">
         <div className="flex flex-col gap-1">
@@ -73,7 +77,7 @@ export function StatCard({ label, value, note, stat, comparison, className = "",
         {children}
       </div>
       <TrendDelta current={stat.current} previous={stat.previous} label={comparison} />
-      <TrendLine series={stat.series} current={stat.current} previous={stat.previous} className="mt-auto h-[calc(var(--cvw)*3.6)] max-lg:h-14" />
+      <TrendLine series={stat.series} current={stat.current} previous={stat.previous} className="mt-auto h-[calc(var(--cvw)*3.6)] max-lg:h-14 max-md:h-10" />
     </section>
   );
 }
@@ -85,7 +89,7 @@ export function StatCardSkeleton({ className = "flex-1" }) {
       <Bar type="type-label" className="w-[35%]" />
       <Bar type="type-h2" className="w-[30%]" />
       <Bar type="type-small" className="w-[50%]" />
-      <Bar className="h-[calc(var(--cvw)*3.6)] w-full max-lg:h-14" />
+      <Bar className="h-[calc(var(--cvw)*3.6)] w-full max-lg:h-14 max-md:h-10" />
     </SkeletonCard>
   );
 }

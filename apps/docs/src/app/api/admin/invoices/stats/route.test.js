@@ -4,7 +4,10 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 // or sales, and each currency's card reports what was refunded.
 
 let tables;
-vi.mock("@/lib/admin", () => ({ assertSuperAdmin: vi.fn(async () => true) }));
+// The route's permission check: the owner's access when allowed (true), null (403) when not
+vi.mock("@/lib/admin", () => ({
+  requirePermission: vi.fn(async () => (true ? { owner: true, admin: true, permissions: new Set(["finance.view", "finance.manage", "users.plan", "users.create"]) } : null)),
+}));
 vi.mock("@/lib/admin-data", () => ({
   parseAudience: () => "all",
   getAudience: async () => ({ audience: "all", internalIds: [] }),

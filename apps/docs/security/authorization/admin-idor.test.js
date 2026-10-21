@@ -19,18 +19,23 @@ const { db, clerk, makeUser, makeRequest, readJson, walk, VAULT_ROOT, HTTP_METHO
   "../helpers/route-harness.js"
 );
 const { getRole } = await import("@/lib/admin");
+const { PRESET_ROLES } = await import("@/lib/admin-permissions");
 
 const ADMIN_DIR = path.join(VAULT_ROOT, "src/app/api/admin");
 const ROUTE_FILES = walk(ADMIN_DIR, { include: (f) => /[\\/]route\.js$/.test(f) });
 const MARK = "ADMIN_ONLY_MARKER";
 const OTP = "482913";
 
-// Routes a regular admin must not reach (billing, revenue, role/plan changes).
+// Routes a plain admin (export, invite, refresh effect pages - granted one by one) must not
+// reach: money, plan changes, roles and access.
 const SUPER_ADMIN_ONLY = [
   "invoices",
   "template-purchases",
+  "users/billing",
+  "payments/refund",
   "users/update-plan",
-  "users/update-role",
+  "users/access",
+  "roles",
 ];
 
 const routeName = (file) => path.relative(ADMIN_DIR, path.dirname(file)).split(path.sep).join("/");
@@ -39,11 +44,13 @@ const paramsFor = (name) => (name.includes("[userSlug]") ? { userSlug: "victim" 
 function seed() {
   clerk.reset({
     user_free: makeUser("user_free"),
-    user_admin: makeUser("user_admin", { role: "admin" }),
+    user_admin: makeUser("user_admin", { role: "none", admin: { roles: [], grant: ["users.export", "users.invite", "effects.manage"], revoke: [] } }),
     user_super: makeUser("user_super", { role: "super_admin" }),
     victim: makeUser("victim", { email: `victim@${MARK.toLowerCase()}.test` }),
   });
   db.reset({
+    // sql/admin_roles.sql's presets
+    admin_roles: PRESET_ROLES.map((role) => ({ ...role, preset: true })),
     subscriptions: [
       { clerk_user_id: "victim", plan: "pro", status: "active", cli_token_hash: `hash_${MARK}`, razorpay_subscription_id: `sub_${MARK}` },
       { clerk_user_id: "user_free", plan: "free", status: "inactive" },
@@ -144,18 +151,42 @@ describe("regular admins can't reach super-admin powers", () => {
     });
   }
 
-  it("a regular admin can't promote themselves or anyone else", async () => {
-    const file = ROUTE_FILES.find((f) => routeName(f) === "users/update-role");
+  it("a regular admin can't give themselves or anyone else access", async () => {
+    const file = ROUTE_FILES.find((f) => routeName(f) === "users/access");
     clerk.signIn("user_admin");
     for (const body of [
-      { userId: "user_admin", role: "super_admin" },
-      { clerkUserId: "user_admin", role: "super_admin" },
-      { userId: "user_free", role: "admin" },
+      { clerkUserId: "user_admin", roles: ["support"], grant: ["finance.view", "finance.manage"], revoke: [] },
+      { clerkUserId: "user_free", roles: ["user-management"], grant: [], revoke: [] },
     ]) {
-      await call(file, "POST", { body });
+      const res = await call(file, "POST", { body });
+      expect(res.status).toBe(403);
     }
-    expect(clerk.users.user_admin.publicMetadata.role).toBe("admin");
-    expect(clerk.users.user_free.publicMetadata.role).toBeUndefined();
+    // their own access is untouched
+    expect(clerk.users.user_admin.publicMetadata.role).toBe("none");
+    expect(clerk.users.user_admin.publicMetadata.admin).toEqual({ roles: [], grant: ["users.export", "users.invite", "effects.manage"], revoke: [] });
+    expect(clerk.users.user_free.publicMetadata.admin).toBeUndefined();
+  });
+
+  it("an admin granted finance.view can read money, but still can't refund", async () => {
+    clerk.users.user_admin.publicMetadata = { role: "none", admin: { roles: [], grant: ["finance.view"], revoke: [] } };
+    clerk.signIn("user_admin");
+    const invoices = ROUTE_FILES.find((f) => routeName(f) === "invoices");
+    expect((await call(invoices, "GET")).status).toBe(200);
+    const refund = ROUTE_FILES.find((f) => routeName(f) === "payments/refund");
+    db.calls.length = 0;
+    expect((await call(refund, "POST", { body: { paymentId: `pay_${MARK}` } })).status).toBe(403);
+    expect(db.calls.filter((c) => c.op !== "select")).toEqual([]);
+  });
+
+  it("only the owner gives access, and never to themselves", async () => {
+    const file = ROUTE_FILES.find((f) => routeName(f) === "users/access");
+    clerk.signIn("user_super");
+    const self = await call(file, "POST", { body: { clerkUserId: "user_super", roles: [], grant: [], revoke: [] } });
+    expect(self.status).toBe(400);
+    const res = await call(file, "POST", { body: { clerkUserId: "user_free", roles: ["support"], grant: ["log.view"], revoke: [] } });
+    expect(res.status).toBe(200);
+    expect(clerk.users.user_free.publicMetadata.admin).toEqual({ roles: ["support"], grant: ["log.view"], revoke: [] });
+    expect(getRole(clerk.users.user_free)).toBe("admin");
   });
 
   it("users/export hides billing columns from a regular admin", async () => {
@@ -196,6 +227,8 @@ describe("admin data exposure", () => {
   // the subject) and the in-app reset OTP (in html_content). Any regular
   // admin can read them and sign in as any user - including super admins.
   it("[H1] a regular admin can't read one-time codes from the email log (list view)", async () => {
+    // An admin who can see the Email log (emails.view), but not finances
+    clerk.users.user_admin.publicMetadata = { role: "admin", admin: { roles: ["user-management"], grant: [], revoke: [] } };
     clerk.signIn("user_admin");
     const res = await call(file(), "GET");
     expect(res.status).toBe(200);
@@ -205,12 +238,19 @@ describe("admin data exposure", () => {
   });
 
   it("[H1] a regular admin can't read one-time codes from the email log (?id= preview)", async () => {
+    clerk.users.user_admin.publicMetadata = { role: "admin", admin: { roles: ["user-management"], grant: [], revoke: [] } };
     clerk.signIn("user_admin");
     const mod = await import(/* @vite-ignore */ file());
     for (const id of ["em_1", "em_2"]) {
       const res = await mod.GET(makeRequest(`/api/admin/emails?id=${id}`), { params: Promise.resolve({}) });
       expect(JSON.stringify(await readJson(res)), id).not.toContain(OTP);
     }
+  });
+
+  it("an admin without the Email log permission can't open it", async () => {
+    // export, invite and effects only: no emails.view
+    clerk.signIn("user_admin");
+    expect((await call(file(), "GET")).status).toBe(403);
   });
 
   it.fails("[L1] the per-user activity view doesn't return the CLI token hash", async () => {

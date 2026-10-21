@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 import { markUserFree } from "@/lib/pro-access";
@@ -16,7 +16,7 @@ import { CANCEL_SCHEDULED_KEY } from "@/lib/subscription-events";
 const ENDED = new Set(["cancelled", "completed", "expired"]);
 
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.manage"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -1,15 +1,17 @@
 // Emails that carry a one-time sign-in or reset code. The code must never be
 // readable from the sent_emails log: anyone who can open the admin email log
 // could start a sign-in for any address, read the code there and sign in as
-// that user (security audit H1). Add new code-bearing email types here.
+// that user (security audit H1). Add new code-bearing email types here - and any email
+// that carries a password ("account_credentials": an account an admin created).
 export const ONE_TIME_CODE_EMAIL_TYPES = new Set([
   "verification_code",
   "reset_password_code",
   "password_reset_otp",
   "magic_link",
+  "account_credentials",
 ]);
 
-export const REDACTED_BODY_NOTE = "Hidden: this email contained a one-time code.";
+export const REDACTED_BODY_NOTE = "Hidden: this email contained a sign-in code or password.";
 
 // Codes are 4-8 digits (Clerk and our reset OTP both send 6)
 const CODE_PATTERN = /\d{4,8}/g;

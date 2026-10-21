@@ -52,12 +52,14 @@ export function ToastViewport({ toast, onDismiss, position = "top-right" }) {
       className={`fixed z-100000 w-[min(22rem,calc(100vw-2rem))] transition-all duration-300 ${
         position === "bottom-center"
           ? "bottom-6 left-1/2 -translate-x-1/2"
-          : "top-6 right-6"
+          : position === "bottom-right"
+            ? "bottom-6 right-6 max-md:right-4"
+            : "top-6 right-6 max-md:right-4"
       } ${
         toast
           ? "translate-y-0 opacity-100"
           : `pointer-events-none opacity-0 ${
-              position === "bottom-center" ? "translate-y-3" : "-translate-y-3"
+              position.startsWith("bottom") ? "translate-y-3" : "-translate-y-3"
             }`
       }`}
     >
@@ -65,11 +67,20 @@ export function ToastViewport({ toast, onDismiss, position = "top-right" }) {
         <div
           key={toast.id}
           role="status"
-          className="pointer-events-auto flex items-start gap-3  border border-white/15 bg-background/95 px-5 py-4 shadow-2xl backdrop-blur-lg"
+          // tone "error": a failed action, in the danger colour
+          className={`pointer-events-auto flex items-start gap-3  border bg-background/95 px-5 py-4 shadow-2xl backdrop-blur-lg ${
+            toast.tone === "error" ? "border-danger/50" : "border-white/15"
+          }`}
         >
           <div className="min-w-0 flex-1">
             {toast.title && (
-              <p className="text-sm font-medium text-white">{toast.title}</p>
+              <p
+                className={`text-sm font-medium ${
+                  toast.tone === "error" ? "text-danger" : "text-white"
+                }`}
+              >
+                {toast.title}
+              </p>
             )}
 
             {toast.description && (

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 import { applyRefund } from "@/lib/refunds";
@@ -14,7 +14,7 @@ import { applyRefund } from "@/lib/refunds";
 // refunded. A partial refund changes nothing else.
 //   { paymentId, amount? } - amount in paise / cents; the whole remainder when left out
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.manage"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

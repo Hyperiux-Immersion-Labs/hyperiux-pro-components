@@ -4,9 +4,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange, TOOLBAR } from "@/components/Dashboard/DashboardUI";
 import { COLUMN_ITEMS, SlidingSegment } from "@/components/ui/SlidingSegment";
-import { Bar } from "@/components/Dashboard/DashboardSkeletons";
+import { Bar, ToolbarBars } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
 import Button from "@/homepage/components/Button";
 import { CARD_LAYOUT_TRANSITION, EffectCard } from "@/app/(app)/(workspace)/effects/EffectCard";
@@ -112,11 +112,7 @@ export default function SavedEffectsPage() {
           {/* the count and the filters, then cards: cover, title, category line */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <Bar type="type-h3" className="w-32" />
-            <div className="flex gap-[calc(var(--cvw)*0.7)]">
-              <Bar className="h-9.5 w-44" />
-              <Bar className="h-9.5 w-[calc(var(--cvw)*13)] max-lg:w-48" />
-              <Bar className="h-9.5 w-20 max-lg:hidden" />
-            </div>
+            <ToolbarBars segment menus={2} />
           </div>
           <div className={`flex flex-wrap ${EFFECT_GRID}`}>
             {Array.from({ length: cols * 2 }, (_, i) => (
@@ -139,7 +135,7 @@ export default function SavedEffectsPage() {
           {/* tier, sort, saved date and columns - the effects listing's controls */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <FilteredCount shown={shown.length} total={rows.length} noun="saved" />
-            <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
+            <div className={TOOLBAR}>
               <SlidingSegment label="Tier" items={TIERS} value={tier} onChange={setTier} itemClassName="w-14" />
               {categoryChips.length > 1 && (
                 <FilterMenu

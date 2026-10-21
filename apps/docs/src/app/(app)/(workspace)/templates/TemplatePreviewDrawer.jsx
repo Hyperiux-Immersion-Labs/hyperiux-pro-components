@@ -154,7 +154,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
     };
   }, [open, onClose]);
   // The page stays still behind it (shared with any modal opened on top)
-  useLenisLock(open);
+  useLenisLock(open, { onScreen: Boolean(shown) });
 
   // The page scrollbar stays hidden while the drawer is on screen, including its close animation.
   const onScreen = !!shown;

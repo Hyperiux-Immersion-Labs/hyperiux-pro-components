@@ -74,7 +74,8 @@ function PlanColumn({ tier, interval, currency, onSwitchToYearly }) {
 }
 
 export default function UpgradeToProModal({ open, onClose, reason = "pro-effect", isIndia }) {
-  useLenisLock(open);
+  // It fades out over 300ms: the page scrollbar comes back once it's gone
+  useLenisLock(open, { closeMs: 300 });
   const [mounted, setMounted] = useState(false);
   const [interval, setBillingInterval] = useState("yearly");
   const currency = useCurrency(isIndia === undefined ? undefined : isIndia ? "INR" : "USD");
@@ -113,6 +114,7 @@ export default function UpgradeToProModal({ open, onClose, reason = "pro-effect"
         aria-modal="true"
         aria-labelledby="upgrade-to-pro-title"
         onClick={(event) => event.stopPropagation()}
+        data-lenis-prevent
         className={`relative flex max-h-[90vh] w-[52vw] flex-col gap-[1.6vw] overflow-y-auto border border-foreground/20 bg-background p-10 text-foreground shadow-2xl transition-transform duration-300 max-lg:w-[85%] max-lg:p-7 max-md:w-full max-md:gap-[6vw] max-md:p-6 ${
           open ? "scale-100" : "scale-95"
         }`}

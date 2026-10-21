@@ -226,14 +226,15 @@ export const clerk = {
   },
 };
 
-export function makeUser(id, { email = `${id}@example.test`, role, plan, privateMetadata = {} } = {}) {
+export function makeUser(id, { email = `${id}@example.test`, role, admin, plan, privateMetadata = {} } = {}) {
   return {
     id,
     firstName: id,
     fullName: id,
     primaryEmailAddressId: `email_${id}`,
     emailAddresses: [{ id: `email_${id}`, emailAddress: email, verification: { status: "verified" } }],
-    publicMetadata: { ...(role ? { role } : {}), ...(plan ? { plan } : {}) },
+    // admin: { roles, grant, revoke } - an admin's access (lib/admin-permissions)
+    publicMetadata: { ...(role ? { role } : {}), ...(admin ? { admin } : {}), ...(plan ? { plan } : {}) },
     privateMetadata,
     unsafeMetadata: {},
   };

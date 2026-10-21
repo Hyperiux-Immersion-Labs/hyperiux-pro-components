@@ -2,7 +2,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertAdmin } from "@/lib/admin";
+import { can, getRole, requireAdminAccess } from "@/lib/admin";
 import { getEffectMetadata } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import {
@@ -38,9 +38,13 @@ async function findUser(clerk, slug, clerkUserId) {
 }
 
 export async function GET(request, { params }) {
-  if (!(await assertAdmin())) {
+  const access = await requireAdminAccess();
+  if (!access) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  // Payments, spend and the subscription's billing need finance.view, like revenue - left
+  // out of the response otherwise, not just hidden on the page
+  const showBilling = can(access, "finance.view");
 
   const { userSlug } = await params;
 
@@ -83,43 +87,42 @@ export async function GET(request, { params }) {
       return q;
     }
 
+    // No billing rows without finance.view: nothing to leak
+    const nothing = Promise.resolve({ data: [], error: null });
+    const inWindow = (row) => (!startISO || row.created_at >= startISO) && (!endISO || row.created_at < endISO);
+
     const [
       { data: subscriptionRow, error: subscriptionError },
-      { data: invoiceRows, error: invoicesError },
-      { data: templatePurchaseRows, error: templatePurchasesError },
+      { data: allInvoiceRows, error: invoicesError },
+      { data: allTemplatePurchaseRows, error: templatePurchasesError },
       { data: savedRows, error: savedError },
       installs,
       sanityEntries,
     ] = await Promise.all([
       supabase
         .from("subscriptions")
-        .select(
-          "plan,status,billing_interval,current_period_end,razorpay_subscription_id,cli_token_hash,cli_token_revoked_at,cli_token_last_used_at,created_at"
-        )
+        .select("plan,status,billing_interval,current_period_end,razorpay_subscription_id,cli_token_hash,cli_token_revoked_at,cli_token_last_used_at,created_at")
         .eq("clerk_user_id", userId)
         .maybeSingle(),
 
-      scoped(
-        supabase
-          .from("invoices")
-          .select("id,amount,currency,status,plan_label,invoice_url,razorpay_payment_id,is_test,created_at")
-          .eq("clerk_user_id", userId)
-          // Real payments only - matches api/admin/invoices/route.js. Test
-          // invoices (admin-seeded sample bills) don't belong in a user's
-          // real billing history.
-          .eq("is_test", false)
-          .order("created_at", { ascending: false })
-      ),
+      // Every payment, not just the window's: "Lifetime spend" is all of it, and the
+      // payments list is narrowed to the window below. Real payments only (no test mode).
+      showBilling
+        ? supabase
+            .from("invoices")
+            .select("id,amount,currency,status,plan_label,invoice_url,razorpay_payment_id,is_test,created_at")
+            .eq("clerk_user_id", userId)
+            .eq("is_test", false)
+            .order("created_at", { ascending: false })
+        : nothing,
 
-      scoped(
-        supabase
-          .from("template_purchases")
-          .select("id,template_slug,razorpay_payment_id,amount,currency,status,invoice_url,created_at")
-          .eq("clerk_user_id", userId)
-          // Real purchases only, like the invoices above
-          .eq("is_test", false)
-          .order("created_at", { ascending: false })
-      ),
+      // Every admin sees which templates they own; amounts and receipts are stripped below
+      supabase
+        .from("template_purchases")
+        .select("id,template_slug,razorpay_payment_id,amount,currency,status,source,invoice_url,created_at")
+        .eq("clerk_user_id", userId)
+        .eq("is_test", false)
+        .order("created_at", { ascending: false }),
 
       scoped(
         supabase
@@ -143,6 +146,9 @@ export async function GET(request, { params }) {
       console.error("ADMIN_ACTIVITY_USER_ERROR:", userId, firstError);
       return NextResponse.json({ error: "Failed to load user activity" }, { status: 500 });
     }
+
+    const invoiceRows = (allInvoiceRows || []).filter(inWindow);
+    const templatePurchaseRows = (allTemplatePurchaseRows || []).filter(inWindow);
 
     const sanityEffectsBySlug = new Map(
       buildEffectsFromSanity(sanityEntries).map((effect) => [effect.name, effect])
@@ -209,8 +215,10 @@ export async function GET(request, { params }) {
     // subscription invoices AND one-time template purchases, since both are
     // real money this user actually spent - "Lifetime Spend" excluding
     // template purchases entirely was the other half of that same report.
-    const paidInvoices = (invoiceRows || []).filter((row) => row.status === "paid" && !row.is_test);
-    const paidTemplatePurchases = (templatePurchaseRows || []).filter((row) => row.status === "paid");
+    // Lifetime: every payment they've made, whatever the page's window. Credit redemptions
+    // moved no money, so they aren't spend.
+    const paidInvoices = (allInvoiceRows || []).filter((row) => row.status === "paid" && !row.is_test);
+    const paidTemplatePurchases = (allTemplatePurchaseRows || []).filter((row) => row.status === "paid" && row.source !== "credit" && typeof row.amount === "number");
 
     const lifetimeSpendByCurrencyMap = {};
     for (const row of paidInvoices) {
@@ -247,7 +255,9 @@ export async function GET(request, { params }) {
     // just the slug/title pair templatePurchases carries - the "Purchased
     // Templates" slider below renders these as real TemplateCards, same as
     // the Saved/Copied/Installed Effects sliders above it do for effects.
+    // Owned now: refunded purchases no longer count
     const purchasedTemplates = (templatePurchaseRows || [])
+      .filter((row) => row.status === "paid")
       .map((row) => getTemplateBySlug(row.template_slug))
       .filter(Boolean);
 
@@ -260,7 +270,8 @@ export async function GET(request, { params }) {
         imageUrl: clerkUser.hasImage ? clerkUser.imageUrl : null, // a real photo, not Clerk's placeholder
         joinedAt: clerkUser.createdAt,
         lastSignInAt: clerkUser.lastSignInAt,
-        isAdmin: clerkUser.publicMetadata?.role === "admin",
+        // Admin or super admin (lib/admin getRole)
+        isAdmin: getRole(clerkUser) !== null,
       },
       session: latestSession
         ? {
@@ -272,19 +283,34 @@ export async function GET(request, { params }) {
             country: latestSession.latestActivity?.country || null,
           }
         : null,
-      subscription: subscriptionRow || null,
+      // The plan for everyone; billing ids and dates, and the token's hash, never leave here -
+      // only whether a CLI token is live
+      subscription: subscriptionRow
+        ? {
+            plan: subscriptionRow.plan,
+            status: subscriptionRow.status,
+            billing_interval: subscriptionRow.billing_interval,
+            current_period_end: subscriptionRow.current_period_end,
+            created_at: subscriptionRow.created_at,
+            hasCliToken: Boolean(subscriptionRow.cli_token_hash && !subscriptionRow.cli_token_revoked_at),
+            cli_token_last_used_at: subscriptionRow.cli_token_last_used_at,
+            ...(showBilling && { razorpay_subscription_id: subscriptionRow.razorpay_subscription_id }),
+          }
+        : null,
+      // Whether payments and spend were sent (finance.view) - the page hides them otherwise
+      showBilling,
       stats: {
         savedCount: (savedRows || []).length,
         // Installs (one effect, one day) and how many by each source
         installCount: installRows.length,
         installsBySource: Object.fromEntries(INSTALL_SOURCES.map((source) => [source, installRows.filter((row) => row.source === source).length])),
-        lifetimeSpendByCurrency,
+        ...(showBilling && { lifetimeSpendByCurrency }),
       },
       installTrend,
       savedEffects,
       installedEffects,
-      invoices: invoiceRows || [],
-      templatePurchases,
+      invoices: showBilling ? invoiceRows : [],
+      templatePurchases: showBilling ? templatePurchases : [],
       purchasedTemplates,
     });
   } catch (error) {

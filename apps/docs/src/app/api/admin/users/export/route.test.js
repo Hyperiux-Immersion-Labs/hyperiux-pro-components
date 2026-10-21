@@ -11,7 +11,8 @@ vi.mock("@clerk/nextjs/server", () => ({
     users: {
       getUser: vi.fn(async () => ({
         id: "user_viewer",
-        publicMetadata: { role: viewerRole },
+        // "admin": a regular admin who may export (User Management)
+        publicMetadata: viewerRole === "admin" ? { role: "none", admin: { roles: ["user-management"], grant: [], revoke: [] } } : { role: viewerRole },
         emailAddresses: [],
       })),
       getUserList: vi.fn(async ({ userId, query }) => {
@@ -132,6 +133,24 @@ describe("admin/users/export route", () => {
 
     expect(lines[0]).toBe("Name,Email,Joined At,Plan,Role");
     expect(lines[1]).toBe("Ada Lovelace,ada@example.com,2026-01-01T00:00:00.000Z,Free,none");
+  });
+
+  it("writes a name that looks like a formula as plain text", async () => {
+    viewerRole = "admin";
+    subscriptionRows = [{ clerk_user_id: "user_x", plan: "free", status: "inactive", created_at: "2026-01-01T00:00:00.000Z" }];
+    clerkUsersById = {
+      user_x: {
+        id: "user_x",
+        firstName: '=HYPERLINK("https://evil.example","Click")',
+        emailAddresses: [{ emailAddress: "x@example.com" }],
+        createdAt: "2026-01-01T00:00:00.000Z",
+        publicMetadata: {},
+      },
+    };
+
+    const lines = (await (await GET(makeRequest())).text()).trim().split("\r\n");
+
+    expect(lines[1].startsWith(`"'=HYPERLINK(`)).toBe(true);
   });
 
   it("500s when loading the user list fails, without throwing", async () => {

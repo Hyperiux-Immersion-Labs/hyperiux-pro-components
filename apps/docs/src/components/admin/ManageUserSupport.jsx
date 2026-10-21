@@ -2,20 +2,35 @@
 
 import { useEffect, useState } from "react";
 import { DetailRows } from "@/components/Dashboard/DashboardUI";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { Confirm, LINE_BUTTON, PANEL_CARD, timeAgo } from "@/components/admin/drawerUI";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { TEMPLATES } from "@/lib/mock-templates";
 import { getDashboardPreview, sampleAdminSupport } from "@/lib/dev/dashboardPreview";
 
-// The Manage drawer's Support section (super admins): template credits, giving a template,
-// extra installs for today, and private notes on the account. Every change asks first and
+// The Manage drawer's Support section: template credits, giving a template, extra installs
+// for today, and private notes on the account. Every admin sees the figures; changing them
+// and the notes need users.support (lib/admin-permissions). Every change asks first and
 // lands in the admin audit log (History); notes live there too.
 
 const FIELD = "type-body bg-foreground/5 px-3 py-2 text-foreground ring-1 ring-inset ring-foreground/20 outline-none placeholder:text-foreground/40 focus:ring-primary";
 const TEMPLATE_TITLES = Object.fromEntries(TEMPLATES.map((template) => [template.slug, template.title]));
 
-/** `post(url, body)` posts as the drawer does (throws the API's error); `onChanged()` refreshes History. */
-export function SupportSection({ user, post, onChanged, onBusyChange }) {
+// What a failed action says, by the action
+const FAILED = {
+  credits: "Couldn’t Change Credits",
+  template: "Couldn’t Give the Template",
+  installs: "Couldn’t Change Extra Installs",
+  note: "Couldn’t Save the Note",
+};
+
+/**
+ * `post(url, body)` posts as the drawer does (throws the API's error); `onChanged()` refreshes
+ * History; `notify(toast)` says how an action went (the drawer's toast).
+ */
+export function SupportSection({ user, post, notify, onChanged, onBusyChange }) {
+  const { can } = useDashboard();
+  const canManage = can("users.support");
   const [data, setData] = useState(null);
   const [notes, setNotes] = useState(null);
   const [reload, setReload] = useState(0);
@@ -23,7 +38,6 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
   const [pending, setPending] = useState(null);
   const [busy, setBusy] = useState(null);
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
 
   const [creditDelta, setCreditDelta] = useState("1");
   const [creditReason, setCreditReason] = useState("");
@@ -44,7 +58,8 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
     const get = (url) => fetch(url, { cache: "no-store" }).then((res) => (res.ok ? res.json() : Promise.reject(new Error("load"))));
     Promise.all([
       get(`/api/admin/users/support?clerkUserId=${encodeURIComponent(user.id)}`),
-      get(`/api/admin/audit?userId=${encodeURIComponent(user.id)}&action=note.add&limit=10`),
+      // Notes are for whoever can add them
+      canManage ? get(`/api/admin/audit?userId=${encodeURIComponent(user.id)}&action=note.add&limit=10`) : Promise.resolve({ entries: [] }),
     ])
       .then(([support, log]) => {
         if (!active) return;
@@ -55,7 +70,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
     return () => {
       active = false;
     };
-  }, [user.id, reload]);
+  }, [user.id, reload, canManage]);
 
   // The drawer stays open while a change is in flight
   useEffect(() => {
@@ -63,17 +78,18 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
     return () => onBusyChange?.(false);
   }, [busy, onBusyChange]);
 
+  // `work` makes the change and returns the toast saying it's done
   async function run(kind, work) {
     setBusy(kind);
     setError("");
-    setNotice("");
     try {
-      setNotice(await work());
+      notify(await work());
       setPending(null);
       setReload((n) => n + 1);
       onChanged?.();
     } catch (err) {
       setError(err.message);
+      notify({ title: FAILED[kind], description: err.message, tone: "error" });
     } finally {
       setBusy(null);
     }
@@ -92,18 +108,20 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
 
   return (
     <section aria-labelledby="manage-support-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
-      <h3 id="manage-support-h" className="type-h3">
-        Support
-      </h3>
+      <div className="flex flex-col gap-1">
+        <h3 id="manage-support-h" className="type-h3">
+          Support
+        </h3>
+        <p className="type-small text-foreground/80">
+          {canManage
+            ? "You can add or remove template credits, give a template free, allow extra installs for today and leave notes for the team. Each change asks first and is logged."
+            : "Their credits, templates and installs today. Changing them needs the Support permission."}
+        </p>
+      </div>
 
       {error && (
         <p role="alert" className="type-small bg-danger/15 px-4 py-3 text-danger">
           {error}
-        </p>
-      )}
-      {notice && (
-        <p role="status" className="type-small bg-primary/15 px-4 py-3 text-foreground">
-          {notice}
         </p>
       )}
 
@@ -123,6 +141,8 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
             ]}
           />
 
+          {canManage && (
+          <>
           {/* credits */}
           <div className="flex flex-col gap-3">
             <p className="type-label text-foreground/80">Template credits</p>
@@ -135,7 +155,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                   run("credits", async () => {
                     const json = await post("/api/admin/users/credits", { clerkUserId: user.id, delta, reason: creditReason });
                     setCreditReason("");
-                    return `Done. They have ${json.credits} credit${json.credits === 1 ? "" : "s"} now.`;
+                    return { title: delta > 0 ? "Credits Added" : "Credits Removed", description: `${name} has ${json.credits} template credit${json.credits === 1 ? "" : "s"} now.` };
                   })
                 }
               />
@@ -166,7 +186,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                     setTemplateReason("");
                     const given = TEMPLATE_TITLES[chosen];
                     setTemplateSlug("");
-                    return `${given} is theirs now.`;
+                    return { title: "Template Given", description: `${given} is ${name}’s now: the source and Figma file are unlocked.` };
                   })
                 }
               />
@@ -201,7 +221,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                   onConfirm={() =>
                     run("installs", async () => {
                       await post("/api/admin/users/install-bonus", { clerkUserId: user.id, extra: extraTotal });
-                      return `Done: ${extraTotal} extra today.`;
+                      return { title: "Extra Installs Allowed", description: `${name} has ${extraTotal} extra install${extraTotal === 1 ? "" : "s"} today, until midnight UTC.` };
                     })
                   }
                 />
@@ -218,7 +238,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                       onClick={() =>
                         run("installs", async () => {
                           await post("/api/admin/users/install-bonus", { clerkUserId: user.id, extra: 0 });
-                          return "Today’s extra installs removed.";
+                          return { title: "Extra Installs Removed", description: `${name} is back to the usual daily limit.` };
                         })
                       }
                       className="type-small cursor-pointer text-foreground/80 underline underline-offset-3 hover:text-primary"
@@ -242,7 +262,7 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
                 run("note", async () => {
                   await post("/api/admin/users/notes", { clerkUserId: user.id, body: note });
                   setNote("");
-                  return "Note saved.";
+                  return { title: "Note Saved", description: "It’s at the top of the notes, for the team only." };
                 })
               }
               className={LINE_BUTTON}
@@ -262,6 +282,8 @@ export function SupportSection({ user, post, onChanged, onBusyChange }) {
               </ul>
             )}
           </div>
+          </>
+          )}
         </>
       )}
     </section>

@@ -25,11 +25,11 @@ import { FREE_LABEL } from "@/lib/library-counts";
 // flow as an admin-sent waitlist invite.
 
 const SESSION_KEY = "hyperiux_exit_intent_shown";
-// A visitor who bounces within the first minute hasn't actually engaged with
-// the page yet - showing an invite popup to them reads as an ambush, not an
-// offer. Arming only after 60s of real time on the page means a genuine exit
-// attempt still triggers instantly (the listener is fully armed by then),
-// it's just not listening at all during that first minute.
+// A visitor who bounces early hasn't actually engaged with the page yet -
+// showing an invite popup to them reads as an ambush, not an offer. It arms
+// only after 45s with the tab actually in front of them: time in a background
+// tab doesn't count (the countdown pauses while the tab is hidden and picks up
+// where it left off). Once armed, a genuine exit attempt triggers instantly.
 const ARM_DELAY_MS = 45000;
 // Was 0 - required event.clientY to be exactly <=0 at the moment
 // `mouseleave` fired, which real cursor movement (sampled, not continuous)
@@ -67,8 +67,7 @@ export function ExitIntentInviteModal() {
     pathname.startsWith("/dashboard") || pathname.startsWith("/template-demo") || pathname.startsWith("/demo")
   const isEligibleRoute = !isExcludedRoute;
 
-  // Arms after a short delay (so a visitor who bounces in the first few
-  // seconds doesn't get ambushed instantly) and only once per tab session -
+  // Arms after 45s of visible time (ARM_DELAY_MS) and only once per tab session -
   // sessionStorage, not localStorage, so it's fair game again on a fresh
   // visit later, just not spammed across repeated mouse-out flicks in one visit.
   // Mounted globally (see the note above), so this also has to bail out on
@@ -79,10 +78,29 @@ export function ExitIntentInviteModal() {
     if (!isEligibleRoute) return;
     if (window.sessionStorage.getItem(SESSION_KEY) === "1") return;
 
-    const armTimer = window.setTimeout(() => {
-      setArmed(true);
-    }, ARM_DELAY_MS);
-    return () => window.clearTimeout(armTimer);
+    // Counts only while the tab is visible: hidden pauses it, visible resumes it
+    let remaining = ARM_DELAY_MS;
+    let startedAt = 0;
+    let armTimer = 0;
+    const resume = () => {
+      if (armTimer || document.visibilityState !== "visible") return;
+      startedAt = Date.now();
+      armTimer = window.setTimeout(() => setArmed(true), remaining);
+    };
+    const pause = () => {
+      if (!armTimer) return;
+      window.clearTimeout(armTimer);
+      armTimer = 0;
+      remaining = Math.max(0, remaining - (Date.now() - startedAt));
+    };
+    const onVisibility = () => (document.visibilityState === "visible" ? resume() : pause());
+
+    resume();
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      pause();
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [isEligibleRoute]);
 
   useEffect(() => {

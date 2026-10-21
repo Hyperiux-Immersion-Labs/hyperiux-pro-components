@@ -10,7 +10,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 // Same hover-action slide and button style as the effect cards.
 import { CARD_BTN } from "../effects/EffectCard";
 import { useTemplatePurchase } from "./useTemplatePurchase";
-import { BADGE, DISPLAY, PRICE, T11, T13, T14, T20, catalogueLabel, catalogueOf, priceOf } from "./tokens";
+import { BADGE, DISPLAY, PRICE, T11, T13, T14, T18, T20, catalogueLabel, catalogueOf, priceOf } from "./tokens";
 
 // The effect cards' action slide (EffectCard ACTION_SLIDE), but triggered by the whole
 // card (group/card) rather than just the shot. A named group, so the Buy Button - which
@@ -35,7 +35,10 @@ const formatViews = (n) => (n >= 1000 ? new Intl.NumberFormat("en", { notation: 
  * no button inside an <a>.
  */
 // small: no hover actions (save, live demo, article) - e.g. the detail page's "More templates".
-export function TemplateCard({ template, priority = false, isWishlisted = false, onToggleWishlist, onOpen, hasAccess = false, small = false }) {
+// compact: laid out like a plain effect card (EffectCard `plain`) - no frame, padding,
+// hover lift or tech tags; the shot at the effects' ratio, then title and category on one
+// line. No price, description or Buy (an admin looking at what someone owns).
+export function TemplateCard({ template, priority = false, isWishlisted = false, onToggleWishlist, onOpen, hasAccess = false, small = false, compact = false }) {
   const [imageError, setImageError] = useState(false);
   const { buy, modals } = useTemplatePurchase();
 
@@ -81,10 +84,16 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
     // The whole card comes a touch towards the viewer with a soft shadow on hover. No
     // `group` here: Buy (Button) animates on any `.group:hover` above it, so it would
     // play whenever the card was hovered - it should only react to its own hover.
-    <article className="group/card flex flex-col gap-[calc(var(--cvw)*1.1)] bg-foreground p-[calc(var(--cvw)*1.1)] transition-[transform,box-shadow] duration-500 transform-[perspective(1200px)_translateZ(0)] hover:transform-[perspective(1200px)_translateZ(1vw)] hover:shadow-float max-lg:gap-4 max-lg:p-4 max-md:p-3.5">
+    <article
+      className={
+        compact
+          ? "group/card flex flex-col gap-[calc(var(--cvw)*1)] max-md:gap-[3.5vw]"
+          : "group/card flex flex-col gap-[calc(var(--cvw)*1.1)] bg-foreground p-[calc(var(--cvw)*1.1)] transition-[transform,box-shadow] duration-500 transform-[perspective(1200px)_translateZ(0)] hover:transform-[perspective(1200px)_translateZ(1vw)] hover:shadow-float max-lg:gap-4 max-lg:p-4 max-md:p-3.5"
+      }
+    >
       {/* Over the shot only (group/preview): the page inside pans down and the action
           buttons slide up into it. */}
-      <div onPointerLeave={setResetDuration} className="group/preview relative aspect-16/10 overflow-hidden bg-black/10">
+      <div onPointerLeave={setResetDuration} className={`group/preview relative overflow-hidden bg-black/10 ${compact ? "aspect-[16/8.6]" : "aspect-16/10"}`}>
         <ShotTarget href={href} onOpen={onOpen && (() => onOpen(template))} label={template.title}>
           {/* pans down the page only while the cursor is over the image (not the text
               below), then eases back to the top when it leaves */}
@@ -116,7 +125,7 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
           </span>
 
           {/* tech tags, bottom left; hidden on phones */}
-          {(template.tags || []).length > 0 && (
+          {(template.tags || []).length > 0 && !compact && (
             <span className="pointer-events-none absolute bottom-3 left-3 z-1 flex max-w-[55%] flex-wrap gap-1 max-md:hidden">
               {template.tags.map((tag) => (
                 <span key={tag} className={`inline-flex items-center bg-background/80 px-1.5 py-0.5 font-avenir ${T11} text-foreground/85 backdrop-blur-lg`}>
@@ -161,6 +170,17 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
         )}
       </div>
 
+      {compact ? (
+        // title on the left, category on the right - as an effect card
+        <div className="flex items-center justify-between gap-[calc(var(--cvw)*0.8)] max-md:gap-[3vw]">
+          <h4 className={`${T18} min-w-0 truncate`}>
+            <Link href={href} prefetch={false} className="transition-colors duration-500 hover:text-primary">
+              {template.title}
+            </Link>
+          </h4>
+          <p className={`shrink-0 ${T14} text-black/60`}>{template.category}</p>
+        </div>
+      ) : (
       <div className="flex flex-col gap-[calc(var(--cvw)*1.1)] max-lg:gap-4">
         {/* title + category / views on the left, price + "or 1 credit" on the right */}
         <div className="flex items-start justify-between gap-3">
@@ -212,6 +232,7 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
           )}
         </div>
       </div>
+      )}
 
       {modals}
     </article>

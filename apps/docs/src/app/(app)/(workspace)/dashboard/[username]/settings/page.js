@@ -624,7 +624,8 @@ export default function SettingsPage() {
                 aria-modal="true"
                 aria-labelledby="delete-h"
                 onClick={(event) => event.stopPropagation()}
-                className="relative flex w-[35vw] flex-col gap-6 border border-white/20 bg-background p-10 text-foreground shadow-2xl max-lg:w-[70%] max-lg:p-6 max-md:w-full"
+                data-lenis-prevent
+                className="relative flex max-h-[80svh] w-[35vw] flex-col gap-6 overflow-y-auto overscroll-contain border border-white/20 bg-background p-10 text-foreground shadow-2xl max-lg:w-[70%] max-lg:p-6 max-md:w-full"
               >
                 <button
                   type="button"

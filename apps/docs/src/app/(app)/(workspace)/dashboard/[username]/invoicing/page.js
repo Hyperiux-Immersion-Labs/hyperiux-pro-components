@@ -4,7 +4,7 @@ import { useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { CARD, CARD_PAD, DetailRows, EMPTY_TABLE, TextButton } from "@/components/Dashboard/DashboardUI";
+import { CARD, CARD_PAD, DetailRows, EMPTY_TABLE, PaymentsTable, TextButton } from "@/components/Dashboard/DashboardUI";
 import { Bar, ButtonBar, SkeletonCard, useAccountHint } from "@/components/Dashboard/DashboardSkeletons";
 import { refreshDashboard, useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { Modal } from "@/components/ui/SignInRequiredModal";
@@ -317,35 +317,7 @@ export default function InvoicingPage() {
         {receipts.length === 0 ? (
           <p className={EMPTY_TABLE}>No payments yet. Your receipts show up here once a payment goes through.</p>
         ) : (
-          <div className="flex flex-col">
-            <div className="type-label flex items-center gap-4 border-b border-black/10 pb-3 text-black/60 max-md:hidden">
-              <span className="w-[18%]">Date</span>
-              <span className="flex-1 text-center">Description</span>
-              <span className="w-[14%] text-center">Amount</span>
-              <span className="w-[12%] text-center">Status</span>
-              <span className="w-16 text-right">Receipt</span>
-            </div>
-            {receipts.map((receipt) => (
-              <div key={receipt.id} className="flex items-center gap-4 border-b border-black/10 py-[calc(var(--cvw)*0.8)] last:border-b-0 max-lg:py-3 max-md:flex-wrap max-md:gap-x-4 max-md:gap-y-1">
-                <span className="type-small w-[18%] text-black/60 max-md:order-2 max-md:w-auto ">{formatDate(receipt.date)}</span>
-                <span className="type-body min-w-0 flex-1 max-md:order-1 max-md:w-full max-md:flex-none text-center">{receipt.description}</span>
-                <span className="type-body w-[14%] text-center font-aeonik max-md:order-3 max-md:w-auto">{receipt.amount}</span>
-                <span className="type-small inline-flex w-[12%] items-center justify-center gap-1.5 capitalize max-md:order-4 max-md:w-auto">
-                  <span aria-hidden="true" className={`size-1.5 rounded-full ${receipt.status === "paid" || receipt.status === "redeemed" ? "bg-primary" : "bg-black/20"}`} />
-                  {receipt.status || "unknown"}
-                </span>
-                <span className="w-16 text-right max-md:order-5 max-md:ml-auto max-md:w-auto">
-                  {receipt.url ? (
-                    <a href={receipt.url} target="_blank" rel="noopener noreferrer" className="type-small text-ink underline underline-offset-3 transition-colors duration-300 hover:text-primary">
-                      View
-                    </a>
-                  ) : (
-                    <span className="type-small text-black/20">—</span>
-                  )}
-                </span>
-              </div>
-            ))}
-          </div>
+          <PaymentsTable rows={receipts} />
         )}
       </section>
     </div>

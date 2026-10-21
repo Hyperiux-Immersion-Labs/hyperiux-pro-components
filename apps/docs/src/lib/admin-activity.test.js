@@ -20,9 +20,18 @@ describe("comparisonWindows", () => {
     expect(w.label).toBe("last 30d vs prev. 30d");
   });
 
-  it("today compares with yesterday", () => {
-    const w = comparisonWindows({ startISO: new Date(NOW - DAY / 2).toISOString(), endISO: null, range: "today", now: NOW });
-    expect(w.label).toBe("vs yesterday");
+  it("today so far compares with yesterday up to the same time", () => {
+    const midnight = NOW - DAY / 2;
+    const w = comparisonWindows({ startISO: new Date(midnight).toISOString(), endISO: null, range: "today", now: NOW });
+    expect(w.current).toEqual([midnight, NOW]);
+    expect(w.previous).toEqual([midnight - DAY, NOW - DAY]);
+    expect(w.label).toBe("vs yesterday, same time");
+  });
+
+  it("a custom range compares with the same length just before it", () => {
+    const w = comparisonWindows({ startISO: new Date(NOW - 10 * DAY).toISOString(), endISO: new Date(NOW).toISOString(), range: undefined, now: NOW });
+    expect(w.previous).toEqual([NOW - 20 * DAY, NOW - 10 * DAY]);
+    expect(w.label).toBe("vs prev. 10d");
   });
 });
 

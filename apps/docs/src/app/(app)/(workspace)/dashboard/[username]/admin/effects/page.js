@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { ArrowUpRight, RefreshCw, Search } from "lucide-react";
-import { CARD, CARD_PAD, EMPTY_TABLE, FILTER_WIDTH, Pager } from "@/components/Dashboard/DashboardUI";
+import { useRouter } from "next/navigation";
+import { ArrowUpRight, RefreshCw } from "lucide-react";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, inDateRange, Pager, resolveDateRange, SCROLL_PANEL, SearchField, TOOLBAR } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import { HEALTH_KINDS } from "@/lib/effect-health";
@@ -22,6 +24,7 @@ const SEVERITIES = [
 ];
 const DOT = { high: "bg-danger-strong", medium: "bg-primary", low: "bg-black/25" };
 const KIND_FILTERS = { all: "Every issue", ...Object.fromEntries(Object.entries(HEALTH_KINDS).map(([kind, { label }]) => [kind, label])) };
+const formatEdited = (value) => new Intl.DateTimeFormat("en", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value));
 const LINK = "type-small inline-flex items-center gap-1 text-ink underline underline-offset-3 transition-colors duration-300 hover:text-primary disabled:cursor-default disabled:opacity-50 [&_svg]:size-3.5";
 
 function RefreshButton({ path }) {
@@ -45,14 +48,25 @@ function RefreshButton({ path }) {
 }
 
 export default function AdminEffectsPage() {
+  // The tab needs effects.view (Effect health); refreshing a page needs effects.manage
+  const { path, can, accessLoaded } = useDashboard();
+  const allowed = can("effects.view");
+  const router = useRouter();
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
   const [severity, setSeverity] = useState("all");
   const [kind, setKind] = useState("all");
   const [query, setQuery] = useState("");
+  const [dates, setDates] = useState(ALL_DATES);
   const [page, setPage] = useState(0);
 
+  // Without it: back to Users rather than an empty page
   useEffect(() => {
+    if (accessLoaded && !allowed) router.replace(path("admin/users"));
+  }, [accessLoaded, allowed, router, path]);
+
+  useEffect(() => {
+    if (!allowed) return undefined;
     let active = true;
     if (getDashboardPreview()) {
       requestAnimationFrame(() => active && setData(sampleEffectHealth()));
@@ -67,18 +81,22 @@ export default function AdminEffectsPage() {
     return () => {
       active = false;
     };
-  }, []);
+  }, [allowed]);
+
+  // The picked range of days the Sanity guide was last edited in ("" = all time)
+  const { from, to } = resolveDateRange(dates);
 
   const shown = useMemo(() => {
     if (!data) return [];
     const needle = query.trim().toLowerCase();
     return data.effects
+      .filter((effect) => inDateRange(effect.updatedAt, from, to))
       .map((effect) => ({
         ...effect,
         issues: effect.issues.filter((issue) => (severity === "all" || issue.severity === severity) && (kind === "all" || issue.kind === kind)),
       }))
       .filter((effect) => effect.issues.length && (!needle || effect.title.toLowerCase().includes(needle) || effect.slug.includes(needle)));
-  }, [data, severity, kind, query]);
+  }, [data, severity, kind, query, from, to]);
 
   if (failed) {
     return (
@@ -119,19 +137,15 @@ export default function AdminEffectsPage() {
             {bySeverity.high} high · {bySeverity.medium} medium · {bySeverity.low} low. Fix the copy in Sanity, then Refresh page (publishing in Sanity refreshes it too).
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
-          <label className="type-small flex h-9.5 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary">
-            <Search className="size-3.5 shrink-0" aria-hidden="true" />
-            <span className="sr-only">Search effects</span>
-            <input value={query} onChange={(event) => reset(setQuery)(event.target.value)} placeholder="Search effects" className="w-[calc(var(--cvw)*12)] bg-transparent text-ink outline-none placeholder:text-black/40 max-lg:w-40" />
-          </label>
+        <div className={TOOLBAR}>
+          <SearchField value={query} onChange={reset(setQuery)} placeholder="Search effects" label="Search effects" />
           <FilterMenu
             tone="light"
             variant="label"
             alignRight
             label="Issue"
             widthClassName={FILTER_WIDTH}
-            panelClassName="left-auto! right-0"
+            panelClassName={SCROLL_PANEL}
             options={Object.keys(KIND_FILTERS)}
             categoryFilter={kind}
             activeFilter={kind === "all" ? null : kind}
@@ -139,6 +153,7 @@ export default function AdminEffectsPage() {
             onSelect={reset(setKind)}
           />
           <SlidingSegment label="Severity" items={SEVERITIES} value={severity} onChange={reset(setSeverity)} itemClassName="w-18" />
+          <DateRangeFilter label="Edited" value={dates} onChange={reset(setDates)} />
         </div>
       </div>
 
@@ -155,12 +170,13 @@ export default function AdminEffectsPage() {
                     {effect.slug}
                     {effect.categorySlug ? ` · ${effect.categorySlug}` : ""}
                     {effect.tier ? ` · ${effect.tier === "pro" ? "Pro" : "Free"}` : ""}
+                    {effect.updatedAt ? ` · Edited ${formatEdited(effect.updatedAt)}` : ""}
                   </span>
                 </span>
                 <span className="flex flex-wrap items-center gap-4">
                   {effect.docsUrl && (
                     <a href={effect.docsUrl} target="_blank" rel="noopener noreferrer" className={LINK}>
-                      Page
+                      View on Site
                       <ArrowUpRight aria-hidden="true" />
                     </a>
                   )}
@@ -175,7 +191,7 @@ export default function AdminEffectsPage() {
                         {effect.sanityId}
                       </span>
                     ))}
-                  {effect.docsUrl && <RefreshButton path={effect.docsUrl} />}
+                  {effect.docsUrl && can("effects.manage") && <RefreshButton path={effect.docsUrl} />}
                 </span>
               </div>
               <ul className="flex flex-col gap-1">

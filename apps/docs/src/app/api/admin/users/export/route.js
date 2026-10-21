@@ -1,7 +1,6 @@
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { displayName } from "@/lib/display-name";
 import { NextResponse } from "next/server";
-import { getRole, isSuperAdminUser } from "@/lib/admin";
+import { can, getRole, requirePermission } from "@/lib/admin";
 import { resolveDateBounds } from "@/lib/admin-activity";
 import { PLAN_LABELS, getAdminUserList, parseAudience } from "@/lib/admin-data";
 
@@ -11,12 +10,18 @@ const MAX_ROWS = 20000;
 const PLAN_OPTIONS = new Set(["pro_plus", "pro", "free", "paid"]);
 const ROLE_OPTIONS = new Set(["admin", "super_admin", "user"]);
 
+// A cell starting with = + - @ (or a tab / carriage return) is run as a formula when the
+// file is opened in Excel or Sheets, and names are whatever people typed at sign-up
+// ("=HYPERLINK(...)"). Those get a leading apostrophe, so they stay plain text.
+const FORMULA_START = /^[=+\-@\t\r]/;
+
 function csvCell(value) {
-  const str = value === null || value === undefined ? "" : String(value);
-  return /[",\n]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
+  let str = value === null || value === undefined ? "" : String(value);
+  if (FORMULA_START.test(str)) str = `'${str}`;
+  return /[",\n\r]/.test(str) ? `"${str.replace(/"/g, '""')}"` : str;
 }
 
-function toRow({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin) {
+function toRow({ clerkUser, sub, currentPlan }, seesMoney) {
   const role = getRole(clerkUser);
   const email = clerkUser.emailAddresses?.[0]?.emailAddress || "";
   const name = displayName(clerkUser) || "";
@@ -25,7 +30,7 @@ function toRow({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin) {
   // The plan they have now (an expired grant is Free)
   const base = [name, email, joinedAt ? new Date(joinedAt).toISOString() : "", PLAN_LABELS[currentPlan], role || "none"];
 
-  if (!viewerIsSuperAdmin) return base;
+  if (!seesMoney) return base;
 
   return [
     ...base,
@@ -39,17 +44,12 @@ function toRow({ clerkUser, sub, currentPlan }, viewerIsSuperAdmin) {
 }
 
 export async function GET(request) {
-  const { userId } = await auth();
-  if (!userId) {
+  // Needs users.export; the billing columns need finance.view
+  const access = await requirePermission("users.export");
+  if (!access) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
-
-  const clerk = await clerkClient();
-  const viewer = await clerk.users.getUser(userId);
-  if (getRole(viewer) === null) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-  const viewerIsSuperAdmin = isSuperAdminUser(viewer);
+  const seesMoney = can(access, "finance.view");
 
   try {
     const { searchParams } = new URL(request.url);
@@ -66,13 +66,14 @@ export async function GET(request) {
       audience: parseAudience(searchParams),
       search: searchParams.get("search") || "",
       plan: PLAN_OPTIONS.has(rawPlan) ? rawPlan : "all",
-      role: ROLE_OPTIONS.has(rawRole) ? rawRole : "all",
+      // "role:<id>": admins with one admin role (lib/admin-data getAdminUserList)
+        role: ROLE_OPTIONS.has(rawRole) || /^role:[a-z0-9-]{1,60}$/.test(rawRole) ? rawRole : "all",
       startISO,
       endISO,
     });
-    const rows = list.slice(0, MAX_ROWS).map((entry) => toRow(entry, viewerIsSuperAdmin));
+    const rows = list.slice(0, MAX_ROWS).map((entry) => toRow(entry, seesMoney));
 
-    const header = viewerIsSuperAdmin
+    const header = seesMoney
       ? [
           "Name",
           "Email",

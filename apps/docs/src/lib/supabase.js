@@ -32,12 +32,16 @@ export const supabase = createClient(
 // Supabase (PostgREST) returns at most 1000 rows per request, silently. For a
 // read that needs every row: `build` returns a fresh query (filters, no
 // .range()) and is called once per page of 1000.
+// Each page is ordered by `orderBy`, a unique column ("id" on every table except
+// subscriptions, whose key is clerk_user_id): without an ORDER BY Postgres may return
+// rows in a different order for each page, so a total over 1000 rows could count some
+// rows twice and miss others. It's added after any order the query already has.
 const PAGE_SIZE = 1000;
 
-export async function fetchAllRows(build) {
+export async function fetchAllRows(build, { orderBy = "id" } = {}) {
   const rows = [];
   for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await build().range(from, from + PAGE_SIZE - 1);
+    const { data, error } = await build().order(orderBy, { ascending: true }).range(from, from + PAGE_SIZE - 1);
     if (error) throw error;
     rows.push(...(data || []));
     if (!data || data.length < PAGE_SIZE) return rows;

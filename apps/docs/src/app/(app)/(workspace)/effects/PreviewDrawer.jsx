@@ -216,7 +216,7 @@ export function PreviewDrawer({
     };
   }, [open, onClose]);
   // The page stays still behind it (shared with any modal opened on top)
-  useLenisLock(open);
+  useLenisLock(open, { onScreen: Boolean(shown) });
 
   // The page scrollbar stays hidden for as long as the drawer is on screen - including
   // its close animation - so it only reappears once the panel has fully slid away.

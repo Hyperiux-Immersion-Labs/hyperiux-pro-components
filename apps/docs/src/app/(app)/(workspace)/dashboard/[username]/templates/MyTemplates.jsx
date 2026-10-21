@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "motion/react";
-import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange } from "@/components/Dashboard/DashboardUI";
+import { ALL_DATES, CARD, CARD_PAD, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, FilteredCount, inDateRange, resolveDateRange, TOOLBAR } from "@/components/Dashboard/DashboardUI";
 import { Bar } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
@@ -115,7 +115,7 @@ export function MyTemplates({ templates }) {
         <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-md:gap-[3vw]">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <FilteredCount shown={shown.length} total={total} noun="templates" />
-            <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
+            <div className={TOOLBAR}>
               <FilterMenu
                 tone="light"
                 variant="label"

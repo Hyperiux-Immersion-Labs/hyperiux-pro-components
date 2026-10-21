@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { currentPlanOf, fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/lib/admin-data";
 import { displayName } from "@/lib/display-name";
 import { isCancelScheduled } from "@/lib/subscription-events";
@@ -19,7 +19,7 @@ const ENDED = new Set(["cancelled", "refunded", "expired", "completed"]);
 const DAY_MS = 86_400_000;
 
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -32,7 +32,8 @@ export async function GET(request) {
             .from("subscriptions")
             .select("clerk_user_id, plan, tier, status, billing_interval, current_period_end, razorpay_subscription_id, updated_at"),
           audience
-        )
+        ),
+        { orderBy: "clerk_user_id" }
       ),
       // Each subscription's charges: the latest one is what it costs
       fetchAllRows(() =>

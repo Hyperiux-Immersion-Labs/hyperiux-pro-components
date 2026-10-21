@@ -2,7 +2,7 @@ import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
 import { recordAdminAction } from "@/lib/admin-audit";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { sendEmail } from "@/lib/resend";
 import {
   renderProUnlockedEmail,
@@ -42,7 +42,7 @@ function isRazorpayNotFound(error) {
 }
 
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.plan"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

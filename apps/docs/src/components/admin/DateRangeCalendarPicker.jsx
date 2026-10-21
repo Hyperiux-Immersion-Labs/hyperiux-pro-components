@@ -206,13 +206,15 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
   const label = fromDate ? (toDate ? `${formatDisplayDate(fromDate)} - ${formatDisplayDate(toDate)}` : formatDisplayDate(fromDate)) : placeholder;
 
   return (
-    <div ref={rootRef} className="relative inline-flex">
+    // On phones the picker takes its whole row (under the date dropdown, as wide), and the
+    // calendar opens centred under it rather than hanging off the screen's left edge
+    <div ref={rootRef} className="relative inline-flex max-md:flex max-md:w-full">
       <button
         type="button"
         onClick={() => setOpen((isOpen) => !isOpen)}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className={`flex cursor-pointer items-center gap-2 outline-none transition ${tone.trigger}`}
+        className={`flex cursor-pointer items-center gap-2 outline-none transition max-md:flex-1 ${tone.trigger}`}
       >
         <CalendarIcon className={`h-3.5 w-3.5 ${tone.icon}`} />
         <span className={fromDate ? tone.value : tone.placeholder}>{label}</span>
@@ -228,7 +230,7 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
           role="dialog"
           onMouseLeave={() => setHoverDate(null)}
           // Fades and scales in
-          className={`absolute top-full right-0 z-30 mt-2 origin-top-right animate-[hx-scale-in_0.39s_cubic-bezier(0.33,1,0.68,1)] p-4 motion-reduce:animate-none ${tone.panel}`}
+          className={`absolute top-full right-0 z-30 mt-2 origin-top-right animate-[hx-scale-in_0.39s_cubic-bezier(0.33,1,0.68,1)] p-4 motion-reduce:animate-none max-md:right-auto max-md:left-1/2 max-md:origin-top max-md:-translate-x-1/2 ${tone.panel}`}
         >
           <button
             type="button"

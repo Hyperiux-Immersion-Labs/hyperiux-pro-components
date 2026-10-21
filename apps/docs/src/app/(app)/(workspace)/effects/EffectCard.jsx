@@ -77,6 +77,9 @@ export function EffectCard({
   effect,
   small = false,
   dark = false,
+  // plain: just the preview (video on hover) and the title / category - no frame, padding,
+  // hover lift or tech tags (the admin user page's sliders)
+  plain = false,
   // Above the fold: load the cover eagerly; `highPriority` also fetches it first (the LCP card)
   priority = false,
   highPriority = false,
@@ -135,7 +138,7 @@ export function EffectCard({
       // (trending, the drawer's related cards) it stays frameless.
       // Hover anywhere on the card: it comes a touch towards the viewer with a soft shadow
       // and the action buttons slide up into the preview (group/card).
-      className={`group group/card relative flex flex-col gap-[calc(var(--cvw)*1)] outline-none transition-[transform,box-shadow] duration-500 transform-[perspective(1200px)_translateZ(0)] hover:transform-[perspective(1200px)_translateZ(calc(var(--cvw)*1))] hover:shadow-float max-md:gap-[3.5vw] ${dark ? "" : "bg-foreground p-[calc(var(--cvw)*1.1)] max-lg:p-4 max-md:p-3.5"} ${className}`}
+      className={`group group/card relative flex flex-col gap-[calc(var(--cvw)*1)] outline-none max-md:gap-[3.5vw] ${plain ? "" : "transition-[transform,box-shadow] duration-500 transform-[perspective(1200px)_translateZ(0)] hover:transform-[perspective(1200px)_translateZ(calc(var(--cvw)*1))] hover:shadow-float"} ${dark || plain ? "" : "bg-foreground p-[calc(var(--cvw)*1.1)] max-lg:p-4 max-md:p-3.5"} ${className}`}
     >
       <div data-card-preview className="relative aspect-[16/8.6] cursor-pointer overflow-hidden group-focus-visible:ring-2 group-focus-visible:ring-primary">
         {cover && !imageError ? (
@@ -168,7 +171,7 @@ export function EffectCard({
         )}
 
         {/* Tech tags, bottom left (the hover actions come in on the right); hidden on phones */}
-        {deps.length > 0 && (
+        {deps.length > 0 && !plain && (
           <div className="pointer-events-none absolute bottom-3 left-3 flex max-w-[45%] flex-wrap gap-1 max-md:hidden">
             {deps.map((dep) => (
               <span

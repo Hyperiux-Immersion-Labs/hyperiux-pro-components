@@ -287,6 +287,7 @@ export async function getAllSanityEffectGuides() {
       `*[_type == "effectContent" && defined(categorySlug) && defined(effectSlug) && !(_id in path("drafts.**"))]
         | order(orderRank asc, addedAt desc, _createdAt asc){
         _id,
+        _updatedAt,
         categorySlug,
         effectSlug,
         title,

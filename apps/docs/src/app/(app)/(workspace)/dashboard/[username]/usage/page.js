@@ -3,11 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search } from "lucide-react";
 import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { ALL_DATES, CARD, CARD_PAD, CardLink, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, inDateRange, Pager, PerPageMenu, resolveDateRange, SourceChip } from "@/components/Dashboard/DashboardUI";
-import { Bar, SkeletonCard, useAccountHint } from "@/components/Dashboard/DashboardSkeletons";
+import { ALL_DATES, CARD, CARD_PAD, CardLink, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, FILTER_WIDTH, HEAD_ROW, inDateRange, Pager, PerPageMenu, resolveDateRange, ROW, SearchField, SourceChip, STICKY_END, STICKY_START, TABLE, TableScroll, TD, TH, TOOLBAR } from "@/components/Dashboard/DashboardUI";
+import { Bar, SkeletonCard, useAccountHint, ToolbarBars } from "@/components/Dashboard/DashboardSkeletons";
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
 import { useUserPlan } from "@/lib/useUserPlan";
 import { RingMeter } from "@/components/Dashboard/RingMeter";
@@ -83,7 +82,7 @@ function UsageSkeleton() {
     <div aria-busy="true" aria-label="Loading your usage" className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Bar type="type-label" className="w-[30%] max-md:w-full" />
-        <Bar className="h-9.5 w-[calc(var(--cvw)*13)] max-lg:w-48" />
+        <Bar className={`h-9.5 ${FILTER_WIDTH}`} />
       </div>
       <div className="flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-col max-lg:gap-3">
         {!isAdmin && (
@@ -115,10 +114,7 @@ function UsageSkeleton() {
       <SkeletonCard className="gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <Bar type="type-h3" className="w-44" />
-          <div className="flex gap-[calc(var(--cvw)*0.7)]">
-            <Bar className="h-9.5 w-[calc(var(--cvw)*14)] max-lg:w-44" />
-            <Bar className="h-9.5 w-60" />
-          </div>
+          <ToolbarBars search segment />
         </div>
         <div className="flex flex-col">
           {Array.from({ length: 6 }, (_, i) => (
@@ -301,12 +297,8 @@ export default function UsagePage() {
             </h2>
             {data.truncated && <p className="type-small text-black/60">Your latest {data.events.length} installs. Older ones aren’t shown.</p>}
           </div>
-          <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
-            <label className="type-small flex h-9.5 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary">
-              <Search className="size-3.5 shrink-0" aria-hidden="true" />
-              <span className="sr-only">Search effects</span>
-              <input value={query} onChange={(e) => filter(setQuery)(e.target.value)} placeholder="Search effects" className="w-[calc(var(--cvw)*12)] bg-transparent text-ink outline-none placeholder:text-black/40 max-lg:w-40" />
-            </label>
+          <div className={TOOLBAR}>
+            <SearchField value={query} onChange={filter(setQuery)} placeholder="Search effects" label="Search effects" />
             <SlidingSegment label="Source" items={SOURCES} value={source} onChange={filter(setSource)} itemClassName="w-14" />
             <PerPageMenu value={perPage} onChange={filter(setPerPage)} />
           </div>
@@ -321,38 +313,45 @@ export default function UsagePage() {
           <p className={EMPTY_TABLE}>No effects match these filters.</p>
         ) : (
           <>
-            <div className="flex flex-col">
-              <div className="type-label flex items-center gap-4 border-b border-black/10 pb-3 text-black/60 max-md:hidden">
-                <span className="flex-1">Effect</span>
-                <span className="w-16">Source</span>
-                <span className="w-[22%]">When</span>
-                <span className="w-32" aria-hidden="true" />
-              </div>
-              {shown.map((event) => {
-                const effect = effectBySlug(event.name) || { name: event.name, title: event.title };
-                const cover = resolveCover(effect);
-                return (
-                  <div key={`${event.name}-${event.at}`} className="flex items-center gap-4 border-b border-black/10 py-[calc(var(--cvw)*0.7)] last:border-b-0 max-lg:py-3">
-                    <Link href={getEffectHref(effect)} className="group flex min-w-0 flex-1 items-center gap-3">
-                      <span className="relative block aspect-[16/10] w-12 shrink-0 overflow-hidden bg-dark-card">
-                        {cover && <Image src={cover} alt="" fill sizes="48px" className="object-cover" />}
-                      </span>
-                      <span className="flex min-w-0 flex-col">
-                        <span className="type-body truncate transition-colors duration-300 group-hover:text-primary">{effect.title || event.title}</span>
-                        <span className="type-small hidden text-black/60 max-md:block">{formatWhen(event.at)}</span>
-                      </span>
-                    </Link>
-                    <span className="w-16 max-md:w-auto">
-                      <SourceChip source={event.source} />
-                    </span>
-                    <span className="type-small w-[22%] text-black/60 max-md:hidden">{formatWhen(event.at)}</span>
-                    <span className="flex w-32 justify-end max-md:w-auto">
-                      <CopyCommand effect={effect} copyInstall={copyInstall} />
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
+            <TableScroll>
+              <table className={TABLE}>
+                <thead>
+                  <tr className={HEAD_ROW}>
+                    <th className={`${TH} ${STICKY_START}`}>Effect</th>
+                    <th className={TH}>Source</th>
+                    <th className={TH}>When</th>
+                    <th className={`${TH} ${STICKY_END}`}>
+                      <span className="sr-only">Install command</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {shown.map((event) => {
+                    const effect = effectBySlug(event.name) || { name: event.name, title: event.title };
+                    const cover = resolveCover(effect);
+                    return (
+                      <tr key={`${event.name}-${event.at}`} className={ROW}>
+                        <td className={`${TD} ${STICKY_START}`}>
+                          <Link href={getEffectHref(effect)} className="group flex items-center gap-3">
+                            <span className="relative block aspect-[16/10] w-12 shrink-0 overflow-hidden bg-dark-card">
+                              {cover && <Image src={cover} alt="" fill sizes="48px" className="object-cover" />}
+                            </span>
+                            <span className="type-body max-w-64 truncate transition-colors duration-300 group-hover:text-primary max-md:max-w-36">{effect.title || event.title}</span>
+                          </Link>
+                        </td>
+                        <td className={TD}>
+                          <SourceChip source={event.source} />
+                        </td>
+                        <td className={`type-small ${TD} text-black/60`}>{formatWhen(event.at)}</td>
+                        <td className={`${TD} ${STICKY_END} text-right`}>
+                          <CopyCommand effect={effect} copyInstall={copyInstall} />
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </TableScroll>
             <Pager page={current} pages={pages} total={events.length} noun={events.length === 1 ? "event" : "events"} onPage={setPage} />
           </>
         )}

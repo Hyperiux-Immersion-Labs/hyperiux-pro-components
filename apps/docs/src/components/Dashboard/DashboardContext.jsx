@@ -4,14 +4,19 @@ import { createContext, useCallback, useContext, useMemo, useSyncExternalStore }
 import { createPortal } from "react-dom";
 import { dashboardPath } from "./dashboardRoutes";
 
-const DashboardContext = createContext({ username: "", catalog: [], isAdmin: false, isSuperAdmin: false });
+const DashboardContext = createContext({ username: "", catalog: [], isAdmin: false, isSuperAdmin: false, can: () => false, accessLoaded: false });
 
-/** The account in the URL, its admin role and the effects catalogue (Sanity), for every dashboard tab. */
-export function DashboardProvider({ username, catalog, isAdmin, isSuperAdmin, children }) {
+/**
+ * The account in the URL, its admin access and the effects catalogue (Sanity), for every
+ * dashboard tab. `isSuperAdmin` is the owner; `can(key)` checks one admin permission
+ * (lib/admin-permissions) - true for the owner; `accessLoaded` is false until the access
+ * has been read (so a tab doesn't send someone away before it knows).
+ */
+export function DashboardProvider({ username, catalog, isAdmin, isSuperAdmin, can = () => false, accessLoaded = true, children }) {
   const value = useMemo(() => {
     const bySlug = new Map(catalog.map((effect) => [effect.name, effect]));
-    return { username, catalog, isAdmin, isSuperAdmin, effectBySlug: (slug) => bySlug.get(slug) || null };
-  }, [username, catalog, isAdmin, isSuperAdmin]);
+    return { username, catalog, isAdmin, isSuperAdmin, can, accessLoaded, effectBySlug: (slug) => bySlug.get(slug) || null };
+  }, [username, catalog, isAdmin, isSuperAdmin, can, accessLoaded]);
   return <DashboardContext.Provider value={value}>{children}</DashboardContext.Provider>;
 }
 

@@ -958,6 +958,18 @@ html.lenis.lenis-stopped[data-v4-drawer-open] {
   overflow: visible;
 }
 
+/* The page's thumb is hidden above, and both settings inherit - so a modal's or drawer's
+   own scrolling panel (data-lenis-prevent, hooks/useLenisLock) brings its scrollbar back */
+html[data-v4-drawer-open] [data-lenis-prevent] {
+  --scrollbar-thumb: initial;
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html[data-v4-drawer-open] [data-lenis-prevent] {
+    scrollbar-color: initial;
+  }
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    Shared design system (STYLE_GUIDE.md). Real Tailwind utilities, so a
    one-off utility on the same element still overrides them without `!`.

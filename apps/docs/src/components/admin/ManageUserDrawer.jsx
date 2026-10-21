@@ -10,20 +10,21 @@ import { UserAvatar } from "@/components/admin/UserAvatar";
 import { Confirm, LINE_BUTTON, PANEL_CARD, formatDate, timeAgo } from "@/components/admin/drawerUI";
 import { BillingSection, HistorySection } from "@/components/admin/ManageUserBilling";
 import { SupportSection } from "@/components/admin/ManageUserSupport";
+import { AccessSection } from "@/components/admin/ManageUserAccess";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { useLenisLock } from "@/hooks/useLenisLock";
+import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
 import { prefersReducedMotion } from "@/lib/motion";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 import { getCreditsForCharge } from "@/lib/plans";
 
 const LEVELS = { free: "Free", pro: "Pro", pro_plus: "Pro+" };
 const LENGTHS = { monthly: "1 month", quarterly: "3 months", yearly: "1 year" };
-const ROLES = { "": "No access", admin: "Admin", super_admin: "Super Admin" };
 // subscriptions.status values that mean Razorpay is still charging them
 const BILLED_STATUSES = new Set(["authenticated", "active", "pending", "halted"]);
 
 // "free" | "pro" | "pro_plus" (Pro+ is plan "pro", tier "pro_plus"; old rows have no tier)
 const levelOf = (user) => (user.plan === "pro" ? user.tier || "pro_plus" : "free");
-const roleOf = (user) => (user.role && user.role !== "user" ? user.role : "");
 
 // Why an account is or isn't in the customer numbers (user.internal, from lib/admin-data)
 const INTERNAL_STATUS = {
@@ -62,7 +63,8 @@ function Picker({ label, value, options, onChange }) {
  * Manage one account (super admins, the Users tab): the effects' preview drawer, dark,
  * from the right - who they are, their numbers, plan and access, role, recent installs and
  * account actions (copy email, send a password reset, suspend). Every change is confirmed
- * first, naming exactly what will happen. `user` opens it (and keeps it current); null
+ * first, naming exactly what will happen, and every action answers with a toast - done, or
+ * what went wrong - so it shows wherever the button was. `user` opens it (and keeps it current); null
  * closes it. `onSaved(patch)` updates the row in the table.
  */
 export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSaved }) {
@@ -80,7 +82,11 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
   // Billing / Support keep their own busy state; either one saving also keeps the drawer open
   const [billingBusy, setBillingBusy] = useState(false);
   const [supportBusy, setSupportBusy] = useState(false);
-  const saving = busy !== null || billingBusy || supportBusy;
+  const [accessBusy, setAccessBusy] = useState(false);
+  const saving = busy !== null || billingBusy || supportBusy || accessBusy;
+  // How each action went: { title, description, tone: "error" when it failed }. It
+  // outlives the drawer, so closing straight after a change still shows it.
+  const { toast, showToast: notify, dismissToast } = useToastQueue(5000);
 
   useEffect(() => {
     if (user) {
@@ -141,43 +147,62 @@ export function ManageUserDrawer({ user, isOwnRow, activityHref, onClose, onSave
       clearTimeout(focus);
     };
   }, [open, saving, onClose]);
-  useLenisLock(open);
+  // The page holds still while it's open, and its scrollbar stays hidden until the panel
+  // has slid away (so it never shows next to the panel's own while it closes)
+  useLenisLock(open, { onScreen: Boolean(shown) });
 
-  if (!shown || typeof document === "undefined") return null;
-  return createPortal(
-    <div role="dialog" aria-modal="true" aria-labelledby="manage-user-title" data-sound-flow="off" className="fixed inset-0 z-990">
-      <div ref={overlayRef} aria-hidden="true" onClick={() => !saving && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
-      <div
-        ref={panelRef}
-        data-lenis-prevent
-        className="absolute inset-y-0 right-0 w-[calc(var(--cvw)*40)] overflow-y-auto overscroll-contain border-l border-foreground/10 bg-background text-foreground max-lg:w-full max-lg:border-l-0"
-      >
-        <div ref={contentRef} className="flex flex-col gap-(--cvw) px-10 pt-7 pb-16 max-lg:gap-3 max-lg:px-8 max-md:px-[6vw]">
-          <DrawerBody
-            key={shown.id}
-            user={shown}
-            isOwnRow={isOwnRow}
-            activityHref={activityHref}
-            onClose={onClose}
-            onSaved={onSaved}
-            busy={busy}
-            setBusy={setBusy}
-            saving={saving}
-            setBillingBusy={setBillingBusy}
-            setSupportBusy={setSupportBusy}
-            closeRef={closeRef}
-          />
-        </div>
-      </div>
-    </div>,
-    document.body,
+  const toastView = <ToastViewport toast={toast} onDismiss={dismissToast} position="top-right" />;
+  if (!shown || typeof document === "undefined") return toastView;
+  return (
+    <>
+      {toastView}
+      {createPortal(
+        <div role="dialog" aria-modal="true" aria-labelledby="manage-user-title" data-sound-flow="off" className="fixed inset-0 z-9999">
+          <div ref={overlayRef} aria-hidden="true" onClick={() => !saving && onClose()} className="absolute inset-0 bg-black/30 backdrop-blur-lg" />
+          <div
+            ref={panelRef}
+            data-lenis-prevent
+            className="absolute inset-y-0 right-0 w-[calc(var(--cvw)*40)] overflow-y-auto overscroll-contain border-l border-foreground/10 bg-background text-foreground max-lg:w-full max-lg:border-l-0"
+          >
+            <div ref={contentRef} className="flex flex-col gap-(--cvw) px-10 pt-7 pb-16 max-lg:gap-3 max-lg:px-8 max-md:px-[6vw]">
+              <DrawerBody
+                key={shown.id}
+                user={shown}
+                isOwnRow={isOwnRow}
+                activityHref={activityHref}
+                onClose={onClose}
+                onSaved={onSaved}
+                busy={busy}
+                setBusy={setBusy}
+                saving={saving}
+                setBillingBusy={setBillingBusy}
+                setSupportBusy={setSupportBusy}
+                setAccessBusy={setAccessBusy}
+                closeRef={closeRef}
+                notify={notify}
+              />
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )}
+    </>
   );
 }
 
-function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, saving, setBillingBusy, setSupportBusy, closeRef }) {
+// What a failed action says, by the action
+const FAILED = {
+  plan: "Couldn’t Change the Plan",
+  internal: "Couldn’t Update the Account",
+  suspend: "Couldn’t Change the Account",
+  reset: "Couldn’t Send the Reset",
+};
+
+function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setBusy, saving, setBillingBusy, setSupportBusy, setAccessBusy, closeRef, notify }) {
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
-  // The change waiting for Confirm: "plan" | "role" | "internal" | "suspend"
+  // What this admin may do here (lib/admin-permissions): each section and button checks
+  const { can, isSuperAdmin: isOwner } = useDashboard();
+  // The change waiting for Confirm: "plan" | "internal" | "suspend"
   const [pending, setPending] = useState(null);
   // Bumped after every change here, so History shows it
   const [historyKey, setHistoryKey] = useState(0);
@@ -185,12 +210,10 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
   const currentLevel = levelOf(user);
   const [level, setLevel] = useState(currentLevel);
   const [length, setLength] = useState(user.plan === "pro" ? user.billingInterval || "monthly" : "monthly");
-  const [role, setRole] = useState(roleOf(user));
   // Paying through Razorpay: the plan follows the subscription, so it's cancelled under
   // Billing before the plan changes here (api/admin/users/update-plan refuses otherwise)
   const razorpayBilled = Boolean(user.razorpaySubscriptionId) && BILLED_STATUSES.has(user.status);
   const planChanged = level !== currentLevel || (level !== "free" && length !== (user.billingInterval || "monthly"));
-  const roleChanged = role !== roleOf(user);
 
   // Their latest installs
   const [recent, setRecent] = useState(null);
@@ -210,14 +233,17 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
     };
   }, [user.id]);
 
+  // Copy Email and Send Password Reset also turn to "done" for a moment, on the button itself
   const [copied, setCopied] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
   async function copyEmail() {
     try {
       await navigator.clipboard.writeText(user.email || "");
       setCopied(true);
       setTimeout(() => setCopied(false), 1600);
+      notify({ title: "Email Copied", description: user.email });
     } catch {
-      // Clipboard blocked: the email is on screen to select
+      notify({ title: "Couldn’t Copy", description: "The browser blocked the clipboard. Select the email at the top instead.", tone: "error" });
     }
   }
 
@@ -229,10 +255,10 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
     return json;
   }
 
+  // `work` posts the change, says how it went (notify) and returns the row's patch, if any
   async function run(kind, work) {
     setBusy(kind);
     setError("");
-    setNotice("");
     try {
       const patch = await work();
       if (patch) onSaved(patch);
@@ -240,6 +266,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
       setHistoryKey((n) => n + 1);
     } catch (err) {
       setError(err.message);
+      notify({ title: FAILED[kind], description: err.message, tone: "error" });
     } finally {
       setBusy(null);
     }
@@ -260,13 +287,6 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
         ? { text: `Give ${LEVELS[level]} for ${LENGTHS[length]}, free of charge.` }
         : { text: `Change the access length to ${LENGTHS[length]}.` },
     ...(grantCredits > 0 ? [{ text: `Tops their template credits up to ${grantCredits}, as a paid ${LEVELS[level]} ${LENGTHS[length]} plan earns.` }] : []),
-  ];
-  const roleLines = [
-    role === "super_admin"
-      ? { text: "Make Super Admin: full access, including revenue, invoicing and roles.", danger: true }
-      : !role
-        ? { text: `Remove ${ROLES[user.role] || "admin"} access.`, danger: true }
-        : { text: `Make ${ROLES[role]}: sees Activity and Users, not revenue or invoicing.` },
   ];
   const suspendLines = user.suspended
     ? [{ text: "Restore the account: they can sign in again." }]
@@ -305,7 +325,8 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
       </div>
 
       {/* their numbers */}
-      <div className="flex gap-[calc(var(--cvw)*0.6)] max-lg:gap-2">
+      {/* one to a row on phones */}
+      <div className="flex gap-[calc(var(--cvw)*0.6)] max-lg:gap-2 max-md:flex-col">
         {[
           [user.installsCount ?? 0, "Installs"],
           [sources.join(" / "), "Web / CLI / MCP"],
@@ -323,12 +344,6 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           {error}
         </p>
       )}
-      {notice && (
-        <p role="status" className="type-small bg-primary/15 px-4 py-3 text-foreground">
-          {notice}
-        </p>
-      )}
-
       {/* plan and access */}
       <section aria-labelledby="manage-plan-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
         <h3 id="manage-plan-h" className="type-h3">
@@ -339,10 +354,10 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
           rows={[
             ["Plan", `${LEVELS[currentLevel]}${user.plan === "pro" && user.billingInterval ? ` · ${LENGTHS[user.billingInterval] || user.billingInterval}` : ""}`],
             ["Valid until", user.plan === "pro" ? formatDate(user.planValidUntil) : "—"],
-            ["Customer ID", user.razorpayCustomerId || "—"],
+            ...(can("finance.view") ? [["Customer ID", user.razorpayCustomerId || "—"]] : []),
           ]}
         />
-        {pending === "plan" ? (
+        {!can("users.plan") ? null : pending === "plan" ? (
           <Confirm
             lines={planLines}
             busy={busy === "plan"}
@@ -351,8 +366,14 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
               run("plan", async () => {
                 const plan = level === "free" ? "free" : "pro";
                 const json = await post("/api/admin/users/update-plan", { clerkUserId: user.id, plan, tier: plan === "pro" ? level : null, billingInterval: plan === "pro" ? length : null });
-                if (json.creditsError) setError(json.creditsError);
-                else if (json.creditsAdded) setNotice(`${json.creditsAdded} template credit${json.creditsAdded === 1 ? "" : "s"} added.`);
+                const what = plan === "free" ? `${user.name || user.email} is on Free now.` : `${user.name || user.email} has ${LEVELS[level]} for ${LENGTHS[length]}.`;
+                if (json.creditsError) {
+                  setError(json.creditsError);
+                  notify({ title: "Plan Changed, Credits Didn’t", description: `${what} ${json.creditsError}`, tone: "error" });
+                } else {
+                  const credits = json.creditsAdded ? ` ${json.creditsAdded} template credit${json.creditsAdded === 1 ? "" : "s"} added.` : "";
+                  notify({ title: "Plan Changed", description: `${what}${credits}` });
+                }
                 return { plan, tier: json.tier, status: json.status, billingInterval: json.billingInterval, planValidUntil: json.currentPeriodEnd };
               })
             }
@@ -366,71 +387,51 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
             </button>
           </div>
         )}
-        {razorpayBilled && <p className="type-small text-foreground/80">Paid through Razorpay. Cancel the subscription under Billing before changing the plan here.</p>}
+        {razorpayBilled && can("users.plan") && <p className="type-small text-foreground/80">Paid through Razorpay. Cancel the subscription under Billing before changing the plan here.</p>}
       </section>
 
-      <BillingSection user={user} post={post} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setBillingBusy} />
+      {can("finance.view") && <BillingSection user={user} post={post} notify={notify} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setBillingBusy} />}
 
-      <SupportSection user={user} post={post} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setSupportBusy} />
+      <SupportSection user={user} post={post} notify={notify} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setSupportBusy} />
 
-      {/* role */}
-      <section aria-labelledby="manage-role-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
-        <h3 id="manage-role-h" className="type-h3">
-          Role
-        </h3>
-        {isOwnRow ? (
-          <p className="type-small text-foreground/80">You can’t change your own role. Ask another super admin.</p>
-        ) : pending === "role" ? (
-          <Confirm
-            lines={roleLines}
-            busy={busy === "role"}
-            onCancel={() => setPending(null)}
-            onConfirm={() =>
-              run("role", async () => {
-                const json = await post("/api/admin/users/update-role", { clerkUserId: user.id, role: role || null });
-                return { role: json.role, isAdmin: json.role !== null };
-              })
-            }
-          />
-        ) : (
-          <div className="flex flex-wrap items-center gap-3">
-            <Picker label="Role" value={role} options={ROLES} onChange={setRole} />
-            <button type="button" disabled={!roleChanged} onClick={() => setPending("role")} className={`${LINE_BUTTON} ml-auto`}>
-              Save Role
-            </button>
-          </div>
-        )}
-        <p className="type-small text-foreground/80">Admins see Activity and Users. Only Super Admins see revenue and Invoicing.</p>
-      </section>
+      {/* admin access: roles and single permissions (the owner only) */}
+      {isOwner && <AccessSection user={user} isOwnRow={isOwnRow} post={post} notify={notify} onSaved={onSaved} onChanged={() => setHistoryKey((n) => n + 1)} onBusyChange={setAccessBusy} />}
 
-      {/* internal: kept out of the customer numbers */}
-      <section aria-labelledby="manage-internal-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
-        <h3 id="manage-internal-h" className="type-h3">
-          Internal Account
-        </h3>
-        {pending === "internal" ? (
-          <Confirm
-            lines={internalLines}
-            busy={busy === "internal"}
-            onCancel={() => setPending(null)}
-            onConfirm={() =>
-              run("internal", async () => {
-                const json = await post("/api/admin/users/update-internal", { clerkUserId: user.id, internal: !user.internal });
-                return { internal: json.internal };
-              })
-            }
-          />
-        ) : (
-          <div className="flex flex-wrap items-center gap-3">
-            <p className="type-small min-w-0 flex-1 text-foreground/80">{INTERNAL_STATUS[user.internal || "customer"]}</p>
-            {(!user.internal || user.internal === "marked") && (
-              <button type="button" onClick={() => setPending("internal")} className={`${LINE_BUTTON} ml-auto`}>
-                {user.internal ? "Count as a Customer" : "Mark as Internal"}
-              </button>
-            )}
-          </div>
-        )}
-      </section>
+      {/* internal: kept out of the customer numbers (only for admins who can change it) */}
+      {can("users.internal") && (
+        <section aria-labelledby="manage-internal-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
+          <h3 id="manage-internal-h" className="type-h3">
+            Internal Account
+          </h3>
+          {pending === "internal" ? (
+            <Confirm
+              lines={internalLines}
+              busy={busy === "internal"}
+              onCancel={() => setPending(null)}
+              onConfirm={() =>
+                run("internal", async () => {
+                  const json = await post("/api/admin/users/update-internal", { clerkUserId: user.id, internal: !user.internal });
+                  notify(
+                    json.internal
+                      ? { title: "Marked Internal", description: "Kept out of the customer numbers from now on." }
+                      : { title: "Counted as a Customer", description: "Back in the customer numbers." },
+                  );
+                  return { internal: json.internal };
+                })
+              }
+            />
+          ) : (
+            <div className="flex flex-wrap items-center gap-3">
+              <p className="type-small min-w-0 flex-1 text-foreground/80">{INTERNAL_STATUS[user.internal || "customer"]}</p>
+              {(!user.internal || user.internal === "marked") && (
+                <button type="button" onClick={() => setPending("internal")} className={`${LINE_BUTTON} ml-auto`}>
+                  {user.internal ? "Count as a Customer" : "Mark as Internal"}
+                </button>
+              )}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* recent installs */}
       <section aria-labelledby="manage-recent-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
@@ -459,7 +460,7 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
         )}
       </section>
 
-      <HistorySection userId={user.id} reloadKey={historyKey} />
+      {can("log.view") && <HistorySection userId={user.id} reloadKey={historyKey} />}
 
       {/* account */}
       <section aria-labelledby="manage-account-h" className={`${PANEL_CARD} gap-(--cvw) max-lg:gap-4`}>
@@ -474,32 +475,42 @@ function DrawerBody({ user, isOwnRow, activityHref, onClose, onSaved, busy, setB
             onConfirm={() =>
               run("suspend", async () => {
                 const json = await post("/api/admin/users/suspend", { clerkUserId: user.id, suspended: !user.suspended });
+                notify(
+                  json.suspended
+                    ? { title: "Account Suspended", description: `${user.name || user.email} is signed out and can’t sign in until restored.` }
+                    : { title: "Account Restored", description: `${user.name || user.email} can sign in again.` },
+                );
                 return { suspended: json.suspended };
               })
             }
           />
         ) : (
           <div className="flex flex-wrap items-center gap-3">
+            {can("users.reset") && (
             <button
               type="button"
-              disabled={busy === "reset" || !user.email}
+              disabled={busy === "reset" || resetSent || !user.email}
               onClick={() =>
                 run("reset", async () => {
                   const json = await post("/api/admin/users/send-password-reset", { clerkUserId: user.id });
-                  setNotice(`Reset email sent to ${json.email}. Their password stays the same until they use it.`);
+                  notify({ title: "Password Reset Sent", description: `Sent to ${json.email}. Their password stays the same until they use the link.` });
+                  setResetSent(true);
+                  setTimeout(() => setResetSent(false), 4000);
                   return null;
                 })
               }
               className={LINE_BUTTON}
             >
-              {busy === "reset" ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <KeyRound aria-hidden="true" />}
-              Send Password Reset
+              {busy === "reset" ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : resetSent ? <Check aria-hidden="true" /> : <KeyRound aria-hidden="true" />}
+              {busy === "reset" ? "Sending…" : resetSent ? "Reset Sent" : "Send Password Reset"}
             </button>
+            )}
             <button type="button" onClick={copyEmail} disabled={!user.email} className={LINE_BUTTON}>
               {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
               {copied ? "Copied" : "Copy Email"}
             </button>
-            {!isOwnRow && (
+            {/* users.suspend; an admin's account, and the owner's never, only by the owner */}
+            {!isOwnRow && !user.owner && can("users.suspend") && (!user.isAdmin || isOwner) && (
               <button
                 type="button"
                 onClick={() => setPending("suspend")}

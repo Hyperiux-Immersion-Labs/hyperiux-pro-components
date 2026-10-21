@@ -13,18 +13,22 @@ export const USER_TABS = [
   { key: "settings", label: "Settings", sub: "settings", light: true },
 ];
 
-// Admins and super admins. Invoicing (every user's payments) is super admin only, here
-// and - the real gate - in the admin invoices API.
+// The admin view's tabs. Activity and Users are every admin's;
+// the rest need a permission (lib/admin-permissions) - or, for Roles, the owner. The real
+// gate is the API behind each one.
 export const ADMIN_TABS = [
   { key: "activity", label: "Activity", sub: "admin/activity", light: true },
   { key: "users", label: "Users", sub: "admin/users", light: true },
-  { key: "admin-effects", label: "Effects", sub: "admin/effects", light: true },
-  { key: "admin-invoicing", label: "Invoicing", sub: "admin/invoicing", superAdmin: true, light: true },
-  { key: "admin-log", label: "Log", sub: "admin/log", superAdmin: true, light: true },
-  { key: "admin-settings", label: "Settings", sub: "admin/settings", superAdmin: true, light: true },
-  // Reached from Users (its Email log button), not from the tab row or the profile menu
-  { key: "emails", label: "Email log", sub: "admin/emails", light: true, hidden: true },
+  { key: "emails", label: "Email Log", sub: "admin/emails", permission: "emails.view", light: true },
+  { key: "admin-effects", label: "Effects", sub: "admin/effects", permission: "effects.view", light: true },
+  { key: "admin-invoicing", label: "Invoicing", sub: "admin/invoicing", permission: "finance.view", light: true },
+  { key: "admin-log", label: "Admin Log", sub: "admin/log", permission: "log.view", light: true },
+  { key: "admin-settings", label: "Settings", sub: "admin/settings", permission: "settings.manage", light: true },
+  { key: "admin-roles", label: "Roles", sub: "admin/roles", owner: true, light: true },
 ];
+
+// Whether an admin's access shows a tab: `can(key)` from useDashboard / useAdminRole
+export const canSeeTab = (tab, { owner, can }) => (tab.owner ? owner : !tab.permission || can(tab.permission));
 
 // The tab a path belongs to: the longest `sub` that prefixes it, so
 // admin/activity/{user} still lights up Activity.

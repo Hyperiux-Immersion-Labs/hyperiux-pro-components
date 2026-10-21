@@ -179,10 +179,17 @@ export function comparisonWindows({ startISO, endISO, range, now = Date.now() })
     return { current: [end - 30 * DAY_MS, end], previous: [end - 60 * DAY_MS, end - 30 * DAY_MS], label: "last 30d vs prev. 30d" };
   }
   const start = new Date(startISO).getTime();
+  // A preset still running (Today, 7d, ... with no end): the same point in the period
+  // before - today until now against yesterday until this time, not a part day against a
+  // whole one (which always read as a fall early in the day)
+  if (!endISO && range in DATE_RANGE_DAYS) {
+    const period = (DATE_RANGE_DAYS[range] + 1) * DAY_MS;
+    const label = range === "today" ? "vs yesterday, same time" : `vs prev. ${DATE_RANGE_DAYS[range] + 1}d`;
+    return { current: [start, end], previous: [start - period, end - period], label };
+  }
   const length = Math.max(end - start, DAY_MS);
   const days = Math.round(length / DAY_MS);
-  const label = range === "today" ? "vs yesterday" : `vs prev. ${days}d`;
-  return { current: [start, end], previous: [start - length, start], label };
+  return { current: [start, end], previous: [start - length, start], label: `vs prev. ${days}d` };
 }
 
 /**

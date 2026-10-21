@@ -1,20 +1,21 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { ArrowLeft } from "lucide-react";
 import { useAdminRole } from "@/lib/useAdminRole";
-import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
+import { getDashboardPreview, getDashboardPreviewRole } from "@/lib/dev/dashboardPreview";
 import { displayFirstName } from "@/lib/display-name";
 import { hasDeletedAccount } from "@/lib/account-deleted";
 import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { DarkSegment } from "@/components/ui/DarkSegment";
-import { ADMIN_TABS, USER_TABS, activeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
+import { ADMIN_TABS, USER_TABS, activeTab, canSeeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
 import { DashboardProvider, HERO_ASIDE_ID } from "./DashboardContext";
+import { YourAccess } from "./YourAccess";
 
 // Each tab's header: the heading (its last words orange) and the line under it.
 // Overview's heading is the greeting, built in the shell.
@@ -29,7 +30,8 @@ const HEROES = {
   "admin-invoicing": ["", "Invoicing.", "Every payment across subscriptions and templates."],
   "admin-log": ["Admin", "Log.", "Every change made from the admin dashboard, and who made it."],
   "admin-effects": ["Effect", "Health.", "Where effects’ Sanity guides and the registry disagree, worst first."],
-  "admin-settings": ["Admin", "Settings.", "Install limits and internal accounts, without a redeploy."],
+  "admin-settings": ["Admin", "Settings.", "Install limits and internal emails and domains, without a redeploy."],
+  "admin-roles": ["Admin", "Roles.", "Who can do what in the admin dashboard."],
   emails: ["Email", "Log.", "Every email Vault has sent, and whether it was delivered."],
 };
 
@@ -111,11 +113,14 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
 
   // The development preview (no session) stands in for a super admin with "admin".
   const [preview, setPreview] = useState(null);
+  // ...or, with vault-dev-preview-role, one built-in role: { roleNames, permissions }
+  const [previewRole, setPreviewRole] = useState(null);
   const [hour, setHour] = useState(null);
   useEffect(() => {
     // Read after mount: the cookie and the clock differ between server and browser.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setPreview(getDashboardPreview());
+    setPreviewRole(getDashboardPreviewRole());
     setHour(new Date().getHours());
   }, []);
   // A dashboard page shown again without a session - the Back button after signing out
@@ -133,8 +138,13 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
     return () => window.removeEventListener("pageshow", onPageShow);
   }, [clerkLoaded, isSignedIn]);
 
+  // The development preview's "admin" stands in for the owner (every permission), or for
+  // an admin with one built-in role
   const isAdmin = role.isAdmin || preview === "admin";
-  const isSuperAdmin = role.isSuperAdmin || preview === "admin";
+  const isSuperAdmin = role.isSuperAdmin || (preview === "admin" && !previewRole);
+  const roleCan = role.can;
+  const can = useCallback((key) => (previewRole ? previewRole.permissions.includes(key) : preview === "admin" || roleCan(key)), [preview, previewRole, roleCan]);
+  const accessLoaded = !role.loading || preview === "admin";
 
   const adminView = isAdminPath(username, pathname);
   // The slider moves as soon as it's clicked, not when the next page arrives
@@ -146,7 +156,7 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
     router.push(dashboardPath(username, next === "admin" ? "admin/activity" : ""));
   };
   const tabs = adminView
-    ? ADMIN_TABS.filter((tab) => !tab.hidden && (!tab.superAdmin || isSuperAdmin))
+    ? ADMIN_TABS.filter((tab) => !tab.hidden && canSeeTab(tab, { owner: isSuperAdmin, can }))
     : USER_TABS;
   const current = activeTab(adminView ? ADMIN_TABS : USER_TABS, username, pathname);
 
@@ -157,15 +167,18 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
       ? [`${hour === null ? "Welcome back" : greeting(hour)},`, `${firstName}.`, "Your vault is open. Here’s everything at a glance."]
       : HEROES[current.key];
 
+  const personSlug = adminView && pathname.startsWith(`${dashboardPath(username, "admin/activity")}/`) ? decodeURIComponent(pathname.split("/").pop()) : null;
   const crumbs = [
     { label: "Home", href: "/" },
     { label: "Dashboard", href: dashboardPath(username) },
     ...(adminView ? [{ label: "Admin", href: dashboardPath(username, "admin") }] : []),
     ...(current && current.key !== "overview" ? [{ label: current.label, href: dashboardPath(username, current.sub) }] : []),
+    // One person's page under Activity (admin/activity/{slug}): their name, from the slug
+    ...(personSlug ? [{ label: personSlug.split("-").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" "), href: pathname }] : []),
   ];
 
   return (
-    <DashboardProvider username={username} catalog={catalog} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin}>
+    <DashboardProvider username={username} catalog={catalog} isAdmin={isAdmin} isSuperAdmin={isSuperAdmin} can={can} accessLoaded={accessLoaded}>
       {/* At least a screen tall, so a short tab's light sheet still reaches the bottom of
           the screen; otherwise as tall as the tab's content */}
       <div className="flex min-h-svh flex-col text-foreground">
@@ -190,9 +203,13 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
             </div>
 
             {isAdmin && (
-              <div className="flex shrink-0 items-center gap-3">
-                <span className="type-label text-foreground/80 max-md:hidden">View as</span>
-                <DarkSegment buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20 max-md:w-16" />
+              // items-stretch: the access chip is exactly as tall as the View as switch. Not on
+              // phones: the row keeps room for the back button
+              <div className="flex shrink-0 items-stretch gap-3">
+                {/* which admin they are and what they may do */}
+                <YourAccess className="max-md:hidden" owner={isSuperAdmin} roleNames={previewRole?.roleNames || role.roleNames} permissions={previewRole?.permissions || role.permissions} />
+                <span className="type-label self-center text-foreground/80 max-md:hidden">View as</span>
+                <DarkSegment buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20 max-md:w-16 max-md:text-[15px]!" />
               </div>
             )}
           </div>

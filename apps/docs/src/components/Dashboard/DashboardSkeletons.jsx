@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 import { useDashboard } from "./DashboardContext";
-import { CARD, CARD_PAD } from "./DashboardUI";
+import { CARD, CARD_PAD, FILTER_WIDTH, TOOLBAR } from "./DashboardUI";
 
 // Loading states for the dashboard tabs, built from the real cards' frames: the same card
 // (white, or dark for the plan and today cards), the same padding, and bars sized in the
@@ -38,6 +38,23 @@ export function Bar({ type, className = "", ...props }) {
 /** A bar as tall as the site's Button (its padding around one line of its text). */
 export function ButtonBar({ className = "w-40" }) {
   return <Bar className={`${BUTTON_SIZE} box-content h-[1lh] ${className}`} />;
+}
+
+/**
+ * A list's toolbar while it loads, sized like the real controls (TOOLBAR, SearchField,
+ * FILTER_WIDTH) so it wraps the same way and never runs off a phone's screen: a search box
+ * (`search`), a segment or a per-page pair (`segment`), and `menus` dropdowns.
+ */
+export function ToolbarBars({ search = false, segment = false, menus = 0 }) {
+  return (
+    <div className={TOOLBAR}>
+      {search && <Bar className="h-9.5 w-[calc(var(--cvw)*14)] max-lg:w-44 max-md:w-full" />}
+      {segment && <Bar className="h-9.5 w-44 max-md:w-full" />}
+      {Array.from({ length: menus }, (_, i) => (
+        <Bar key={i} className={`h-9.5 ${FILTER_WIDTH}`} />
+      ))}
+    </div>
+  );
 }
 
 /**

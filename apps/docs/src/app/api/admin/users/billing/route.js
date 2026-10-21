@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { currentPlanOf } from "@/lib/admin-data";
 import { razorpay, withRazorpayRetry } from "@/lib/razorpay";
 import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
@@ -17,7 +17,7 @@ const DAY_MS = 86_400_000;
 const date = (ms) => (ms ? new Date(ms).toISOString() : null);
 
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

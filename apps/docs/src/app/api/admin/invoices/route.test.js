@@ -9,8 +9,9 @@ let statsError;
 let clerkUsers;
 let eqCalls;
 
+// The route's permission check: the owner's access when allowed (isSuperAdminResult), null (403) when not
 vi.mock("@/lib/admin", () => ({
-  assertSuperAdmin: vi.fn(() => Promise.resolve(isSuperAdminResult)),
+  requirePermission: vi.fn(async () => (isSuperAdminResult ? { owner: true, admin: true, permissions: new Set(["finance.view", "finance.manage", "users.plan", "users.create"]) } : null)),
 }));
 
 vi.mock("@clerk/nextjs/server", () => ({
@@ -158,7 +159,7 @@ describe("admin/invoices route", () => {
     pageCount = 1;
     realRows = [{ amount: 199900, currency: "INR" }, { amount: 1799000, currency: "INR" }];
 
-    const res = await GET(makeRequest());
+    const res = await GET(makeRequest("?stats=1"));
     const body = await res.json();
 
     expect(body.stats).toEqual({
@@ -175,17 +176,24 @@ describe("admin/invoices route", () => {
     // query filter is_test=false unconditionally, even with a stray/legacy
     // `test` param on the request.
     const testFilters = () => eqCalls.filter(([column]) => column === "is_test");
-    await GET(makeRequest("?test=real"));
+    await GET(makeRequest("?test=real&stats=1"));
     expect(testFilters()).toEqual([["is_test", false], ["is_test", false]]);
 
     eqCalls = [];
-    await GET(makeRequest("?test=test"));
+    await GET(makeRequest("?test=test&stats=1"));
     expect(testFilters()).toEqual([["is_test", false], ["is_test", false]]);
   });
 
   it("the revenue stats also leave out payments an admin excluded", async () => {
     isSuperAdminResult = true;
-    await GET(makeRequest());
+    await GET(makeRequest("?stats=1"));
     expect(eqCalls).toContainEqual(["excluded", false]);
+  });
+
+  it("skips the window's totals unless they're asked for", async () => {
+    isSuperAdminResult = true;
+    const body = await (await GET(makeRequest())).json();
+    expect(body.stats).toBeUndefined();
+    expect(eqCalls.filter(([column]) => column === "is_test")).toEqual([["is_test", false]]);
   });
 });

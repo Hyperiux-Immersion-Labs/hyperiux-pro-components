@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { displayName } from "@/lib/display-name";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { getTemplateBySlug } from "@/lib/mock-templates";
 import { resolveDateBounds } from "@/lib/admin-activity";
 import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/lib/admin-data";
@@ -21,7 +21,7 @@ import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/li
 // out, like test invoices. Optional template slug filter.
 
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -60,22 +60,27 @@ export async function GET(request) {
 
     if (templateFilter !== "all") query = query.eq("template_slug", templateFilter);
 
+    // The window's totals read every purchase in it: only with ?stats=1 (the Invoicing
+    // tab's cards come from /api/admin/invoices/stats)
+    const withStats = searchParams.get("stats") === "1";
     const [{ data: pageRows, error: pageError, count }, allRows] = await Promise.all([
       query.range(offset, offset + limit - 1),
       // Stats always reflect every purchase in the same window, independent
       // of the current page/template filter, so the top-line numbers don't
       // shift while paging. Revenue only: paid purchases - not refunded or
       // excluded ones, and not credit redemptions (no money changes hands).
-      fetchAllRows(() =>
-        scoped(
-          supabase
-            .from("template_purchases")
-            .select("amount, currency")
-            .eq("status", "paid")
-            .eq("excluded", false)
-            .or("source.is.null,source.neq.credit")
-        )
-      ),
+      withStats
+        ? fetchAllRows(() =>
+            scoped(
+              supabase
+                .from("template_purchases")
+                .select("amount, currency")
+                .eq("status", "paid")
+                .eq("excluded", false)
+                .or("source.is.null,source.neq.credit")
+            )
+          )
+        : Promise.resolve(null),
     ]);
 
     if (pageError) {
@@ -133,13 +138,15 @@ export async function GET(request) {
     return NextResponse.json({
       purchases,
       total: count || 0,
-      stats: {
-        totalPurchases: (allRows || []).length,
-        revenueByCurrency: Object.entries(revenueByCurrency).map(([currency, amount]) => ({
-          currency,
-          amount,
-        })),
-      },
+      ...(withStats && {
+        stats: {
+          totalPurchases: allRows.length,
+          revenueByCurrency: Object.entries(revenueByCurrency).map(([currency, amount]) => ({
+            currency,
+            amount,
+          })),
+        },
+      }),
     });
   } catch (error) {
     console.error("ADMIN_TEMPLATE_PURCHASES_ERROR:", error);

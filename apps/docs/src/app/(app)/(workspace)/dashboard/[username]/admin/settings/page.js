@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, DetailRows, TextButton } from "@/components/Dashboard/DashboardUI";
 import { Bar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
-import { useAdminRole } from "@/lib/useAdminRole";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 
 // The admin Settings tab (super admins): what used to need a code change or a redeploy.
@@ -22,8 +21,9 @@ const FIELD = "type-body min-h-28 w-full resize-y bg-black/3 px-3 py-2 text-ink 
 const lines = (text) => text.split(/[\n,]/).map((item) => item.trim()).filter(Boolean);
 
 export default function AdminSettingsPage() {
-  const { path, isSuperAdmin } = useDashboard();
-  const role = useAdminRole();
+  const { path, can, accessLoaded } = useDashboard();
+  // Needs settings.manage (lib/admin-permissions); the API checks it again
+  const allowed = can("settings.manage");
   const router = useRouter();
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -34,11 +34,11 @@ export default function AdminSettingsPage() {
   const [domains, setDomains] = useState("");
 
   useEffect(() => {
-    if (!role.loading && !isSuperAdmin) router.replace(path("admin/users"));
-  }, [role.loading, isSuperAdmin, router, path]);
+    if (accessLoaded && !allowed) router.replace(path("admin/users"));
+  }, [accessLoaded, allowed, router, path]);
 
   useEffect(() => {
-    if (!isSuperAdmin) return undefined;
+    if (!allowed) return undefined;
     let active = true;
     const apply = (json) => {
       if (!active) return;
@@ -59,7 +59,7 @@ export default function AdminSettingsPage() {
     return () => {
       active = false;
     };
-  }, [isSuperAdmin]);
+  }, [allowed]);
 
   async function save(key, value, done) {
     setBusy(key);
@@ -121,7 +121,7 @@ export default function AdminSettingsPage() {
             {installLimit.enforced
               ? "Applied: once someone uses today’s installs, the website, CLI and MCP refuse more until midnight UTC."
               : "Recording only: every install is counted against the limits, but nobody is refused."}{" "}
-            {installLimit.source === "environment" ? "Set by the INSTALL_LIMIT_ENFORCE environment variable until you save it here." : "Set here."}
+            {installLimit.source === "environment" ? "This is the server’s default until you change it here." : "Set here."}
           </p>
         </div>
 
@@ -171,16 +171,16 @@ export default function AdminSettingsPage() {
       <section aria-labelledby="internal-h" className={`${CARD} ${CARD_PAD} gap-[calc(var(--cvw)*1.2)] max-lg:gap-4`}>
         <div className="flex flex-col gap-1">
           <h2 id="internal-h" className="type-h3">
-            Internal Accounts
+            Internal Emails &amp; Domains
           </h2>
           <p className="type-small text-black/60">
-            Team and test accounts, kept out of the customer numbers and shown under Internal. Admins, and accounts marked internal in their Manage drawer, count too.
+            Any account with one of these emails or domains is internal automatically: kept out of the customer numbers and shown under Internal. To mark a single account, use Users → Manage → Internal Account. Admins are always internal.
           </p>
         </div>
 
         <DetailRows
           rows={[
-            ["Always internal (in code)", [...internal.builtInDomains.map((domain) => `@${domain}`), ...internal.builtInEmails].join(", ") || "—"],
+            ["Always internal", [...internal.builtInDomains.map((domain) => `@${domain}`), ...internal.builtInEmails].join(", ") || "—"],
           ]}
         />
 

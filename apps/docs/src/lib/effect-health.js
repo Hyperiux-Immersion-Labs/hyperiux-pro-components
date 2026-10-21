@@ -35,7 +35,7 @@ const categorySlugOf = (value) => getEffectCategoryBySlug(value)?.slug || value 
  * guides        - Sanity effectContent docs, raw ({ _id, effectSlug, categorySlug, title,
  *                 summary, seoDescription, body: [{ _type, style, text, code }], relatedEffectNames })
  * catalogue     - the built AI catalogue (lib/ai-catalogue), for the usage / props checks
- * Returns { effects: [{ slug, title, categorySlug, tier, sanityId, docsUrl, issues }], counts }
+ * Returns { effects: [{ slug, title, categorySlug, tier, sanityId, updatedAt, docsUrl, issues }], counts }
  * - only effects with at least one issue, worst first.
  */
 export function computeEffectHealth({ registryItems = [], guides = [], catalogue = { effects: [] } }) {
@@ -63,6 +63,8 @@ export function computeEffectHealth({ registryItems = [], guides = [], catalogue
       categorySlug: pageCategory,
       tier: item.tier === "pro" ? "pro" : "free",
       sanityId: guide?._id || null,
+      // When its Sanity guide was last edited (the Effects tab's date filter)
+      updatedAt: guide?._updatedAt || null,
       docsUrl: `/effects/${pageCategory}/${slug}`,
       issues: [],
     };
@@ -106,6 +108,7 @@ export function computeEffectHealth({ registryItems = [], guides = [], catalogue
       categorySlug: categorySlugOf(guide.categorySlug),
       tier: null,
       sanityId: guide._id || null,
+      updatedAt: guide._updatedAt || null,
       docsUrl: null,
       issues: [],
     };

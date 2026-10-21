@@ -117,7 +117,8 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
     };
   }, [open, onClose]);
   // The page stays still behind it (shared with any modal opened on top)
-  useLenisLock(open);
+  // Its exit animation runs 0.5s: the page scrollbar comes back once it's gone
+  useLenisLock(open, { closeMs: 500 });
 
   if (!mounted || !template) return null;
 

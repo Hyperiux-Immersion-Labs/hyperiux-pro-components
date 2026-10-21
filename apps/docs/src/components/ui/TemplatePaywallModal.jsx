@@ -69,11 +69,10 @@ export function TemplatePaywallModal({
     setMounted(true);
   }, []);
 
+  // Escape closes it. The page behind holds still through useLenisLock above, which keeps
+  // the page scrollbar's width (overflow: hidden here took it away and shifted the page).
   useEffect(() => {
     if (!open) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") onClose();
@@ -81,7 +80,6 @@ export function TemplatePaywallModal({
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [open, onClose]);
@@ -114,6 +112,7 @@ export function TemplatePaywallModal({
       onClick={onClose}
     >
       <div
+        data-lenis-prevent
         className="relative w-[40vw] max-h-[90vh] overflow-y-auto border border-white/15 bg-background px-9 py-9 max-lg:w-[85%] max-lg:px-7 max-lg:py-8 max-md:h-fit max-md:max-h-[90svh] max-md:border-x-0 max-md:border-b-0 max-md:px-5 max-md:py-12"
         onClick={(event) => event.stopPropagation()}
       >

@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { syncSubscription } from "@/lib/subscription-sync";
 
 // "Sync with Razorpay" in the Manage drawer's Billing section (super admins): one account
 // brought in line with Razorpay (lib/subscription-sync). Logged when it changed anything.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.manage"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

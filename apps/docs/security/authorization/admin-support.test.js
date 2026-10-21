@@ -11,7 +11,19 @@ vi.mock("@/lib/supabase", async () => {
   return { supabase: harness.db, fetchAllRows: async (build) => (await build()).data || [] };
 });
 vi.mock("@clerk/nextjs/server", async () => (await import("../helpers/route-harness.js")).clerkModule);
-vi.mock("@/lib/admin", async (importOriginal) => ({ ...(await importOriginal()), assertSuperAdmin: vi.fn(async () => superAdmin) }));
+// \`superAdmin\` stands for the owner (every permission); false: no admin access at all
+vi.mock("@/lib/admin", async (importOriginal) => {
+  const actual = await importOriginal();
+  const { PERMISSION_KEYS } = await import("@/lib/admin-permissions");
+  const owner = () => (superAdmin ? { userId: "user_super", owner: true, admin: true, permissions: new Set(PERMISSION_KEYS), roles: [], grant: [], revoke: [] } : null);
+  return {
+    ...actual,
+    assertSuperAdmin: vi.fn(async () => superAdmin),
+    requireOwner: vi.fn(async () => owner()),
+    requireAdminAccess: vi.fn(async () => owner()),
+    requirePermission: vi.fn(async () => owner()),
+  };
+});
 vi.mock("@/lib/template-credits", async (importOriginal) => ({
   ...(await importOriginal()),
   redeemTemplateCredit: vi.fn(async () => redeemResult),

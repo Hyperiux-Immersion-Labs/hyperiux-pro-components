@@ -8,7 +8,7 @@ import {
   waitlistInviteSubject,
   waitlistInviteText,
 } from "@/lib/emails/waitlist-invite-email";
-import { assertAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -41,7 +41,7 @@ async function getInvitesSentToday() {
 }
 
 export async function GET() {
-  if (!(await assertAdmin())) {
+  if (!(await requirePermission("users.invite"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
@@ -136,7 +136,7 @@ async function inviteWithConcurrency(clerk, emails, concurrency) {
 }
 
 export async function POST(req) {
-  if (!(await assertAdmin())) {
+  if (!(await requirePermission("users.invite"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

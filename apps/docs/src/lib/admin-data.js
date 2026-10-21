@@ -1,6 +1,6 @@
 import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
-import { getRole } from "@/lib/admin";
+import { getRole, accessOf } from "@/lib/admin";
 import { ACTIVE_PRO_STATUSES } from "@/lib/subscription";
 import { isValidTier } from "@/lib/plans";
 import { fetchAllRows, supabase } from "@/lib/supabase";
@@ -145,13 +145,14 @@ const SUBSCRIPTION_COLUMNS =
  * Built from Clerk (the real accounts), newest first.
  *   search  - name, email or username contains it
  *   plan    - "pro_plus" | "pro" | "free" (current plan) | "paid" (either paid plan) | "all"
- *   role    - "admin" | "super_admin" | "user" | "all"
+ *   role    - "admin" | "super_admin" | "user" | "all", or "role:<id>" - admins with that
+ *             role (the Roles tab's; super admins aren't counted, they have every one)
  *   startISO / endISO - joined in this window
  */
 export async function getAdminUserList({ audience, search = "", plan = "all", role = "all", startISO, endISO }) {
   const [{ users }, subscriptionRows] = await Promise.all([
     getAudience(audience),
-    fetchAllRows(() => supabase.from("subscriptions").select(SUBSCRIPTION_COLUMNS)),
+    fetchAllRows(() => supabase.from("subscriptions").select(SUBSCRIPTION_COLUMNS), { orderBy: "clerk_user_id" }),
   ]);
   const subById = new Map(subscriptionRows.map((row) => [row.clerk_user_id, row]));
   const needle = search.trim().toLowerCase();
@@ -168,7 +169,9 @@ export async function getAdminUserList({ audience, search = "", plan = "all", ro
       if (end !== null && clerkUser.createdAt >= end) return false;
       if (plan === "paid" && currentPlan === "free") return false;
       if (plan !== "all" && plan !== "paid" && currentPlan !== plan) return false;
-      if (role !== "all" && userRole !== role) return false;
+      if (role.startsWith("role:")) {
+        if (userRole !== "admin" || !accessOf(clerkUser).roles.includes(role.slice(5))) return false;
+      } else if (role !== "all" && userRole !== role) return false;
       if (!needle) return true;
       const haystack = [
         clerkUser.firstName,

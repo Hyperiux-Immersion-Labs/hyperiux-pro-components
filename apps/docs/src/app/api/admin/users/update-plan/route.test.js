@@ -8,7 +8,10 @@ let subscriptionRow;
 let razorpayStatus;
 const upsert = vi.fn(async () => ({ error: null }));
 
-vi.mock("@/lib/admin", () => ({ assertSuperAdmin: vi.fn(async () => true) }));
+// The route's permission check: the owner's access when allowed (true), null (403) when not
+vi.mock("@/lib/admin", () => ({
+  requirePermission: vi.fn(async () => (true ? { owner: true, admin: true, permissions: new Set(["finance.view", "finance.manage", "users.plan", "users.create"]) } : null)),
+}));
 vi.mock("@/lib/admin-audit", () => ({ recordAdminAction: vi.fn(async () => {}) }));
 vi.mock("@/lib/resend", () => ({ sendEmail: vi.fn(async () => ({ success: true })) }));
 vi.mock("@/lib/emails/pro-unlocked-email", () => ({ renderProUnlockedEmail: () => null, proUnlockedSubject: "", proUnlockedText: () => "" }));

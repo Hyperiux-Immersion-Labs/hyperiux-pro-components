@@ -106,9 +106,13 @@ export async function GET(request) {
     // Installs (lib/admin-data fetchInstalls - one effect, one account, one day; admins
     // included) in the row shape the counters below read
     const asRows = (installs) => installs.map((row) => ({ usage_date: row.day, clerk_user_id: row.clerkUserId, identity_key: row.identityKey, effect_slug: row.effectSlug, source: row.source }));
+    // The install-limit analysis (attempts, denials, enforcement, plans) reads the whole
+    // install_events table for the window, so it's only worked out when asked for
+    // (?limits=1); the Activity page doesn't show it and refreshes every two minutes
+    const withLimits = searchParams.get("limits") === "1";
     const [unlocks, allEvents, todayUnlocks] = await Promise.all([
       fetchInstalls({ startISO, endISO, audience }).then(asRows),
-      fetchAllRows(eventsQuery).then(mine),
+      withLimits ? fetchAllRows(eventsQuery).then(mine) : Promise.resolve([]),
       // "Installs Today" is a fixed daily pulse, independent of the selected window
       fetchInstalls({ startISO: `${today}T00:00:00.000Z`, audience }),
     ]);
@@ -131,8 +135,9 @@ export async function GET(request) {
       INSTALL_SOURCES
     );
 
-    // Top installers: every source counted (installs are one thing, web / CLI / MCP)
-    const allUserCounts = topUserCounts(unlocks, TOP_USERS_LIMIT);
+    // Top installers: every source counted (installs are one thing, web / CLI / MCP).
+    // Twice as many as shown are looked up, since deleted accounts drop out below
+    const allUserCounts = topUserCounts(unlocks, TOP_USERS_LIMIT * 2);
     const neededClerkUserIds = allUserCounts.map((entry) => entry.clerkUserId);
     let clerkMap = {};
     if (neededClerkUserIds.length > 0) {
@@ -163,7 +168,20 @@ export async function GET(request) {
         });
     }
 
-    const topInstallers = buildLeaderboard(allUserCounts);
+    const topInstallers = buildLeaderboard(allUserCounts).slice(0, TOP_USERS_LIMIT);
+
+    const limits = withLimits
+      ? {
+          allowedCount: allowedRows.length,
+          alreadyUnlockedCount: alreadyUnlockedRows.length,
+          deniedCount: deniedEvents.length,
+          // Signed-out attempts turned away (every install needs an account)
+          signInRequiredCount: deniedEvents.filter((row) => row.reason === "sign-in-required").length,
+          // Checked across every attempt, not just successful ones - a denial can only
+          // happen while enforcement is on
+          enforced: allEvents.some((row) => row.enforced),
+        }
+      : {};
 
     return NextResponse.json({
       range,
@@ -171,26 +189,15 @@ export async function GET(request) {
         // Installs (web + CLI + MCP), counted as everywhere else (fetchInstalls)
         totalInstalls: unlocks.length,
         installsToday,
-        // These three stay install_events-based - install_unlocks has no
-        // concept of a denied attempt (nothing gets inserted there when a
-        // claim is refused) or of what enforcement mode was active, so
-        // there's no equivalent number to read from it instead.
-        allowedCount: allowedRows.length,
-        alreadyUnlockedCount: alreadyUnlockedRows.length,
-        deniedCount: deniedEvents.length,
-        // Signed-out attempts turned away (every install needs an account)
-        signInRequiredCount: deniedEvents.filter((row) => row.reason === "sign-in-required").length,
-        // Checked across every attempt, not just successful ones - a denial
-        // can only happen while enforcement is on, so it's the more
-        // complete signal for "was the limit actually active in this
-        // window," even if every *successful* row happened to log false.
-        enforced: allEvents.some((row) => row.enforced),
+        // install_events-based, with ?limits=1 - install_unlocks has no concept of a
+        // denied attempt or of what enforcement mode was active
+        ...limits,
       },
       sourceBreakdown: countBy(unlocks, "source"),
       // Stays install_events-based - plan isn't a column on install_unlocks,
       // so this is the one breakdown here still reading the less-complete
       // table (a documented exception, not an oversight).
-      planBreakdown: countBy(allEvents, "plan"),
+      ...(withLimits && { planBreakdown: countBy(allEvents, "plan") }),
       installTrend,
       // The same days split by surface: { date, label, web, cli, mcp }
       sourceTrend,

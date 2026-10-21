@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search } from "lucide-react";
 import { useDashboard } from "@/components/Dashboard/DashboardContext";
-import { CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, Pager, PerPageMenu, SourceChip } from "@/components/Dashboard/DashboardUI";
-import { StatCard, StatCardSkeleton, TWO_OF_THREE } from "@/components/Dashboard/TrendStat";
+import Button from "@/homepage/components/Button";
+import { ADMIN_PER_PAGE, ADMIN_PER_PAGE_OPTIONS, CARD, CARD_PAD, DATE_PRESETS, DateRangeFilter, EMPTY_TABLE, HEAD_ROW, NUM, Pager, PerPageMenu, ROW, SearchField, SourceChip, STICKY_START, TABLE, TableScroll, TD, TH, TOOLBAR } from "@/components/Dashboard/DashboardUI";
+import { STAT_EACH, StatCard, StatCardSkeleton, TWO_OF_THREE } from "@/components/Dashboard/TrendStat";
 import { SOURCE_BARS, UsageBars } from "@/components/Dashboard/UsageBars";
 import { AUDIENCE_PAIR, AdminAudienceFilter, PAIR_WIDTH, useAdminAudience } from "@/components/admin/AdminAudience";
 import { SlidingSegment } from "@/components/ui/SlidingSegment";
@@ -70,7 +71,7 @@ function RankList({ rows, unit }) {
   );
 }
 
-// The admin pages' avatar: initials in orange on the dark page colour
+// The admin pages' avatar: initials in black on the brand orange
 function Avatar({ name, email }) {
   return <UserAvatar name={name} email={email} className="size-8" />;
 }
@@ -163,7 +164,9 @@ function ActivitySkeleton({ revenue }) {
 }
 
 export default function AdminActivityPage() {
-  const { path, isSuperAdmin, catalog } = useDashboard();
+  const { path, can, catalog } = useDashboard();
+  // Revenue needs finance.view (the API leaves it out otherwise)
+  const seesMoney = can("finance.view");
   const [dates, setDates] = useState(START_DATES);
   const query = rangeQuery(dates);
   // Customers / Internal / All: chosen in the tab row (DashboardShell), shared by every admin page
@@ -172,7 +175,7 @@ export default function AdminActivityPage() {
 
   // The overview and the installs numbers for the window: cached per window (skeleton on a
   // window's first load only), refreshed on focus and every 30s
-  const { data, failed } = useDashboardData(
+  const { data, failed, retry } = useDashboardData(
     `admin-activity:${query}:${audience}`,
     async () => {
       if (getDashboardPreview()) {
@@ -183,7 +186,8 @@ export default function AdminActivityPage() {
       const [overview, installs] = await Promise.all([get(`/api/admin/activity/overview?${query}&audience=${audience}`), get(`/api/admin/installs?${query}&audience=${audience}`)]);
       return { overview, installs };
     },
-    { pollMs: 30000 },
+    // Every 2 minutes: each refresh reads the window's installs, saves, views and payments
+    { pollMs: 120000 },
   );
 
   // The feed: its own search, source and page
@@ -191,7 +195,7 @@ export default function AdminActivityPage() {
   const [feedQuery, setFeedQuery] = useState("");
   const [feedSource, setFeedSource] = useState("all");
   const [feedPage, setFeedPage] = useState(0);
-  const [feedPerPage, setFeedPerPage] = useState(10);
+  const [feedPerPage, setFeedPerPage] = useState(ADMIN_PER_PAGE);
   // A new window or audience starts the feed from its first page
   const [feedScope, setFeedScope] = useState(`${query}:${audience}`);
   if (feedScope !== `${query}:${audience}`) {
@@ -242,7 +246,8 @@ export default function AdminActivityPage() {
         {header}
         <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
           <p className="type-h3">We couldn’t load the activity.</p>
-          <p className="type-body text-black/60">Check your connection and reload the page.</p>
+          <p className="type-body text-black/60">Check your connection and try again.</p>
+          <Button text="Try again" preventDefault onClick={retry} />
         </div>
       </div>
     );
@@ -252,7 +257,7 @@ export default function AdminActivityPage() {
     return (
       <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
         {header}
-        <ActivitySkeleton revenue={isSuperAdmin} />
+        <ActivitySkeleton revenue={seesMoney} />
       </div>
     );
   }
@@ -289,21 +294,27 @@ export default function AdminActivityPage() {
     <div className="flex flex-col gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
       {header}
 
-      {/* the stat cards: signups, template views, revenue; then installs and saves */}
-      <div className="flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-col max-lg:gap-3">
-        <StatCard className="flex-1" label="Signups" value={number(kpis.signups.value)} note="New accounts" stat={kpis.signups} comparison={kpis.comparison} />
-        <StatCard className="flex-1" label="Template views" value={number(kpis.templateViews.value)} note="Template pages opened" stat={kpis.templateViews} comparison={kpis.comparison} />
+      {/* the stat cards: signups, template views, revenue; then installs and saves. Tablets
+          and phones: signups and views two to a row, the rest a row each */}
+      <div className="flex gap-[calc(var(--cvw)*0.8)] max-lg:flex-wrap max-lg:gap-3">
+        <StatCard className={STAT_EACH} label="Signups" value={number(kpis.signups.value)} note="New accounts" stat={kpis.signups} comparison={kpis.comparison} />
+        <StatCard className={STAT_EACH} label="Template views" value={number(kpis.templateViews.value)} note="Viewers a day, each counted once per template" stat={kpis.templateViews} comparison={kpis.comparison} />
         {/* the API sends revenue to super admins only */}
-        {isSuperAdmin && kpis.revenue && (
+        {seesMoney && kpis.revenue && (
           <StatCard
-            className="flex-1"
+            className="flex-1 max-lg:w-full max-lg:flex-none"
             label="Revenue"
             value={money(kpis.revenue.value, kpis.revenue.currency)}
             note={
-              kpis.revenue.byCurrency
-                .filter((row) => row.currency !== kpis.revenue.currency)
-                .map((row) => `+ ${money(row.amount, row.currency)}`)
-                .join(" ") || "Subscriptions and templates"
+              // INR is what was charged, 18% GST included
+              [
+                kpis.revenue.includesGst ? "Incl. GST" : null,
+                ...kpis.revenue.byCurrency
+                  .filter((row) => row.currency !== kpis.revenue.currency)
+                  .map((row) => `Plus ${money(row.amount, row.currency)} in ${row.currency}${row.includesGst ? ", incl. GST" : ""}`),
+              ]
+                .filter(Boolean)
+                .join(" · ") || "Subscriptions and templates, after refunds and exclusions"
             }
             stat={kpis.revenue}
             comparison={kpis.comparison}
@@ -314,7 +325,7 @@ export default function AdminActivityPage() {
         <StatCard
           // Two of the three columns above (one card plus a gap wider); without Revenue the
           // row above has two, so the two cards here split evenly
-          className={isSuperAdmin ? TWO_OF_THREE : "flex-1"}
+          className={seesMoney ? TWO_OF_THREE : "flex-1"}
           label="Installs"
           value={number(kpis.installs.value)}
           note="Web, CLI and MCP · one effect, one account, one day"
@@ -446,25 +457,33 @@ export default function AdminActivityPage() {
           </h2>
           <p className="type-small text-black/60">Views and paid sales in this window (credit redemptions aren’t sales)</p>
         </div>
-        <div className="flex flex-col">
-          <div className="type-label flex gap-4 border-b border-black/10 pb-3 text-black/60">
-            <span className="flex-1">Template</span>
-            <span className="w-[15%] text-right">Views</span>
-            <span className="w-[15%] text-right">Sales</span>
-            <span className="w-[15%] text-right">Conversion</span>
-          </div>
-          {(overview.templateStats || []).map((t) => (
-            <div key={t.slug} className="flex items-center gap-4 border-b border-black/10 py-[calc(var(--cvw)*0.7)] last:border-b-0 max-lg:py-3">
-              <span className="flex min-w-0 flex-1 flex-col">
-                <span className="type-body truncate">{t.title}</span>
-                <span className="type-small text-black/60">{t.category}</span>
-              </span>
-              <span className="type-body w-[15%] text-right">{number(t.views)}</span>
-              <span className="type-body w-[15%] text-right">{number(t.sales)}</span>
-              <span className="type-body w-[15%] text-right">{t.views ? `${((t.sales / t.views) * 100).toFixed(1)}%` : "—"}</span>
-            </div>
-          ))}
-        </div>
+        <TableScroll>
+          <table className={TABLE}>
+            <thead>
+              <tr className={HEAD_ROW}>
+                <th className={TH}>Template</th>
+                <th className={`${TH} ${NUM}`}>Views</th>
+                <th className={`${TH} ${NUM}`}>Sales</th>
+                <th className={`${TH} ${NUM}`}>Conversion</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(overview.templateStats || []).map((t) => (
+                <tr key={t.slug} className={ROW}>
+                  <td className={`${TD}`}>
+                    <span className="flex flex-col">
+                      <span className="type-body">{t.title}</span>
+                      <span className="type-small text-black/60">{t.category}</span>
+                    </span>
+                  </td>
+                  <td className={`type-body ${TD} ${NUM}`}>{number(t.views)}</td>
+                  <td className={`type-body ${TD} ${NUM}`}>{number(t.sales)}</td>
+                  <td className={`type-body ${TD} ${NUM}`}>{t.views ? `${((t.sales / t.views) * 100).toFixed(1)}%` : "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </TableScroll>
       </section>
 
       {/* the live feed */}
@@ -476,20 +495,16 @@ export default function AdminActivityPage() {
             </h2>
             <p className="type-small text-black/60">{feed ? `${number(feed.total)} installs across web, CLI and MCP in this window` : " "}</p>
           </div>
-          <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
-            <label className="type-small flex h-9.5 items-center gap-2 bg-light px-3 text-black/60 ring-1 ring-inset ring-black/10 focus-within:ring-primary">
-              <Search className="size-3.5 shrink-0" aria-hidden="true" />
-              <span className="sr-only">Search effects</span>
-              <input
-                value={feedQuery}
-                onChange={(e) => {
-                  setFeedQuery(e.target.value);
-                  setFeedPage(0);
-                }}
-                placeholder="Search effects"
-                className="w-[calc(var(--cvw)*12)] bg-transparent text-ink outline-none placeholder:text-black/40 max-lg:w-40"
-              />
-            </label>
+          <div className={TOOLBAR}>
+            <SearchField
+              value={feedQuery}
+              onChange={(next) => {
+                setFeedQuery(next);
+                setFeedPage(0);
+              }}
+              placeholder="Effect or person"
+              label="Search effects or people"
+            />
             <SlidingSegment
               label="Source"
               items={FEED_SOURCES}
@@ -501,6 +516,7 @@ export default function AdminActivityPage() {
               itemClassName="w-14"
             />
             <PerPageMenu
+              options={ADMIN_PER_PAGE_OPTIONS}
               value={feedPerPage}
               onChange={(next) => {
                 setFeedPerPage(next);
@@ -530,36 +546,42 @@ export default function AdminActivityPage() {
           <p className={EMPTY_TABLE}>No installs match.</p>
         ) : (
           <>
-            <div className="flex flex-col">
-              <div className="type-label flex gap-4 border-b border-black/10 pb-3 text-black/60 max-md:hidden">
-                <span className="w-[34%]">User</span>
-                <span className="flex-1">Effect</span>
-                <span className="w-16">Source</span>
-                <span className="w-[16%] text-right">When</span>
-              </div>
-              {feed.events.map((event) => (
-                <div key={event.id} className="flex items-center gap-4 border-b border-black/10 py-[calc(var(--cvw)*0.6)] last:border-b-0 max-lg:py-3 max-md:flex-wrap">
-                  <span className="flex w-[34%] min-w-0 items-center gap-3 max-md:w-full">
-                    {event.userName || event.userEmail ? (
-                      <>
-                        <Avatar name={event.userName} email={event.userEmail} />
-                        <span className="flex min-w-0 flex-col">
-                          <span className="type-body truncate">{event.userName || event.userEmail}</span>
-                          {event.userName && <span className="type-small truncate text-black/60">{event.userEmail}</span>}
-                        </span>
-                      </>
-                    ) : (
-                      <span className="type-small text-black/60">Anonymous · {String(event.identityKey || "").split(":")[0] || "visitor"}</span>
-                    )}
-                  </span>
-                  <span className="type-body min-w-0 flex-1 truncate">{event.effectTitle}</span>
-                  <span className="w-16 max-md:w-auto">
-                    <SourceChip source={event.source} />
-                  </span>
-                  <span className="type-small w-[16%] text-right text-black/60 max-md:w-auto">{formatWhen(event.occurredAt)}</span>
-                </div>
-              ))}
-            </div>
+            <TableScroll>
+              <table className={TABLE}>
+                <thead>
+                  <tr className={HEAD_ROW}>
+                    <th className={`${TH} ${STICKY_START}`}>User</th>
+                    <th className={TH}>Effect</th>
+                    <th className={TH}>Source</th>
+                    <th className={`${TH} ${NUM}`}>When</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {feed.events.map((event) => (
+                    <tr key={event.id} className={ROW}>
+                      <td className={`${TD} ${STICKY_START}`}>
+                        {event.userName || event.userEmail ? (
+                          <span className="flex items-center gap-3">
+                            <Avatar name={event.userName} email={event.userEmail} />
+                            <span className="flex max-w-56 flex-col max-md:max-w-36">
+                              <span className="type-body truncate">{event.userName || event.userEmail}</span>
+                              {event.userName && <span className="type-small truncate text-black/60">{event.userEmail}</span>}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="type-small text-black/60">Anonymous · {String(event.identityKey || "").split(":")[0] || "visitor"}</span>
+                        )}
+                      </td>
+                      <td className={`type-body ${TD}`}>{event.effectTitle}</td>
+                      <td className={TD}>
+                        <SourceChip source={event.source} />
+                      </td>
+                      <td className={`type-small ${TD} ${NUM} text-black/60`}>{formatWhen(event.occurredAt)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </TableScroll>
             <Pager page={feedPage} pages={feedPages} total={feed.total} noun={feed.total === 1 ? "install" : "installs"} onPage={setFeedPage} />
           </>
         )}

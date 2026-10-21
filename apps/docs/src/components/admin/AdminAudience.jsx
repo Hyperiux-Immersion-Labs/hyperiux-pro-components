@@ -55,7 +55,7 @@ const AUDIENCE_LABELS = Object.fromEntries(AUDIENCE_ITEMS.map((item) => [item.id
 // The dropdown, styled like the date filter beside it: orange when it isn't the
 // default (Customers), as the date filter is when it isn't "All time". Beside it, both
 // go in AUDIENCE_PAIR: a row, and on phones two equal halves of the width.
-export const AUDIENCE_PAIR = "flex items-center gap-[calc(var(--cvw)*0.7)] max-md:grid max-md:w-full max-md:grid-cols-2 max-md:gap-[2.5vw]";
+export const AUDIENCE_PAIR = "flex items-center gap-[calc(var(--cvw)*0.7)] max-md:grid max-md:w-full max-md:grid-cols-2 max-md:items-center max-md:gap-[2.5vw]";
 export const PAIR_WIDTH = `${FILTER_WIDTH} max-md:w-full`;
 export function AdminAudienceFilter({ widthClassName = FILTER_WIDTH }) {
   const [audience, setAudience] = useAdminAudience();

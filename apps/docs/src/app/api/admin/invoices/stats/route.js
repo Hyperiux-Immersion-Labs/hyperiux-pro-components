@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase } from "@/lib/supabase";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { compareStat, comparisonWindows, resolveDateBounds } from "@/lib/admin-activity";
 import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/lib/admin-data";
 
@@ -13,7 +13,7 @@ import { fetchAllRows, filterToAudience, getAudience, parseAudience } from "@/li
 // ones an admin excluded aren't revenue or sales; each currency's card also says how much
 // was refunded in the window. Super admins only.
 export async function GET(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("finance.view"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { ArrowUpRight, LoaderCircle, RefreshCw } from "lucide-react";
 import { DetailRows } from "@/components/Dashboard/DashboardUI";
 import { Confirm, LINE_BUTTON, PANEL_CARD, formatDate, timeAgo } from "@/components/admin/drawerUI";
+import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { getDashboardPreview, sampleAdminAudit, sampleAdminBilling, sampleWebhookEvents } from "@/lib/dev/dashboardPreview";
 
 // The Manage drawer's Billing and History sections (super admins): the account's
@@ -22,6 +23,8 @@ const STATUS = {
   expired: "Expired",
 };
 const LIVE = new Set(["created", "authenticated", "active", "pending", "halted", "paused"]);
+// The toast's title when an action goes through (its first line is the description)
+const DONE = { sync: "Synced with Razorpay", cancel: "Subscription Cancelled", refund: "Refund Sent" };
 
 // Paise / cents, as money
 function money(minor, currency) {
@@ -41,7 +44,10 @@ const TEXT_BUTTON = "type-small cursor-pointer text-foreground underline underli
  * `post(url, body)` posts as the drawer does (throws the API's error); `onSaved(patch)`
  * updates the user's row; `onChanged()` tells History something was logged.
  */
-export function BillingSection({ user, post, onSaved, onChanged, onBusyChange }) {
+export function BillingSection({ user, post, notify, onSaved, onChanged, onBusyChange }) {
+  // Shown with finance.view (the drawer checks); Sync, Cancel and Refund need finance.manage
+  const { can } = useDashboard();
+  const canManage = can("finance.manage");
   const userId = user.id;
   const [data, setData] = useState(null);
   const [loadError, setLoadError] = useState("");
@@ -93,11 +99,14 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
     try {
       const result = await work();
       setPending(null);
+      // The details stay in the section; the toast says it's done
       setNotice(result);
+      notify({ title: DONE[kind] || "Done", description: result.lines[0] });
       setReload((n) => n + 1);
       onChanged?.();
     } catch (err) {
       setError(err.message);
+      notify({ title: "Billing Change Failed", description: err.message, tone: "error" });
     } finally {
       setBusy(null);
     }
@@ -142,6 +151,7 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
         <h3 id="manage-billing-h" className="type-h3">
           Billing
         </h3>
+        {canManage && (
         <button
           type="button"
           disabled={!data || locked}
@@ -156,6 +166,7 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
           {busy === "sync" ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <RefreshCw aria-hidden="true" />}
           Sync with Razorpay
         </button>
+        )}
       </div>
 
       {error && (
@@ -212,7 +223,8 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
           )}
 
           {/* cancel */}
-          {subLive &&
+          {canManage &&
+            subLive &&
             !data.cancelScheduled &&
             (pending === "cancel_period_end" || pending === "cancel_now" ? (
               <Confirm
@@ -314,6 +326,7 @@ export function BillingSection({ user, post, onSaved, onChanged, onBusyChange })
                         />
                       </div>
                     ) : (
+                      canManage &&
                       payment.refundable > 0 &&
                       payment.status !== "refunded" && (
                         <button
@@ -355,12 +368,29 @@ function detailOf(entry) {
       return d.plan === "free" ? "Free" : `${d.tier === "pro_plus" ? "Pro+" : "Pro"}${d.currentPeriodEnd ? ` until ${formatDate(d.currentPeriodEnd)}` : ""}`;
     case "role.update":
       return d.role === "super_admin" ? "Super Admin" : d.role === "admin" ? "Admin" : "No access";
+    // Roles and access (ADMIN_ROLES_PLAN.md): role ids and permission keys, as stored
+    case "access.update": {
+      const after = d.after || {};
+      const parts = [
+        after.roles?.length ? `Roles: ${after.roles.join(", ")}` : "No roles",
+        after.grant?.length ? `+ ${after.grant.join(", ")}` : null,
+        after.revoke?.length ? `− ${after.revoke.join(", ")}` : null,
+      ].filter(Boolean);
+      return after.roles?.length || after.grant?.length ? parts.join(" · ") : "Admin access removed";
+    }
+    case "role.create":
+    case "role.delete":
+      return `${d.name}${d.permissions?.length ? `: ${d.permissions.join(", ")}` : ""}`;
+    case "role.edit":
+      return [d.name, d.added?.length ? `+ ${d.added.join(", ")}` : null, d.removed?.length ? `− ${d.removed.join(", ")}` : null].filter(Boolean).join(" · ");
     case "subscription.sync":
       return (d.changes || []).join(" ");
     case "subscription.cancel_at_period_end":
       return d.accessUntil ? `Pro until ${formatDate(d.accessUntil)}` : null;
     case "waitlist.invite":
       return d.sent ? `${d.sent.length} sent` : null;
+    case "user.create":
+      return `${d.email || ""}${d.emailed ? " · sign-in details emailed" : ""}`;
     case "credits.adjust":
       return `${d.delta > 0 ? "+" : ""}${d.delta} · ${d.reason || ""}`;
     case "template.give":

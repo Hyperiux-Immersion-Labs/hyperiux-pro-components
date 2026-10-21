@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { supabase } from "@/lib/supabase";
-import { ROLES, getRequestRole } from "@/lib/admin";
+import { can, requireAdminAccess } from "@/lib/admin";
 import { redactEmailLogRow } from "@/lib/email-redaction";
 
 // Payment emails carry amounts (in the subject too: "receipt ($79.00)"), which are super
 // admin only, like revenue - a regular admin sees that one was sent, not what it says
 const PAYMENT_EMAIL_TYPES = new Set(["subscription_invoice"]);
-const PAYMENT_BODY_NOTE = "Hidden: payment details are for super admins.";
+const PAYMENT_BODY_NOTE = "Hidden: payment details need the finance permission.";
 
 function hidePaymentDetails(row) {
   if (!row || !PAYMENT_EMAIL_TYPES.has(row.email_type)) return row;
@@ -45,10 +45,12 @@ async function getInvitationStatusByEmail() {
 }
 
 export async function GET(request) {
-  const role = await getRequestRole();
-  if (!role) {
+  // The Email log needs emails.view; invoice amounts in it also need finance.view
+  const access = await requireAdminAccess();
+  if (!access || !can(access, "emails.view")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
+  const seesMoney = can(access, "finance.view");
 
   try {
     const { searchParams } = new URL(request.url);
@@ -67,12 +69,14 @@ export async function GET(request) {
 
       // Rows logged before codes were masked at write time still hold them
       const row = redactEmailLogRow(data);
-      return NextResponse.json(role === ROLES.SUPER_ADMIN ? row : hidePaymentDetails(row));
+      return NextResponse.json(seesMoney ? row : hidePaymentDetails(row));
     }
 
     // List with filters
     const emailType = searchParams.get("type") || "";
     const status = searchParams.get("status") || "";
+    // Part of a recipient's address (?to=), any case; % and _ are matched literally
+    const to = (searchParams.get("to") || "").trim().slice(0, 200).replace(/[\\%_]/g, (c) => `\\${c}`);
     // 500 matches the page-size ceiling in the admin UI (User Management,
     // the copy-activity log) - a smaller cap here would silently truncate a
     // "500 per page" request while the page's own pagination math still
@@ -88,6 +92,7 @@ export async function GET(request) {
 
     if (emailType) query = query.eq("email_type", emailType);
     if (status) query = query.eq("status", status);
+    if (to) query = query.ilike("recipient_email", `%${to}%`);
 
     // Delivered/failed counts scoped by the same type/status filters as the
     // page itself, but never paginated - "10 delivered" reading off just the
@@ -97,6 +102,7 @@ export async function GET(request) {
       let q = supabase.from("sent_emails").select("id", { count: "exact", head: true });
       if (emailType) q = q.eq("email_type", emailType);
       if (status) q = q.eq("status", status);
+      if (to) q = q.ilike("recipient_email", `%${to}%`);
       return q.eq("status", extraStatus);
     }
 
@@ -120,7 +126,7 @@ export async function GET(request) {
 
     const emails = (data || [])
       .map(redactEmailLogRow)
-      .map((row) => (role === ROLES.SUPER_ADMIN ? row : hidePaymentDetails(row)))
+      .map((row) => (seesMoney ? row : hidePaymentDetails(row)))
       .map((row) => {
       if (row.email_type !== "invitations") return row;
 

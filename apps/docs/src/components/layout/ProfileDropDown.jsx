@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { User } from "lucide-react";
-import { ADMIN_TABS, USER_TABS, dashboardPath, isAdminPath } from "@/components/Dashboard/dashboardRoutes";
+import { ADMIN_TABS, USER_TABS, canSeeTab, dashboardPath, isAdminPath } from "@/components/Dashboard/dashboardRoutes";
 import { DarkSegment } from "@/components/ui/DarkSegment";
 import { displayName } from "@/lib/display-name";
 import { useAdminRole } from "@/lib/useAdminRole";
@@ -80,7 +80,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
   const FIGURES = { saved: savedCount, usage: usageLabel };
   const links =
     view === "admin"
-      ? ADMIN_TABS.filter((tab) => !tab.hidden && (!tab.superAdmin || isSuperAdmin))
+      ? ADMIN_TABS.filter((tab) => !tab.hidden && canSeeTab(tab, { owner: isSuperAdmin, can: role.can }))
       : USER_TABS;
   const name = displayName(user);
 
@@ -123,7 +123,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
       <div
         aria-hidden={!open}
         className={`type-label absolute right-0 top-14 z-50 w-72 border border-white/10 bg-background backdrop-blur-lg transition-[opacity,translate,visibility] duration-[390ms] ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none ${
-          open ? "visible translate-y-0 opacity-100" : "invisible -translate-y-1 opacity-0"
+          open ? "visible pointer-events-auto translate-y-0 opacity-100" : "invisible pointer-events-none -translate-y-1 opacity-0"
         }`}
       >
         <div className="flex flex-col gap-1 border-b border-white/10 p-5">

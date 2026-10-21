@@ -1,4 +1,6 @@
 import { FREE_EFFECTS, TOTAL_EFFECTS } from "../library-counts";
+import { PRESET_ROLES, effectivePermissions } from "../admin-permissions";
+import { getTemplateBySlug } from "../mock-templates";
 
 // Development-only dashboard preview. Clerk can't sign in on localhost (production keys),
 // so the dashboard can't be seen while working on it. In `next dev` only, a
@@ -22,6 +24,23 @@ export function getDashboardPreview() {
     .find((c) => c.startsWith(`${DASHBOARD_PREVIEW_COOKIE}=`))
     ?.split("=")[1];
   return value === "free" || value === "admin" ? value : value ? "pro" : null;
+}
+
+// The admin preview as one built-in role instead of a super admin, for checking what each
+// admin sees: document.cookie = "vault-dev-preview-role=support" (or "user-management",
+// "system-admin"); clear it to be a super admin again. Returns
+// { roleNames, permissions } or null.
+export const DASHBOARD_PREVIEW_ROLE_COOKIE = "vault-dev-preview-role";
+export function getDashboardPreviewRole() {
+  if (getDashboardPreview() !== "admin") return null;
+  const id = document.cookie
+    .split("; ")
+    .find((c) => c.startsWith(`${DASHBOARD_PREVIEW_ROLE_COOKIE}=`))
+    ?.split("=")[1];
+  const role = PRESET_ROLES.find((preset) => preset.id === id);
+  if (!role) return null;
+  const rolesById = new Map(PRESET_ROLES.map((preset) => [preset.id, preset.permissions]));
+  return { roleNames: [role.name], permissions: [...effectivePermissions({ roles: [role.id], rolesById })] };
 }
 
 // Server side (admin layout): whether the preview is the admin one
@@ -249,7 +268,8 @@ export function sampleAdminUser(catalog = []) {
     savedEffects: list(0, "savedAt"),
     installedEffects: list(2, "lastInstalledAt"),
     templatePurchases: [{ id: "t1", createdAt: day(9), templateTitle: "Elena Voss", amount: 39, currency: "USD", paymentId: "pay_sample1", status: "paid", invoiceUrl: null }],
-    purchasedTemplates: [],
+    // Elena Voss (the purchase above) and Lumera: enough for the Purchased templates slider
+    purchasedTemplates: ["elenavoss", "lumera"].map(getTemplateBySlug).filter(Boolean),
     invoices: [{ id: "i1", created_at: day(5), plan_label: "Vault Pro Monthly", amount: 117900, currency: "INR", razorpay_payment_id: "pay_sample2", status: "paid", invoice_url: "https://example.com" }],
   };
 }
@@ -265,8 +285,8 @@ export function sampleAdminUsers() {
         const value = series.reduce((sum, point) => sum + point.value, 0);
         return { value, current: value, previous, series };
       };
-      const kpis = { comparison: "vs prev. 30d", users: card(8, 0.1, 180, 1), paidUsers: card(1, 0.02, 22, 2), installs: card(15, 0.2, 380, 3), saves: card(4, -0.05, 150, 4) };
-      return { newUsers: kpis.users.value, newProUsers: kpis.paidUsers.value, installs: kpis.installs.value, saves: kpis.saves.value, kpis };
+      const kpis = { comparison: "vs prev. 30d", users: card(8, 0.1, 180, 1), paidUsers: card(1, 0.02, 22, 2) };
+      return { newUsers: kpis.users.value, newProUsers: kpis.paidUsers.value, kpis };
     })(),
     total: names.length,
     users: names.map(([name, email, role], i) => ({

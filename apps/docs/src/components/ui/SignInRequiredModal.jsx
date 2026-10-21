@@ -18,7 +18,7 @@ const subscribeNever = () => () => {};
  * SignInRequiredModal for the portalled sign-in prompt built on it.
  */
 export function Modal({ open, onClose, title, children }) {
-  useLenisLock(open);
+  useLenisLock(open, { closeMs: 300 });
   const [text, action] = Array.isArray(children) ? children : [children, null];
   return (
     <div
@@ -59,7 +59,7 @@ export function Modal({ open, onClose, title, children }) {
 export function SignInRequiredModal({ open, onClose, onSignedIn: onSignedInProp, redirect = "/", action = "continue", initialMode = "sign-in" }) {
   // Portals need <body>; false on the server and during hydration.
   const mounted = useSyncExternalStore(subscribeNever, () => true, () => false);
-  useLenisLock(open);
+  useLenisLock(open, { closeMs: 300 });
   // "You're signed in" once the form finishes (it stays up after the modal closes)
   const { toast, showToast, dismissToast } = useToastQueue();
   const onSignedIn = ({ isNewAccount, alreadySignedIn } = {}) => {

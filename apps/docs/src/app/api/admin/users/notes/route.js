@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
-import { assertSuperAdmin } from "@/lib/admin";
+import { requirePermission } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 
 // A private note on an account (the Manage drawer's Support section), for the team only:
 // kept in the admin audit log (action "note.add"), so notes carry who wrote them and when
 // and sit in the account's History. Read back through /api/admin/audit?action=note.add.
 export async function POST(request) {
-  if (!(await assertSuperAdmin())) {
+  if (!(await requirePermission("users.support"))) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
