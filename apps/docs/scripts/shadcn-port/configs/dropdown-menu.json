@@ -11,5 +11,23 @@
   "demoFn": "DropdownMenuPage",
   "title": "Animated Dropdown Menu",
   "subtitle": "A menu of actions or options that opens from a button.",
-  "panelClass": "flex min-h-[60vh] items-start justify-center p-[3vw] max-md:p-[5vw]"
+  "panelClass": "flex min-h-[60vh] items-start justify-center p-[3vw] max-md:p-[5vw]",
+  "descriptions": {
+    "animation": "How the menu opens: collapse, slide, scale, reveal or morph.",
+    "exitFast": "The menu closes faster than it opens.",
+    "duration": "How long the open animation takes, in seconds.",
+    "delay": "Wait before the menu starts opening, in seconds.",
+    "stagger": "Delay between each item appearing, in seconds.",
+    "itemHighlight": "How the highlight moves between items: slides, fills from the top, or none.",
+    "selectionIndicator": "Mark shown on the chosen item: check, dot or bar.",
+    "showDescriptions": "Shows a short description under each item.",
+    "bold": "Makes the item labels bold.",
+    "rollingText": "Item labels roll to a second copy on hover.",
+    "icon": "Icon on the trigger: plus that turns to minus, or a chevron.",
+    "rollingValue": "The chosen value in the trigger rolls to the new one when it changes.",
+    "pressFeedback": "Items squeeze slightly when pressed.",
+    "openOnHover": "Opens the menu when you hover the trigger, not only on click.",
+    "closeDelayOnSelect": "Waits a moment after a pick so you see the selection before the menu closes.",
+    "typeahead": "Typing a letter jumps to the item that starts with it."
+  }
 }

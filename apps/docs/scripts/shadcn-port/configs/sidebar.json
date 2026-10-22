@@ -54,10 +54,144 @@
     [
       "sticky top-14 z-10",
       "sticky top-0 z-10"
+    ],
+    [
+      "\"flex w-full flex-1 flex-col px-[3vw] py-8 max-[1025px]:px-[4vw] max-md:px-4\"",
+      "\"flex w-full flex-1 flex-col px-10 py-8 max-[1025px]:px-8 max-md:px-4\""
+    ],
+    [
+      "\"flex w-[40vw] flex-col gap-1 max-[1025px]:w-[70vw] max-md:w-full\"",
+      "\"flex w-full max-w-xl flex-col gap-1\""
+    ],
+    [
+      "  sm: \"calc(var(--radius) * 0.6)\",\n  md: \"calc(var(--radius) * 0.8)\",\n  lg: \"var(--radius)\",\n  xl: \"calc(var(--radius) * 1.4)\",\n  \"2xl\": \"calc(var(--radius) * 1.8)\",",
+      "  sm: \"0.25rem\",\n  md: \"0.5rem\",\n  lg: \"0.75rem\",\n  xl: \"1rem\",\n  \"2xl\": \"1.5rem\","
+    ],
+    [
+      "// Mirrors the `--radius-*` scale in globals.css, as `rounded-(--sidebar-item-radius)` needs a value.",
+      "// Fixed values, as `rounded-(--sidebar-item-radius)` needs a real length (a theme var may not exist)."
+    ],
+    [
+      "const MOBILE_BREAKPOINT = 768",
+      "const MOBILE_BREAKPOINT = 1024"
+    ],
+    [
+      "--hx-sidebar-foreground) md:block\"",
+      "--hx-sidebar-foreground) lg:block\""
+    ],
+    [
+      "c(var(--sidebar-width)*-1)] md:flex\"",
+      "c(var(--sidebar-width)*-1)] lg:flex\""
+    ],
+    [
+      "focus-visible:ring-2 md:after:hidden",
+      "focus-visible:ring-2 lg:after:hidden"
+    ],
+    [
+      "aria-expanded:opacity-100 md:opacity-0\"",
+      "aria-expanded:opacity-100 lg:opacity-0\""
+    ],
+    [
+      "className: \"data-open:data-starting-style:scale-75 data-[side=right]:data-starting-style:-translate-x-3\",",
+      "className: \"data-open:data-starting-style:scale-75 data-[side=right]:data-starting-style:-translate-x-3 duration-[450ms] ease-[linear(0,0.034_2.2%,0.136_4.6%,0.542_11.5%,0.787_16.4%,0.93_21.1%,1.012_26.4%,1.042_30.9%,1.047_35.5%,1.036_40.9%,1.005_53.3%,0.996_64%,1)]\","
+    ],
+    [
+      "useReducedMotion()",
+      "usePrefersReducedMotion()"
+    ],
+    [
+      " useReducedMotion, MotionConfig",
+      " MotionConfig"
+    ],
+    [
+      "// ---- use-mobile.ts ----",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\n// ---- use-mobile.ts ----"
+    ],
+    [
+      "const isMobile = useIsMobile()",
+      "const isMobile = useIsMobile()\n  const reducedMotion = usePrefersReducedMotion()"
+    ],
+    [
+      "<MotionConfig reducedMotion=\"user\">",
+      "<MotionConfig reducedMotion={reducedMotion ? \"always\" : \"never\"}>"
+    ],
+    [
+      "const { highlightColor } = useSidebar()\n  const Element",
+      "const { highlightColor } = useSidebar()\n  const reduceMotion = usePrefersReducedMotion()\n  const Element"
+    ],
+    [
+      "exit={{ opacity: 0, transition: { duration: 0.15 } }}\n          transition={glide}",
+      "exit={{ opacity: 0, transition: { duration: reduceMotion ? 0 : 0.15 } }}\n          transition={reduceMotion ? { duration: 0 } : glide}"
+    ],
+    [
+      "else animate(x, 0, { type: \"spring\", visualDuration: 0.3, bounce: 0.2 })",
+      "else animate(x, 0, reduceMotion ? { duration: 0 } : { type: \"spring\", visualDuration: 0.3, bounce: 0.2 })"
+    ],
+    [
+      "const opening = isMobile ? !openMobile : state === \"collapsed\"",
+      "const opening = isMobile ? !openMobile : state === \"collapsed\"\n  const reduceMotion = usePrefersReducedMotion()"
+    ],
+    [
+      "animate={{ rotate: spinToggle && hovered ? 180 : 0 }}\n      transition={spring}",
+      "animate={{ rotate: spinToggle && hovered ? 180 : 0 }}\n      transition={reduceMotion ? { duration: 0 } : spring}"
+    ],
+    [
+      "<motion.path initial={false} animate={{ d }} transition={spring} />",
+      "<motion.path initial={false} animate={{ d }} transition={reduceMotion ? { duration: 0 } : spring} />"
+    ],
+    [
+      "const subMenuVariants: Variants = {\n  closed: {\n    height: 0,\n    opacity: 0,\n    overflow: \"hidden\",\n    transition: { type: \"spring\", visualDuration: 0.25, bounce: 0 },\n  },\n  open: {\n    height: \"auto\",\n    opacity: 1,\n    transitionEnd: { overflow: \"visible\" },\n    transition: { ...spring, staggerChildren: 0.05, delayChildren: 0.05 },\n  },\n}\n\nconst subItemVariants: Variants = {\n  closed: { opacity: 0, x: -6, transition: { duration: 0.15 } },\n  open: { opacity: 1, x: 0, transition: spring },\n}\n\nconst guideLineVariants: Variants = {\n  closed: { scaleY: 0, transition: { duration: 0.15 } },\n  open: { scaleY: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },\n}",
+      "// `custom` is true under reduced motion: every change lands at once.\nconst subMenuVariants: Variants = {\n  closed: (reduce: boolean) => ({\n    height: 0,\n    opacity: 0,\n    overflow: \"hidden\",\n    transition: reduce ? { duration: 0 } : { type: \"spring\", visualDuration: 0.25, bounce: 0 },\n  }),\n  open: (reduce: boolean) => ({\n    height: \"auto\",\n    opacity: 1,\n    transitionEnd: { overflow: \"visible\" },\n    transition: reduce ? { duration: 0 } : { ...spring, staggerChildren: 0.05, delayChildren: 0.05 },\n  }),\n}\n\nconst subItemVariants: Variants = {\n  closed: (reduce: boolean) => ({ opacity: 0, x: -6, transition: { duration: reduce ? 0 : 0.15 } }),\n  open: (reduce: boolean) => ({ opacity: 1, x: 0, transition: reduce ? { duration: 0 } : spring }),\n}\n\nconst guideLineVariants: Variants = {\n  closed: (reduce: boolean) => ({ scaleY: 0, transition: { duration: reduce ? 0 : 0.15 } }),\n  open: (reduce: boolean) => ({ scaleY: 1, transition: { duration: reduce ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] } }),\n}"
+    ],
+    [
+      "  children?: React.ReactNode\n}) {\n  return (\n    <AnimatePresence initial={false}>\n      {open && (\n        <motion.ul\n          key=\"sub\"",
+      "  children?: React.ReactNode\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  return (\n    <AnimatePresence initial={false}>\n      {open && (\n        <motion.ul\n          key=\"sub\"\n          custom={reduceMotion}"
     ]
   ],
   "title": "Animated Sidebar",
   "subtitle": "A collapsible side navigation with groups, badges and sub-menus.",
   "width": "w-[90vw] max-md:w-full",
-  "panelClass": "h-[85vh] overflow-hidden [transform:translateZ(0)] p-0"
+  "panelClass": "h-[85vh] overflow-hidden [transform:translateZ(0)] p-0",
+  "defaultMode": "dark",
+  "descriptions": {
+    "resizable": "Lets you drag the sidebar's edge to change its width.",
+    "highlightColor": "Background of the active item.",
+    "itemRounded": "Corner radius of the items and their highlight.",
+    "slideHighlight": "The active highlight slides to the newly chosen item instead of jumping.",
+    "activeIndicator": "Extra mark on the active item.",
+    "pressFeedback": "Items squeeze slightly when pressed.",
+    "rollingText": "Item labels roll to a second copy on hover.",
+    "elasticTooltips": "Tooltips spring out when the sidebar is collapsed to icons.",
+    "rollingNumbers": "Badge counts roll to the new number and pop.",
+    "showTeamSwitcher": "Shows a team menu at the top of the sidebar.",
+    "spinToggle": "The collapse button spins half a turn on hover.",
+    "showBreadcrumb": "Shows a breadcrumb and search in the page header.",
+    "scaleContent": "Page content scales and fades slightly when you switch pages."
+  },
+  "themeDescription": "Colour palette, tooltips included. With Highlight color set to Primary, the active item takes its primary colour.",
+  "hideWhenReducedMotion": [
+    "slideHighlight",
+    "pressFeedback",
+    "rollingText",
+    "elasticTooltips",
+    "rollingNumbers",
+    "spinToggle",
+    "scaleContent"
+  ],
+  "defaults": {
+    "resizable": true,
+    "highlightColor": "primary",
+    "itemRounded": "none",
+    "slideHighlight": true,
+    "activeIndicator": "bar",
+    "pressFeedback": false,
+    "rollingText": true,
+    "elasticTooltips": false,
+    "rollingNumbers": true,
+    "showTeamSwitcher": false,
+    "spinToggle": false,
+    "showBreadcrumb": true,
+    "scaleContent": true
+  },
+  "defaultTheme": "vscode"
 }

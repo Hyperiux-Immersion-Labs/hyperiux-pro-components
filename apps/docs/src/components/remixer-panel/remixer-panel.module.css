@@ -677,10 +677,30 @@
 
 .toggleRow {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   width: 100%;
+}
+
+.toggleText {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+  text-align: left;
+}
+
+.toggleDescription {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--remixer-text-dim);
+}
+
+.compact .toggleDescription {
+  font-size: 11px;
+  overflow-wrap: anywhere;
 }
 
 .toggle {

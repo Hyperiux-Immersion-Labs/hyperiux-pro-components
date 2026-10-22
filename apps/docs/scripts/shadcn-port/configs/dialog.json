@@ -7,5 +7,21 @@
   ],
   "demoFn": "HpxDialogDemo",
   "title": "Animated Dialog",
-  "subtitle": "A window over the page that asks for a decision before you carry on."
+  "subtitle": "A window over the page that asks for a decision before you carry on.",
+  "descriptions": {
+    "rollingText": "The trigger and button labels roll to a second copy on hover.",
+    "fillOnHover": "Buttons fill with colour from the edge on hover.",
+    "originFromTrigger": "The dialog grows out of the button that opened it instead of the centre.",
+    "elastic": "The dialog springs in with a slight overshoot.",
+    "duration": "How long the open animation takes, in seconds.",
+    "bounce": "How much the dialog overshoots and settles. 0 is no bounce.",
+    "fadeContent": "Fades the dialog contents in as it opens.",
+    "scaleContent": "Scales the dialog contents up with the dialog.",
+    "exitAnimation": "How the dialog leaves: fades, drops down, or shrinks.",
+    "fadeContentOut": "Fades the contents out when the dialog closes.",
+    "dismissible": "Clicking outside the dialog closes it. When off, the dialog shakes instead if Shake when blocked is on.",
+    "shakeOnBlock": "The dialog shakes when you click outside and it can't close.",
+    "backdrop": "What sits behind the dialog: nothing, a dim layer, or a blur.",
+    "rounded": "Corner radius of the dialog."
+  }
 }

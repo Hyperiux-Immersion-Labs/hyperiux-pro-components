@@ -150,6 +150,25 @@ function CheckTick() {
   );
 }
 
+// True while reduced motion is on: the OS setting, or the demo header's simulated switch
+// (it sets data-pc-rm on <html>).
+function useReducedMotionMode() {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setOn(document.documentElement.hasAttribute("data-pc-rm") || mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-pc-rm"] });
+    return () => {
+      mq.removeEventListener?.("change", read);
+      observer.disconnect();
+    };
+  }, []);
+  return on;
+}
+
 // disabledWhen: one rule or a list (any match disables)
 function isDisabledByRule(rules: RemixerControl["disabledWhen"], values: Record<string, unknown>) {
   if (!rules) return false;
@@ -182,7 +201,10 @@ function ControlField({
   if (control.type === "checkbox" || control.type === "toggle") {
     return (
       <button id={buttonId("remixer-panel-toggle", control.id)} type="button" onClick={() => onChange(!value)} className={`${fieldClass} ${styles.toggleRow}`} disabled={inactive}>
-        <span className={styles.fieldLabel}>{control.label}</span>
+        <span className={styles.toggleText}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          {control.description ? <span className={styles.toggleDescription}>{control.description}</span> : null}
+        </span>
         <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
           <CheckTick />
         </span>
@@ -387,7 +409,17 @@ export default function RemixerPanel({
   defaultOpenGroupId,
   compact = false,
 }: RemixerPanelProps & { compact?: boolean }) {
-  const availableGroups = useMemo(() => groups.filter((group) => group.controls?.length), [groups]);
+  const reducedMotion = useReducedMotionMode();
+  // Motion-only props (flagged hideWhenReducedMotion) leave the panel while reduced motion is on.
+  const availableGroups = useMemo(
+    () =>
+      groups
+        .map((group) =>
+          reducedMotion ? { ...group, controls: group.controls?.filter((c) => !c.hideWhenReducedMotion) } : group,
+        )
+        .filter((group) => group.controls?.length),
+    [groups, reducedMotion],
+  );
   const [openGroupId, setOpenGroupId] = useState<string | null>(
     defaultOpenGroupId ?? availableGroups[0]?.id ?? null,
   );

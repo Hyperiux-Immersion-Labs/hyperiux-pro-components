@@ -298,15 +298,19 @@ const THEMES: Record<`${AnimatedToastTheme}:${AnimatedToastMode}`, Record<string
 function themeProps(theme: AnimatedToastTheme = "default", mode: AnimatedToastMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
 
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = "@keyframes hx-toast-timer{from{transform:scaleX(1)}to{transform:scaleX(0)}}";
+
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -820,7 +824,7 @@ function ToastTimerBar({ duration }: { duration: number }) {
       aria-hidden
       style={{ "--toast-timeout": `${duration}ms` } as React.CSSProperties}
       className={cn(
-        "pointer-events-none absolute bottom-0 h-0.5 origin-left rounded-full bg-(--hx-foreground)/25 animate-[toast-timer_var(--toast-timeout)_linear_forwards] group-data-expanded/toast:paused motion-reduce:animate-none",
+        "pointer-events-none absolute bottom-0 h-0.5 origin-left rounded-full bg-(--hx-foreground)/25 in-data-accent:bg-(--hx-primary)/70 animate-[hx-toast-timer_var(--toast-timeout)_linear_forwards] group-data-expanded/toast:paused motion-reduce:animate-none",
         pill ? "inset-x-8" : "inset-x-4"
       )}
     />
@@ -1331,11 +1335,12 @@ export interface AnimatedToastProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedToast({ theme = "default", mode = "light", className, ...props }: AnimatedToastProps) {
+export default function AnimatedToast({ theme = "default", mode = "dark", className, ...props }: AnimatedToastProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <style>{COMPONENT_CSS}</style>
         <ToastPage {...props} />
       </div>
     </ThemeContext.Provider>

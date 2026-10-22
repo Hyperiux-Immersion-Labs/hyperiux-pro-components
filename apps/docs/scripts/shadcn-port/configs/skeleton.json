@@ -7,5 +7,64 @@
   ],
   "demoFn": "HpxSkeletonDemo",
   "title": "Animated Skeleton",
-  "subtitle": "Placeholders that shimmer while content loads."
+  "subtitle": "Placeholders that shimmer while content loads.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "animation": "Loading effect drawn across the placeholders.",
+    "duration": "Length of one loading cycle, in seconds. Not used when Animation is None.",
+    "stagger": "Offset between placeholders so they don't pulse in sync, in seconds. Not used when Animation is None.",
+    "rounded": "Corner radius of the placeholders.",
+    "swapAnimation": "How the real content appears when loading finishes.",
+    "swapDuration": "How long the real content takes to appear, in seconds. Not used when Swap animation is None.",
+    "swapStagger": "Delay between content items appearing, in seconds. Not used when Swap animation is None.",
+    "loadTime": "How long the Replay button pretends to load before showing the content, in seconds. The first load always takes 3 s."
+  },
+  "patches": [
+    [
+      "\"h-[18vh] w-full\"",
+      "\"h-36 w-full\""
+    ],
+    [
+      "\"h-[18vh] w-full bg-linear-to-br",
+      "\"h-36 w-full bg-linear-to-br"
+    ],
+    [
+      "\"flex min-h-[50vh] flex-col gap-4 rounded-lg border px-6 py-6\"",
+      "\"flex min-h-96 flex-col gap-4 rounded-lg border px-6 py-6\""
+    ],
+    [
+      "import { animate, stagger, AnimatePresence, motion, useReducedMotion } from \"motion/react\";",
+      "import { animate, stagger, AnimatePresence, motion } from \"motion/react\";"
+    ],
+    [
+      "function toClass(value: unknown): string {",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const read = () => setReduce(mq.matches);\n    read();\n    mq.addEventListener?.(\"change\", read);\n    return () => mq.removeEventListener?.(\"change\", read);\n  }, []);\n  return reduce;\n}\n\nfunction toClass(value: unknown): string {"
+    ],
+    [
+      "useReducedMotion()",
+      "usePrefersReducedMotion()"
+    ],
+    [
+      "  const length = reduced ? Math.min(duration, 0.2) : duration\n\n  return (\n    <div className={cn(\"relative\", className)}>",
+      "  const length = reduced ? Math.min(duration, 0.2) : duration\n\n  // The placeholders and the real content differ in height (more so on narrow screens, where\n  // text wraps), so the box eases to the new height instead of jumping when they swap.\n  const box = React.useRef<HTMLDivElement>(null)\n  const lastHeight = React.useRef(0)\n  React.useLayoutEffect(() => {\n    const el = box.current\n    if (!el) return\n    const next = el.offsetHeight\n    const prev = lastHeight.current\n    lastHeight.current = next\n    if (!prev || prev === next || reduced) return\n    el.style.transition = \"none\"\n    el.style.height = `${prev}px`\n    el.style.overflow = \"hidden\"\n    void el.offsetHeight\n    el.style.transition = `height ${length}s cubic-bezier(0.22, 1, 0.36, 1)`\n    el.style.height = `${next}px`\n    const done = () => {\n      el.style.transition = \"\"\n      el.style.height = \"\"\n      el.style.overflow = \"\"\n      lastHeight.current = el.offsetHeight\n    }\n    el.addEventListener(\"transitionend\", done, { once: true })\n    return () => el.removeEventListener(\"transitionend\", done)\n  }, [loading, reduced, length])\n\n  return (\n    <div ref={box} className={cn(\"relative\", className)}>"
+    ],
+    [
+      "    label: \"Content entrance duration\",\n    value: 0.4,",
+      "    label: \"Content entrance duration\",\n    value: 0.5,"
+    ]
+  ],
+  "themeDescription": "Colour palette for the placeholders, their shimmer and the loaded content.",
+  "defaultTheme": "spotify",
+  "defaults": {
+    "swapDuration": 0.5
+  },
+  "hideWhenReducedMotion": [
+    "animation",
+    "duration",
+    "stagger",
+    "swapAnimation",
+    "swapDuration",
+    "swapStagger"
+  ],
+  "width": "w-[60vw] max-lg:w-[80vw] max-md:w-full"
 }

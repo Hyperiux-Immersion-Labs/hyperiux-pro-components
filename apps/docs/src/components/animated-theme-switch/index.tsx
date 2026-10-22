@@ -4,7 +4,7 @@ import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import gsap from "gsap";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import { flushSync } from "react-dom";
 import { MoonIcon, SunIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
@@ -228,7 +228,8 @@ const THEMES: Record<`${AnimatedThemeSwitchTheme}:${AnimatedThemeSwitchMode}`, R
 function themeProps(theme: AnimatedThemeSwitchTheme = "default", mode: AnimatedThemeSwitchMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -248,7 +249,7 @@ function useTheme() {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -337,9 +338,29 @@ function revealFrames(
 
 const subscribe = () => () => {}
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function useReduceMotion() {
+  const [reduceMotion, setReduceMotion] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduceMotion(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduceMotion
+}
+
+// Turns off the browser's own cross-fade for the page, so only our reveal shows, in both directions
+const SWEEP_CSS =
+  "html.theme-sweeping::view-transition-group(root){animation:none}" +
+  "html.theme-sweeping::view-transition-old(root),html.theme-sweeping::view-transition-new(root){animation:none;mix-blend-mode:normal}" +
+  "html.theme-sweeping::view-transition-old(root){z-index:1}" +
+  "html.theme-sweeping::view-transition-new(root){z-index:2}"
+
 function ThemeSwitch({
   revealAnimation = "circle",
-  duration = 0.7,
+  duration = 0.85,
   iconAnimation = "spin",
   showTooltip = true,
   variant = "outline",
@@ -356,7 +377,7 @@ function ThemeSwitch({
   const wrapper = React.useRef<HTMLSpanElement>(null)
   const previous = React.useRef(resolvedTheme)
   const [hovered, setHovered] = React.useState(false)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReduceMotion()
   const dark = resolvedTheme === "dark"
   const orbiting = iconAnimation === "orbit"
 
@@ -434,7 +455,9 @@ function ThemeSwitch({
 
     busy.current = true
     const root = document.documentElement
-    // Turns off the browser's own cross-fade, see globals.css
+    const sweepStyle = document.createElement("style")
+    sweepStyle.textContent = SWEEP_CSS
+    document.head.appendChild(sweepStyle)
     root.classList.add("theme-sweeping")
     const view = document.startViewTransition(() => {
       flushSync(apply)
@@ -467,6 +490,7 @@ function ThemeSwitch({
       await view.finished.catch(() => {})
     } finally {
       root.classList.remove("theme-sweeping")
+      sweepStyle.remove()
       busy.current = false
       setHovered(wrapper.current?.matches(":hover") ?? false)
     }
@@ -474,9 +498,10 @@ function ThemeSwitch({
 
   const word = dark ? "light" : "dark"
   const current = dark ? "Dark" : "Light"
-  const iconClass = "size-7 transition-[scale] duration-200 group-hover/button:scale-90"
+  const iconClass = cn("size-10.5 transition-[scale] duration-200 group-hover/button:scale-90 motion-reduce:transition-none", variant !== "default" && "in-data-accent:text-(--hx-primary)")
 
   return (
+    <MotionConfig reducedMotion="user">
     <span
       ref={wrapper}
       data-slot="theme-switch-root"
@@ -494,7 +519,7 @@ function ThemeSwitch({
         aria-label="Toggle theme"
         onClick={toggle}
         className={cn(
-          "relative size-12 overflow-hidden",
+          "relative size-18 overflow-hidden",
           // These keep their colour on hover
           variant === "outline" && "hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
           variant === "default" && "hover:bg-(--hx-primary)",
@@ -509,7 +534,7 @@ function ThemeSwitch({
               <span className="absolute inset-0 grid place-items-center">
                 <SunIcon ref={sun} className={iconClass} />
               </span>
-              <span className="absolute inset-0 grid translate-y-12 place-items-center">
+              <span className="absolute inset-0 grid translate-y-18 place-items-center">
                 <MoonIcon ref={moon} className={iconClass} />
               </span>
             </span>
@@ -533,10 +558,10 @@ function ThemeSwitch({
           <motion.span
             aria-hidden
             className="pointer-events-none absolute bottom-[calc(100%+0.5rem)] left-1/2 z-50 flex -translate-x-1/2 gap-1 rounded-md bg-(--hx-foreground) px-2 py-1 text-xs font-medium whitespace-nowrap text-(--hx-background)"
-            initial={{ opacity: 0, y: 4 }}
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 4 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 4 }}
-            transition={{ duration: 0.15 }}
+            exit={{ opacity: 0, y: reduceMotion ? 0 : 4 }}
+            transition={{ duration: reduceMotion ? 0 : 0.15 }}
           >
             <span>Change to</span>
             {reduceMotion ? (
@@ -561,6 +586,7 @@ function ThemeSwitch({
         )}
       </AnimatePresence>
     </span>
+    </MotionConfig>
   )
 }
 
@@ -582,7 +608,7 @@ const controls = {
     group: "Transition",
     type: "slider",
     label: "Duration",
-    value: 0.7,
+    value: 0.85,
     min: 0.2,
     max: 2,
     step: 0.05,
@@ -592,7 +618,7 @@ const controls = {
     group: "Button",
     type: "select",
     label: "Icon motion",
-    value: "spin",
+    value: "orbit",
     options: [
       { label: "Spin", value: "spin" },
       { label: "Orbit", value: "orbit" },
@@ -616,10 +642,18 @@ const controls = {
 function ThemeSwitchDemo(props: Partial<ControlValues>) {
   const panel = useDemoControls(props)
   const { values } = panel
+  const reduceMotion = useReduceMotion()
+  const tip = reduceMotion
+    ? "Reduced motion is on, so the theme changes at once"
+    : values.revealAnimation === "swipe"
+      ? "The new theme wipes across the page"
+      : values.revealAnimation === "fade"
+        ? "The new theme fades in over the page"
+        : "The circle grows from the button"
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[40vh] items-center justify-center rounded-lg border">
+      <div className="flex items-center justify-center py-8">
         <ThemeSwitch
           revealAnimation={values.revealAnimation as ThemeSwitchVariant}
           duration={values.duration}
@@ -628,8 +662,8 @@ function ThemeSwitchDemo(props: Partial<ControlValues>) {
           variant={values.variant as "outline" | "ghost" | "default" | "secondary"}
         />
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
-        Tip: The circle grows from the button
+      <p className="text-center text-sm text-(--hx-muted-foreground)">
+        Tip: {tip}
       </p>
 
     </div>
@@ -659,21 +693,33 @@ export interface AnimatedThemeSwitchProps extends Partial<ControlValues> {
   theme?: AnimatedThemeSwitchTheme;
   mode?: AnimatedThemeSwitchMode;
   className?: string;
+  /** Called with the new mode each time the switch is used, so the page around it can follow. */
+  onModeChange?: (mode: AnimatedThemeSwitchMode) => void;
 }
 
-export default function AnimatedThemeSwitch({ theme = "default", mode = "light", className, ...props }: AnimatedThemeSwitchProps) {
+export default function AnimatedThemeSwitch({ theme = "spotify", mode = "light", className, onModeChange, ...props }: AnimatedThemeSwitchProps) {
   const [liveMode, setLiveMode] = React.useState(mode);
   const [seenMode, setSeenMode] = React.useState(mode);
   if (seenMode !== mode) {
     setSeenMode(mode);
     setLiveMode(mode);
   }
-  const modeContext = React.useMemo(() => ({ mode: liveMode, setMode: setLiveMode }), [liveMode]);
+  const modeContext = React.useMemo(
+    () => ({
+      mode: liveMode,
+      // Runs inside the reveal's flushSync, so the page and the switch change in the same frame
+      setMode: (next: AnimatedThemeSwitchMode) => {
+        setLiveMode(next);
+        onModeChange?.(next);
+      },
+    }),
+    [liveMode, onModeChange]
+  );
   const themed = themeProps(theme, liveMode);
   return (
     <ModeContext.Provider value={modeContext}>
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <ThemeSwitchDemo {...props} />
       </div>
     </ThemeContext.Provider>

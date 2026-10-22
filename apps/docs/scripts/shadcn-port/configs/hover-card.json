@@ -17,5 +17,17 @@
       "const previewCache = new Map<string, LinkPreview>()",
       "const previewCache = new Map<string, LinkPreview>()\n\nconst SAMPLE_PREVIEWS: Record<string, Pick<LinkPreview, \"title\" | \"description\" | \"siteName\">> = {\n  \"vault.hyperiux.com\": { title: \"Hyperiux Vault\", description: \"Animated components and effects, ready to install.\", siteName: \"Hyperiux\" },\n  \"nextjs.org\": { title: \"Next.js\", description: \"The React framework for the web.\", siteName: \"Next.js\" },\n  \"react.dev\": { title: \"React\", description: \"The library for web and native user interfaces.\", siteName: \"React\" },\n  \"tailwindcss.com\": { title: \"Tailwind CSS\", description: \"Rapidly build modern websites without ever leaving your HTML.\", siteName: \"Tailwind CSS\" },\n  \"github.com\": { title: \"GitHub\", description: \"Where the world builds software.\", siteName: \"GitHub\" },\n  \"wikipedia.org\": { title: \"Wikipedia\", description: \"The free encyclopedia.\", siteName: \"Wikipedia\" },\n  \"motion.dev\": { title: \"Motion\", description: \"A modern animation library for JavaScript and React.\", siteName: \"Motion\" },\n}\n\n// Swap for a fetch to your own preview endpoint\nfunction loadPreview(url: string): Promise<LinkPreview> {\n  const hostname = new URL(url).hostname.replace(/^www\\./, \"\")\n  const sample = SAMPLE_PREVIEWS[hostname]\n  return new Promise((resolve) =>\n    setTimeout(() =>\n      resolve({\n        url,\n        hostname,\n        title: sample?.title ?? hostname,\n        description: sample?.description ?? null,\n        siteName: sample?.siteName ?? null,\n        image: null,\n        favicon: null,\n      }), 400)\n  )\n}"
     ]
-  ]
+  ],
+  "descriptions": {
+    "site": "Website the card previews. Needs Card shows set to Website preview.",
+    "source": "What the card shows: a preview of the website or manually written details.",
+    "contentAnimation": "How the card appears: scales and fades, or only fades.",
+    "startScale": "Size the card starts from when it opens, as a fraction of full size.",
+    "fadeContent": "Fades the card contents in as it opens.",
+    "openDelay": "How long you hover before the card opens, in seconds.",
+    "closeDelay": "How long after leaving before the card closes, in seconds.",
+    "followCursor": "The card follows the pointer instead of staying put.",
+    "underline": "The link underline draws in on hover.",
+    "rounded": "Corner radius of the card."
+  }
 }

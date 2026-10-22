@@ -13,7 +13,7 @@ import { MEDIA } from "@/lib/breakpoints";
 import { ButtonChrome, buttonClassName } from "@/homepage/components/Button";
 import { getEffectRouteSlug } from "@/lib/effect-slugs";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
-import { DEVICES, EMBED_MESSAGE, prefersReducedMotion, readEmbed, simulateReducedMotion } from "./embed";
+import { DEVICES, EMBED_MESSAGE, EMBED_READY, prefersReducedMotion, readEmbed, simulateReducedMotion } from "./embed";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -22,6 +22,13 @@ gsap.registerPlugin(useGSAP, ScrollTrigger);
 const DemoHeaderContext = createContext(null);
 export const DemoHeaderProvider = DemoHeaderContext.Provider;
 
+// The tag swings in on its cord, settles, then keeps a slow sway while the bar is tucked.
+const HANG_CSS =
+  "@keyframes pc-hang-in{0%{rotate:9deg}18%{rotate:-6deg}36%{rotate:3.8deg}54%{rotate:-2.2deg}72%{rotate:1.1deg}88%{rotate:-.5deg}100%{rotate:0deg}}" +
+  "@keyframes pc-hang-sway{from{rotate:-.9deg}to{rotate:.9deg}}" +
+  "[data-away]>.hx-hang{animation:pc-hang-in 2.2s linear both,pc-hang-sway 2.1s ease-in-out 3.25s infinite alternate}" +
+  "@media (prefers-reduced-motion:reduce){[data-away]>.hx-hang{animation:none}}" +
+  "[data-pc-rm] [data-away]>.hx-hang{animation:none}";
 const EASE = "expo.out"; // ≈ cubic-bezier(.16, 1, .3, 1)
 const IDLE_MS = 3200;
 
@@ -251,7 +258,6 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
   const lastValuesRef = useRef(null);
   const dragRef = useRef(null);
   const tipCurRef = useRef(null);
-  const hangTlRef = useRef(null);
   const timers = useRef({ idle: 0, toast: 0, tip: 0, tipHide: 0 });
   const api = useRef(null);
 
@@ -551,7 +557,6 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
   /* ---------- GSAP: initial states ---------- */
   useGSAP(
     () => {
-      gsap.set(pullRef.current, { xPercent: -50, yPercent: -110, autoAlpha: 0 });
       gsap.set(keysRef.current, { xPercent: -50, autoAlpha: 0, transformOrigin: "50% 0" });
       gsap.set(tipRef.current, { autoAlpha: 0, y: -4 });
       gsap.set(toastRef.current, { yPercent: 240 });
@@ -561,47 +566,8 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
     { scope: rootRef },
   );
 
-  // Bar ⇄ pull tag. The tag drops in on its cord, settles, then sways.
-  useGSAP(
-    () => {
-      gsap.to(barRef.current, { yPercent: away ? -140 : 0, autoAlpha: away ? 0 : 1, duration: 0.8, ease: EASE, overwrite: true });
-      hangTlRef.current?.kill();
-
-      if (!away) {
-        gsap.to(pullRef.current, {
-          yPercent: -110,
-          duration: 0.9,
-          ease: "back.out(1.4)",
-          overwrite: true,
-          onComplete: () => gsap.set(pullRef.current, { autoAlpha: 0 }),
-        });
-        return;
-      }
-
-      gsap.to(pullRef.current, { yPercent: -10, autoAlpha: 1, duration: 0.9, ease: "back.out(1.4)", overwrite: true });
-      gsap.set(hangRef.current, { rotation: 0 });
-      if (prefersReducedMotion()) return;
-      hangTlRef.current = gsap
-        .timeline()
-        .to(hangRef.current, {
-          keyframes: {
-            "0%": { rotation: 9 },
-            "18%": { rotation: -6 },
-            "36%": { rotation: 3.8 },
-            "54%": { rotation: -2.2 },
-            "72%": { rotation: 1.1 },
-            "88%": { rotation: -0.5 },
-            "100%": { rotation: 0 },
-            easeEach: "power1.inOut",
-          },
-          duration: 2.2,
-          ease: "none",
-        })
-        .to(hangRef.current, { rotation: -0.9, duration: 1.05, ease: "sine.inOut" })
-        .to(hangRef.current, { rotation: 0.9, duration: 2.1, ease: "sine.inOut", repeat: -1, yoyo: true });
-    },
-    { dependencies: [away], scope: rootRef },
-  );
+  // Bar ⇄ pull tag is pure CSS driven by `away` (see the classes below), so nothing can leave
+  // the two out of step: no tween to be killed, reverted or skipped by a re-render or hydration.
 
   // Props panel slides in each time it opens, and scales down into its top-right corner as it closes.
   useGSAP(
@@ -686,6 +652,18 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
     };
   }, []);
 
+  // The iframe says when it's listening; answer with the current props.
+  useEffect(() => {
+    const onReady = (e) => {
+      if (e.origin !== location.origin || e.data?.type !== EMBED_READY) return;
+      if (e.source !== iframeRef.current?.contentWindow) return;
+      frameReadyRef.current = true;
+      postValues();
+    };
+    addEventListener("message", onReady);
+    return () => removeEventListener("message", onReady);
+  }, []);
+
   // Edited props follow into the device iframe.
   useEffect(() => {
     lastValuesRef.current = cloneable(demo?.values);
@@ -744,7 +722,8 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
           onPointerOver={(e) => movePill(e.target.closest?.("a,button"))}
           onPointerLeave={hidePill}
           onPointerDown={pressPill}
-          className="pointer-events-auto relative flex items-center gap-1.5 whitespace-nowrap bg-[rgba(18,18,18,.78)] p-1.5 shadow-[inset_0_0_0_1px_rgba(244,244,244,.1),0_20px_60px_-20px_rgba(0,0,0,.7)] backdrop-blur-[18px] backdrop-saturate-[1.4]"
+          data-away={away ? "" : undefined}
+          className="pointer-events-auto relative flex items-center gap-1.5 whitespace-nowrap transition-[transform,opacity] duration-800 ease-[cubic-bezier(.16,1,.3,1)] data-away:-translate-y-[140%] data-away:opacity-0 motion-reduce:duration-0 bg-[rgba(18,18,18,.78)] p-1.5 shadow-[inset_0_0_0_1px_rgba(244,244,244,.1),0_20px_60px_-20px_rgba(0,0,0,.7)] backdrop-blur-[18px] backdrop-saturate-[1.4]"
         >
           <span ref={pillRef} aria-hidden="true" className="pointer-events-none invisible absolute top-0 left-0 z-0 bg-[rgba(244,244,244,.08)] opacity-0" />
           <Link href={backHref} aria-label={`Back to ${title}`} data-tip="Back" className={BAR_BTN}>
@@ -853,13 +832,11 @@ function PreviewBar({ title: titleProp, tier: tierProp, backHref: backHrefProp, 
         aria-label="Show preview controls"
         data-tip="Show controls"
         onClick={onPullClick}
-        onPointerEnter={() => hangTlRef.current?.pause()}
-        onPointerLeave={() => hangTlRef.current?.resume()}
-        onFocus={() => hangTlRef.current?.pause()}
-        onBlur={() => hangTlRef.current?.resume()}
-        className="group invisible fixed top-0 left-1/2 z-9020 cursor-pointer px-3 pb-2.5 opacity-0 [-webkit-tap-highlight-color:transparent] focus-visible:outline-none"
+        data-away={away ? "" : undefined}
+        className="group invisible fixed top-0 left-1/2 z-9020 -translate-x-1/2 -translate-y-[110%] cursor-pointer px-3 pb-2.5 opacity-0 transition-[transform,opacity,visibility] duration-900 ease-[cubic-bezier(.34,1.56,.64,1)] [-webkit-tap-highlight-color:transparent] focus-visible:outline-none data-away:visible data-away:-translate-y-[10%] data-away:opacity-100 motion-reduce:duration-0"
       >
-        <span ref={hangRef} className="flex origin-top flex-col items-center">
+        <style>{HANG_CSS}</style>
+        <span ref={hangRef} className="hx-hang flex origin-top flex-col items-center group-hover:[animation-play-state:paused] group-focus-visible:[animation-play-state:paused]">
           <span
             aria-hidden="true"
             className="relative z-2 -mb-2 block h-8 w-px bg-[linear-gradient(#5a5a5a,#6a6a6a)] transition-[height] duration-700 ease-[cubic-bezier(.34,1.56,.64,1)] group-hover:h-5.5 group-focus-visible:h-5.5"

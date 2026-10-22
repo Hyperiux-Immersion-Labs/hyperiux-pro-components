@@ -270,10 +270,14 @@ const THEMES: Record<`${AnimatedDataTableTheme}:${AnimatedDataTableMode}`, Recor
 function themeProps(theme: AnimatedDataTableTheme = "default", mode: AnimatedDataTableMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
+
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = "@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}\n@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}\n.hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}\n[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}\n.hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}\n@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}";
 
 // ---- button.tsx ----
 
@@ -386,7 +390,7 @@ function Skeleton({
         ROUNDED[radius],
         active && kind === "pulse" && "animate-pulse",
         // Shared viewport band; see globals.css
-        active && (kind === "shimmer" || kind === "wave") && "skeleton-sweep",
+        active && (kind === "shimmer" || kind === "wave") && "hx-skeleton-sweep",
         // CSS catches reduced motion during hydration
         "motion-reduce:animate-none",
         className
@@ -1625,18 +1629,16 @@ function DataTableRowView({
     onPointerEnter: (event: React.PointerEvent<HTMLElement>) =>
       context.hoverRowAt(row.id, event.currentTarget),
     onClick: settings.expandable ? () => context.toggleExpand(row.id) : undefined,
-    // Muted text on a primary row: the row redefines --hx-muted-foreground instead of
-    // targeting `.text-(--hx-muted-foreground)`, whose brackets aren't a valid CSS selector
     className: cn(
       "relative transition-colors duration-300",
       settings.rowHighlight === "none" &&
         (settings.rowHighlightColor === "primary"
-          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) hover:[--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)] [&:hover_[data-slot=status-badge]]:bg-(--hx-background)"
+          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) [&:hover_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&:hover_[data-slot=status-badge]]:bg-(--hx-background)"
           : "hover:bg-(--hx-muted)/50"),
       isSelected && "bg-(--hx-primary)/[0.06]",
       settings.expandable && "cursor-pointer",
       onPrimary &&
-        "text-(--hx-primary-foreground) [--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)] [&_[data-slot=status-badge]]:bg-(--hx-background)"
+        "text-(--hx-primary-foreground) [&_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&_[data-slot=status-badge]]:bg-(--hx-background)"
     ),
     children: cells,
   }
@@ -2601,6 +2603,7 @@ export default function AnimatedDataTable({ theme = "default", mode = "light", c
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <style>{COMPONENT_CSS}</style>
         <TablePage {...props} />
       </div>
     </ThemeContext.Provider>

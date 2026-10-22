@@ -10,6 +10,7 @@
 
 export const DEVICES = { full: null, tablet: [820, 1180], phone: [390, 844] };
 export const EMBED_MESSAGE = "vault-preview:values";
+export const EMBED_READY = "vault-preview:ready";
 const RM_QUERY = /prefers-reduced-motion\s*:\s*reduce/;
 
 /* ---------- reduced-motion simulation (shared by host page and embedded page) ---------- */
@@ -65,5 +66,7 @@ export function onEmbedValues(cb) {
     if (e.origin === location.origin && e.data && e.data.type === EMBED_MESSAGE) cb(e.data.values);
   };
   addEventListener("message", fn);
+  // The iframe hydrates after its load event, so ask the host to (re)send the values now.
+  if (window.parent !== window) window.parent.postMessage({ type: EMBED_READY }, location.origin);
   return () => removeEventListener("message", fn);
 }

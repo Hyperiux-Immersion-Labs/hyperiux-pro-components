@@ -245,6 +245,28 @@ for (const e of mainExports) { e.local = renameHpx(e.local); e.alias = renameHpx
 for (const e of mainExports) if (e.alias !== e.local && !e.type) out = out.replace(new RegExp(`\\b${e.alias}\\b`, "g"), e.local);
 for (const e of mainExports) if (e.alias !== e.local && e.type) out = out.replace(new RegExp(`\\b${e.alias}\\b`, "g"), e.local);
 
+// Animations the source defined in its global CSS, shipped inside the file instead
+const GLOBAL_CSS = [];
+if (/\bskeleton-sweep\b/.test(out)) {
+  out = out.replace(/\bskeleton-sweep\b/g, "hx-skeleton-sweep");
+  GLOBAL_CSS.push(
+    "@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}",
+    "@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}",
+    ".hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}",
+    "[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}",
+    ".hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}",
+    "@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}",
+  );
+}
+if (/animate-\[toast-timer_/.test(out)) {
+  out = out.replace(/animate-\[toast-timer_/g, "animate-[hx-toast-timer_");
+  GLOBAL_CSS.push("@keyframes hx-toast-timer{from{transform:scaleX(1)}to{transform:scaleX(0)}}");
+}
+if (/\banimate-caret-blink\b/.test(out)) {
+  out = out.replace(/\banimate-caret-blink\b/g, "animate-[hx-caret-blink_1.25s_ease-out_infinite] motion-reduce:animate-none");
+  GLOBAL_CSS.push("@keyframes hx-caret-blink{0%,70%,100%{opacity:1}20%,50%{opacity:0}}");
+}
+
 // Themes: only the tokens this file uses
 const themes = parseThemes();
 const used = [...new Set(["background", "foreground", "border", "ring", ...[...out.matchAll(/--hx-([a-z0-9-]+)/g)].map((m) => m[1])])].filter((t) => TOKENS.includes(t)).sort();
@@ -296,10 +318,15 @@ const THEMES: Record<\`\${${cfg.exportName}Theme}:\${${cfg.exportName}Mode}\`, R
 function themeProps(theme: ${cfg.exportName}Theme = "default", mode: ${cfg.exportName}Mode = "light") {
   const palette = THEMES[\`\${theme}:\${mode}\`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [\`--hx-\${token}\`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
+${GLOBAL_CSS.length ? `
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = ${JSON.stringify(GLOBAL_CSS.join("\n"))};
+` : ""}
 ${usesThemeHook ? `
 const ModeContext = React.createContext<{ mode: ${cfg.exportName}Mode; setMode: (mode: ${cfg.exportName}Mode) => void } | null>(null);
 
@@ -317,7 +344,7 @@ function useTheme() {
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -351,7 +378,7 @@ export interface ${cfg.exportName}Props extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function ${cfg.exportName}({ theme = "default", mode = "light", className, ...props }: ${cfg.exportName}Props) {
+export default function ${cfg.exportName}({ theme = "${cfg.defaultTheme || "default"}", mode = "${cfg.defaultMode || "light"}", className, ...props }: ${cfg.exportName}Props) {
 ${usesThemeHook ? `  const [liveMode, setLiveMode] = React.useState(mode);
   const [seenMode, setSeenMode] = React.useState(mode);
   if (seenMode !== mode) {
@@ -367,7 +394,7 @@ ${usesThemeHook ? `  const [liveMode, setLiveMode] = React.useState(mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn(`}"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <${demoFn} {...props} />
+${GLOBAL_CSS.length ? "        <style>{COMPONENT_CSS}</style>\n" : ""}        <${demoFn} {...props} />
       </div>
     </ThemeContext.Provider>${usesThemeHook ? "\n    </ModeContext.Provider>" : ""}
   );
@@ -481,10 +508,56 @@ for (const f of cfg.demos) {
 const js = ts.transpileModule(`module.exports = ${controlsSrc}`, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 const mod = { exports: {} };
 new Function("module", "require", "React", (cfg.schemaPrelude || "") + "\n" + autoPrelude + "\n" + js)(mod, require, {});
+// Source `disabled: (v) => …` → remixer disabledWhen (any rule matching disables)
+function toDisabledWhen(fn, controls, name) {
+  if (typeof fn !== "function") return null;
+  const sf = ts.createSourceFile("r.ts", `(${fn.toString()})`, ts.ScriptTarget.Latest, true);
+  let arrow = sf.statements[0].expression;
+  while (ts.isParenthesizedExpression(arrow)) arrow = arrow.expression;
+  const param = arrow.parameters[0].name.getText(sf);
+  const unwrap = (n) => (ts.isParenthesizedExpression(n) ? unwrap(n.expression) : n);
+  const propOf = (n) => (ts.isPropertyAccessExpression(n) && n.expression.getText(sf) === param ? n.name.text : null);
+  const valueOf = (n) => new Function(`return (${n.getText(sf)})`)();
+  // Returns a list of rules (OR), or null when it can't be expressed
+  const walk = (raw) => {
+    const n = unwrap(raw);
+    if (ts.isPrefixUnaryExpression(n) && n.operator === ts.SyntaxKind.ExclamationToken) {
+      const inner = unwrap(n.operand);
+      if (ts.isPrefixUnaryExpression(inner) && inner.operator === ts.SyntaxKind.ExclamationToken && propOf(unwrap(inner.operand))) return [{ prop: propOf(unwrap(inner.operand)), equals: true }];
+      return propOf(inner) ? [{ prop: propOf(inner), equals: false }] : null;
+    }
+    if (ts.isBinaryExpression(n)) {
+      const op = n.operatorToken.kind;
+      if (op === ts.SyntaxKind.BarBarToken) { const a = walk(n.left), b = walk(n.right); return a && b ? [...a, ...b] : null; }
+      if (op === ts.SyntaxKind.EqualsEqualsEqualsToken || op === ts.SyntaxKind.ExclamationEqualsEqualsToken) {
+        const prop = propOf(unwrap(n.left)); if (!prop) return null;
+        return [op === ts.SyntaxKind.EqualsEqualsEqualsToken ? { prop, equals: valueOf(n.right) } : { prop, notEquals: valueOf(n.right) }];
+      }
+      if (op === ts.SyntaxKind.AmpersandAmpersandToken) {
+        const a = walk(n.left), b = walk(n.right);
+        // "x is none of these" on one select → disabled for every other option
+        if (a && b && [...a, ...b].every((r) => "notEquals" in r && r.prop === a[0].prop)) {
+          const excluded = [...a, ...b].map((r) => r.notEquals);
+          const options = (controls[a[0].prop]?.options || []).map((o) => (typeof o === "object" ? o.value : o));
+          if (options.length) return [{ prop: a[0].prop, in: options.filter((o) => !excluded.includes(o)) }];
+        }
+        return null;
+      }
+    }
+    return null;
+  };
+  const rules = walk(arrow.body);
+  if (!rules) console.warn(`  ${cfg.slug}: "${name}" rule needs a description note: ${arrow.body.getText(sf)}`);
+  return rules && (rules.length === 1 ? rules[0] : rules);
+}
+// Spaced so the ship script's props regex never sees "]}"
+const looseLit = (v) => JSON.stringify(v).replace(/\]/g, " ]").replace(/\}/g, " }").replace(/\{/g, "{ ").replace(/\[/g, "[ ").replace(/:/g, ": ").replace(/,/g, ", ");
+
 const lit = (v) => JSON.stringify(v);
 const rows = [
-  `{ name: "theme", label: "Theme", type: "string", default: "default", description: "Colour palette for every part, popups included.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [${palettes.map((p) => `{ label: ${lit(p[0].toUpperCase() + p.slice(1))}, value: ${lit(p)} }`).join(", ")}] } }`,
-  `{ name: "mode", label: "Mode", type: "string", default: "light", description: "Light or dark version of the palette.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } }`,
+  `{ name: "theme", label: "Theme", type: "string", default: "${cfg.defaultTheme || "default"}", description: "${(cfg.themeDescription || "Colour palette for every part, popups included.").replace(/"/g, '\\"')}", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [${palettes.map((p) => `{ label: ${lit(p[0].toUpperCase() + p.slice(1))}, value: ${lit(p)} }`).join(", ")}] } }`,
+  ...(cfg.noModeControl ? [] : [
+    `{ name: "mode", label: "Mode", type: "string", default: "${cfg.defaultMode || "light"}", description: "${cfg.modeDescription || `Light or dark version of the palette.${cfg.defaultMode === "dark" ? " Starts dark." : ""}`}", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } }`]),
 ];
 for (const [name, c] of Object.entries(mod.exports)) {
   const group = c.group || "Controls";
@@ -492,11 +565,17 @@ for (const [name, c] of Object.entries(mod.exports)) {
   const type = c.type === "checkbox" ? "boolean" : c.type === "slider" ? "number" : "string";
   const control = c.type === "slider" ? "range" : c.type;
   let extra = "";
-  if (c.type === "slider") extra = `, min: ${c.min}, max: ${c.max}, step: ${c.step}`;
-  if (c.type === "select") extra = `, options: [${c.options.map((o) => `{ label: ${lit(o.label)}, value: ${lit(o.value)} }`).join(", ")}]`;
+  if (c.type === "slider") extra = `, min: ${cfg.ranges?.[name]?.min ?? c.min}, max: ${cfg.ranges?.[name]?.max ?? c.max}, step: ${c.step}`;
+  if (c.type === "select") extra = `, options: [${(cfg.options?.[name] ?? c.options).map((o) => `{ label: ${lit(o.label)}, value: ${lit(o.value)} }`).join(", ")}]`;
   if (c.type === "text" && c.placeholder) extra = `, placeholder: ${lit(c.placeholder)}`;
   const desc = (cfg.descriptions?.[name] || c.label).replace(/"/g, '\\"');
-  rows.push(`{ name: ${lit(name)}, label: ${lit(c.label)}, type: "${type}", default: ${lit(c.value)}, description: "${desc}", remixer: { control: "${control}", group: "${gid}", groupTitle: ${lit(group)}${extra} } }`);
+  const rule = cfg.disabledWhen && name in cfg.disabledWhen ? cfg.disabledWhen[name] : toDisabledWhen(c.disabled, mod.exports, name);
+  if (rule) extra += `, disabledWhen: ${looseLit(rule)}`;
+  if (cfg.hideWhenReducedMotion?.includes(name)) extra += `, hideWhenReducedMotion: true`;
+  const label = cfg.labels?.[name] ?? c.label;
+  const groupTitle = cfg.groups?.[name] ?? group;
+  const gid2 = groupTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  rows.push(`{ name: ${lit(name)}, label: ${lit(label)}, type: "${type}", default: ${lit(cfg.defaults?.[name] ?? c.value)}, description: "${desc}", remixer: { control: "${control}", group: "${gid2}", groupTitle: ${lit(groupTitle)}${extra} } }`);
 }
 console.log(`${cfg.slug}: ${file.split("\n").length} lines, ${rows.length} props, tokens: ${used.join(" ")}`);
 

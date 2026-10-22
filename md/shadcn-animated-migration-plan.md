@@ -12,7 +12,7 @@ Last updated: 2026-10-22.
 | Phase | What | Status |
 |---|---|---|
 | 0 | Port all 25 components to single files + Phase 0 demo pages | **Done** (type-check, lint and browser-load clean) |
-| 1 | Review & QA each component | **In progress.** Polish standard (below) applied, and audit fixes done, for 5 of 25: Accordion, Attachment, Button, Chat Bubble, Checkbox Group. One owner decision open (see "Open items"). |
+| 1 | Review & QA each component | **In progress.** Polish standard (below) applied, and audit fixes done, for 5 of 25: Accordion, Attachment, Button, Chat Bubble, Checkbox Group. One owner decision open (see "Open items"). Components 14–25 (Input OTP → Tooltip) have polish steps 1, 3, 4 and 5 done; steps 2 and 6 and the audits are still to do (see "Progress on 14–25"). |
 | 2 | Registry sync (`component-ship.mjs registry`) | Not started |
 | 3 | Codegen: global Remixer swap + Sanity JSX handoff | Not started |
 | 4 | Distribution: `public/r`, npm tarball, free mirror | Not started |
@@ -177,6 +177,11 @@ label repeated.
   → **Blur while uploading**).
 - Put a control in the group it belongs to. If a group would hold one control that just repeats
   the group's name, give the control its own group (the accordion's Icon).
+- **No prop may keep the generated fallback.** The bundler uses the label as the description
+  when the config has no `descriptions` entry, so a description that equals its label is a miss.
+  Check with a script before calling a component done: list every prop whose description equals
+  its label (or is under ~18 characters) and write a real one in the config's `descriptions`.
+  The 8 bundled components after #5 (Command Menu to Hover Card) were filled this way.
 
 ### 6. Behaviour polish
 
@@ -203,6 +208,36 @@ Check each of these that applies:
 - **Useful defaults.** Demo-only states that show off the component start on (Button's loading
   state).
 
+### 6a. Reduced motion
+
+The demo header's **M** switch (and the OS setting) must make every component calm. Input OTP
+is the reference implementation.
+
+- **Read the setting yourself.** Motion's `useReducedMotion()` and `MotionConfig
+  reducedMotion="user"` read the OS setting once and cache it, so they ignore the demo's
+  switch. Use a small hook: `matchMedia("(prefers-reduced-motion: reduce)")` in state, set in
+  an effect, with a `change` listener. The demo's Replay remounts the component, so the switch
+  is picked up. Put the value in the component's context so every part can use it.
+- **Gate everything that moves, by hand.** `MotionConfig` only stops transform and layout
+  animations. Also gate: `pathLength` drawing (set the final value, `duration: 0`), height and
+  clip-path changes, stagger and `delay` values (use 0), spinners, shakes and waves, and
+  `animate-*` classes (`motion-reduce:animate-none`).
+- **Content still appears, just instantly.** Characters, ticks, panels and success colours
+  show their end state at once. Never hide information because motion is off.
+- **Keep what isn't decoration.** A glide ring or highlight that shows where focus is stays;
+  don't remove it under reduced motion unless it is purely ornamental. Decide this per
+  component and say so in the prop's description.
+- **CSS.** The themed root and the portal wrapper already carry
+  `motion-reduce:**:transition-none`, so plain CSS transitions stop on their own.
+- **Hide the motion-only props.** List props that only change motion (entry animation,
+  stagger, bounce, duration, shake, wave) in the config's `hideWhenReducedMotion`. The panel
+  leaves them out while reduced motion is on and brings them back when it's off. Don't list a
+  prop that also changes something visible (colour, size, layout), and don't list one that
+  other props depend on.
+- **Test it.** Press **M**, open the panel (**P**): the listed props are gone. Use the
+  component: nothing animates. Press **M** again: the props return. Run the
+  `reduced-motion-audit` agent and fix what it finds.
+
 ### 7. Remixer panel (shared, already done)
 
 These are global and need no per-component work. Don't undo them.
@@ -222,11 +257,63 @@ npx eslint src/components/animated-<name> "src/app/(marketing)/demo/animated-<na
 grep -n 'from "@/\|from "next/\|hpx' src/components/animated-<name>/index.tsx   # nothing
 grep -n 'vw\|vh\b\|svh' src/components/animated-<name>/index.tsx              # only a full-screen overlay
 grep -n 'mode = "light"' src/components/animated-<name>/index.tsx             # nothing
+# reduced motion: nothing animates with M on, motion-only props hidden (see 6a)
+# no prop description may equal its label: grep the DemoContent props for description === label
 ```
 
 Then run both audit agents on it (`reduced-motion-audit`, `props-remixer-audit`), fix what they
 find, and open `/demo/animated-<name>` to try every control in light and dark, with Default and
 one coloured theme.
+
+### Progress on 14–25
+
+Input OTP, Menubar, Questionnaire, Radio Group, Sidebar, Skeleton, Slider, Switch, Tabs Bar,
+Theme Switch, Toast and Tooltip.
+
+**These stay reproducible.** Unlike the first five (edited by hand), every change to the 11
+bundled ones lives in its config in `apps/docs/scripts/shadcn-port/configs/`, so
+`port.mjs <config>` regenerates the finished file. Keep it that way: put fixes in the config,
+don't edit their `index.tsx` or `DemoContent.tsx` directly. Radio Group was ported by hand and
+is the exception.
+
+Config keys used for the polish (on top of those in "How to convert a component"):
+
+| Key | Does |
+|---|---|
+| `defaultMode` | `"dark"`: default export, remixer Mode default and the Mode description |
+| `descriptions` | `{ propName: "One sentence." }` |
+| `labels` / `groups` | Rename a control's label or group |
+| `disabledWhen` | Override the rule the bundler derives for a prop |
+| `defaultTheme` / `defaults` | Starting theme, and `{ propName: value }` overrides for the other props' defaults |
+| `options` | `{ propName: [{ label, value }] }`: the remixer dropdown's choices. The bundler reads them from the source, so patching the component's own schema is not enough |
+| `hideWhenReducedMotion` | `["propName", …]`: props hidden from the panel while reduced motion is on (see 6a) |
+| `patches` | Exact `[from, to]` text replacements on the output (used for the viewport-unit fixes) |
+
+The bundler now translates the source's `disabled: (v) => …` rules into `disabledWhen` itself:
+`===`/`!==` → `equals`/`notEquals`, `!v.x` → `equals: false`, `||` → a list, and `&&` of
+`!==` on one select → `in` the remaining options. Anything else (an `&&` across two props) is
+printed as a warning and goes into the description instead.
+
+| Step | State |
+|---|---|
+| 1. Dark by default | Done for all 12 |
+| 2. Theme colour | Done. Root and portals get `data-accent` when the theme isn't Default; key parts use `in-data-accent:…-(--hx-primary)`. Added to Input OTP (active box, ring, caret), Tabs Bar (active text with underlines), Tooltip (Outline style), Theme Switch (icon) and Toast (timer bar). The other six already used `--hx-primary`; every Theme description now says what it tints |
+| 3. Tailwind sizes | Done. Only Toast keeps `vh`, which positions its fixed, full-screen stack (allowed exception). Questionnaire's slide distance is now `%` of its own width instead of `vw` |
+| 4. `disabledWhen` | Done: 35 rules from the source. Two `&&` cases are in descriptions instead (Tabs Bar Bounce, Tooltip Bounce). Sidebar and Theme Switch have none |
+| 5. Descriptions | Done for every prop; two labels renamed (Success wave, Smooth) |
+| 6. Behaviour polish | **To do** |
+| Audits | Done on all 12. All props-audit fixes applied (rules, descriptions, Toast timeout min 0, Questionnaire card-only rules). Reduced motion: CSS transitions now stop under the themed root and portals (`motion-reduce:**:transition-none`). **Still open** (code changes): Toast and Theme Switch need `MotionConfig`; Toast's drawn check and spinner; ungated `pathLength`, `height` and stagger/delay in Menubar and Questionnaire (Input OTP, Radio Group and Sidebar are done: own reduced-motion hook, `MotionConfig` always/never, motion-only props hidden). Re-run `reduced-motion-audit` for exact lines |
+
+Fixed along the way:
+
+- **Global CSS the components relied on.** Skeleton's shimmer (`skeleton-sweep`, also bundled in
+  Sidebar), Toast's timer bar (`toast-timer` keyframes) and Input OTP's caret (`caret-blink`, from
+  `tw-animate-css`) only existed in the source app's CSS, so they silently did nothing. The bundler
+  now detects them, renames them `hx-…` and ships the CSS inside the file (`COMPONENT_CSS`,
+  rendered as a `<style>` by the default export). **Data Table (#7) still has the shimmer bug**;
+  it wasn't regenerated because it's outside 14–25.
+- **Sidebar's Elastic tooltips** now set `transitionDuration` / `transitionTimingFunction`
+  (they set animation timing, which the bundler's enter transitions don't read).
 
 ### Open items for the first five
 
@@ -465,7 +552,7 @@ Motion version and corner radius are decided; see "Decisions already made".
 
 | Item | Detail | Owner decision needed? |
 |---|---|---|
-| Remixer descriptions | Currently the control labels. | No, just Phase 1 work |
+| Remixer descriptions | Written for every bundled component (6–25). Components 1–5 and any new port still need the label-equals-description check. | No |
 | Hover Card previews | Built-in sample data; `loadPreview()` is the swap point for a real endpoint. | No |
 | Theme Switch | Flips the component's own mode, not the user's site theme. Document how to wire it to their theme provider. | No |
 | File size | Sidebar is ~4k lines (≈1.3k are its 9 demo icons). Consider trimming demo-only icons from the shipped file. | Maybe |

@@ -17,5 +17,29 @@
   "title": "Animated Date Picker",
   "subtitle": "A button that opens a calendar to pick a single date.",
   "panelClass": "flex min-h-[70vh] items-start justify-center p-[3vw] max-md:p-[5vw]",
-  "schemaPrelude": "var { format } = require(\"date-fns\");"
+  "schemaPrelude": "var { format } = require(\"date-fns\");",
+  "descriptions": {
+    "showIcon": "Shows a calendar icon in the trigger button.",
+    "rollingText": "The button label rolls to a second copy on hover.",
+    "dateFormat": "How the chosen date is written in the trigger.",
+    "fromBehind": "The calendar grows out from behind the trigger instead of appearing below it.",
+    "contentAnimation": "How the calendar appears: scales and fades, or only fades.",
+    "startScale": "Size the calendar starts from when it opens, as a fraction of full size.",
+    "closeOnSelect": "Closes the calendar as soon as a date is picked.",
+    "captionLayout": "What the calendar header shows: month and year dropdowns, one of them, or a plain label.",
+    "yearsBefore": "How many years before this one the year dropdown goes back. Needs a Header with a year dropdown.",
+    "yearsAfter": "How many years after this one the year dropdown goes forward. Needs a Header with a year dropdown.",
+    "monthAnimation": "How the days change when you move to another month.",
+    "monthSlideDistance": "How far the days slide when the month changes, in pixels. Needs Month animation set to Slide + fade.",
+    "slideArrows": "The month arrows nudge in the direction they move.",
+    "hoverVariant": "Style of the day highlight: filled or outline.",
+    "hoverAnimation": "How the highlight moves between days: slides or fades.",
+    "hoverDuration": "How long the highlight takes to glide between days, in seconds.",
+    "hoverBounce": "How much the highlight overshoots when gliding. 0 is no bounce.",
+    "weekStartsOn": "First day of the week shown in the calendar.",
+    "onlyCurrentMonth": "Hides days that belong to the previous or next month.",
+    "fixedWeeks": "Always shows six weeks so the calendar keeps the same height.",
+    "disablePast": "Greys out dates before today so they can't be picked.",
+    "highlightToday": "Gives today's date its own highlight."
+  }
 }

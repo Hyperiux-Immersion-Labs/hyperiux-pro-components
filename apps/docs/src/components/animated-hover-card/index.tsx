@@ -242,7 +242,8 @@ const THEMES: Record<`${AnimatedHoverCardTheme}:${AnimatedHoverCardMode}`, Recor
 function themeProps(theme: AnimatedHoverCardTheme = "default", mode: AnimatedHoverCardMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -250,7 +251,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );

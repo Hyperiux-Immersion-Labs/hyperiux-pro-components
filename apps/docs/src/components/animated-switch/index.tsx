@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
-import { MotionConfig, animate, motion, useMotionValue, useReducedMotion, useTransform, type MotionStyle, type Transition } from "motion/react";
+import { MotionConfig, animate, motion, useMotionValue,  useTransform, type MotionStyle, type Transition } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function toClass(value: unknown): string {
@@ -224,7 +224,8 @@ const THEMES: Record<`${AnimatedSwitchTheme}:${AnimatedSwitchMode}`, Record<stri
 function themeProps(theme: AnimatedSwitchTheme = "default", mode: AnimatedSwitchMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -257,6 +258,19 @@ type SwitchMotion = {
 }
 
 // Track and handle sizes. The numbers are what the animation needs; the classes size the track.
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
 const SIZE: Record<
   SwitchSize,
   { track: string; w: number; d: number; gap: number; label: string; mark: string }
@@ -336,7 +350,7 @@ function Switch({
     className?: string
     labelClassName?: string
   }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const spec = { ...SIZE[size], ...(variant === "apple" ? APPLE_WIDE[size] : null) }
   // The apple handle is a wider capsule, like the system switch
   const handleW = variant === "apple" ? Math.round(spec.d * 1.4) : spec.d
@@ -574,10 +588,10 @@ function Switch({
     </SwitchPrimitive.Root>
   )
 
-  if (label === undefined) return <MotionConfig reducedMotion="user">{control}</MotionConfig>
+  if (label === undefined) return <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>{control}</MotionConfig>
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <label
         className={cn(
           "inline-flex cursor-pointer items-center select-none",
@@ -671,7 +685,7 @@ const controls = {
     group: "Motion",
     type: "slider",
     label: "Press squeeze",
-    value: 0.18,
+    value: 0.24,
     min: 0,
     max: 0.4,
     step: 0.01,
@@ -704,7 +718,7 @@ function SwitchDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[50vh] items-center justify-center rounded-lg border px-4 py-8">
+      <div className="flex min-h-64 max-md:min-h-72 items-center justify-center px-4 py-8">
         <Switch
           checked={on}
           onCheckedChange={setOn}
@@ -721,8 +735,8 @@ function SwitchDemo(props: Partial<ControlValues>) {
           bounce={values.bounce}
         />
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
-        Tip: press and hold to see the handle squeeze before you let go. On Apple, drag the handle across.
+      <p className="text-center text-sm text-(--hx-muted-foreground)">
+        {values.variant === "apple" ? "Tip: press and hold to see the glass handle swell, then drag it across and let go past the middle to flip it." : "Tip: press and hold to see the handle squeeze before you let go."}
       </p>
 
     </div>
@@ -754,7 +768,7 @@ export interface AnimatedSwitchProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedSwitch({ theme = "default", mode = "light", className, ...props }: AnimatedSwitchProps) {
+export default function AnimatedSwitch({ theme = "valorant", mode = "dark", className, ...props }: AnimatedSwitchProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

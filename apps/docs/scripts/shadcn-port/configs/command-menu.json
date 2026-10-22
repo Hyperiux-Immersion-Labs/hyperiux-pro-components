@@ -7,5 +7,22 @@
   ],
   "demoFn": "HpxCommandDemo",
   "title": "Animated Command Menu",
-  "subtitle": "A searchable list of commands, opened with a shortcut."
+  "subtitle": "A searchable list of commands, opened with a shortcut.",
+  "descriptions": {
+    "dropdownAnimation": "How the results list opens: morphs out of the input, slides down, or fades in.",
+    "morphWidth": "How wide the list is while it morphs, as a multiple of the input width. Needs Dropdown animation set to Morph.",
+    "delay": "Wait before the results list starts opening, in seconds.",
+    "fadeContent": "Fades the list contents in as it opens instead of showing them at once.",
+    "startScale": "Size the list starts from when it opens, as a fraction of full size.",
+    "backdrop": "What sits behind the open menu: nothing, a dim layer, or a blur.",
+    "rounded": "Corner radius of the input and results list.",
+    "itemHighlight": "How the highlight moves between results: slides, fills from the top, or none.",
+    "itemHighlightColor": "Colour of the result highlight: soft grey or the theme's primary colour.",
+    "animateIcon": "Animates each result's icon when its row is highlighted.",
+    "duration": "How long the open and close animation takes, in seconds.",
+    "bounce": "How much the list overshoots and settles when it opens. 0 is no bounce.",
+    "rollingText": "Result labels roll to a second copy on hover.",
+    "staggerItems": "Results appear one after another instead of all at once.",
+    "stagger": "Delay between each result appearing, in seconds. Needs Stagger items on."
+  }
 }

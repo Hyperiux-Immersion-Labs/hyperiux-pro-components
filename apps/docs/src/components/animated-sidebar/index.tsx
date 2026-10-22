@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { forwardRef, useCallback, useImperativeHandle, useRef, type HTMLAttributes } from "react";
-import { animate, stagger, AnimatePresence, motion, useReducedMotion, MotionConfig, type Variants, LazyMotion, domMin, m, useAnimation, useMotionValue, useTransform } from "motion/react";
+import { animate, stagger, AnimatePresence, motion, MotionConfig, type Variants, LazyMotion, domMin, m, useAnimation, useMotionValue, useTransform } from "motion/react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Input as InputPrimitive } from "@base-ui/react/input";
@@ -394,23 +394,40 @@ const THEMES: Record<`${AnimatedSidebarTheme}:${AnimatedSidebarMode}`, Record<st
 function themeProps(theme: AnimatedSidebarTheme = "default", mode: AnimatedSidebarMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
 
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = "@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}\n@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}\n.hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}\n[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}\n.hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}\n@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}";
+
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
 }
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
 // ---- use-mobile.ts ----
 
-const MOBILE_BREAKPOINT = 768
+const MOBILE_BREAKPOINT = 1024
 const QUERY = `(max-width: ${MOBILE_BREAKPOINT - 1}px)`
 
 function subscribe(onChange: () => void) {
@@ -554,7 +571,7 @@ function Skeleton({
   }) {
   const group = React.useContext(SkeletonContext)
   const fallbackIndex = React.useContext(SkeletonIndexContext)
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
 
   const kind = animation ?? group?.animation ?? "shimmer"
   const seconds = duration ?? group?.duration ?? 1.6
@@ -574,7 +591,7 @@ function Skeleton({
         ROUNDED[radius],
         active && kind === "pulse" && "animate-pulse",
         // Shared viewport band; see globals.css
-        active && (kind === "shimmer" || kind === "wave") && "skeleton-sweep",
+        active && (kind === "shimmer" || kind === "wave") && "hx-skeleton-sweep",
         // CSS catches reduced motion during hydration
         "motion-reduce:animate-none",
         className
@@ -712,7 +729,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -783,7 +800,7 @@ const CalendarIcon = forwardRef<CalendarIconHandle, CalendarIconProps>(
   ) => {
     const ringControls = useAnimation()
     const pageControls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     const start = useCallback(() => {
@@ -936,7 +953,7 @@ const CoffeeIcon = forwardRef<CoffeeIconHandle, CoffeeIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1074,7 +1091,7 @@ const DropletsIcon = forwardRef<DropletsIconHandle, DropletsIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1202,7 +1219,7 @@ const FolderIcon = forwardRef<FolderIconHandle, FolderIconProps>(
     ref,
   ) => {
     const folderControls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1324,7 +1341,7 @@ const HouseIcon = forwardRef<HouseIconHandle, HouseIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1460,7 +1477,7 @@ const InboxIcon = forwardRef<InboxIconHandle, InboxIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1593,7 +1610,7 @@ const SearchIcon = forwardRef<SearchIconHandle, SearchIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1709,7 +1726,7 @@ const SettingsIcon = forwardRef<SettingsIconHandle, SettingsIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1923,7 +1940,7 @@ const UtensilsIcon = forwardRef<UtensilsIconHandle, UtensilsIconProps>(
   ) => {
     const forkControls = useAnimation()
     const knifeControls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     const start = useCallback(() => {
@@ -2061,14 +2078,14 @@ const COLLAPSE_BELOW = 150
 /** Tailwind radius names for menu items, resolved against the theme's `--radius` scale. */
 type SidebarItemRadius = "none" | "sm" | "md" | "lg" | "xl" | "2xl" | "full"
 
-// Mirrors the `--radius-*` scale in globals.css, as `rounded-(--sidebar-item-radius)` needs a value.
+// Fixed values, as `rounded-(--sidebar-item-radius)` needs a real length (a theme var may not exist).
 const ITEM_RADIUS: Record<SidebarItemRadius, string> = {
   none: "0px",
-  sm: "calc(var(--radius) * 0.6)",
-  md: "calc(var(--radius) * 0.8)",
-  lg: "var(--radius)",
-  xl: "calc(var(--radius) * 1.4)",
-  "2xl": "calc(var(--radius) * 1.8)",
+  sm: "0.25rem",
+  md: "0.5rem",
+  lg: "0.75rem",
+  xl: "1rem",
+  "2xl": "1.5rem",
   full: "9999px",
 }
 
@@ -2134,6 +2151,7 @@ function SidebarProvider({
     onOpenChange?: (open: boolean) => void
   }) {
   const isMobile = useIsMobile()
+  const reducedMotion = usePrefersReducedMotion()
   const id = React.useId()
   const [openMobile, setOpenMobile] = React.useState(false)
   const [width, setWidth] = React.useState<number | null>(null)
@@ -2223,7 +2241,7 @@ function SidebarProvider({
 
   return (
     <SidebarContext.Provider value={contextValue}>
-      <MotionConfig reducedMotion="user">
+      <MotionConfig reducedMotion={reducedMotion ? "always" : "never"}>
         <div
           data-slot="sidebar-wrapper"
           data-resizing={resizing || undefined}
@@ -2290,7 +2308,7 @@ function Sidebar({
 
   return (
     <div
-      className="group peer hidden text-(--hx-sidebar-foreground) md:block"
+      className="group peer hidden text-(--hx-sidebar-foreground) lg:block"
       data-state={state}
       data-collapsible={state === "collapsed" ? collapsible : ""}
       data-variant={variant}
@@ -2312,7 +2330,7 @@ function Sidebar({
         data-slot="sidebar-container"
         data-side={side}
         className={cn(
-          "fixed inset-y-0 z-10 hidden h-full w-(--sidebar-width) transition-[left,right,width] duration-400 ease-(--sidebar-ease) data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] md:flex",
+          "fixed inset-y-0 z-10 hidden h-full w-(--sidebar-width) transition-[left,right,width] duration-400 ease-(--sidebar-ease) data-[side=left]:left-0 data-[side=left]:group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)] data-[side=right]:right-0 data-[side=right]:group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)] lg:flex",
           variant === "floating" || variant === "inset"
             ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]"
             : "group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l",
@@ -2342,7 +2360,7 @@ function MobileSidebar({
   children: React.ReactNode
 }) {
   const { openMobile, setOpenMobile } = useSidebar()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const panel = React.useRef<HTMLDivElement>(null)
   const sign = side === "left" ? -1 : 1
   const x = useMotionValue(0)
@@ -2416,7 +2434,7 @@ function MobileSidebar({
               onDragEnd={(_, info) => {
                 const swiped = info.offset.x * sign > width.current * 0.3 || info.velocity.x * sign > 500
                 if (swiped) setOpenMobile(false)
-                else animate(x, 0, { type: "spring", visualDuration: 0.3, bounce: 0.2 })
+                else animate(x, 0, reduceMotion ? { duration: 0 } : { type: "spring", visualDuration: 0.3, bounce: 0.2 })
               }}
             >
               {children}
@@ -2431,6 +2449,7 @@ function MobileSidebar({
 function SidebarTriggerIcon({ hovered }: { hovered: boolean }) {
   const { state, isMobile, openMobile, spinToggle } = useSidebar()
   const opening = isMobile ? !openMobile : state === "collapsed"
+  const reduceMotion = usePrefersReducedMotion()
   const arrow = spinToggle
     ? opening
       ? "M13 8L9 12L13 16"
@@ -2451,10 +2470,10 @@ function SidebarTriggerIcon({ hovered }: { hovered: boolean }) {
       style={{ width: "1.25rem", height: "1.25rem" }}
       initial={false}
       animate={{ rotate: spinToggle && hovered ? 180 : 0 }}
-      transition={spring}
+      transition={reduceMotion ? { duration: 0 } : spring}
     >
       <rect width="18" height="18" x="3" y="3" rx="2" />
-      <motion.path initial={false} animate={{ d }} transition={spring} />
+      <motion.path initial={false} animate={{ d }} transition={reduceMotion ? { duration: 0 } : spring} />
     </motion.svg>
   )
 }
@@ -2730,7 +2749,7 @@ function SidebarGroupAction({
       {
         ...slotAttr("sidebar-group-action"),
         className: cn(
-          "absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-(--hx-sidebar-foreground) ring-(--hx-sidebar-ring) outline-hidden transition-transform group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 hover:bg-(--hx-sidebar-accent) hover:text-(--hx-sidebar-accent-foreground) focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
+          "absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-(--hx-sidebar-foreground) ring-(--hx-sidebar-ring) outline-hidden transition-transform group-data-[collapsible=icon]:hidden after:absolute after:-inset-2 hover:bg-(--hx-sidebar-accent) hover:text-(--hx-sidebar-accent-foreground) focus-visible:ring-2 lg:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
           className
         ),
       },
@@ -2833,6 +2852,7 @@ function useGlide<T extends HTMLElement>(
 
 function SidebarGlideHighlight({ box, as = "div", className }: { box: Box | null; as?: "div" | "li"; className?: string }) {
   const { highlightColor } = useSidebar()
+  const reduceMotion = usePrefersReducedMotion()
   const Element = as === "li" ? motion.li : motion.div
   return (
     <AnimatePresence>
@@ -2848,8 +2868,8 @@ function SidebarGlideHighlight({ box, as = "div", className }: { box: Box | null
           )}
           initial={{ ...box, opacity: 0 }}
           animate={{ ...box, opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.15 } }}
-          transition={glide}
+          exit={{ opacity: 0, transition: { duration: reduceMotion ? 0 : 0.15 } }}
+          transition={reduceMotion ? { duration: 0 } : glide}
         />
       )}
     </AnimatePresence>
@@ -3084,7 +3104,7 @@ function SidebarMenuButton({
         hidden={state !== "collapsed" || isMobile}
         positionerClassName="z-70"
         {...(elasticTooltips && {
-          className: "data-open:data-starting-style:scale-75 data-[side=right]:data-starting-style:-translate-x-3",
+          className: "data-open:data-starting-style:scale-75 data-[side=right]:data-starting-style:-translate-x-3 duration-[450ms] ease-[linear(0,0.034_2.2%,0.136_4.6%,0.542_11.5%,0.787_16.4%,0.93_21.1%,1.012_26.4%,1.042_30.9%,1.047_35.5%,1.036_40.9%,1.005_53.3%,0.996_64%,1)]",
           style: { animationDuration: "450ms", animationTimingFunction: SPRING_EASE },
         })}
         {...tooltip}
@@ -3106,7 +3126,7 @@ const power2Out = (t: number) => 1 - (1 - t) ** 3
 
 function RollLabel({ className, children }: { className?: string; children: React.ReactNode }) {
   const root = React.useRef<HTMLSpanElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const el = root.current
@@ -3153,9 +3173,9 @@ function SidebarMenuAction({
       {
         ...slotAttr("sidebar-menu-action"),
         className: cn(
-          "absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-(--hx-sidebar-foreground) ring-(--hx-sidebar-ring) outline-hidden transition-transform group-data-[collapsible=icon]:hidden peer-hover/menu-button:text-(--hx-sidebar-accent-foreground) peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1 after:absolute after:-inset-2 hover:bg-(--hx-sidebar-accent) hover:text-(--hx-sidebar-accent-foreground) focus-visible:ring-2 md:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
+          "absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-(--hx-sidebar-foreground) ring-(--hx-sidebar-ring) outline-hidden transition-transform group-data-[collapsible=icon]:hidden peer-hover/menu-button:text-(--hx-sidebar-accent-foreground) peer-data-[size=default]/menu-button:top-1.5 peer-data-[size=lg]/menu-button:top-2.5 peer-data-[size=sm]/menu-button:top-1 after:absolute after:-inset-2 hover:bg-(--hx-sidebar-accent) hover:text-(--hx-sidebar-accent-foreground) focus-visible:ring-2 lg:after:hidden [&>svg]:size-4 [&>svg]:shrink-0",
           showOnHover &&
-            "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-active/menu-button:text-(--hx-sidebar-accent-foreground) aria-expanded:opacity-100 md:opacity-0",
+            "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 peer-data-active/menu-button:text-(--hx-sidebar-accent-foreground) aria-expanded:opacity-100 lg:opacity-0",
           className
         ),
       },
@@ -3174,7 +3194,7 @@ function SidebarMenuBadge({
   ...props
 }: Omit<React.ComponentProps<typeof motion.div>, "children"> & { children?: React.ReactNode }) {
   const { rollingNumbers, highlightColor } = useSidebar()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const content = React.useRef<HTMLSpanElement>(null)
   const count = typeof children === "number" ? children : null
 
@@ -3277,29 +3297,30 @@ function SidebarMenuSkeleton({
   )
 }
 
+// `custom` is true under reduced motion: every change lands at once.
 const subMenuVariants: Variants = {
-  closed: {
+  closed: (reduce: boolean) => ({
     height: 0,
     opacity: 0,
     overflow: "hidden",
-    transition: { type: "spring", visualDuration: 0.25, bounce: 0 },
-  },
-  open: {
+    transition: reduce ? { duration: 0 } : { type: "spring", visualDuration: 0.25, bounce: 0 },
+  }),
+  open: (reduce: boolean) => ({
     height: "auto",
     opacity: 1,
     transitionEnd: { overflow: "visible" },
-    transition: { ...spring, staggerChildren: 0.05, delayChildren: 0.05 },
-  },
+    transition: reduce ? { duration: 0 } : { ...spring, staggerChildren: 0.05, delayChildren: 0.05 },
+  }),
 }
 
 const subItemVariants: Variants = {
-  closed: { opacity: 0, x: -6, transition: { duration: 0.15 } },
-  open: { opacity: 1, x: 0, transition: spring },
+  closed: (reduce: boolean) => ({ opacity: 0, x: -6, transition: { duration: reduce ? 0 : 0.15 } }),
+  open: (reduce: boolean) => ({ opacity: 1, x: 0, transition: reduce ? { duration: 0 } : spring }),
 }
 
 const guideLineVariants: Variants = {
-  closed: { scaleY: 0, transition: { duration: 0.15 } },
-  open: { scaleY: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  closed: (reduce: boolean) => ({ scaleY: 0, transition: { duration: reduce ? 0 : 0.15 } }),
+  open: (reduce: boolean) => ({ scaleY: 1, transition: { duration: reduce ? 0 : 0.4, ease: [0.22, 1, 0.36, 1] } }),
 }
 
 function SidebarMenuSub({
@@ -3311,11 +3332,13 @@ function SidebarMenuSub({
   open?: boolean
   children?: React.ReactNode
 }) {
+  const reduceMotion = usePrefersReducedMotion()
   return (
     <AnimatePresence initial={false}>
       {open && (
         <motion.ul
           key="sub"
+          custom={reduceMotion}
           data-slot="sidebar-menu-sub"
           data-sidebar="menu-sub"
           variants={subMenuVariants}
@@ -3885,7 +3908,7 @@ function SidebarShell({ children, ...props }: { children: React.ReactNode } & Pa
                   <SidebarTrigger className="m-3 border bg-(--hx-background) shadow-xs" />
                 </div>
               )}
-              <div className="flex w-full flex-1 flex-col px-[3vw] py-8 max-[1025px]:px-[4vw] max-md:px-4">
+              <div className="flex w-full flex-1 flex-col px-10 py-8 max-[1025px]:px-8 max-md:px-4">
                 {children}
               </div>
             </SidebarInset>
@@ -3910,7 +3933,7 @@ const pages: Record<string, string> = {
 
 function Heading({ title, children }: { title: string; children?: React.ReactNode }) {
   return (
-    <div className="flex w-[40vw] flex-col gap-1 max-[1025px]:w-[70vw] max-md:w-full">
+    <div className="flex w-full max-w-xl flex-col gap-1">
       <h1 className="text-2xl font-semibold">{title}</h1>
       {children && <p className="text-sm text-(--hx-muted-foreground)">{children}</p>}
     </div>
@@ -4000,11 +4023,12 @@ export interface AnimatedSidebarProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedSidebar({ theme = "default", mode = "light", className, ...props }: AnimatedSidebarProps) {
+export default function AnimatedSidebar({ theme = "vscode", mode = "dark", className, ...props }: AnimatedSidebarProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <style>{COMPONENT_CSS}</style>
         <SidebarDemo {...props} />
       </div>
     </ThemeContext.Provider>

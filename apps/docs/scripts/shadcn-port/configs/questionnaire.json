@@ -7,5 +7,87 @@
   ],
   "demoFn": "HpxQuestionnaireDemo",
   "title": "Animated Questionnaire",
-  "subtitle": "A step-by-step set of questions with progress."
+  "subtitle": "A step-by-step set of questions with progress.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "contentAnimation": "How one question leaves and the next arrives.",
+    "slideDistance": "How far questions slide, as a percentage of their own size (width sideways, height up and down). Needs a Slide content animation.",
+    "choiceLayout": "Choices as full-width cards, or as a compact list of radio buttons.",
+    "choiceHover": "Hover effect on a choice: a fade, or a fill that grows down from the top. Needs Layout set to Cards.",
+    "choiceColor": "Background of the selected choice. Needs Layout set to Cards.",
+    "indicatorRounded": "Corner radius of the check icon box. Needs Indicator set to Check icon and Icon border on.",
+    "indicatorBorder": "Draws a border around the check icon box. Needs Indicator set to Check icon.",
+    "choiceIndicator": "Mark shown on a chosen option.",
+    "bordered": "Draws a border around the whole questionnaire.",
+    "multiple": "Lets every question accept more than one answer.",
+    "staggerChoices": "Choices appear one after another instead of all at once.",
+    "stagger": "Delay between choices appearing, in seconds. Needs Stagger choices on.",
+    "showProgress": "Shows the question count and a progress bar above the question.",
+    "shortcuts": "Keyboard keys that pick a choice, shown on each choice.",
+    "duration": "How long a question change takes, in seconds. Not used when Content animation is None.",
+    "bounce": "Springiness of the question change. Only used by the slide and scale animations."
+  },
+  "patches": [
+    [
+      "`${d * context.slideDistance}vw` : \"0vw\"",
+      "`${d * context.slideDistance}%` : \"0%\""
+    ],
+    [
+      "x: \"0vw\",",
+      "x: \"0%\","
+    ],
+    [
+      "y: \"0vw\",",
+      "y: \"0%\","
+    ],
+    [
+      "\"flex min-h-[50vh] flex-col justify-start rounded-lg border px-[4vw] py-8\"",
+      "\"flex min-h-96 flex-col justify-start rounded-lg border px-12 py-8 max-md:px-4\""
+    ],
+    [
+      "unit: \"vw\",",
+      "unit: \"%\","
+    ],
+    [
+      "value: \"slide-y\",",
+      "value: \"slide-x\","
+    ],
+    [
+      "label: \"Show border\", value: true }",
+      "label: \"Show border\", value: false }"
+    ]
+  ],
+  "themeDescription": "Colour palette. The progress bar, the hover fill and a Primary selected colour take its primary colour.",
+  "disabledWhen": {
+    "choiceHover": {
+      "prop": "choiceLayout",
+      "equals": "inline"
+    },
+    "choiceColor": {
+      "prop": "choiceLayout",
+      "equals": "inline"
+    },
+    "indicatorRounded": [
+      {
+        "prop": "choiceIndicator",
+        "notEquals": "check"
+      },
+      {
+        "prop": "indicatorBorder",
+        "equals": false
+      }
+    ]
+  },
+  "groups": {
+    "shortcuts": "Choices"
+  },
+  "defaultTheme": "spotify",
+  "hideWhenReducedMotion": [
+    "contentAnimation",
+    "slideDistance",
+    "staggerChoices",
+    "stagger",
+    "duration",
+    "bounce"
+  ]
 }

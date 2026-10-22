@@ -64,6 +64,8 @@ export interface RemixerGroup {
 
 export interface RegistryPropRemixer {
   disabledWhen?: RemixerDisabledWhen;
+  /** Motion-only prop: left out of the panel while reduced motion is on. */
+  hideWhenReducedMotion?: boolean;
   group?: string;
   groupTitle?: string;
   groupCollapsible?: boolean;

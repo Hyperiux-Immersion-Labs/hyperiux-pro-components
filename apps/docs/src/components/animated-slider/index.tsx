@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
-import { AnimatePresence, animate, MotionConfig, motion, useMotionValue, useReducedMotion, useSpring, useTransform, type MotionStyle, type MotionValue, type Transition } from "motion/react";
+import { AnimatePresence, animate, MotionConfig, motion, useMotionValue,  useSpring, useTransform, type MotionStyle, type MotionValue, type Transition } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function toClass(value: unknown): string {
@@ -154,7 +154,8 @@ const THEMES: Record<`${AnimatedSliderTheme}:${AnimatedSliderMode}`, Record<stri
 function themeProps(theme: AnimatedSliderTheme = "default", mode: AnimatedSliderMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -272,6 +273,8 @@ const THUMB_SCALE: Record<SliderEdgePress, number> = { none: 1, grow: 1.25, shri
 const DOT_SIZE: Record<SliderEdgeSize, number> = { sm: 10, md: 14, lg: 18 }
 
 // Nudge per unit of stretch, px; 10% stretch nudges about 3px
+// The rail may stretch past its end by at most this many px, however wide it is
+const MAX_STRETCH_PX = 16
 const NUDGE = 33
 
 // How far the fill runs past the bar edge while the rail is grown, px
@@ -282,9 +285,22 @@ const GROW =
   "transition-[height,width,opacity] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] motion-reduce:transition-none"
 const RAIL_SPRING: Transition = { type: "spring", visualDuration: 0.3, bounce: 0.2 }
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
 // With reduced motion on, every move lands instantly. Otherwise the transition is unchanged.
 function useMotionOk(transition: Transition): Transition {
-  return useReducedMotion() ? { duration: 0 } : transition
+  return usePrefersReducedMotion() ? { duration: 0 } : transition
 }
 
 const SliderContext = React.createContext<
@@ -300,7 +316,7 @@ function useSliderMotion() {
 // Springs a percentage towards the position Base UI computes
 function useSmoothPercent(target: number | undefined, dragging: boolean) {
   const { duration, bounce } = useSliderMotion()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const percent = useMotionValue(target ?? 0)
   const placed = React.useRef(false)
 
@@ -405,7 +421,7 @@ function Slider({
   // Smooth still lands on tenths, never more precise than that
   const nativeStep = smooth ? Math.min(step, 0.1) : step
   const followCursor = bubble === "hover" && !vertical
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const railSpring = useMotionOk(RAIL_SPRING)
 
   const options = React.useMemo(
@@ -499,7 +515,7 @@ function Slider({
         if (!stretching) return
         const past = ev.clientX > rect.right ? ev.clientX - rect.right : Math.min(0, ev.clientX - rect.left)
         // Rubber band: the stretch eases towards a limit the further you go
-        pull.set(Math.sign(past) * (stretchAmount / 100) * Math.tanh(Math.abs(past) / 80))
+        pull.set(Math.sign(past) * Math.min(stretchAmount / 100, MAX_STRETCH_PX / rect.width) * Math.tanh(Math.abs(past) / 80))
       }
       const release = (ev: PointerEvent) => {
         window.removeEventListener("pointermove", drag)
@@ -547,7 +563,7 @@ function Slider({
       const down = ["ArrowLeft", "ArrowDown", "PageDown", "Home"].includes(e.key)
       const bump = (now >= max && up) ? 1 : (now <= min && down) ? -1 : 0
       if (!bump) return
-      pull.set(bump * (stretchAmount / 100) * 0.4)
+      pull.set(bump * Math.min(stretchAmount / 100, MAX_STRETCH_PX / el.getBoundingClientRect().width) * 0.4)
       setTimeout(() => pull.set(0), 120)
     }
 
@@ -616,7 +632,7 @@ function Slider({
 
   return (
     <SliderContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
       <SliderPrimitive.Root
         className={cn("data-[orientation=horizontal]:w-full data-[orientation=vertical]:h-full", className)}
         data-slot="slider"
@@ -779,7 +795,7 @@ function SliderIndicatorElement({
   const extendTo =
     options.edgeVariant === "bar" && options.showEdge && options.expanded ? EDGE_EXTEND : 0
   const extend = useSpring(extendTo, { stiffness: 400, damping: 30 })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   React.useEffect(() => {
     if (reduceMotion) extend.jump(extendTo)
     else extend.set(extendTo)
@@ -958,7 +974,7 @@ function SliderThumbElement({
   const rawPosition = useSmoothPercent(options.raw[index] ?? options.raw[0], dragging)
   const halfBar = options.expanded ? 3 : DOT_SIZE[options.edgeSize] / 2
   const reach = useSpring(halfBar + BAR_GAP, { stiffness: 400, damping: 30 })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   React.useEffect(() => {
     if (reduceMotion) reach.jump(halfBar + BAR_GAP)
     else reach.set(halfBar + BAR_GAP)
@@ -1051,7 +1067,7 @@ const controls = {
     group: "Track",
     type: "slider",
     label: "Duration",
-    value: 0.4,
+    value: 0.35,
     min: 0.1,
     max: 1,
     step: 0.05,
@@ -1061,7 +1077,7 @@ const controls = {
     group: "Track",
     type: "slider",
     label: "Bounce",
-    value: 0,
+    value: 0.35,
     min: 0,
     max: 0.6,
     step: 0.05,
@@ -1118,7 +1134,7 @@ const controls = {
     group: "Track",
     type: "select",
     label: "Roundness",
-    value: "xl",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -1132,7 +1148,7 @@ const controls = {
     group: "Track",
     type: "select",
     label: "Step marks",
-    value: "none",
+    value: "dots",
     options: [
       { label: "None", value: "none" },
       { label: "Dots", value: "dots" },
@@ -1183,7 +1199,7 @@ const controls = {
     group: "Style",
     type: "select",
     label: "Edge size",
-    value: "md",
+    value: "sm",
     options: [
       { label: "sm", value: "sm" },
       { label: "md", value: "md" },
@@ -1223,7 +1239,7 @@ function SliderDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[50vh] flex-col justify-center gap-[4vw] rounded-lg border px-[4vw] py-8 max-md:gap-[10vw]">
+      <div className="flex min-h-96 max-md:min-h-72 flex-col justify-center gap-12 px-12 py-8 max-lg:px-8 max-md:gap-10 max-md:px-3">
         <div className="flex flex-col gap-3">
           <div className="flex items-baseline justify-between gap-4">
             <Label htmlFor="grind">Grind size</Label>
@@ -1300,7 +1316,7 @@ export interface AnimatedSliderProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedSlider({ theme = "default", mode = "light", className, ...props }: AnimatedSliderProps) {
+export default function AnimatedSlider({ theme = "caffeine", mode = "dark", className, ...props }: AnimatedSliderProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

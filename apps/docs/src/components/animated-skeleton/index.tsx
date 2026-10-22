@@ -1,11 +1,24 @@
 "use client";
 
-import { animate, stagger, AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { animate, stagger, AnimatePresence, motion } from "motion/react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { RotateCcwIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -240,10 +253,14 @@ const THEMES: Record<`${AnimatedSkeletonTheme}:${AnimatedSkeletonMode}`, Record<
 function themeProps(theme: AnimatedSkeletonTheme = "default", mode: AnimatedSkeletonMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
+
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = "@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}\n@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}\n.hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}\n[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}\n.hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}\n@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}";
 
 // ---- stagger-in.ts ----
 
@@ -378,7 +395,7 @@ function Skeleton({
   }) {
   const group = React.useContext(SkeletonContext)
   const fallbackIndex = React.useContext(SkeletonIndexContext)
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
 
   const kind = animation ?? group?.animation ?? "shimmer"
   const seconds = duration ?? group?.duration ?? 1.6
@@ -398,7 +415,7 @@ function Skeleton({
         ROUNDED[radius],
         active && kind === "pulse" && "animate-pulse",
         // Shared viewport band; see globals.css
-        active && (kind === "shimmer" || kind === "wave") && "skeleton-sweep",
+        active && (kind === "shimmer" || kind === "wave") && "hx-skeleton-sweep",
         // CSS catches reduced motion during hydration
         "motion-reduce:animate-none",
         className
@@ -436,7 +453,7 @@ function SkeletonSwap({
   children: React.ReactNode
   className?: string
 }) {
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
 
   const enter = React.useCallback(
     (node: HTMLDivElement | null) => {
@@ -467,8 +484,35 @@ function SkeletonSwap({
   }[kind]
   const length = reduced ? Math.min(duration, 0.2) : duration
 
+  // The placeholders and the real content differ in height (more so on narrow screens, where
+  // text wraps), so the box eases to the new height instead of jumping when they swap.
+  const box = React.useRef<HTMLDivElement>(null)
+  const lastHeight = React.useRef(0)
+  React.useLayoutEffect(() => {
+    const el = box.current
+    if (!el) return
+    const next = el.offsetHeight
+    const prev = lastHeight.current
+    lastHeight.current = next
+    if (!prev || prev === next || reduced) return
+    el.style.transition = "none"
+    el.style.height = `${prev}px`
+    el.style.overflow = "hidden"
+    void el.offsetHeight
+    el.style.transition = `height ${length}s cubic-bezier(0.22, 1, 0.36, 1)`
+    el.style.height = `${next}px`
+    const done = () => {
+      el.style.transition = ""
+      el.style.height = ""
+      el.style.overflow = ""
+      lastHeight.current = el.offsetHeight
+    }
+    el.addEventListener("transitionend", done, { once: true })
+    return () => el.removeEventListener("transitionend", done)
+  }, [loading, reduced, length])
+
   return (
-    <div className={cn("relative", className)}>
+    <div ref={box} className={cn("relative", className)}>
       {/* Crossfade: placeholders fade over content */}
       <AnimatePresence mode="popLayout" initial={false}>
         {loading ? (
@@ -586,7 +630,7 @@ const controls = {
     group: "Content transition",
     type: "slider",
     label: "Content entrance duration",
-    value: 0.4,
+    value: 0.5,
     min: 0.1,
     max: 1,
     step: 0.05,
@@ -617,7 +661,7 @@ const controls = {
 
 /** The status label, rolling up to its new text when it changes. */
 function StatusRoll({ children }: { children: string }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   return (
     <span className="relative inline-grid overflow-hidden text-sm text-(--hx-muted-foreground)">
@@ -666,7 +710,7 @@ function SkeletonDemo(props: Partial<ControlValues>) {
       rounded={values.rounded as SkeletonRounded}
     >
       <div className="flex flex-col gap-4">
-        <Skeleton className="h-[18vh] w-full" index={0} />
+        <Skeleton className="h-36 w-full" index={0} />
         <div className="flex items-center gap-3">
           <Skeleton className="size-10 shrink-0 rounded-full" index={1} />
           <div className="flex min-w-0 flex-1 flex-col gap-2">
@@ -681,7 +725,7 @@ function SkeletonDemo(props: Partial<ControlValues>) {
 
   const content = (
     <div className="flex flex-col gap-4">
-      <div className={cn("h-[18vh] w-full bg-linear-to-br from-(--hx-warning)/40 to-(--hx-destructive)/40", ROUNDED[values.rounded as SkeletonRounded])} />
+      <div className={cn("h-36 w-full bg-linear-to-br from-(--hx-warning)/40 to-(--hx-destructive)/40", ROUNDED[values.rounded as SkeletonRounded])} />
       <div className="flex items-center gap-3">
         <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-(--hx-muted) text-sm font-medium">
           LK
@@ -701,7 +745,7 @@ function SkeletonDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[50vh] flex-col gap-4 rounded-lg border px-6 py-6">
+      <div className="flex min-h-96 flex-col gap-4 rounded-lg border px-6 py-6">
         <div className="flex items-center justify-between gap-4">
           <StatusRoll>{loading ? "Loading…" : "Loaded"}</StatusRoll>
           <Button variant="outline" size="sm" onClick={replay} disabled={loading}>
@@ -753,11 +797,12 @@ export interface AnimatedSkeletonProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedSkeleton({ theme = "default", mode = "light", className, ...props }: AnimatedSkeletonProps) {
+export default function AnimatedSkeleton({ theme = "spotify", mode = "dark", className, ...props }: AnimatedSkeletonProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <style>{COMPONENT_CSS}</style>
         <SkeletonDemo {...props} />
       </div>
     </ThemeContext.Provider>

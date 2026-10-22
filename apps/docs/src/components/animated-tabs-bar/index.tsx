@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
-import { AnimatePresence, MotionConfig, motion, useReducedMotion, type Transition, type Variants } from "motion/react";
+import { AnimatePresence, MotionConfig, motion,  type Transition, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function toClass(value: unknown): string {
@@ -168,7 +168,8 @@ const THEMES: Record<`${AnimatedTabsBarTheme}:${AnimatedTabsBarMode}`, Record<st
 function themeProps(theme: AnimatedTabsBarTheme = "default", mode: AnimatedTabsBarMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -246,9 +247,27 @@ function useTabs() {
   return context
 }
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
+
 // With reduced motion on, every move lands instantly. Otherwise the transition is unchanged.
 function useMotionOk(transition: Transition): Transition {
-  return useReducedMotion() ? { duration: 0 } : transition
+  return usePrefersReducedMotion() ? { duration: 0 } : transition
 }
 
 function Tabs({
@@ -322,7 +341,7 @@ function Tabs({
 
   return (
     <TabsContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <TabsPrimitive.Root
           ref={root}
           data-slot="tabs"
@@ -339,7 +358,7 @@ function Tabs({
           className={cn("flex flex-col gap-4", className)}
           {...props}
         />
-      </MotionConfig>
+      </ReducedMotionConfig>
     </TabsContext.Provider>
   )
 }
@@ -395,7 +414,7 @@ function TabsTrigger({
 
   // When the row scrolls, bring the tab you switched to into view
   const tabRef = React.useRef<HTMLButtonElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const seen = React.useRef(false)
   React.useEffect(() => {
     if (!seen.current) {
@@ -434,7 +453,7 @@ function TabsTrigger({
         active
           ? c.activeIndicator === "glide"
             ? ACTIVE_TEXT[c.activeColor]
-            : "text-(--hx-foreground)"
+            : "text-(--hx-foreground) in-data-accent:text-(--hx-primary)"
           : "text-(--hx-muted-foreground) hover:text-(--hx-foreground)",
         className
       )}
@@ -533,7 +552,7 @@ function TabsContent({
   children: React.ReactNode
 }) {
   const c = useTabs()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const slide = c.contentAnimation === "slide" && !reduceMotion
   const still = c.contentAnimation === "none" || reduceMotion
   const fade = c.fadeDuration
@@ -637,7 +656,7 @@ const controls = {
       { label: "Muted", value: "muted" },
     ],
   },
-  hoverHighlight: { group: "Tabs", type: "checkbox", label: "Hover highlight", value: false },
+  hoverHighlight: { group: "Tabs", type: "checkbox", label: "Hover highlight", value: true },
   divider: { group: "Tabs", type: "checkbox", label: "Line under tabs", value: true },
   listBorder: { group: "Tabs", type: "checkbox", label: "Border on tabs", value: false },
   panelBorder: { group: "Content", type: "checkbox", label: "Border on content", value: false },
@@ -645,7 +664,7 @@ const controls = {
     group: "Tabs",
     type: "select",
     label: "Roundness",
-    value: "lg",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -678,7 +697,7 @@ const controls = {
     step: 4,
     unit: "px",
   },
-  smoothHeight: { group: "Content", type: "checkbox", label: "Smooth panel height", value: true },
+  smoothHeight: { group: "Content", type: "checkbox", label: "Smooth panel height", value: false },
 
   fadeDuration: {
     disabled: (v: Record<string, unknown>) => v.contentAnimation !== "fade",
@@ -695,7 +714,7 @@ const controls = {
     group: "Motion",
     type: "slider",
     label: "Duration",
-    value: 0.35,
+    value: 0.3,
     min: 0.1,
     max: 1,
     step: 0.05,
@@ -720,7 +739,7 @@ function TabsDemo(props: Partial<ControlValues>) {
   return (
     <div className="flex flex-col gap-3">
       {/* Top-aligned, so the tabs stay put and only the content below moves as its height changes */}
-      <div className="flex min-h-[60vh] flex-col justify-start rounded-lg border px-[4vw] py-8">
+      <div className="flex min-h-120 max-md:min-h-96 flex-col justify-start px-12 py-8 max-lg:px-8 max-md:px-0">
         <Tabs
           defaultValue="overview"
           activeIndicator={values.activeIndicator as TabsIndicator}
@@ -796,7 +815,7 @@ export interface AnimatedTabsBarProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedTabsBar({ theme = "default", mode = "light", className, ...props }: AnimatedTabsBarProps) {
+export default function AnimatedTabsBar({ theme = "ghibli", mode = "light", className, ...props }: AnimatedTabsBarProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

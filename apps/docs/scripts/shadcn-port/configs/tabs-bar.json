@@ -7,5 +7,85 @@
   ],
   "demoFn": "HpxTabsDemo",
   "title": "Animated Tabs Bar",
-  "subtitle": "Switch between views; the highlight glides to the active tab."
+  "subtitle": "Switch between views; the highlight glides to the active tab.",
+  "defaultMode": "light",
+  "descriptions": {
+    "activeIndicator": "How the active tab is marked: a pill or underline that glides to it, or an underline that fades in.",
+    "activeColor": "Colour of the gliding pill. Only used by Glide pill.",
+    "hoverHighlight": "Highlights the tab under the pointer.",
+    "divider": "Draws a line under the row of tabs.",
+    "listBorder": "Draws a border around the row of tabs.",
+    "panelBorder": "Draws a border around the tab content.",
+    "rounded": "Corner radius of the tabs, the pill and the borders.",
+    "contentAnimation": "How content changes when you switch tabs.",
+    "slideDistance": "How far content slides when switching tabs, in pixels. Needs Content animation set to Slide.",
+    "smoothHeight": "The content area animates to each tab's height instead of jumping.",
+    "fadeDuration": "How long the fade takes, in seconds. Needs Content animation set to Fade in / out.",
+    "duration": "How long the indicator and content take to move, in seconds.",
+    "bounce": "Springiness of the indicator and slide. Does nothing with Fade underline unless Content animation is Slide."
+  },
+  "patches": [
+    [
+      "\"flex min-h-[60vh] flex-col justify-start rounded-lg border px-[4vw] py-8\"",
+      "\"flex min-h-120 max-md:min-h-96 flex-col justify-start px-12 py-8 max-lg:px-8 max-md:px-0\""
+    ],
+    [
+      "            : \"text-(--hx-foreground)\"\n          : \"text-(--hx-muted-foreground) hover:text-(--hx-foreground)\",",
+      "            : \"text-(--hx-foreground) in-data-accent:text-(--hx-primary)\"\n          : \"text-(--hx-muted-foreground) hover:text-(--hx-foreground)\","
+    ],
+    [
+      "useReducedMotion()",
+      "usePrefersReducedMotion()"
+    ],
+    [
+      " useReducedMotion,",
+      " "
+    ],
+    [
+      "// With reduced motion on, every move lands instantly.",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\n// With reduced motion on, every move lands instantly."
+    ],
+    [
+      "<MotionConfig reducedMotion=\"user\">",
+      "<ReducedMotionConfig>"
+    ],
+    [
+      "      </MotionConfig>\n    </TabsContext.Provider>",
+      "      </ReducedMotionConfig>\n    </TabsContext.Provider>"
+    ],
+    [
+      "label: \"Hover highlight\", value: false",
+      "label: \"Hover highlight\", value: true"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"lg\",",
+      "    label: \"Roundness\",\n    value: \"md\","
+    ],
+    [
+      "label: \"Smooth panel height\", value: true",
+      "label: \"Smooth panel height\", value: false"
+    ],
+    [
+      "    label: \"Duration\",\n    value: 0.35,",
+      "    label: \"Duration\",\n    value: 0.3,"
+    ]
+  ],
+  "themeDescription": "Colour palette. The Primary pill and the underlines use its primary colour; any theme but Default also tints the active tab's text with the underline styles.",
+  "defaultTheme": "ghibli",
+  "modeDescription": "Light or dark version of the palette.",
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaults": {
+    "hoverHighlight": true,
+    "rounded": "md",
+    "smoothHeight": false,
+    "duration": 0.3
+  },
+  "hideWhenReducedMotion": [
+    "contentAnimation",
+    "slideDistance",
+    "smoothHeight",
+    "fadeDuration",
+    "duration",
+    "bounce"
+  ]
 }

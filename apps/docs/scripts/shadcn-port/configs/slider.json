@@ -7,5 +7,105 @@
   ],
   "demoFn": "HpxSliderDemo",
   "title": "Animated Slider",
-  "subtitle": "Drag a thumb to pick a value or a range."
+  "subtitle": "Drag a thumb to pick a value or a range.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "smooth": "The thumb moves in fine steps while dragging instead of jumping from step to step.",
+    "duration": "How long the fill takes to catch up when you click the track, in seconds.",
+    "bounce": "Springiness of the fill catching up. 0 means no overshoot.",
+    "thickenOn": "When the track grows thicker.",
+    "elastic": "The track stretches when you drag past either end, then springs back.",
+    "stretchAmount": "How far the track stretches past its ends, in percent of the track width. Needs Elastic on.",
+    "labels": "Shows the current value and the maximum on the rail.",
+    "thickenedSize": "Track thickness while thickened, in Tailwind spacing units. Not used when Thicken on is Never.",
+    "rounded": "Corner radius of the track and fill.",
+    "marks": "Marks drawn at each step along the track.",
+    "showEdge": "Shows a handle at the end of the fill.",
+    "edgePress": "What the handle does while you drag it. Needs Show edge on.",
+    "edgeVariant": "Shape of the handle. Needs Show edge on.",
+    "bubble": "When a bubble with the current value shows above the handle.",
+    "rollingNumbers": "Numbers in the bubble, on the rail and in the readouts roll to the new value.",
+    "edgeSize": "Size of the handle. Needs Show edge on."
+  },
+  "labels": {
+    "smooth": "Smooth"
+  },
+  "patches": [
+    [
+      "\"flex min-h-[50vh] flex-col justify-center gap-[4vw] rounded-lg border px-[4vw] py-8 max-md:gap-[10vw]\"",
+      "\"flex min-h-96 max-md:min-h-72 flex-col justify-center gap-12 px-12 py-8 max-lg:px-8 max-md:gap-10 max-md:px-3\""
+    ],
+    [
+      "useReducedMotion()",
+      "usePrefersReducedMotion()"
+    ],
+    [
+      " useReducedMotion,",
+      " "
+    ],
+    [
+      "// With reduced motion on, every move lands instantly.",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\n// With reduced motion on, every move lands instantly."
+    ],
+    [
+      "<MotionConfig reducedMotion=\"user\">",
+      "<MotionConfig reducedMotion={reduceMotion ? \"always\" : \"never\"}>"
+    ],
+    [
+      "const NUDGE = 33",
+      "// The rail may stretch past its end by at most this many px, however wide it is\nconst MAX_STRETCH_PX = 16\nconst NUDGE = 33"
+    ],
+    [
+      "pull.set(Math.sign(past) * (stretchAmount / 100) * Math.tanh(Math.abs(past) / 80))",
+      "pull.set(Math.sign(past) * Math.min(stretchAmount / 100, MAX_STRETCH_PX / rect.width) * Math.tanh(Math.abs(past) / 80))"
+    ],
+    [
+      "pull.set(bump * (stretchAmount / 100) * 0.4)",
+      "pull.set(bump * Math.min(stretchAmount / 100, MAX_STRETCH_PX / el.getBoundingClientRect().width) * 0.4)"
+    ],
+    [
+      "    label: \"Duration\",\n    value: 0.4,",
+      "    label: \"Duration\",\n    value: 0.35,"
+    ],
+    [
+      "    label: \"Bounce\",\n    value: 0,",
+      "    label: \"Bounce\",\n    value: 0.35,"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"xl\",",
+      "    label: \"Roundness\",\n    value: \"md\","
+    ],
+    [
+      "    label: \"Step marks\",\n    value: \"none\",",
+      "    label: \"Step marks\",\n    value: \"dots\","
+    ],
+    [
+      "    label: \"Edge size\",\n    value: \"md\",",
+      "    label: \"Edge size\",\n    value: \"sm\","
+    ]
+  ],
+  "themeDescription": "Colour palette. The fill, the handle and the value bubble take its primary colour.",
+  "disabledWhen": {
+    "rollingNumbers": null,
+    "edgeSize": {
+      "prop": "showEdge",
+      "equals": false
+    }
+  },
+  "defaultTheme": "caffeine",
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaults": {
+    "duration": 0.35,
+    "bounce": 0.35,
+    "rounded": "md",
+    "marks": "dots",
+    "edgeSize": "sm"
+  },
+  "hideWhenReducedMotion": [
+    "duration",
+    "bounce",
+    "elastic",
+    "stretchAmount",
+    "rollingNumbers"
+  ]
 }

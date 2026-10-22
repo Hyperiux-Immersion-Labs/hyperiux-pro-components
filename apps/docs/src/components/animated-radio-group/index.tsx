@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { animate, AnimatePresence, motion, MotionConfig, Reorder, useReducedMotion } from "motion/react";
+import { animate, AnimatePresence, motion, MotionConfig, Reorder } from "motion/react";
 
 export type RadioVariant = "default" | "card";
 export type RadioAppearance = "outline" | "filled" | "full";
@@ -18,7 +18,21 @@ export interface RadioOption {
 const spring = { type: "spring", visualDuration: 0.35, bounce: 0.3 } as const;
 const glide = { type: "spring", visualDuration: 0.24, bounce: 0.15 } as const;
 const snappy = { type: "spring", visualDuration: 0.25, bounce: 0 } as const;
+const instant = { duration: 0 } as const;
 const springyEase = "ease-[cubic-bezier(0.34,1.56,0.64,1)]";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
 
 const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
 
@@ -45,6 +59,8 @@ type RadioGroupContextValue = RadioOptions & {
   selected: string;
   select: (value: string) => void;
   reorder: boolean;
+  /** Reduced motion: everything lands in its final state at once. */
+  reduceMotion: boolean;
 };
 
 const RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null);
@@ -228,7 +244,7 @@ const PAGE_COLORS: Record<`${RadioTheme}:${RadioMode}`, { background: string; fo
 };
 
 // Lets a page match the palette behind the group
-export function getThemeProps(theme: RadioTheme = "default", mode: RadioMode = "light") {
+export function getThemeProps(theme: RadioTheme = "default", mode: RadioMode = "dark") {
   const colors = PAGE_COLORS[`${theme}:${mode}`] ?? PAGE_COLORS["default:light"];
   return {
     "data-theme": mode,
@@ -274,7 +290,7 @@ export function RadioGroup({
   variant = "default",
   cardFillColor = "muted",
   theme = "default",
-  mode = "light",
+  mode = "dark",
   accentColor,
   onAccentColor,
   textColor,
@@ -285,6 +301,7 @@ export function RadioGroup({
   ...optionProps
 }: RadioGroupProps) {
   const id = React.useId();
+  const reduceMotion = usePrefersReducedMotion();
   const groupRef = React.useRef<HTMLDivElement>(null);
   const [internal, setInternal] = React.useState(defaultValue ?? "");
   const selected = value !== undefined ? value : internal;
@@ -334,6 +351,7 @@ export function RadioGroup({
     selected,
     select,
     reorder,
+    reduceMotion,
   };
 
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
@@ -347,7 +365,7 @@ export function RadioGroup({
   } as React.CSSProperties;
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       <RadioGroupContext.Provider value={context}>
         <Reorder.Group
           as="div"
@@ -363,7 +381,8 @@ export function RadioGroup({
           data-slot="radio-group"
           onKeyDown={onKeyDown}
           style={{ ...colorVars, ...style }}
-          className={cx("isolate grid w-full gap-3", className)}
+          data-reduced={reduceMotion || undefined}
+          className={cx("isolate grid w-full gap-3 motion-reduce:**:transition-none data-reduced:**:transition-none", className)}
         >
           {items.map((child, index) => (
             <RadioIndexContext.Provider key={child.key ?? index} value={index}>
@@ -397,7 +416,7 @@ export function RadioGroupItem({
   if (!group) throw new Error("RadioGroupItem must be used inside a RadioGroup.");
 
   const index = React.useContext(RadioIndexContext);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = group.reduceMotion;
   const visual = React.useRef<HTMLSpanElement>(null);
   const dragged = React.useRef(false);
   const [entered, setEntered] = React.useState(false);
@@ -435,7 +454,7 @@ export function RadioGroupItem({
   );
 
   const cardHighlight = cx(
-    "pointer-events-none absolute inset-0 -z-10 rounded-xl",
+    "pointer-events-none absolute -inset-px -z-10 rounded-md",
     solid ? "bg-(--radio-accent)" : accent ? "bg-(--radio-accent)/15" : "bg-(--radio-muted)"
   );
 
@@ -444,7 +463,7 @@ export function RadioGroupItem({
       as="label"
       value={value}
       drag={draggable}
-      whileDrag={{ scale: 1.03, zIndex: 10 }}
+      whileDrag={{ scale: reduceMotion ? 1 : 1.03, zIndex: 10 }}
       onDragStart={() => (dragged.current = true)}
       onPointerDown={() => (dragged.current = false)}
       onClickCapture={(event) => {
@@ -459,27 +478,29 @@ export function RadioGroupItem({
       className={cx(
         "group/radio relative flex cursor-pointer gap-3 text-lg select-none data-disabled:cursor-not-allowed",
         description !== undefined ? "items-start" : "items-center",
+        // Plain rows only react (hover, cursor) over their own content, not the full row
+        !card && "w-fit self-start",
         !showControl &&
           "rounded-md has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-(--radio-accent)/50",
         card &&
           cx(
-            "rounded-xl border px-4 py-3 transition-colors duration-300",
+            "rounded-md border px-4 py-3 transition-colors duration-300",
             checked
               ? solid
                 ? "border-(--radio-accent)"
                 : accent
                   ? "border-(--radio-accent)/40"
                   : "border-(--radio-text)/15"
-              : "border-(--radio-border) hover:border-(--radio-text)/30"
+              : cx("border-(--radio-border)", !disabled && "hover:border-(--radio-text)/30")
           ),
         draggable && "cursor-grab active:cursor-grabbing",
         className
       )}
       style={accent ? ({ "--radio-accent": accent } as React.CSSProperties) : undefined}
-      initial={{ opacity: 0, y: 6 }}
+      initial={reduceMotion ? false : { opacity: 0, y: 6 }}
       animate={{ opacity: disabled ? 0.5 : 1, y: 0 }}
       onAnimationComplete={() => setEntered(true)}
-      transition={{ ...spring, delay: entered ? 0 : index * 0.05, layout: spring }}
+      transition={reduceMotion ? { ...instant, layout: instant } : { ...spring, delay: entered ? 0 : index * 0.05, layout: spring }}
     >
       {card &&
         (group.slideCard ? (
@@ -488,8 +509,8 @@ export function RadioGroupItem({
               layoutId={`${group.id}-card`}
               aria-hidden
               className={cardHighlight}
-              style={{ borderRadius: 12 }}
-              transition={glide}
+              style={{ borderRadius: "var(--radius-md, 0.375rem)" }}
+              transition={reduceMotion ? instant : glide}
             />
           )
         ) : (
@@ -497,14 +518,14 @@ export function RadioGroupItem({
             aria-hidden
             className={cardHighlight}
             initial={false}
-            animate={{ opacity: checked ? 1 : 0, scale: checked ? 1 : 0.96 }}
-            transition={snappy}
+            animate={{ opacity: checked ? 1 : 0, scale: checked || reduceMotion ? 1 : 0.96 }}
+            transition={reduceMotion ? instant : snappy}
           />
         ))}
 
       <motion.span
         className={showControl ? "relative grid size-6 shrink-0 place-items-center" : "sr-only"}
-        whileTap={disabled || !group.elastic ? undefined : { scale: 0.85 }}
+        whileTap={disabled || !group.elastic || reduceMotion ? undefined : { scale: 0.85 }}
       >
         <span
           aria-hidden
@@ -531,7 +552,7 @@ export function RadioGroupItem({
               className={cx("absolute inset-0 rounded-full", onFill ? "bg-(--radio-on-accent)" : "bg-(--radio-accent)")}
               initial={false}
               animate={{ scale: checked ? 1 : 0 }}
-              transition={snappy}
+              transition={reduceMotion ? instant : snappy}
             />
           )}
         </span>
@@ -539,7 +560,7 @@ export function RadioGroupItem({
         {showControl &&
           !full &&
           (group.slideDot ? (
-            checked && <motion.span layoutId={`${group.id}-dot`} aria-hidden className={dotClass} transition={glide} />
+            checked && <motion.span layoutId={`${group.id}-dot`} aria-hidden className={dotClass} transition={reduceMotion ? instant : glide} />
           ) : (
             <AnimatePresence initial={false}>
               {checked && (
@@ -549,8 +570,8 @@ export function RadioGroupItem({
                   className={dotClass}
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  exit={{ scale: 0, opacity: 0, transition: snappy }}
-                  transition={spring}
+                  exit={{ scale: 0, opacity: 0, transition: reduceMotion ? instant : snappy }}
+                  transition={reduceMotion ? instant : spring}
                 />
               )}
             </AnimatePresence>
@@ -571,22 +592,17 @@ export function RadioGroupItem({
       {hasText && (
         <span className="flex flex-col gap-1">
           {label !== undefined && (
-            <span className="inline-grid w-fit leading-none">
-              <span aria-hidden className="invisible col-start-1 row-start-1 font-medium">
-                {label}
-              </span>
-              <span
-                className={cx(
-                  "col-start-1 row-start-1 transition-[color,font-weight] duration-300",
-                  onFill
-                    ? "font-medium text-(--radio-on-accent)"
-                    : checked
-                      ? "font-medium text-(--radio-text)"
-                      : "font-normal text-(--radio-muted-text) group-hover/radio:text-(--radio-text)"
-                )}
-              >
-                {label}
-              </span>
+            <span
+              className={cx(
+                "w-fit leading-none transition-colors duration-300",
+                onFill
+                  ? "text-(--radio-on-accent)"
+                  : checked
+                    ? "text-(--radio-text)"
+                    : "text-(--radio-muted-text) group-hover/radio:text-(--radio-text)"
+              )}
+            >
+              {label}
             </span>
           )}
           {description !== undefined && (
@@ -622,7 +638,11 @@ export default function AnimatedRadioGroup({
   options = SAMPLE_OPTIONS,
   defaultValue,
   value,
-  variant = "default",
+  variant = "card",
+  cardFillColor = "accent",
+  theme = "valorant",
+  mode = "dark",
+  reorder = true,
   showDescription = true,
   colorful = false,
   className,
@@ -635,6 +655,10 @@ export default function AnimatedRadioGroup({
     <RadioGroup
       {...groupProps}
       variant={variant}
+      cardFillColor={cardFillColor}
+      theme={theme}
+      mode={mode}
+      reorder={reorder}
       value={value}
       defaultValue={value === undefined ? (defaultValue ?? options[1]?.value ?? options[0]?.value) : undefined}
       aria-label={ariaLabel}

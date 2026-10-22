@@ -7,5 +7,45 @@
   ],
   "demoFn": "HpxMenubarDemo",
   "title": "Animated Menubar",
-  "subtitle": "A row of menus, like an app's File and Edit menus."
+  "subtitle": "A row of menus, like an app's File and Edit menus.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "animation": "How a menu opens from its trigger.",
+    "exitFast": "Menus close faster than they open (60% of Duration).",
+    "switchAnimation": "What happens when you move to the next menu while one is open: the panel glides across, or closes and reopens.",
+    "contentAnimation": "How the new menu's items appear while the panel glides. Needs Moving over set to Glide.",
+    "slideDistance": "How far items slide in when switching menus. Needs Moving over set to Glide and Content animation set to Slides in.",
+    "duration": "How long opening, closing and gliding take, in seconds.",
+    "delay": "Wait before the items start to appear, in seconds.",
+    "stagger": "Delay between one item appearing and the next, in seconds.",
+    "triggerHighlight": "Highlight that follows the pointer along the menu bar.",
+    "triggerHighlightColor": "Colour of the bar highlight. Not used when Menu highlight is None.",
+    "showChevrons": "Shows a chevron next to each menu name that turns when it opens.",
+    "triggerRollingText": "Menu names roll to a second copy of themselves on hover.",
+    "openOnClick": "Menus open on click only; hovering the bar doesn't open them.",
+    "pressFeedback": "Menu names squeeze slightly when pressed.",
+    "itemHighlight": "Highlight on the item under the pointer inside a menu.",
+    "itemHighlightColor": "Colour of the item highlight. Not used when Item highlight is None.",
+    "selectionIndicator": "Mark shown next to chosen options in checkbox and radio items.",
+    "showIcons": "Shows an icon before each item.",
+    "showDescriptions": "Shows a second line of help text under items that have one.",
+    "rollingText": "Item labels roll to a second copy on hover.",
+    "size": "Text and padding size of the bar and menus.",
+    "rounded": "Corner radius of the bar, the menus and their items."
+  },
+  "patches": [
+    [
+      "\"flex min-h-[50vh] flex-col items-center gap-[3vw] py-[4vw] max-md:gap-[6vw]\"",
+      "\"flex min-h-96 flex-col items-center gap-10 py-12 max-md:gap-8\""
+    ],
+    [
+      "flex h-[60vh] w-[45vw] -translate-x-1/2",
+      "flex h-96 w-xl -translate-x-1/2"
+    ],
+    [
+      "max-md:w-[90vw]",
+      "max-md:w-80"
+    ]
+  ],
+  "themeDescription": "Colour palette, menus included. With a Primary fill, the bar and item highlights take its primary colour."
 }

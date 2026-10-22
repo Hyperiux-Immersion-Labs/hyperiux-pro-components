@@ -7,5 +7,18 @@
   ],
   "demoFn": "HpxDrawerDemo",
   "title": "Animated Drawer",
-  "subtitle": "A panel that slides in from the edge and can be swiped away."
+  "subtitle": "A panel that slides in from the edge and can be swiped away.",
+  "descriptions": {
+    "rollingText": "The trigger and button labels roll to a second copy on hover.",
+    "fillOnHover": "Buttons fill with colour from the edge on hover.",
+    "side": "Which edge of the screen the drawer slides in from.",
+    "showSwipeHandle": "Shows a handle you can grab to swipe the drawer away.",
+    "openAnimation": "How the drawer arrives: slides in or fades in.",
+    "elastic": "The drawer springs in with a slight overshoot.",
+    "duration": "How long the open animation takes, in seconds.",
+    "bounce": "How much the drawer overshoots and settles. 0 is no bounce.",
+    "stagger": "Delay between each piece of drawer content appearing, in seconds.",
+    "tiltOnSwipe": "The drawer tilts slightly as you swipe it.",
+    "scaleBackground": "The page behind shrinks a little while the drawer is open."
+  }
 }

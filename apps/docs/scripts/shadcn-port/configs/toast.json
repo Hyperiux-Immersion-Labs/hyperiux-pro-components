@@ -10,5 +10,42 @@
   ],
   "demoFn": "ToastPage",
   "title": "Animated Toast",
-  "subtitle": "Brief messages that stack in the corner and can be swiped away."
+  "subtitle": "Brief messages that stack in the corner and can be swiped away.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "variant": "Kind of message. Loading → success shows a spinner, then succeeds after a moment.",
+    "showDescription": "Adds a second line of detail under the title.",
+    "collapsibleDescription": "Long descriptions fold to one line with a toggle to expand. Needs Description on.",
+    "showAction": "Adds an Undo button to the toast.",
+    "timeout": "How long a toast stays before closing itself, in seconds. 0 keeps it until dismissed.",
+    "elastic": "Toasts spring in with a slight overshoot.",
+    "originFromTrigger": "Toasts grow out of the button that opened them.",
+    "fadeContent": "The toast's text fades in just after the toast arrives.",
+    "exitAnimation": "How a toast leaves when it closes.",
+    "tiltOnSwipe": "Toasts tilt in the direction you swipe them away.",
+    "morphIcon": "The loading spinner morphs into a tick on success. Only for the Loading → success variant, or after Undo with Show action on.",
+    "showTimerBar": "A bar shrinks to show the time left. Not used with Stays for 0; with Loading → success it appears after the success.",
+    "glass": "Frosted, see-through background.",
+    "showAccentEdge": "A coloured line on the edge for success, info, warning and error toasts. Not used by Default.",
+    "rounded": "Corner radius of the toasts.",
+    "position": "Where on the screen toasts stack."
+  },
+  "themeDescription": "Colour palette, toasts included. Any theme but Default also tints the timer bar.",
+  "patches": [
+    [
+      "rounded-full bg-(--hx-foreground)/25 animate-[hx-toast-timer_",
+      "rounded-full bg-(--hx-foreground)/25 in-data-accent:bg-(--hx-primary)/70 animate-[hx-toast-timer_"
+    ]
+  ],
+  "ranges": {
+    "timeout": {
+      "min": 0
+    }
+  },
+  "disabledWhen": {
+    "showTimerBar": {
+      "prop": "timeout",
+      "equals": 0
+    }
+  }
 }

@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { OTPInput, OTPInputContext } from "input-otp";
 import { MinusIcon } from "lucide-react";
-import { AnimatePresence, MotionConfig, animate, motion, useReducedMotion, type TargetAndTransition } from "motion/react";
+import { AnimatePresence, MotionConfig, animate, motion, type TargetAndTransition } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function toClass(value: unknown): string {
@@ -241,10 +241,14 @@ const THEMES: Record<`${AnimatedInputOtpTheme}:${AnimatedInputOtpMode}`, Record<
 function themeProps(theme: AnimatedInputOtpTheme = "default", mode: AnimatedInputOtpMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
+
+// Keyframes and classes the component needs; no global CSS required
+const COMPONENT_CSS = "@keyframes hx-caret-blink{0%,70%,100%{opacity:1}20%,50%{opacity:0}}";
 
 // ---- button.tsx ----
 
@@ -304,7 +308,7 @@ function Button({
 
 type InputOTPRounded = "none" | "sm" | "md" | "lg" | "xl" | "full"
 /** Tailwind size step, e.g. "10". */
-type InputOTPSize = "8" | "9" | "10" | "11" | "12" | "14"
+type InputOTPSize = "8" | "9" | "10" | "11" | "12" | "14" | "16" | "18" | "20" | "24"
 type InputOTPCharAnimation = "pop" | "roll" | "fade" | "none"
 type InputOTPAllow = "numbers" | "letters" | "symbols" | "mixed"
 
@@ -357,10 +361,14 @@ const SIZE: Record<InputOTPSize, string> = {
   "8": "size-8 text-sm",
   "9": "size-9 text-sm",
   // Phones: step down to size-9.
-  "10": "size-10 text-base max-md:size-9",
-  "11": "size-11 text-base max-md:size-9",
-  "12": "size-12 text-lg max-md:size-9 max-md:text-base",
-  "14": "size-14 text-xl max-md:size-9 max-md:text-base",
+  "10": "size-10 text-base max-[360px]:size-9",
+  "11": "size-11 text-base max-sm:size-10 max-[360px]:size-9",
+  "12": "size-12 text-lg max-sm:size-10 max-sm:text-base max-[360px]:size-9",
+  "14": "size-14 text-xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9",
+  "16": "size-16 text-2xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9",
+  "18": "size-18 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9",
+  "20": "size-20 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9",
+  "24": "size-24 text-4xl max-md:size-16 max-sm:size-10 max-sm:text-base max-[360px]:size-9",
 }
 
 /** One character each; spaces are never allowed. */
@@ -404,6 +412,8 @@ const InputOTPMotionContext = React.createContext<
     success: boolean
     /** Where the latest paste starts. */
     pasteFrom: number | null
+    /** Reduced motion: characters and the success colour just appear. */
+    reduceMotion: boolean
   }
 >({
   glideRing: true,
@@ -418,6 +428,7 @@ const InputOTPMotionContext = React.createContext<
   invalid: false,
   success: false,
   pasteFrom: null,
+  reduceMotion: false,
 })
 
 function InputOTP({
@@ -452,7 +463,15 @@ function InputOTP({
     success?: boolean
   }) {
   const ringId = React.useId()
-  const reduceMotion = useReducedMotion()
+  // Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+  const [reduceMotion, setReduceMotion] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduceMotion(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
   const box = React.useRef<HTMLDivElement>(null)
   const [uncontrolled, setUncontrolled] = React.useState("")
   const value = valueProp ?? uncontrolled
@@ -503,6 +522,7 @@ function InputOTP({
       invalid: invalid || rejecting,
       success,
       pasteFrom,
+      reduceMotion,
     }),
     [
       glideRing,
@@ -518,12 +538,13 @@ function InputOTP({
       rejecting,
       success,
       pasteFrom,
+      reduceMotion,
     ]
   )
 
   return (
     <InputOTPMotionContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <MotionConfig reducedMotion="never">
         <div ref={box} className="relative w-fit">
           <OTPInput
             data-slot="input-otp"
@@ -566,18 +587,17 @@ function InputOTP({
                 initial={{ opacity: 0, scale: 0.6 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.15 } }}
-                transition={{
-                  type: "spring",
-                  visualDuration: 0.3,
-                  bounce: 0.4,
-                  delay: maxLength * WAVE_GAP,
-                }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : { type: "spring", visualDuration: 0.3, bounce: 0.4, delay: maxLength * WAVE_GAP }
+                }
               >
                 <motion.path
                   d="M5 12.5l4.5 4.5L19 7"
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
-                  transition={{ duration: 0.35, ease: "easeOut", delay: maxLength * WAVE_GAP + 0.05 }}
+                  transition={reduceMotion ? { duration: 0 } : { duration: 0.35, ease: "easeOut", delay: maxLength * WAVE_GAP + 0.05 }}
                 />
               </motion.svg>
             )}
@@ -616,21 +636,22 @@ function InputOTPSlot({
       ? (index - options.pasteFrom) * options.pasteStagger
       : 0
 
-  const animation = options.charAnimation === "none" ? null : options.charAnimation
+  // Reduced motion: the character appears at once, with no pop, roll, fade or paste delay
+  const animation = options.reduceMotion || options.charAnimation === "none" ? null : options.charAnimation
 
   return (
     <motion.div
       data-slot="input-otp-slot"
       data-active={isActive}
       aria-invalid={options.invalid || undefined}
-      animate={waved ? { scale: [1, 1.1, 1] } : { scale: 1 }}
-      transition={{ duration: 0.3, delay: waved ? index * WAVE_GAP : 0 }}
-      style={{ transitionDelay: waved ? `${index * WAVE_GAP}s` : "0s" }}
+      animate={waved && !options.reduceMotion ? { scale: [1, 1.1, 1] } : { scale: 1 }}
+      transition={{ duration: 0.3, delay: waved && !options.reduceMotion ? index * WAVE_GAP : 0 }}
+      style={{ transitionDelay: waved && !options.reduceMotion ? `${index * WAVE_GAP}s` : "0s" }}
       className={cn(
         "relative flex items-center justify-center border-(--hx-input) transition-[color,background-color,border-color,box-shadow] duration-300 outline-none aria-invalid:border-(--hx-destructive) in-data-[theme=dark]:bg-(--hx-input)/30",
         options.joined ? cn("border-y border-r rounded-none", index === 0 && "border-l") : "border",
         !options.glideRing &&
-          "data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) data-[active=true]:aria-invalid:border-(--hx-destructive)",
+          "data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) in-data-accent:data-[active=true]:border-(--hx-primary) data-[active=true]:aria-invalid:border-(--hx-destructive)",
         waved &&
           "border-(--hx-success) bg-(--hx-success)/10 text-(--hx-success)",
         SIZE[options.boxSize],
@@ -650,7 +671,7 @@ function InputOTPSlot({
           aria-hidden
           className={cn(
             // Crisp border, no halo.
-            "pointer-events-none absolute -inset-px z-10 rounded-[inherit] border border-(--hx-foreground)",
+            "pointer-events-none absolute -inset-px z-10 rounded-[inherit] border border-(--hx-foreground) in-data-accent:border-(--hx-primary)",
             options.invalid && "border-(--hx-destructive)"
           )}
           transition={{ type: "spring", visualDuration: 0.25 * 0.6, bounce: 0.2 }}
@@ -683,7 +704,7 @@ function InputOTPSlot({
       </span>
       {hasFakeCaret && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="h-[45%] w-px animate-caret-blink bg-(--hx-foreground) duration-1000" />
+          <div className="h-[45%] w-px animate-[hx-caret-blink_1.25s_ease-out_infinite] motion-reduce:animate-none bg-(--hx-foreground) in-data-accent:bg-(--hx-primary) duration-1000" />
         </div>
       )}
     </motion.div>
@@ -736,7 +757,7 @@ const controls = {
     ],
   },
 
-  glideRing: { group: "Typing", type: "checkbox", label: "Glide ring", value: true },
+  glideRing: { group: "Typing", type: "checkbox", label: "Glide ring", value: false },
   charAnimation: {
     group: "Typing",
     type: "select",
@@ -768,7 +789,7 @@ const controls = {
     group: "Style",
     type: "select",
     label: "Box size",
-    value: "10",
+    value: "16",
     options: [
       { label: "8", value: "8" },
       { label: "9", value: "9" },
@@ -776,6 +797,10 @@ const controls = {
       { label: "11", value: "11" },
       { label: "12", value: "12" },
       { label: "14", value: "14" },
+      { label: "16", value: "16" },
+      { label: "18", value: "18" },
+      { label: "20", value: "20" },
+      { label: "24", value: "24" },
     ],
   },
   joined: { group: "Style", type: "checkbox", label: "Joined boxes", value: false },
@@ -783,7 +808,7 @@ const controls = {
     group: "Style",
     type: "select",
     label: "Roundness",
-    value: "lg",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -822,7 +847,7 @@ function InputOTPDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4 rounded-lg border px-4">
+      <div className="flex min-h-72 max-sm:min-h-56 flex-col items-center justify-center gap-4 px-4">
         <InputOTP
           maxLength={CODE.length}
           value={code}
@@ -887,7 +912,7 @@ function InputOTPDemo(props: Partial<ControlValues>) {
           </Button>
         </div>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) w-[70%] max-sm:w-full mx-auto">
         Tip: the right code is {CODE}. Any other six characters shows the error, and a character
         that isn&apos;t allowed is blocked with a message.
       </p>
@@ -921,11 +946,12 @@ export interface AnimatedInputOtpProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedInputOtp({ theme = "default", mode = "light", className, ...props }: AnimatedInputOtpProps) {
+export default function AnimatedInputOtp({ theme = "ghibli", mode = "dark", className, ...props }: AnimatedInputOtpProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <style>{COMPONENT_CSS}</style>
         <InputOTPDemo {...props} />
       </div>
     </ThemeContext.Provider>

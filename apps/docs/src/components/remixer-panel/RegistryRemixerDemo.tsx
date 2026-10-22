@@ -78,6 +78,24 @@ export default function RegistryRemixerDemo({
     );
   }, [embed, setValues]);
 
+  // Keep edited props for this tab, so a reload (or dev recompile) doesn't wipe them.
+  const storeKey = `vault-remixer:${typeof window === "undefined" ? "" : location.pathname}`;
+  const [restored, setRestored] = useState(false);
+  useEffect(() => {
+    if (embed) return;
+    try {
+      const saved = sessionStorage.getItem(storeKey);
+      if (saved) setValues((current) => ({ ...current, ...JSON.parse(saved) }));
+    } catch {}
+    setRestored(true);
+  }, [embed, storeKey, setValues]);
+  useEffect(() => {
+    if (embed || !restored) return;
+    try {
+      sessionStorage.setItem(storeKey, JSON.stringify(values));
+    } catch {}
+  }, [embed, restored, storeKey, values]);
+
   const replay = useCallback(() => setReplayKey((k) => k + 1), []);
 
   // The keyed fragment remounts only the effect, so Replay restarts its intro.

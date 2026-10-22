@@ -169,7 +169,8 @@ const THEMES: Record<`${AnimatedTooltipTheme}:${AnimatedTooltipMode}`, Record<st
 function themeProps(theme: AnimatedTooltipTheme = "default", mode: AnimatedTooltipMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -177,7 +178,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -243,7 +244,7 @@ const ROUNDED: Record<FloatingTooltipRounded, string> = {
 
 const VARIANT: Record<FloatingTooltipVariant, string> = {
   default: "bg-(--hx-primary) text-(--hx-primary-foreground)",
-  outline: "border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground)",
+  outline: "border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground) in-data-accent:border-(--hx-primary) in-data-accent:text-(--hx-primary)",
 }
 
 // Space kept clear at the screen edges, px
@@ -931,7 +932,7 @@ function TooltipDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[50vh] items-center justify-center rounded-lg border px-4 py-8">
+      <div className="flex min-h-96 items-center justify-center rounded-lg border px-4 py-8">
         <FloatingTooltipProvider
           variant={values.variant as FloatingTooltipVariant}
           rounded={values.rounded as FloatingTooltipRounded}
@@ -994,7 +995,7 @@ export interface AnimatedTooltipProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedTooltip({ theme = "default", mode = "light", className, ...props }: AnimatedTooltipProps) {
+export default function AnimatedTooltip({ theme = "default", mode = "dark", className, ...props }: AnimatedTooltipProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

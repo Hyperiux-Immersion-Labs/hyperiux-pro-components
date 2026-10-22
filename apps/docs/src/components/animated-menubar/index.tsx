@@ -227,7 +227,8 @@ const THEMES: Record<`${AnimatedMenubarTheme}:${AnimatedMenubarMode}`, Record<st
 function themeProps(theme: AnimatedMenubarTheme = "default", mode: AnimatedMenubarMode = "light") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
-  return { "data-theme": mode, style: style as React.CSSProperties };
+  // Any theme but Default tints key parts with its primary colour
+  return { "data-theme": mode, "data-accent": theme === "default" ? undefined : "", style: style as React.CSSProperties };
 }
 
 const ThemeContext = React.createContext(themeProps());
@@ -235,7 +236,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -2200,7 +2201,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
               id={id}
               aria-label="Menu"
               data-slot="menubar-mobile-panel"
-              className="absolute top-full left-1/2 z-50 my-2 flex h-[60vh] w-[45vw] -translate-x-1/2 flex-col gap-0.5 overflow-y-auto overscroll-contain rounded-xl bg-(--hx-popover) p-2 text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 max-md:w-[90vw]"
+              className="absolute top-full left-1/2 z-50 my-2 flex h-96 w-xl -translate-x-1/2 flex-col gap-0.5 overflow-y-auto overscroll-contain rounded-xl bg-(--hx-popover) p-2 text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 max-md:w-80"
               initial="closed"
               animate="open"
               exit="closed"
@@ -2681,7 +2682,7 @@ function MenubarDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[50vh] flex-col items-center gap-[3vw] py-[4vw] max-md:gap-[6vw]">
+      <div className="flex min-h-96 flex-col items-center gap-10 py-12 max-md:gap-8">
         <Menubar
           animation={values.animation as MenubarAnimation}
           switchAnimation={values.switchAnimation as MenubarSwitch}
@@ -2902,7 +2903,7 @@ export interface AnimatedMenubarProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedMenubar({ theme = "default", mode = "light", className, ...props }: AnimatedMenubarProps) {
+export default function AnimatedMenubar({ theme = "default", mode = "dark", className, ...props }: AnimatedMenubarProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
