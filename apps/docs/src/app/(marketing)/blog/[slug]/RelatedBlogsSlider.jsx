@@ -60,7 +60,7 @@ export default function RelatedBlogsSlider({ posts = [] }) {
         data-cursor-drag
         // -m/p 1vw: room inside the clipped row for the cards' hover shadow and lift (as the
         // effects listing's Trending row); the negative margin keeps the cards where they were.
-        className="-m-[calc(var(--cvw)*1)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden p-[calc(var(--cvw)*1)] scrollbar-none max-lg:-m-[2vw] max-lg:gap-[2vw] max-lg:overflow-x-auto max-lg:p-[2vw] max-md:-m-[4vw] max-md:gap-[4vw] max-md:p-[4vw]"
+        className="-m-[calc(var(--cvw)*1)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden p-[calc(var(--cvw)*1)] touch-scrollbar max-lg:-m-[2vw] max-lg:gap-[2vw] max-lg:overflow-x-auto max-lg:p-[2vw] max-md:-m-[4vw] max-md:gap-[4vw] max-md:p-[4vw]"
       >
         {posts.map((post, index) => (
           <div

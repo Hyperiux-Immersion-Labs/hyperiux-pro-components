@@ -463,7 +463,7 @@ export function EffectDetailContent({
                         // data-cursor-drag: the site cursor shows its drag state over the row.
                         // overflow-y set explicitly so Lenis doesn't treat the row as a vertical scroller.
                         data-cursor-drag
-                        className="flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden pb-4 scrollbar-none max-lg:gap-[2vw] max-lg:overflow-x-auto max-md:gap-[4vw]"
+                        className="flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden pb-4 touch-scrollbar max-lg:gap-[2vw] max-lg:overflow-x-auto max-md:gap-[4vw]"
                       >
                         {safeRelatedEffects.map((relatedEffect) => (
                           <div

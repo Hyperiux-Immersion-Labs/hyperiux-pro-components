@@ -194,22 +194,22 @@ export default function ProblemFixes() {
           {cards.map((item, index) => (
             <div
               key={item.title}
-              className="tension-card flex items-center justify-between bg-grey/30 px-[calc(var(--cvw)*1.1)] py-[calc(var(--cvw)*0.7)] backdrop-blur-lg max-md:p-3"
+              className="tension-card flex items-center justify-between bg-grey/30 px-[calc(var(--cvw)*1.1)] py-[calc(var(--cvw)*0.7)] backdrop-blur-lg max-lg:grid max-lg:grid-cols-[1fr_auto] max-lg:gap-x-4 max-lg:gap-y-4 max-lg:p-6 max-md:p-5"
             >
-              <div className="flex min-w-0 flex-1 items-center max-md:flex-col max-md:items-start max-md:gap-3">
+              <div className="flex min-w-0 flex-1 items-center max-lg:contents">
 
-                <div className="flex w-[calc(var(--cvw)*25)] shrink-0 items-center gap-[calc(var(--cvw)*1)] px-[calc(var(--cvw)*0.3)] max-md:w-auto max-md:gap-4">
+                <div className="flex w-[calc(var(--cvw)*25)] shrink-0 items-center gap-[calc(var(--cvw)*1)] px-[calc(var(--cvw)*0.3)] max-lg:col-start-1 max-lg:row-start-1 max-lg:w-auto max-lg:px-0">
 
                   <FadeText
                     as="p"
                     lang="en"
-                    className="type-body-lg capitalize max-md:min-w-0 max-md:flex-1 max-md:wrap-break-word max-md:hyphens-auto"
+                    className="type-body-lg capitalize max-lg:min-w-0 max-lg:text-[#FF0B0B]/75"
                     active={index <= activeIndex}
                     armed={armed}
                   >
                     {item.label}
                   </FadeText>
-                  <div className="flex size-[calc(var(--cvw)*3)] shrink-0 items-center justify-center bg-background p-1 max-lg:size-10 max-md:size-8">
+                  <div className="flex size-[calc(var(--cvw)*3)] shrink-0 items-center justify-center bg-background p-1 max-lg:hidden">
                     <DrawCross
                       active={index <= activeIndex}
                       armed={armed}
@@ -217,7 +217,7 @@ export default function ProblemFixes() {
                     />
                   </div>
                 </div>
-                <p className="type-body min-w-0 flex-1 px-[calc(var(--cvw)*2)] text-left text-light-grey [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-lg:w-[50%] max-lg:flex-none max-md:w-[90%] max-md:px-0">
+                <p className="type-body min-w-0 flex-1 px-[calc(var(--cvw)*2)] text-left text-light-grey [--scramble-flash:var(--primary)] [--scramble-pre:var(--primary)] max-lg:col-span-2 max-lg:row-start-2 max-lg:w-full max-lg:px-0">
                   <ScrambleText
                     className="font-mono"
                     text={item.description}
@@ -227,17 +227,17 @@ export default function ProblemFixes() {
                 </p>
               </div>
 
-              <div className="flex w-[calc(var(--cvw)*13)] shrink-0 items-center gap-[calc(var(--cvw)*1)] justify-end max-md:w-[38%] max-md:max-w-[40%] max-md:gap-3">
+              <div className="flex w-[calc(var(--cvw)*13)] shrink-0 items-center gap-[calc(var(--cvw)*1)] justify-end max-lg:col-start-2 max-lg:row-start-1 max-lg:w-auto">
 
                 <FadeText
                   as="p"
-                  className="type-body-lg whitespace-nowrap capitalize max-lg:whitespace-normal max-md:max-w-[10ch] max-md:text-right"
+                  className="type-body-lg whitespace-nowrap capitalize max-lg:text-right max-lg:text-[#00E05A]/75"
                   active={index <= activeIndex}
                   armed={armed}
                 >
                   {item.title}
                 </FadeText>
-                <div className="flex size-[calc(var(--cvw)*3)] shrink-0 items-center justify-center bg-background p-2.5 max-lg:size-10 max-md:size-8">
+                <div className="flex size-[calc(var(--cvw)*3)] shrink-0 items-center justify-center bg-background p-2.5 max-lg:hidden">
                   <DrawCheck
                     active={index <= activeIndex}
                     armed={armed}
