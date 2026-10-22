@@ -45,7 +45,7 @@ const TeamGrid = () => (
       <Link
         href={ROUTES.contact}
         data-cursor="Apply"
-        className="group flex aspect-[4/5] flex-col justify-between gap-6 rounded-2xl bg-[#0a0a0a] px-[1.6vw] py-[1.6vw] text-[#f5f5f5] transition-colors duration-500 hover:bg-[#e8473b] hover:text-[#0a0a0a] max-lg:px-[3vw] max-lg:py-[3vw] max-md:px-[4vw] max-md:py-[5vw]"
+        className="group flex aspect-[4/5] flex-col justify-between gap-6 rounded-2xl bg-[#0a0a0a] px-[1.6vw] py-[1.6vw] text-[#f5f5f5] transition-colors duration-500 hover:bg-[#ff5f00] hover:text-[#0a0a0a] max-lg:px-[3vw] max-lg:py-[3vw] max-md:px-[4vw] max-md:py-[5vw]"
       >
         <span className="flex flex-col gap-3">
           <strong className="font-mpx-head text-40 font-medium">This spot is yours.</strong>

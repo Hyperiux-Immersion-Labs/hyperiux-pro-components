@@ -157,7 +157,7 @@ const Header = () => {
           solid ? "border-black/10 bg-[#fafafa]" : "border-transparent bg-transparent"
         } ${menuOpen ? "text-[#f5f5f5]" : "text-[#0a0a0a]"}`}
       >
-        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[2.5vw] max-lg:h-[4.6vh] max-lg:px-[4vw] max-md:h-[7.4vh] max-md:px-[5vw]">
+        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[4.6vh] max-lg:px-[4vw] max-md:h-[7.4vh] max-md:px-[5vw]">
           <Link
             href={ROUTES.home}
             onClick={handleLogo}
@@ -195,17 +195,32 @@ const Header = () => {
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
               className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[3.6vh] max-lg:px-[0.6vw] max-md:h-[5.8vh] max-md:border-transparent max-md:px-[1.3vw] ${
-                menuOpen ? "border-[#ff8a73]/60" : "border-black/30"
+                menuOpen ? "border-[#ff8a4d]/60" : "border-black/30"
               }`}
             >
-              <span className="min-w-[4.4vw] px-[1vw] text-left max-lg:min-w-[8vw] max-lg:px-[1.8vw] max-md:hidden">
-                {menuOpen ? "Close" : "Menu"}
+              <span className="grid min-w-[4.4vw] overflow-hidden px-[1vw] text-left max-lg:min-w-[8vw] max-lg:px-[1.8vw] max-md:hidden">
+                <span
+                  aria-hidden={menuOpen}
+                  className={`col-start-1 row-start-1 transition-transform duration-1150 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
+                    menuOpen ? "-translate-y-full delay-100" : "translate-y-0 delay-0"
+                  }`}
+                >
+                  Menu
+                </span>
+                <span
+                  aria-hidden={!menuOpen}
+                  className={`col-start-1 row-start-1 transition-transform duration-1150 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
+                    menuOpen ? "translate-y-0 delay-100" : "translate-y-full delay-0"
+                  }`}
+                >
+                  Close
+                </span>
               </span>
               <span
                 ref={iconRef}
                 aria-hidden
                 className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[2.7vh] max-md:h-[4.1vh] ${
-                  menuOpen ? "bg-[#ff8a73] text-[#0e0e0e]" : "bg-[#0a0a0a] text-[#fafafa]"
+                  menuOpen ? "bg-[#ff8a4d] text-[#0e0e0e]" : "bg-[#0a0a0a] text-[#fafafa]"
                 }`}
               >
                 <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.2vw] max-md:h-0.5 max-md:w-[3vw]" />

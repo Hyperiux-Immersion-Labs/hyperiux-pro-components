@@ -1,71 +1,341 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
-import InteractiveListPreview from "../effects/interactive-list-preview";
-import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
-import PixelButton from "../Buttons/PixelButton";
+"use client";
+
+import { useEffect, useRef, useState, type MouseEvent } from "react";
+import Image, { type StaticImageData } from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import gsap from "gsap";
+import { MaskReveal } from "../Animations/gsapAnim";
+import { prefersReducedMotion } from "../Animations/reducedMotion";
+import UnderlineLink from "../Buttons/UnderlineLink";
 import cloudline from "../../assets/w-cloudline.webp";
 import kickflip from "../../assets/w-kickflip.webp";
 import northway from "../../assets/w-northway.webp";
 import drift from "../../assets/w-drift.webp";
+import studioOne from "../../assets/studio-1.webp";
+import studioTwo from "../../assets/studio-2.webp";
 import { ROUTES } from "../../routes";
 
-const Services = () => (
-  <section
-    id="services"
-    className="mpx-container mpx-section flex flex-col gap-14 max-md:gap-11"
-  >
-    <div className="flex flex-col gap-6 max-lg:gap-5">
-      <MaskReveal as="h2">What we’re good at</MaskReveal>
-      <FadeUp className="flex w-[42%] flex-col items-start gap-6 max-lg:w-[70%] max-md:w-full">
-        <p className="text-28 text-mpx-muted">
+const DESKTOP_QUERY = "(min-width: 1026px)";
+const HIDDEN_DOWN = "inset(100% 0% 0% 0%)";
+const HIDDEN_UP = "inset(0% 0% 100% 0%)";
+const SHOWN = "inset(0% 0% 0% 0%)";
+
+type Service = {
+  title: string;
+  meta: string;
+  image: StaticImageData;
+};
+
+const SERVICES: Service[] = [
+  { title: "Brand strategy", meta: "Positioning, naming and messaging", image: cloudline },
+  { title: "Brand identity", meta: "Logos, type and visual systems", image: kickflip },
+  { title: "Websites and products", meta: "UX, UI and engineering", image: northway },
+  { title: "Motion and 3D", meta: "Moving identities and launch films", image: drift },
+  { title: "Packaging", meta: "Structure, range and production", image: studioOne },
+  { title: "Content and campaigns", meta: "Launches and social systems", image: studioTwo },
+];
+
+const pad = (value: number) => String(value).padStart(2, "0");
+
+const Services = () => {
+  const router = useRouter();
+  const frameRef = useRef<HTMLDivElement | null>(null);
+  const rowRefs = useRef<(HTMLLIElement | null)[]>([]);
+  const layerRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const picRefs = useRef<(HTMLImageElement | null)[]>([]);
+  const activeRef = useRef(0);
+  const zRef = useRef(1);
+  const [active, setActive] = useState(0);
+
+  const show = (index: number, direction: number) => {
+    const previous = activeRef.current;
+    if (index === previous) return;
+
+    activeRef.current = index;
+    setActive(index);
+
+    const layers = layerRefs.current;
+    const pics = picRefs.current;
+    const next = layers[index];
+    if (!next) return;
+    zRef.current += 1;
+    next.style.zIndex = String(zRef.current);
+
+    if (prefersReducedMotion()) {
+      layers.forEach((layer, n) => {
+        if (layer) layer.style.clipPath = n === index ? SHOWN : HIDDEN_DOWN;
+      });
+      return;
+    }
+
+    layers.forEach((layer, n) => {
+      if (!layer || n === index) return;
+      gsap.killTweensOf(layer);
+      if (n === previous) {
+        layer.style.clipPath = SHOWN;
+        layer.style.zIndex = "1";
+        return;
+      }
+      layer.style.clipPath = HIDDEN_DOWN;
+      layer.style.zIndex = "0";
+      gsap.killTweensOf(pics[n]);
+      gsap.set(pics[n], { yPercent: 0, scale: 1 });
+    });
+
+    gsap.killTweensOf([next, pics[index]]);
+    gsap.fromTo(
+      next,
+      { clipPath: direction > 0 ? HIDDEN_DOWN : HIDDEN_UP },
+      {
+        clipPath: SHOWN,
+        duration: 1.1,
+        ease: "expo.out",
+        onComplete: () => {
+          if (activeRef.current !== index) return;
+          layers.forEach((layer, n) => {
+            if (layer && n !== index) layer.style.clipPath = HIDDEN_DOWN;
+          });
+        },
+      },
+    );
+    gsap.fromTo(
+      pics[index],
+      { yPercent: direction > 0 ? 18 : -18, scale: 1.18 },
+      { yPercent: 0, scale: 1, duration: 1.4, ease: "expo.out" },
+    );
+    gsap.to(pics[previous], {
+      yPercent: direction > 0 ? -12 : 12,
+      duration: 1.1,
+      ease: "expo.out",
+      overwrite: "auto",
+      onComplete: () => {
+        if (activeRef.current !== previous) gsap.set(pics[previous], { yPercent: 0, scale: 1 });
+      },
+    });
+  };
+
+  const showRef = useRef(show);
+  showRef.current = show;
+
+  useEffect(() => {
+    const layers = layerRefs.current;
+    layers.forEach((layer, n) => {
+      if (!layer) return;
+      layer.style.clipPath = n === 0 ? SHOWN : HIDDEN_DOWN;
+      layer.style.zIndex = n === 0 ? "1" : "0";
+    });
+
+    const desktop = window.matchMedia(DESKTOP_QUERY);
+    let queued = false;
+
+    const pick = () => {
+      const frame = frameRef.current;
+      const rows = rowRefs.current.filter(Boolean) as HTMLLIElement[];
+      if (!desktop.matches || !frame || rows.length === 0) return;
+
+      const box = frame.getBoundingClientRect();
+      const centre = box.top + box.height / 2;
+      let index = activeRef.current;
+
+      if (centre < rows[0].getBoundingClientRect().top) index = 0;
+      else if (centre >= rows[rows.length - 1].getBoundingClientRect().bottom) index = rows.length - 1;
+      else {
+        for (let n = 0; n < rows.length; n += 1) {
+          const rect = rows[n].getBoundingClientRect();
+          if (centre >= rect.top && centre < rect.bottom) {
+            index = n;
+            break;
+          }
+        }
+      }
+
+      if (index !== activeRef.current) showRef.current(index, index > activeRef.current ? 1 : -1);
+    };
+
+    const onScroll = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(() => {
+        queued = false;
+        pick();
+      });
+    };
+
+    const clearOverlays = () => document.querySelectorAll("[data-service-expand]").forEach((el) => el.remove());
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    window.addEventListener("pageshow", clearOverlays);
+    pick();
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      window.removeEventListener("pageshow", clearOverlays);
+      clearOverlays();
+      gsap.killTweensOf([...layers, ...picRefs.current]);
+    };
+  }, []);
+
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>, index: number) => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    if (prefersReducedMotion() || !window.matchMedia(DESKTOP_QUERY).matches) return;
+
+    const frame = frameRef.current;
+    const window_ = frame?.querySelector("[data-service-window]");
+    if (!window_) return;
+
+    event.preventDefault();
+    if (index !== activeRef.current) show(index, index > activeRef.current ? 1 : -1);
+
+    const box = window_.getBoundingClientRect();
+    const overlay = document.createElement("div");
+    overlay.setAttribute("data-service-expand", "");
+    overlay.className = "pointer-events-none fixed z-120 overflow-hidden rounded-[0.7vw]";
+    gsap.set(overlay, { top: box.top, left: box.left, width: box.width, height: box.height });
+
+    const picture = document.createElement("img");
+    picture.src = SERVICES[index].image.src;
+    picture.alt = "";
+    picture.className = "h-full w-full object-cover";
+    overlay.append(picture);
+    document.body.append(overlay);
+
+    gsap.to(overlay, {
+      top: 0,
+      left: 0,
+      width: window.innerWidth,
+      height: window.innerHeight,
+      borderRadius: 0,
+      duration: 1,
+      ease: "expo.inOut",
+      onComplete: () => router.push(ROUTES.service),
+    });
+    gsap.fromTo(picture, { scale: 1.15 }, { scale: 1, duration: 1, ease: "expo.inOut" });
+  };
+
+  return (
+    <section
+      id="services"
+      className="flex flex-col gap-[4.5vw] px-[5vw] py-[9vw] max-lg:gap-[8vw] max-lg:px-[4vw] max-lg:py-[12vw] max-md:gap-10 max-md:px-[5vw] max-md:py-[16vw]"
+    >
+      <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] max-lg:grid-cols-1 max-lg:gap-y-4">
+        <MaskReveal
+          as="h2"
+          className="[.mpx-page_&]:text-[2.9vw] [.mpx-page_&]:tracking-[-0.1vw] max-lg:[.mpx-page_&]:text-[5vw] max-md:[.mpx-page_&]:text-[8vw]"
+        >
+          What we’re good at
+        </MaskReveal>
+        <p className="w-[83%] text-[1vw] leading-[1.55] text-mpx-muted max-lg:w-[70%] max-lg:text-[2vw] max-md:w-full max-md:text-[3.6vw]">
           Six disciplines, one team, no hand-offs. Strategy, design and code share a table, so nothing gets lost in translation.
         </p>
-        <PixelButton label="All Services" href={ROUTES.services} variant="outline" size="sm" />
-      </FadeUp>
-    </div>
-    <FadeUp>
-      <InteractiveListPreview items={SERVICES} />
-    </FadeUp>
-  </section>
-);
+        <UnderlineLink
+          href={ROUTES.services}
+          className="font-mpx-head text-[1vw] font-medium text-mpx-ink max-lg:text-[2vw] max-md:text-[3.6vw]"
+        >
+          All services
+        </UnderlineLink>
+      </div>
+
+      <div className="relative grid grid-cols-12 gap-x-[3.3vw]">
+        <div
+          ref={frameRef}
+          aria-hidden
+          className="pointer-events-none sticky top-[calc(50vh-6.3vw)] z-20 col-span-3 col-start-6 row-start-1 my-[1.5vw] grid cursor-none justify-items-center gap-[0.6vw] self-start justify-self-center max-lg:hidden"
+        >
+          <div
+            data-service-window
+            className="relative aspect-4/3 h-[12.5vw] max-w-full overflow-hidden rounded-[0.7vw] bg-mpx-surface"
+          >
+            {SERVICES.map((service, index) => (
+              <span
+                key={service.title}
+                ref={(el) => {
+                  layerRefs.current[index] = el;
+                }}
+                className={`absolute inset-0 overflow-hidden will-change-[clip-path] ${
+                  index === 0 ? "[clip-path:inset(0_0_0_0)]" : "[clip-path:inset(100%_0_0_0)]"
+                }`}
+              >
+                <Image
+                  ref={(el: HTMLImageElement | null) => {
+                    picRefs.current[index] = el;
+                  }}
+                  src={service.image}
+                  alt=""
+                  sizes="20vw"
+                  loading="eager"
+                  className="h-full w-full object-cover will-change-transform"
+                />
+              </span>
+            ))}
+          </div>
+          <span className="text-[0.9vw] tabular-nums text-mpx-muted">{pad(active + 1)} / {pad(SERVICES.length)}</span>
+        </div>
+
+        <ol className="col-span-full row-start-1 border-b border-black/10">
+          {SERVICES.map((service, index) => {
+            const isActive = index === active;
+            return (
+              <li
+                key={service.title}
+                ref={(el) => {
+                  rowRefs.current[index] = el;
+                }}
+                className="border-t border-black/10"
+              >
+                <Link
+                  href={ROUTES.service}
+                  data-cursor="View"
+                  onClick={(event) => handleClick(event, index)}
+                  className={`grid min-h-[15.5vw] grid-cols-12 items-center gap-x-[3.3vw] py-[1.4vw] transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:text-mpx-ink focus-visible:text-mpx-ink motion-reduce:transition-none max-lg:min-h-0 max-lg:gap-y-2 max-lg:py-5 max-lg:text-mpx-ink ${
+                    isActive ? "text-mpx-ink" : "text-mpx-muted"
+                  }`}
+                >
+                  <span
+                    className={`font-mpx-head col-span-5 text-[2.7vw] font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-8 max-lg:row-start-1 max-lg:translate-x-0 max-lg:text-[5vw] max-md:text-[7vw] ${
+                      isActive ? "translate-x-[0.8vw]" : "translate-x-0"
+                    }`}
+                  >
+                    {service.title}
+                  </span>
+                  <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-[1vw] max-lg:col-span-8 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-[2vw] max-lg:text-mpx-muted max-md:text-[3.4vw]">
+                    <span
+                      aria-hidden
+                      className={`size-1.5 shrink-0 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${
+                        isActive ? "bg-[#ff5f00]" : "bg-current"
+                      }`}
+                    />
+                    {service.meta}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="col-start-12 justify-self-end text-[1vw] tabular-nums max-lg:hidden"
+                  >
+                    {pad(index + 1)}
+                  </span>
+                  <span
+                    aria-hidden
+                    className="hidden aspect-4/3 overflow-hidden rounded-[1.2vw] max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:rounded-[2.5vw]"
+                  >
+                    <Image
+                      src={service.image}
+                      alt=""
+                      sizes="(max-width: 768px) 30vw, 30vw"
+                      className="h-full w-full object-cover"
+                    />
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </section>
+  );
+};
 
 export default Services;
-
-const SERVICES = [
-  {
-    title: "Brand strategy",
-    text: "Positioning, naming and messaging that make your whole company sound like one person.",
-    image: cloudline,
-    href: ROUTES.service,
-  },
-  {
-    title: "Brand identity",
-    text: "Logos, type and systems that look just as sharp on a billboard as on a favicon.",
-    image: kickflip,
-    href: ROUTES.service,
-  },
-  {
-    title: "Websites and products",
-    text: "Fast, accessible sites and products, designed and engineered under one roof.",
-    image: northway,
-    href: ROUTES.service,
-  },
-  {
-    title: "Motion and 3D",
-    text: "Identities that move, launch films and product visuals people actually replay.",
-    image: drift,
-    href: ROUTES.service,
-  },
-  {
-    title: "Packaging",
-    text: "Packs that win the shelf, then earn a second life on someone’s bookcase.",
-    image: cloudline,
-    href: ROUTES.service,
-  },
-  {
-    title: "Content and campaigns",
-    text: "Launches and social systems with something to say, and the nerve to say it.",
-    image: kickflip,
-    href: ROUTES.service,
-  },
-];

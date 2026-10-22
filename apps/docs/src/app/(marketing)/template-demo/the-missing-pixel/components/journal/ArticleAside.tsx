@@ -71,7 +71,7 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
                   aria-current={active === link.id ? "true" : undefined}
                   className={`-ml-px block border-l px-[1vw] py-[0.8vh] text-24 transition-colors duration-300 hover:text-[#0a0a0a] max-lg:px-[2vw] ${
                     active === link.id
-                      ? "border-[#e8473b] text-[#0a0a0a]"
+                      ? "border-[#ff5f00] text-[#0a0a0a]"
                       : "border-transparent text-[#5e5e5e]"
                   }`}
                 >

@@ -58,7 +58,7 @@ export const LogoMark = ({ className = "", pixelRef }: LogoMarkProps) => (
     {LOGO_CELLS.map(([x, y]) => (
       <rect key={`${x}-${y}`} x={x} y={y} width="7" height="7" rx="1.2" fill="currentColor" />
     ))}
-    <rect ref={pixelRef} x="21" y="0" width="7" height="7" rx="1.2" className="fill-[#e8473b]" />
+    <rect ref={pixelRef} x="21" y="0" width="7" height="7" rx="1.2" className="fill-[#ff5f00]" />
   </svg>
 );
 

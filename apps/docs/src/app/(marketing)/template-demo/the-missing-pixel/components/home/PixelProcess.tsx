@@ -97,7 +97,7 @@ const PixelProcess = () => {
         let scatterStrength = 1;
         const hoverPixels = cells.map((cell) => cell.querySelector<HTMLElement>("[data-px-hover]"));
         gsap.set(hoverPixels, {
-          backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#e8473b" : "#0a0a0a") : "#bdbdbd",
+          backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#bdbdbd",
         });
         const scatterOffsets = cells.map(() => ({
           x: gsap.utils.random(-32, 32),
@@ -153,7 +153,7 @@ const PixelProcess = () => {
           .to(cells, { x: 0, y: 0, rotation: 0, scale: (i) => nearCentre(CELL_INDICES[i]) ? 1 : 0.55, opacity: 1, duration: 1.2, ease: "power3.out", stagger: { each: 0.008, from: "random" } }, 0)
           .to(cells, { scale: (i) => (nearCentre(CELL_INDICES[i]) ? 1 : 0.55), opacity: 1, duration: 0.8, stagger: { each: 0.004, from: "center" } }, 1.3)
           .to(hoverPixels, {
-            backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#e8473b" : "#0a0a0a") : "#bdbdbd",
+            backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#bdbdbd",
             duration: 0.8,
             stagger: { each: 0.004, from: "center" },
           }, 1.3)
@@ -200,7 +200,7 @@ const PixelProcess = () => {
       aria-label="How we work"
       className="relative h-[400vh] overflow-clip max-lg:h-auto"
     >
-      <div className="mpx-container sticky top-0 flex h-screen items-center justify-between gap-9 max-lg:relative max-lg:h-auto max-lg:flex-col-reverse max-lg:items-start max-lg:gap-14 max-lg:py-[11vw] max-md:gap-10 max-md:py-[20vw]">
+      <div className="sticky top-0 flex h-screen pl-[5vw] max-lg:px-[4vw] max-md:px-[5vw] items-center justify-between gap-9 max-lg:relative max-lg:h-auto max-lg:flex-col-reverse max-lg:items-start max-lg:gap-14 max-lg:py-[11vw] max-md:gap-10 max-md:py-[20vw]">
         <div className="flex w-[42%] flex-col gap-9 max-lg:w-full max-lg:gap-10 max-md:gap-8">
           <h2>How we find it</h2>
           <div className="grid max-lg:gap-10 max-md:gap-8">
@@ -233,7 +233,7 @@ const PixelProcess = () => {
                 <span
                   key={index}
                   data-px-missing
-                  className="rounded-xs bg-[#e8473b] will-change-transform"
+                  className="rounded-xs bg-[#ff5f00] will-change-transform"
                 />
               ) : (
                 <span
@@ -244,7 +244,7 @@ const PixelProcess = () => {
                   <span
                     data-px-hover
                     className={`block h-full w-full rounded-xs will-change-transform ${
-                      (index + 1) % 17 === 0 ? "bg-[#e8473b]" : "bg-[#0a0a0a]"
+                      (index + 1) % 17 === 0 ? "bg-[#ff5f00]" : "bg-[#0a0a0a]"
                     }`}
                   />
                 </span>

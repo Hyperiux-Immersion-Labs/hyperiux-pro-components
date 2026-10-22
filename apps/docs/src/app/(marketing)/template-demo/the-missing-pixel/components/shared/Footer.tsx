@@ -13,6 +13,7 @@ import PixelButton from "../Buttons/PixelButton";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import { ArrowRight, LogoMark } from "../Buttons/icons";
 import PixelField from "./PixelField";
+import WordmarkPixels from "./WordmarkPixels";
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -59,6 +60,7 @@ const Footer = () => {
   const lenis = useLenis();
   const markRef = useRef<HTMLDivElement | null>(null);
   const markInnerRef = useRef<HTMLDivElement | null>(null);
+  const markProgressRef = useRef(prefersReducedMotion() ? 1 : 0);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -96,7 +98,9 @@ const Footer = () => {
             start: "50% bottom",
             end: "bottom bottom",
             scrub: true,
-            // markers:true,
+            onUpdate: (self) => {
+              markProgressRef.current = self.progress;
+            },
           },
         },
       );
@@ -126,7 +130,7 @@ const Footer = () => {
       data-mpx-inert
       className="overflow-hidden rounded-t-3xl bg-[#0a0a0a] text-[#f5f5f5]"
     >
-      <div className="mpx-container flex flex-col">
+      <div className="flex flex-col px-[5vw] max-lg:px-[4vw] max-md:px-[5vw]">
         <div className="flex flex-col gap-11 border-b border-white/15 py-[6vw] max-lg:gap-10 max-lg:py-[9vw] max-md:gap-8 max-md:py-[17vw]">
           <MaskReveal as="h2" className="w-[40%] leading-none max-lg:w-[70%] max-md:w-full">
             Got a missing pixel? Let’s find it.
@@ -199,16 +203,18 @@ const Footer = () => {
 
         <div ref={markRef} aria-hidden className="flex flex-col gap-5 overflow-hidden max-md:gap-4">
           <div className="h-px w-full bg-white/15" />
-          <div
-            ref={markInnerRef}
-            data-cursor-fill
-            className="font-mpx-head flex justify-center overflow-hidden whitespace-nowrap py-[0.8vw] text-128 font-semibold leading-[1.3] tracking-tighter text-[#f5f5f5]"
-          >
-            {MARK.map((letter, index) => (
-              <span key={index} data-mark-letter className="inline-block will-change-transform">
-                {letter === " " ? " " : letter}
-              </span>
-            ))}
+          <div className="relative">
+            <div
+              ref={markInnerRef}
+              className="font-mpx-head flex justify-center overflow-hidden whitespace-nowrap py-[0.8vw] text-128 font-semibold leading-[1.3] tracking-tighter text-transparent"
+            >
+              {MARK.map((letter, index) => (
+                <span key={index} data-mark-letter className="inline-block will-change-transform">
+                  {letter === " " ? "\u00A0" : letter}
+                </span>
+              ))}
+            </div>
+            <WordmarkPixels innerRef={markInnerRef} progressRef={markProgressRef} />
           </div>
         </div>
 

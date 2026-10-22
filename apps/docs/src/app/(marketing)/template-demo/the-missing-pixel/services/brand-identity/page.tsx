@@ -87,7 +87,7 @@ const page = () => (
       </FadeUp>
     </section>
 
-    <section id="deliverables" className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section id="deliverables" className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead
         title="What you get"
         text="Everything arrives as editable source files. The exact list depends on your tier."
@@ -174,11 +174,11 @@ const page = () => (
       </FadeUp>
     </section>
 
-    <section id="pricing" className="mpx-container border-t border-black/10 py-[8%] max-lg:py-[11%] max-md:py-[20%]">
+    <section id="pricing" className="mpx-container py-[8%] max-lg:py-[11%] max-md:py-[20%]">
       <Pricing />
     </section>
 
-    <section id="work" className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section id="work" className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead title="Identity work" text="Recent identity projects.">
         <PixelButton label="All Projects" href={ROUTES.work} variant="outline" size="sm" />
       </SectionHead>
@@ -191,7 +191,7 @@ const page = () => (
       </ul>
     </section>
 
-    <div className="mpx-container border-t border-black/10 py-[8%] max-lg:py-[11%] max-md:py-[20%]">
+    <div className="mpx-container py-[8%] max-lg:py-[11%] max-md:py-[20%]">
       <QuoteBlock
         quote="Our board was nervous. They treated that as a design problem, not an obstacle, and twelve weeks later every team wanted to use the brand."
         name="Daniel Cho"
@@ -200,7 +200,7 @@ const page = () => (
       />
     </div>
 
-    <section id="faq" className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section id="faq" className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead title="Questions">
         <p className="text-28 text-mpx-muted">
           Something else?{" "}

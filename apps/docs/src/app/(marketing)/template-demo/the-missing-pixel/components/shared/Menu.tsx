@@ -215,14 +215,14 @@ const Menu = ({ open, onClose }: MenuProps) => {
                     className="font-mpx-head relative flex items-start gap-3 font-medium max-lg:gap-2 max-md:gap-1 leading-[1.1]"
                   >
                     <span className="relative block overflow-hidden px-[0.4vw] max-md:px-[0.6vw]">
-                      <span data-roll className={`block ${pathname === link.target ? "text-[#ff8a73]" : ""}`}>
+                      <span data-roll className={`block ${pathname === link.target ? "text-[#ff8a4d]" : ""}`}>
                         {link.label}
                       </span>
                       <span
                         data-roll
                         data-roll-alt
                         aria-hidden
-                        className="absolute left-0 top-0 block font-normal italic text-[#ff8a73]"
+                        className="absolute left-0 top-0 block font-normal italic text-[#ff8a4d]"
                       >
                         {link.label}
                       </span>

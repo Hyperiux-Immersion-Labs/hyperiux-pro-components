@@ -243,12 +243,22 @@ export function MediaReveal({
   );
 }
 
+const ODOMETER_CELL = "overflow-hidden leading-[1.1] h-[3.7vw] w-[2vw] max-lg:h-[5.1vw] max-lg:w-[2.8vw] max-md:h-[9.4vw] max-md:w-[5.1vw]";
+const ODOMETER_ROW = "leading-[1.1] h-[3.7vw] max-lg:h-[5.1vw] max-md:h-[9.4vw]";
+
 type OdometerProps = {
   value: string;
   className?: string;
+  cellClassName?: string;
+  rowClassName?: string;
 };
 
-export function Odometer({ value, className = "" }: OdometerProps) {
+export function Odometer({
+  value,
+  className = "",
+  cellClassName = ODOMETER_CELL,
+  rowClassName = ODOMETER_ROW,
+}: OdometerProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
 
   useGSAP(() => {
@@ -287,11 +297,11 @@ export function Odometer({ value, className = "" }: OdometerProps) {
           <span
             key={index}
             aria-hidden
-            className="inline-block h-[3.7vw] w-[2vw] overflow-hidden text-center leading-[1.1] max-lg:h-[5.1vw] max-lg:w-[2.8vw] max-md:h-[9.4vw] max-md:w-[5.1vw]"
+            className={`inline-block text-center ${cellClassName}`}
           >
             <span data-odo-strip data-digit={char} className="flex flex-col will-change-transform">
               {Array.from({ length: 10 }, (_, digit) => (
-                <span key={digit} className="block h-[3.7vw] leading-[1.1] max-lg:h-[5.1vw] max-md:h-[9.4vw]">
+                <span key={digit} className={`block ${rowClassName}`}>
                   {digit}
                 </span>
               ))}

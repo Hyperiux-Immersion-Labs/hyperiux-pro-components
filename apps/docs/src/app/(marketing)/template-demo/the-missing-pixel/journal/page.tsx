@@ -23,7 +23,7 @@ const page = () => (
       <FeaturedPost />
     </div>
     <div aria-hidden className="h-[13vh] max-lg:h-[8vh] max-md:h-[9vh]" />
-    <section className="mpx-container border-t border-black/10 py-[8%] max-lg:py-[11%] max-md:py-[20%]">
+    <section className="mpx-container py-[8%] max-lg:py-[11%] max-md:py-[20%]">
       <PostGrid />
     </section>
     <div className="mpx-container">

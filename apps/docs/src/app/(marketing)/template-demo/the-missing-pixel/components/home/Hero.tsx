@@ -12,7 +12,7 @@ import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
 import StatusDot from "../shared/StatusDot";
 import { ROUTES } from "../../routes";
-import reelPoster from "../../assets/reel-poster.webp";
+import reelPixel from "../../assets/reel-pixel.webp";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -60,18 +60,20 @@ const Hero = () => {
     <section
       ref={heroRef}
       id="top"
-      className="mpx-container py-[7%] relative flex flex-col px-[5vw] h-screen justify-center  gap-12  max-lg:gap-12 max-lg:py-[6vw] max-md:gap-10 max-md:py-[10vw]"
+      className="relative flex flex-col gap-[3.8vw] px-[5vw] pb-[4.4vw] pt-[calc(5.2vw+12vh)] max-lg:gap-[7vw] max-lg:px-[4vw] max-lg:pb-[8vw] max-lg:pt-[calc(10vw+10vh)] max-md:gap-10 max-md:px-[5vw] max-md:pb-[12vw] max-md:pt-[calc(20vw+8vh)]"
     >
       
-      <div ref={driftRef} className="w-[65%] will-change-transform max-lg:w-full">
+      <div ref={driftRef} className="w-full will-change-transform">
         <MaskReveal as="h1" delay={INTRO_DELAY}>
-          Every brand has a missing{" "}
+          Every brand has
+          <br />
+          a missing{" "}
           <span
             data-hero-pixel
-            className="relative inline-block size-[5.3vw] overflow-hidden rounded-xl bg-mpx-surface align-[-0.7vw] [clip-path:inset(50%)] max-lg:size-[6.1vw] max-lg:rounded-md max-lg:align-[-0.8vw] max-md:size-[9.2vw] max-md:align-[-1.2vw] motion-reduce:[clip-path:none]"
+            className="relative inline-block size-[0.8em] overflow-hidden rounded-[0.1em] bg-mpx-surface align-[-0.1em] [clip-path:inset(50%)] motion-reduce:[clip-path:none]"
           >
             <Image
-              src={reelPoster}
+              src={reelPixel}
               alt=""
               loading="eager"
               fetchPriority="high"
@@ -79,19 +81,19 @@ const Hero = () => {
               className="h-full w-full object-cover"
             />
           </span>{" "}
-          pixel. We find it .
+          pixel.
+          <br />
+          We find it.
         </MaskReveal>
       </div>
 
-      <div className="flex items-end justify-between gap-9 max-lg:flex-col-reverse max-lg:items-start max-lg:gap-12 max-md:gap-9">
-        <FadeUp delay={INTRO_DELAY + 0.6} className="w-[40%] max-lg:w-full">
-          <StatusDot label="Booking spring 2027. Two slots left, probably." />
-        </FadeUp>
+      <div className="flex items-end justify-end gap-9 max-lg:flex-col-reverse max-lg:items-start max-lg:gap-12 max-md:gap-9">
+       
        
       
         <FadeUp
           delay={INTRO_DELAY + 0.75}
-          className="flex w-[46%] flex-col gap-12 max-lg:w-[80%] max-lg:gap-7 max-md:w-full"
+          className="flex w-[46%] flex-col gap-[1.9vw] max-lg:w-[80%] max-lg:gap-7 max-md:w-full"
         >
           <p className="w-[90%] text-28 leading-[1.5] text-mpx-ink max-lg:w-full">
             The Missing Pixel is a brand and digital studio in Delhi, London,

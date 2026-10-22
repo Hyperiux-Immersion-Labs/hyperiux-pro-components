@@ -39,7 +39,7 @@ const page = () => (
       </div>
     </section>
     <div aria-hidden className="h-[13vh] max-lg:h-[8vh] max-md:h-[9vh]" />
-    <section className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead title="What happens next" />
       <ol className="grid grid-cols-3 gap-12 max-lg:gap-8 max-md:grid-cols-1 max-md:gap-10">
         {STEPS.map((step, index) => (

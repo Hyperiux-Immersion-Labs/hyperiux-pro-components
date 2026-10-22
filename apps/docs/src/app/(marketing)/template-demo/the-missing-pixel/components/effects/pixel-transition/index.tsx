@@ -14,7 +14,7 @@ import NumberCounter, { LOADER_COUNTER_DURATION } from "../number-counter";
 
 gsap.registerPlugin(useGSAP);
 
-const PIXEL_COLOR = "#e8473b";
+const PIXEL_COLOR = "#ff5f00";
 
 const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
 
@@ -211,7 +211,7 @@ const PixelTransition = () => {
         ref={rootRef}
         data-mpx-transition
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-150 bg-[#e8473b]"
+        className="pointer-events-none fixed inset-0 z-150 bg-[#ff5f00]"
       >
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div

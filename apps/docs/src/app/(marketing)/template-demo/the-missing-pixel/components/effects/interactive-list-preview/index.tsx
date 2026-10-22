@@ -29,7 +29,7 @@ const IMAGE_OFFSET_MULTIPLIER = 20;
 const ACTIVE_TEXT_COLOR = "#fafafa";
 const INACTIVE_TITLE_COLOR = "#0a0a0a";
 const INACTIVE_TEXT_COLOR = "#5e5e5e";
-const ACCENT = "#e8473b";
+const ACCENT = "#ff5f00";
 const HIDDEN_INSET = "inset(50%";
 const VISIBLE_INSET = "inset(0%";
 

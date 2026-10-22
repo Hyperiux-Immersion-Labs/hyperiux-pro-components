@@ -205,7 +205,12 @@ not
 - Mark decorative duplicates (`aria-hidden`) such as rolled button labels and marquee copies.
 - When a full-screen menu is open, make the page behind it `inert` and stop Lenis.
 
-## 14. Checklist before handing over
+## 14. Content
+
+- Never use em dashes (the long dash) anywhere in the content: headings, body copy, captions, labels, alt text, metadata or code comments. Rewrite with a comma, a full stop, a colon or parentheses instead. Hyphens in compound words are fine.
+- Never use eyebrow text: no small, uppercase or tracked label sitting above a section heading (for example "About us" or "Selected work"). A section starts with its heading.
+
+## 15. Checklist before handing over
 
 - [ ] `npx tsc --noEmit -p tsconfig.json` shows no errors in the template folder.
 - [ ] `npx eslint "src/app/(marketing)/template-demo/<template-name>"` is clean.
@@ -216,4 +221,5 @@ not
 - [ ] No `sm:`/`md:`/`lg:` prefixes, no `dark:`, no GSAP `pin`.
 - [ ] Screenshots at 1440, 820 and 390 wide look right, with no horizontal overflow.
 - [ ] Reduced motion shows every section in its final state.
+- [ ] No em dashes in any content, and no eyebrow text above section headings.
 - [ ] No version bumps or changelog edits unless asked.

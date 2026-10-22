@@ -2,14 +2,14 @@
 
 "use client";
 
-import { useEffect, useRef, useState, type PointerEvent } from "react";
+import { useRef } from "react";
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
-import { FadeUp, MaskReveal, MediaReveal } from "../Animations/gsapAnim";
-import NavButtons from "../Buttons/NavButtons";
-import PixelButton from "../Buttons/PixelButton";
+import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import UnderlineLink from "../Buttons/UnderlineLink";
+import PixelReveal from "../effects/pixel-reveal";
 import cloudline from "../../assets/w-cloudline.webp";
 import kickflip from "../../assets/w-kickflip.webp";
 import northway from "../../assets/w-northway.webp";
@@ -26,173 +26,90 @@ type Post = {
 
 type PostCardProps = {
   post: Post;
-  index?: number;
+  index: number;
 };
 
-function PostCard({ post, index = 0 }: PostCardProps) {
+function PostCard({ post, index }: PostCardProps) {
   const zoomRef = useRef<HTMLDivElement | null>(null);
 
   const hover = (active: boolean) => {
-    const duration = prefersReducedMotion() ? 0 : 1;
-    gsap.to(zoomRef.current, { scale: active ? 1.05 : 1, duration: duration * 1.2, ease: "power3.out" });
+    gsap.to(zoomRef.current, {
+      scale: active ? 1.05 : 1,
+      duration: prefersReducedMotion() ? 0 : 1.2,
+      ease: "power3.out",
+    });
   };
 
   return (
-    <FadeUp delay={(index % 3) * 0.1} className="w-[38%] shrink-0 snap-start max-lg:w-[65%] max-md:w-[85%]">
-      <Link
-        href={ROUTES.article}
-        data-cursor="Read"
-        onMouseEnter={() => hover(true)}
-        onMouseLeave={() => hover(false)}
-        onFocus={() => hover(true)}
-        onBlur={() => hover(false)}
-        className="flex flex-col gap-4 max-lg:gap-5 max-md:gap-4"
+    <Link
+      href={ROUTES.article}
+      data-cursor="Read"
+      onMouseEnter={() => hover(true)}
+      onMouseLeave={() => hover(false)}
+      onFocus={() => hover(true)}
+      onBlur={() => hover(false)}
+      className="flex flex-col gap-[1.2vw] max-lg:gap-[2vw] max-md:gap-4"
+    >
+      <PixelReveal
+        gridSize={26}
+        edgeHeight={0.4}
+        direction="up"
+        className="aspect-7/5 w-full rounded-[1.4vw] max-lg:rounded-[2.5vw] max-md:rounded-[4vw]"
       >
-        <div className="aspect-[7/5] w-full overflow-hidden rounded-lg bg-mpx-surface">
-          <MediaReveal className="h-full w-full">
-            <div ref={zoomRef} className="h-full w-full">
-              <Image
-                src={post.image}
-                alt=""
-                sizes="(max-width: 768px) 90vw, (max-width: 1025px) 45vw, 30vw"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          </MediaReveal>
+        <div ref={zoomRef} className="h-full w-full">
+          <Image
+            src={post.image}
+            alt=""
+            sizes="(max-width: 768px) 90vw, (max-width: 1025px) 45vw, 30vw"
+            className="h-full w-full object-cover"
+          />
         </div>
-        <div className="flex w-full justify-between px-2 gap-4 text-14 text-mpx-muted max-lg:gap-5 max-md:gap-4">
+      </PixelReveal>
+      <FadeUp delay={0.2 + (index % 3) * 0.1} className="flex flex-col gap-[1.2vw] max-lg:gap-[2vw] max-md:gap-4">
+        <div className="flex gap-[1vw] text-[1vw] text-mpx-muted max-lg:gap-4 max-lg:text-[2vw] max-md:text-[3.4vw]">
           <span>{post.category}</span>
           <time dateTime={post.dateTime}>{post.date}</time>
         </div>
-        <h3 className="text-30 tracking-tight px-2">
+        <h3 className="text-[1.75vw] leading-[1.2] tracking-tight max-lg:text-[3.2vw] max-md:text-[5.6vw]">
           {post.title}
         </h3>
-        <p className="line-clamp-2 text-22 w-[90%] px-2 text-mpx-muted leading-[1.2]">{post.excerpt}</p>
-      </Link>
-    </FadeUp>
+        <p className="text-[1vw] leading-[1.5] text-mpx-muted max-lg:text-[2vw] max-md:text-[3.6vw]">
+          {post.excerpt}
+        </p>
+      </FadeUp>
+    </Link>
   );
 }
 
-const Journal = () => {
-  const sliderRef = useRef<HTMLDivElement | null>(null);
-  const dragRef = useRef({ pointerId: -1, startX: 0, scrollLeft: 0, moved: false });
-
-  const startDrag = (event: PointerEvent<HTMLDivElement>) => {
-    if (event.pointerType !== "mouse" || event.button !== 0) return;
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      scrollLeft: event.currentTarget.scrollLeft,
-      moved: false,
-    };
-  };
-
-  const moveDrag = (event: PointerEvent<HTMLDivElement>) => {
-    const drag = dragRef.current;
-    if (drag.pointerId !== event.pointerId) return;
-    const distance = event.clientX - drag.startX;
-    if (!drag.moved && Math.abs(distance) < 5) return;
-    const slider = event.currentTarget;
-    if (!drag.moved) {
-      drag.moved = true;
-      slider.setPointerCapture(event.pointerId);
-      slider.style.scrollSnapType = "none";
-      slider.classList.add("cursor-grabbing");
-    }
-    event.preventDefault();
-    slider.scrollLeft = drag.scrollLeft - distance;
-  };
-
-  const endDrag = (event: PointerEvent<HTMLDivElement>) => {
-    const drag = dragRef.current;
-    if (drag.pointerId !== event.pointerId) return;
-    drag.pointerId = -1;
-    const slider = event.currentTarget;
-    if (slider.hasPointerCapture(event.pointerId)) slider.releasePointerCapture(event.pointerId);
-    slider.style.scrollSnapType = "";
-    slider.classList.remove("cursor-grabbing");
-  };
-  const [edges, setEdges] = useState({ start: true, end: false });
-
-  useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    const update = () => {
-      setEdges({
-        start: slider.scrollLeft <= 1,
-        end: slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 1,
-      });
-    };
-    update();
-    slider.addEventListener("scroll", update, { passive: true });
-    const observer = new ResizeObserver(update);
-    observer.observe(slider);
-    return () => {
-      slider.removeEventListener("scroll", update);
-      observer.disconnect();
-    };
-  }, []);
-
-  const slide = (direction: number) => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    const first = slider.children[0] as HTMLElement;
-    const second = slider.children[1] as HTMLElement;
-    const distance = second ? second.offsetLeft - first.offsetLeft : slider.clientWidth;
-    slider.scrollBy({ left: distance * direction, behavior: prefersReducedMotion() ? "instant" : "smooth" });
-  };
-
-  return (
+const Journal = () => (
   <section
     id="journal"
-    className="mpx-container mpx-section flex flex-col gap-14 border-t border-black/10 max-lg:gap-11 max-md:gap-11"
+    className="flex flex-col gap-[4.5vw] px-[5vw] py-[9vw] max-lg:gap-[8vw] max-lg:px-[4vw] max-lg:py-[12vw] max-md:gap-10 max-md:px-[5vw] max-md:py-[16vw]"
   >
-    <div className="flex flex-col gap-6 max-lg:gap-5">
-      <MaskReveal as="h2">Notes from the studio</MaskReveal>
-      <FadeUp className="flex w-[42%] flex-col items-start gap-6 max-lg:w-[70%] max-md:w-full">
-        <p className="text-28 text-mpx-muted">Opinions, process and the occasional confession.</p>
-      </FadeUp>
-      <FadeUp className="flex w-full items-center justify-between gap-5">
-        <PixelButton label="Read The Journal" href={ROUTES.journal} variant="outline" size="sm" />
-        <NavButtons
-          onPrev={() => slide(-1)}
-          onNext={() => slide(1)}
-          prevDisabled={edges.start}
-          nextDisabled={edges.end}
-          prevLabel="Previous journal post"
-          nextLabel="Next journal post"
-        />
-      </FadeUp>
+    <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] max-lg:grid-cols-1 max-lg:gap-y-4">
+      <MaskReveal
+        as="h2"
+        className="[.mpx-page_&]:text-[2.9vw] [.mpx-page_&]:tracking-[-0.1vw] max-lg:[.mpx-page_&]:text-[5vw] max-md:[.mpx-page_&]:text-[8vw]"
+      >
+        Notes from the studio
+      </MaskReveal>
+      <p className="w-[83%] text-[1vw] leading-[1.55] text-mpx-muted max-lg:w-[70%] max-lg:text-[2vw] max-md:w-full max-md:text-[3.6vw]">
+        Opinions, process and the occasional confession.
+      </p>
+      <UnderlineLink
+        href={ROUTES.journal}
+        className="font-mpx-head text-[1vw] font-medium text-mpx-ink max-lg:text-[2vw] max-md:text-[3.6vw]"
+      >
+        Read the journal
+      </UnderlineLink>
     </div>
-    <div
-      ref={sliderRef}
-      data-mpx-journal-slider
-      aria-label="Journal posts"
-      tabIndex={0}
-      onPointerDown={startDrag}
-      onPointerMove={moveDrag}
-      onPointerUp={endDrag}
-      onPointerCancel={endDrag}
-      onLostPointerCapture={endDrag}
-      onPointerLeave={(event) => {
-        if (!dragRef.current.moved) endDrag(event);
-      }}
-      onDragStart={(event) => event.preventDefault()}
-      onClickCapture={(event) => {
-        if (!dragRef.current.moved) return;
-        event.preventDefault();
-        event.stopPropagation();
-        dragRef.current.moved = false;
-      }}
-      className="relative flex cursor-grab select-none snap-x snap-mandatory gap-9 overflow-x-auto overscroll-x-contain max-lg:gap-6 max-md:gap-4"
-    >
+    <div className="grid grid-cols-3 gap-x-[3.3vw] gap-y-[5vw] max-lg:grid-cols-2 max-lg:gap-x-[4vw] max-lg:gap-y-[8vw] max-md:grid-cols-1 max-md:gap-y-12">
       {POSTS.map((post, index) => (
         <PostCard key={post.title} post={post} index={index} />
       ))}
     </div>
   </section>
-  );
-};
+);
 
 export default Journal;
 

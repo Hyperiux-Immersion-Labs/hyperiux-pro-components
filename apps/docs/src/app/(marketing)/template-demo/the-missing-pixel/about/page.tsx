@@ -95,7 +95,7 @@ const page = () => (
       <StatsRow columns={4} items={STATS} />
     </section>
 
-    <section id="team" className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section id="team" className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead
         title="The people you’ll actually meet"
         text="Everyone on your project is in the first meeting. Nobody hands you to a junior team after the pitch."
@@ -103,7 +103,7 @@ const page = () => (
       <TeamGrid />
     </section>
 
-    <section className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead title="Shelf space" text="Awards matter less than results. We keep these anyway." />
       <FadeUp>
         <ul className="flex flex-col border-b border-black/10">

@@ -148,7 +148,7 @@ const page = () => (
       </div>
     </section>
 
-    <section className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <section className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <SectionHead title="Keep reading">
         <PixelButton label="All Essays" href={ROUTES.journal} variant="outline" size="sm" />
       </SectionHead>

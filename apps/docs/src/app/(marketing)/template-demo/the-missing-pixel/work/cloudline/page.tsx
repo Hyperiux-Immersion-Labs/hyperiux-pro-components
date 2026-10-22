@@ -94,7 +94,7 @@ const page = () => (
         ]}
       />
     </section>
-    <div className="mpx-container flex flex-col gap-14 border-t border-black/10 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
+    <div className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
       <QuoteBlock
         quote="We came in with a formula and a feeling. They turned the feeling into a brand. People pick the bottle up just to find out what it feels like."
         name="Ama Owusu"

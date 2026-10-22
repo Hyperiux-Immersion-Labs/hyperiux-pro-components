@@ -46,13 +46,13 @@ Defined in `missing-pixel-styles.css` (`text-128`, `text-64`, `text-40`, `text-3
 
 | Variable | Value |
 |---|---|
-| `--mpx-accent` | `#e8473b` |
-| `--mpx-accent-deep` | `#c2291f` (defined, not used anywhere) |
+| `--mpx-accent` | `#ff5f00` |
+| `--mpx-accent-deep` | `#cc4a00` (defined, not used anywhere) |
 | `--mpx-ink` | `#0a0a0a` |
 | `--mpx-paper` | `#fafafa` |
 | `--mpx-muted` | `#5e5e5e` |
 | `--mpx-surface` | `#eeeeee` |
-| `--mpx-grad` | `linear-gradient(135deg, #ff9a76 0%, #f2604a 38%, #de3b3d 68%, #a91e3a 100%)` |
+| `--mpx-grad` | `linear-gradient(135deg, #ffb27a 0%, #ff7a2e 38%, #ff5f00 68%, #c24400 100%)` |
 
 ### Hex values written directly in components (21 distinct in the whole template)
 
@@ -60,19 +60,19 @@ Defined in `missing-pixel-styles.css` (`text-128`, `text-64`, `text-40`, `text-3
 |---|---|---|
 | `#0a0a0a` | Ink: text, dark panels, buttons | 82 |
 | `#f5f5f5` | Text and buttons on dark | 28 |
-| `#e8473b` | Brand red | 24 |
+| `#ff5f00` | Brand orange | 24 |
 | `#fafafa` | Page background, light buttons | 20 |
 | `#5e5e5e` | Muted text on light | 7 |
 | `#eeeeee` | Surface: chips, hover fills | 5 |
-| `#d8443a` | Form error red | 5 |
-| `#ff8a73` | Coral accent on dark (menu) | 4 |
+| `#cc4a00` | Form error red | 5 |
+| `#ff8a4d` | Light orange accent on dark (menu) | 4 |
 | `#0e0e0e` | Menu background | 4 |
 | `#9a9a9a` | Muted text on dark (menu labels) | 3 |
 | `#000` | Text-reveal mask only (not a visible colour) | 2 |
 | `#bdbdbd` | Muted pixels in the "How we find it" grid | 2 |
-| `#ff2a1f` | Live status dot | 2 |
-| `#c2291f` | Deep red (defined, unused) | 1 |
-| `#ff9a76`, `#f2604a`, `#de3b3d`, `#a91e3a` | Brand gradient stops | 1 each |
+| `#ff5f00` | Live status dot | 2 |
+| `#cc4a00` | Deep orange (defined, unused) | 1 |
+| `#ffb27a`, `#ff7a2e`, `#ff5f00`, `#c24400` | Brand gradient stops | 1 each |
 | `#ffffff`, `#fff` | White | 1 each |
 | `#0d0d0d` | Footer pixel field background | 1 |
 
@@ -92,10 +92,10 @@ Defined in `missing-pixel-styles.css` (`text-128`, `text-64`, `text-40`, `text-3
 | `bg-white/15` | Divider on dark | 2 |
 | `text-white/80`, `text-white/40`, `border-white/50`, `border-white/20` | One-offs on dark | 1 each |
 
-Other alpha colours: `#fafafa` at 90% (frosted header and sub-nav), `#ff8a73` at 60% (open-menu toggle border), and a few `rgba` values for button hover states.
+Other alpha colours: `#fafafa` at 90% (frosted header and sub-nav), `#ff8a4d` at 60% (open-menu toggle border), and a few `rgba` values for button hover states.
 
 ---
 
 ## Planned palette
 
-A consolidated palette has been proposed but is **not applied yet**. It maps the values above to named variables (`--mpx-ink`, `--mpx-paper`, `--mpx-on-dark`, `--mpx-card`, `--mpx-surface`, `--mpx-surface-strong`, `--mpx-muted`, `--mpx-muted-dark`, `--mpx-soft-dark`, `--mpx-accent`, `--mpx-accent-soft`, `--mpx-line`, `--mpx-line-mid`, `--mpx-line-strong`, `--mpx-line-dark`, `--mpx-line-dark-strong`, `--mpx-glass`, plus the four gradient stops), with the near-duplicate blacks merged into `#0a0a0a` and the two near-duplicate reds merged into `#e8473b`. Until that is applied, the tables above are the source of truth.
+A consolidated palette has been proposed but is **not applied yet**. It maps the values above to named variables (`--mpx-ink`, `--mpx-paper`, `--mpx-on-dark`, `--mpx-card`, `--mpx-surface`, `--mpx-surface-strong`, `--mpx-muted`, `--mpx-muted-dark`, `--mpx-soft-dark`, `--mpx-accent`, `--mpx-accent-soft`, `--mpx-line`, `--mpx-line-mid`, `--mpx-line-strong`, `--mpx-line-dark`, `--mpx-line-dark-strong`, `--mpx-glass`, plus the four gradient stops), with the near-duplicate blacks merged into `#0a0a0a` and the two near-duplicate reds merged into `#ff5f00`. Until that is applied, the tables above are the source of truth.

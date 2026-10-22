@@ -63,9 +63,9 @@ const REST_TEXT: Record<Tone, Record<Variant, string>> = {
 };
 
 const FILL_CLASSES: Record<Tone, Record<Variant, string>> = {
-  light: { primary: "bg-[#e8473b]", outline: "bg-[#0a0a0a]" },
-  dark: { primary: "bg-[#e8473b]", outline: "bg-[#f5f5f5]" },
-  media: { primary: "bg-[#e8473b]", outline: "bg-white" },
+  light: { primary: "bg-[#ff5f00]", outline: "bg-[#0a0a0a]" },
+  dark: { primary: "bg-[#ff5f00]", outline: "bg-[#f5f5f5]" },
+  media: { primary: "bg-[#ff5f00]", outline: "bg-white" },
 };
 
 const PixelButton = ({
