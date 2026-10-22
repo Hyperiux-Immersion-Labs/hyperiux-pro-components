@@ -12,7 +12,7 @@ const Facts = ({ items }: { items: Fact[] }) => (
     {items.map((item) => (
       <div key={item.label} className="flex flex-col gap-1">
         <dt className="text-14 text-mpx-muted">{item.label}</dt>
-        <dd className="font-mpx-head text-30 font-medium">{item.value}</dd>
+        <dd className="font-mpx-head text-22 font-medium">{item.value}</dd>
       </div>
     ))}
   </FadeUp>

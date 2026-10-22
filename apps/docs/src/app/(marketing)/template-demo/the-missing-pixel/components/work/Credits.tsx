@@ -11,7 +11,7 @@ const Credits = ({ items }: { items: { role: string; names: string }[] }) => (
           as="li"
           key={item.role}
           delay={(index % 3) * 0.08}
-          className="flex flex-col gap-1 border-t border-black/10 py-[1.2vw] text-28 max-lg:py-[2.4vw] max-md:py-[4vw]"
+          className="flex flex-col gap-1 border-t border-black/10 py-[1.2vw] text-28 leading-[1.3] max-lg:py-[2.4vw] max-md:py-[4vw]"
         >
           <span className="text-14 text-mpx-muted">{item.role}</span>
           {item.names}

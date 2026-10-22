@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import TestimonialSwiper from "../effects/testimonial-swiper/index";
-import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import cloudline from "../../assets/w-cloudline.webp";
 import northway from "../../assets/w-northway.webp";
 import drift from "../../assets/w-drift.webp";
@@ -20,9 +20,9 @@ const Testimonials = () => (
       >
         What clients say
       </MaskReveal>
-      <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
+      <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
         Six clients, in their own words, on what changed after we worked together.
-      </p>
+      </LineReveal>
     </div>
     <FadeUp>
       <TestimonialSwiper items={TESTIMONIALS} />

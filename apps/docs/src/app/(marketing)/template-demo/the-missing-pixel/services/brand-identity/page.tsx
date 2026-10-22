@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { pageMetadata } from "../../metadata";
 import { ROUTES } from "../../routes";
-import { FadeUp, MaskReveal } from "../../components/Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal } from "../../components/Animations/gsapAnim";
 import AnimatedFaq from "../../components/effects/animated-faq";
 import PixelButton from "../../components/Buttons/PixelButton";
 import { ArrowRight, Check } from "../../components/Buttons/icons";
@@ -14,7 +14,8 @@ import QuoteBlock from "../../components/shared/QuoteBlock";
 import SectionHead from "../../components/shared/SectionHead";
 import Split from "../../components/shared/Split";
 import SubNav from "../../components/services/SubNav";
-import { WorkListCard, type Project } from "../../components/work/WorkGrid";
+import { WorkListCard } from "../../components/work/WorkGrid";
+import type { Project } from "../../components/work/projects";
 import northway from "../../assets/w-northway.webp";
 import cloudline from "../../assets/w-cloudline.webp";
 import drift from "../../assets/w-drift.webp";
@@ -64,12 +65,12 @@ const page = () => (
     <section id="overview" className="mpx-container mpx-section flex flex-col gap-14 max-lg:gap-11">
       <FadeUp>
         <Split title="Overview">
-          <p className="text-28">
+          <LineReveal className="text-28">
             People judge your brand before they read a word. We make sure the first impression is the right one, and that it survives the second, third and hundredth.
-          </p>
-          <p className="text-28 text-mpx-muted">
+          </LineReveal>
+          <LineReveal className="text-28 text-mpx-muted">
             Every project starts with strategy, because no logo can rescue a muddled story. Once we know what you stand for, we design a system that says it everywhere, from a favicon to a trade-show stand.
-          </p>
+          </LineReveal>
           <CheckList items={OUTCOMES} />
         </Split>
       </FadeUp>
@@ -120,9 +121,9 @@ const page = () => (
             Our approach
           </MaskReveal>
           <FadeUp className="w-[32%] max-lg:w-[70%] max-md:w-full">
-            <p className="text-28 text-white/60">
+            <LineReveal className="text-28 text-white/60">
               Five phases. Each ends with a decision you sign off, so nothing moves forward on a maybe.
-            </p>
+            </LineReveal>
           </FadeUp>
         </div>
         <ol className="flex flex-col">
@@ -370,6 +371,7 @@ const WORK: Project[] = [
     cats: ["branding", "packaging"],
     image: cloudline,
     alt: "Model resting in soft pink clouds",
+    description: "",
   },
   {
     title: "Orbit Labs",
@@ -378,6 +380,7 @@ const WORK: Project[] = [
     cats: ["web", "branding"],
     image: drift,
     alt: "Mint camper van on a desert road",
+    description: "",
   },
 ];
 

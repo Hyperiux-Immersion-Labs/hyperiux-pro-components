@@ -8,7 +8,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MaskReveal } from "../Animations/gsapAnim";
+import { MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { ArrowUpRight } from "../Buttons/icons";
 import UnderlineLink from "../Buttons/UnderlineLink";
@@ -17,7 +17,7 @@ import cloudline from "../../assets/w-cloudline.webp";
 import kickflip from "../../assets/w-kickflip.webp";
 import northway from "../../assets/w-northway.webp";
 import drift from "../../assets/w-drift.webp";
-import { ROUTES } from "../../routes";
+import { ROUTES, workPath } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -44,7 +44,7 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
 
   return (
     <Link
-      href={ROUTES.caseStudy}
+      href={workPath(project.title)}
       data-cursor="View case"
       onMouseEnter={() => hover(true)}
       onMouseLeave={() => hover(false)}
@@ -193,9 +193,9 @@ const WorkScroll = () => {
           >
             Work we’d put on the fridge
           </MaskReveal>
-          <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] ] max-md:w-full ">
+          <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] ] max-md:w-full ">
             Keep scrolling. The work moves sideways, which is how good ideas tend to arrive.
-          </p>
+          </LineReveal>
           <UnderlineLink
             href={ROUTES.work}
             className="font-mpx-head text-24 font-medium text-mpx-ink  "

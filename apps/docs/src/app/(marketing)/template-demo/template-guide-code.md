@@ -163,7 +163,7 @@ not
 - **No one-sided spacing.** Don't use `pt-`, `pb-`, `pl-`, `pr-`, `mt-`, `mb-`, `ml-`, `mr-` (or any margin). Use:
   - `gap-*` on a flex/grid parent, or `space-y-*` / `space-x-*`, to space siblings;
   - `px-[..vw]` / `py-[..vw]` for padding, always symmetric;
-  - a spacer element inside a flex column when something needs extra room on one side, e.g. clearing a fixed header: `<div aria-hidden className="h-[8vh] max-lg:h-[7vh] max-md:h-[9vh]" />`.
+- **Never use a header-clearing spacer.** Do not add `<div aria-hidden className="h-[12vh] max-lg:h-[8vh] max-md:h-[9vh]" />` (or any empty `aria-hidden` div sized in `vh` to push content below the fixed header) in any page, hero or component. Get the room from the section's symmetric `py-*` and `gap-*` instead.
 - Uneven padding in a pill (a label on the left, an icon circle on the right): give the pill a small even `px`, and give the label its own `px` (see the menu button in `the-missing-pixel/components/Header.tsx`).
 - Hairlines between blocks: a `<div className="h-px w-full bg-black/10" />` inside a flex column instead of `border-t` + `pt`.
 - Section padding comes from the stylesheet classes (`mpx-container`, `mpx-section`), like `kyntra-container`.

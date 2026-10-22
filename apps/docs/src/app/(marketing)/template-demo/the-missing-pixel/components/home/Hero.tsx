@@ -7,7 +7,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { FadeUp, INTRO_DELAY, MaskReveal } from "../Animations/gsapAnim";
+import { FadeUp, INTRO_DELAY, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
 import StatusDot from "../shared/StatusDot";
@@ -91,20 +91,17 @@ const Hero = () => {
        
        
       
-        <FadeUp
-          delay={INTRO_DELAY + 0.75}
-          className="flex w-[46%] flex-col gap-[1.9vw] max-lg:w-[80%] max-lg:gap-7 max-md:gap-14 max-md:w-full"
-        >
-          <p className="w-[90%] text-28 leading-[1.5] text-mpx-ink max-lg:w-full">
+        <div className="flex w-[46%] flex-col gap-[1.9vw] max-lg:w-[80%] max-lg:gap-7 max-md:gap-14 max-md:w-full">
+          <LineReveal delay={INTRO_DELAY + 0.75} className="w-[90%] text-28 leading-[1.5] text-mpx-ink max-lg:w-full">
             The Missing Pixel is a brand and digital studio in Delhi, London,
             Dubai and New York. We obsess over the small thing that makes the
             big thing work.
-          </p>
-          <div className="flex flex-wrap max-md:flex-col  gap-3 max-md:gap-4">
+          </LineReveal>
+          <FadeUp delay={INTRO_DELAY + 0.75} className="flex flex-wrap max-md:flex-col  gap-3 max-md:gap-4">
             <PixelButton label="See The Work" href={ROUTES.work} icon />
             <PixelButton label="Start A Project" href={ROUTES.contact} variant="outline" />
-          </div>
-        </FadeUp>
+          </FadeUp>
+        </div>
       </div>
     </section>
   );

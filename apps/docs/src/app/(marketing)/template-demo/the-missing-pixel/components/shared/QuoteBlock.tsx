@@ -11,11 +11,11 @@ type QuoteBlockProps = {
 };
 
 const QuoteBlock = ({ quote, name, role, image }: QuoteBlockProps) => (
-  <FadeUp as="figure" className="flex w-[75%] flex-col gap-7 max-lg:w-full max-md:gap-6">
+  <FadeUp as="figure" className="flex w-[75%] pb-[4%] flex-col gap-7 max-lg:w-full max-md:gap-6">
     <blockquote data-cursor-fill className="font-mpx-head text-64 font-normal leading-[1.2] text-balance">
       <p>{quote}</p>
     </blockquote>
-    <figcaption className="flex items-center gap-4">
+    <figcaption className="flex items-center gap-4 pt-3">
       <div className="aspect-square h-[7vh] shrink-0 overflow-hidden rounded-full max-lg:h-[5vh] max-md:h-[8vh]">
         <Image src={image} alt="" sizes="6vw" className="h-full w-full object-cover" />
       </div>

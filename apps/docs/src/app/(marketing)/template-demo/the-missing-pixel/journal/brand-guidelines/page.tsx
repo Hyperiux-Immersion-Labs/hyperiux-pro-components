@@ -26,7 +26,6 @@ const page = () => (
   <>
     <ReadingProgress targetId="article-body" />
     <section className="mpx-container flex flex-col gap-11 py-[3vw] max-lg:gap-8 max-lg:py-[6vw] max-md:gap-9 max-md:py-[10vw]">
-      <div aria-hidden className="h-[12vh] max-lg:h-[8vh] max-md:h-[9vh]" />
       <Breadcrumb
         crumbs={[
           { label: "Home", href: ROUTES.home },

@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import { ROUTES } from "../../routes";
-import { FadeUp, MaskReveal, PAGE_DELAY } from "../Animations/gsapAnim";
+import { LineReveal, MaskReveal, PAGE_DELAY } from "../Animations/gsapAnim";
 import ParallaxImage from "../effects/parallax-image";
 import Breadcrumb from "../shared/Breadcrumb";
 import founder from "../../assets/founder.webp";
@@ -25,11 +25,9 @@ const AboutHero = () => (
           priority
           className="col-span-4 col-start-9 row-span-2 aspect-[4/5] self-start rounded-lg max-lg:col-span-12 max-lg:col-start-1 max-lg:row-auto max-lg:w-[56%] max-md:w-full"
         />
-        <FadeUp delay={PAGE_DELAY + 0.3} className="col-span-6 max-lg:col-span-12">
-          <p className="text-28 leading-[1.3] w-[90%] max-md:w-full">
+        <LineReveal delay={PAGE_DELAY + 0.3} className="col-span-6 max-lg:col-span-12 text-28 leading-[1.3] w-[90%] max-md:w-full">
             Founded in Delhi in 2014 on one hunch: small, senior teams make braver work than big agencies. Four cities and sixty people later, it still holds.
-          </p>
-        </FadeUp>
+          </LineReveal>
       </div>
     </section>
 

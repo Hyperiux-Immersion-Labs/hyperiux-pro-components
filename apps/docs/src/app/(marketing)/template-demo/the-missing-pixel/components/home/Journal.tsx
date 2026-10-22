@@ -7,7 +7,7 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
-import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import PixelReveal from "../effects/pixel-reveal";
 import cloudline from "../../assets/w-cloudline.webp";
@@ -92,9 +92,9 @@ const Journal = () => (
       >
         Notes from the studio
       </MaskReveal>
-      <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] max-md:w-full">
+      <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] max-md:w-full">
         Opinions, process and the occasional confession.
-      </p>
+      </LineReveal>
       <UnderlineLink
         href={ROUTES.journal}
         className="font-mpx-head text-24 font-medium text-mpx-ink"

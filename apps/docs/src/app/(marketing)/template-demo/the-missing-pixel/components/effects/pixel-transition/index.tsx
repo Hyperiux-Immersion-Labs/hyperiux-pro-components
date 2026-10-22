@@ -93,7 +93,7 @@ const PixelTransition = () => {
     const count = countRef.current;
     if (!root || !canvas || !label || !count) return;
 
-    if (prefersReducedMotion() || pathname === ROUTES.about) {
+    if (prefersReducedMotion() || pathname !== ROUTES.home) {
       gsap.set(root, { display: "none" });
       return;
     }
@@ -170,7 +170,10 @@ const PixelTransition = () => {
       coveringRef.current = true;
 
       const target = url.pathname + url.search + url.hash;
-      labelText.textContent = PAGE_NAMES[url.pathname] ?? "Loading";
+      const slug = url.pathname.startsWith(`${ROUTES.work}/`) ? url.pathname.split("/").pop() : undefined;
+      labelText.textContent =
+        PAGE_NAMES[url.pathname] ??
+        (slug ? slug.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ") : "Loading");
       gsap.set(root, { display: "block", backgroundColor: "transparent" });
       gsap.set(label, { opacity: 0 });
       playSound("leave");
@@ -211,7 +214,7 @@ const PixelTransition = () => {
         ref={rootRef}
         data-mpx-transition
         aria-hidden
-        className={`pointer-events-none fixed inset-0 z-150 bg-(--mpx-accent) ${pathname === ROUTES.about ? "hidden" : ""}`}
+        className={`pointer-events-none fixed inset-0 z-150 bg-(--mpx-accent) ${pathname !== ROUTES.home ? "hidden" : ""}`}
       >
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div

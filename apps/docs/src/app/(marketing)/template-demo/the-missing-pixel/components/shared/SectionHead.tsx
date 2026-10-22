@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import type { ReactNode } from "react";
-import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 
 type SectionHeadProps = {
   title: string;
@@ -20,10 +20,10 @@ const SectionHead = ({ title, text, stacked = false, children }: SectionHeadProp
       {title}
     </MaskReveal>
     {(text || children) && (
-      <FadeUp className="flex w-[32%] flex-col items-start gap-6 max-lg:w-[70%] max-md:w-full">
-        {text && <p className="text-28 leading-[1.3] text-mpx-muted">{text}</p>}
-        {children}
-      </FadeUp>
+      <div className="flex w-[32%] flex-col items-start gap-6 max-lg:w-[70%] max-md:w-full">
+        {text && <LineReveal className="text-28 leading-[1.3] text-mpx-muted">{text}</LineReveal>}
+        {children && <FadeUp>{children}</FadeUp>}
+      </div>
     )}
   </div>
 );

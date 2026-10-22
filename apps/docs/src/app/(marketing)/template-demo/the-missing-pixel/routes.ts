@@ -16,6 +16,11 @@ export const ROUTES = {
   notFound: `${BASE}/404`,
 };
 
+export const slugify = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export const workPath = (title: string) => `${ROUTES.work}/${slugify(title)}`;
+
 export const PAGE_NAMES: Record<string, string> = {
   [ROUTES.home]: "Missing Pixel",
   [ROUTES.work]: "Work",

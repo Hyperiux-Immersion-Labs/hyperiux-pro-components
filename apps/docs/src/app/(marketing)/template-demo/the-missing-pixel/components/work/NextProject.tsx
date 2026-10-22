@@ -8,10 +8,17 @@ import Link from "next/link";
 import gsap from "gsap";
 import { FadeUp } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
-import northway from "../../assets/w-northway.webp";
-import { ROUTES } from "../../routes";
+import PixelReveal from "../effects/pixel-reveal";
+import type { StaticImageData } from "next/image";
 
-const NextProject = () => {
+type NextProjectProps = {
+  title: string;
+  image: StaticImageData;
+  alt: string;
+  href: string;
+};
+
+const NextProject = ({ title, image, alt, href }: NextProjectProps) => {
   const titleRef = useRef<HTMLSpanElement | null>(null);
   const zoomRef = useRef<HTMLDivElement | null>(null);
 
@@ -24,23 +31,25 @@ const NextProject = () => {
   return (
     <FadeUp>
       <Link
-        href={ROUTES.caseStudy}
+        href={href}
         data-cursor="Next project"
         onMouseEnter={() => hover(true)}
         onMouseLeave={() => hover(false)}
         onFocus={() => hover(true)}
         onBlur={() => hover(false)}
-        className="flex items-center justify-between gap-9 border-t border-black/10 py-[4vw] max-lg:flex-col max-lg:items-start max-lg:gap-6 max-lg:py-[7vw] max-md:py-[10vw]"
+        className="flex flex-col gap-9 border-t border-black/10 py-[4vw] max-lg:gap-6 max-lg:py-[7vw] max-md:py-[10vw]"
       >
-        <span className="flex flex-col gap-4">
-          <span className="text-28 text-mpx-muted">Next project</span>
-          <span ref={titleRef} className="font-mpx-head text-128 font-medium leading-none">
-            {next.title}
+        <span className="text-24 leading-[1.3] text-mpx-muted">Next project</span>
+        <span className="flex items-center justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-6">
+          <span ref={titleRef} className="font-mpx-head text-64  leading-none">
+            {title}
           </span>
-        </span>
-        <span className="aspect-[4/3] w-[28%] overflow-hidden rounded-lg bg-mpx-surface max-lg:w-[60%] max-md:w-full">
-          <span ref={zoomRef} className="block h-full w-full">
-            <Image src={next.image} alt={next.alt} sizes="28vw" className="h-full w-full object-cover" />
+          <span className="aspect-[4/3] w-[28%] overflow-hidden rounded-lg max-lg:w-[60%] max-md:w-full">
+            <span ref={zoomRef} className="block h-full w-full">
+              <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
+                <Image src={image} alt={alt} sizes="28vw" className="h-full w-full object-cover" />
+              </PixelReveal>
+            </span>
           </span>
         </span>
       </Link>
@@ -49,9 +58,3 @@ const NextProject = () => {
 };
 
 export default NextProject;
-
-const next = {
-  title: "Northway Records",
-  image: northway,
-  alt: "Portrait lit by a huge orange sun",
-};

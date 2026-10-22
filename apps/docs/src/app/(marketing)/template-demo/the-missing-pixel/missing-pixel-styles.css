@@ -65,7 +65,11 @@
   letter-spacing: -0.4vw;
 }
 
-.mpx-page h2,
+.mpx-page h2 {
+  font-size: 4vw;
+  letter-spacing: -0.2vw;
+}
+
 .mpx-page .text-64 {
   font-size: 3.4vw;
   letter-spacing: -0.2vw;

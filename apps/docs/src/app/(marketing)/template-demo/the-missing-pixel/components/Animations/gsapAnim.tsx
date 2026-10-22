@@ -193,6 +193,68 @@ export function MaskReveal<T extends ElementType = "h2">({
   );
 }
 
+type LineRevealProps<T extends ElementType> = {
+  as?: T;
+  children?: ReactNode;
+  className?: string;
+  delay?: number;
+} & Omit<ComponentPropsWithoutRef<T>, "as" | "children" | "className">;
+
+export function LineReveal<T extends ElementType = "p">({
+  as,
+  children,
+  className = "",
+  delay = 0,
+  ...props
+}: LineRevealProps<T>) {
+  const Tag = (as ?? "p") as any;
+  const ref = useRef<HTMLElement | null>(null);
+
+  useGSAP(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (prefersReducedMotion()) {
+      gsap.set(el, { opacity: 1 });
+      return;
+    }
+
+    let split: SplitText | null = null;
+    let tween: gsap.core.Tween | null = null;
+
+    const stopWaiting = whenFontsReady(() => {
+      if (!ref.current) return;
+
+      split = SplitText.create(el, { type: "lines", mask: "lines", aria: "auto" });
+
+      gsap.set(el, { opacity: 1 });
+      gsap.set(split.lines, { yPercent: 110 });
+
+      tween = gsap.to(split.lines, {
+        yPercent: 0,
+        duration: 1.2,
+        stagger: 0.1,
+        delay,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 90%", once: true },
+      });
+    });
+
+    return () => {
+      stopWaiting();
+      tween?.scrollTrigger?.kill();
+      tween?.kill();
+      split?.revert();
+    };
+  }, []);
+
+  return (
+    <Tag ref={ref} className={`opacity-0 ${className}`.trim()} {...props}>
+      {children}
+    </Tag>
+  );
+}
+
 type MediaRevealProps = {
   children?: ReactNode;
   className?: string;
@@ -243,8 +305,8 @@ export function MediaReveal({
   );
 }
 
-const ODOMETER_CELL = "overflow-hidden leading-[1.1] h-[3.7vw] w-[2vw] max-lg:h-[5.1vw] max-lg:w-[2.8vw] max-md:h-[9.4vw] max-md:w-[5.1vw]";
-const ODOMETER_ROW = "leading-[1.1] h-[3.7vw] max-lg:h-[5.1vw] max-md:h-[9.4vw]";
+const ODOMETER_CELL = "overflow-hidden leading-[1.1] h-[3.7vw] w-[2vw] max-lg:h-[5.1vw] max-lg:w-[2.8vw] max-md:h-[11.6vw] max-md:w-[6.2vw]";
+const ODOMETER_ROW = "leading-[1.1] h-[3.7vw] max-lg:h-[5.1vw] max-md:h-[11.6vw]";
 
 type OdometerProps = {
   value: string;

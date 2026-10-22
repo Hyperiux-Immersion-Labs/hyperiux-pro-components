@@ -30,12 +30,12 @@ const FilterBar = ({ label, options, value, onChange, countText }: FilterBarProp
             }`}
           >
             {option.label}
-            {option.count !== undefined && <sup className="text-14 opacity-60">{option.count}</sup>}
+            {option.count !== undefined && <span className="text-[0.8vw] pl-2 opacity-60 max-md:text-[4vw]">{option.count}</span>}
           </button>
         );
       })}
     </div>
-    <p aria-live="polite" className="text-28 text-mpx-muted">
+    <p aria-live="polite" className="text-24 text-mpx-muted">
       {countText}
     </p>
   </div>

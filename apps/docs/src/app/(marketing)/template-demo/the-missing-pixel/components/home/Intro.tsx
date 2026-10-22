@@ -41,8 +41,8 @@ const Intro = () => (
           >
             <Odometer
               value={fact.value}
-              cellClassName="h-[4.4vw] w-[2vw] leading-[1.3] [clip-path:inset(0_-1em)] max-lg:h-[6vw] max-lg:w-[2.7vw] max-md:h-[11vw] max-md:w-[5vw]"
-              rowClassName="h-[4.4vw] leading-[1.3] max-lg:h-[6vw] max-md:h-[11vw]"
+              cellClassName="h-[4.4vw] w-[2vw] leading-[1.3] [clip-path:inset(0_-1em)] max-lg:h-[6vw] max-lg:w-[2.7vw] max-md:h-[13.7vw] max-md:w-[6.2vw]"
+              rowClassName="h-[4.4vw] leading-[1.3] max-lg:h-[6vw] max-md:h-[13.7vw]"
               className="font-mpx-head text-64 leading-none  "
             />
             <span className="text-24 leading-[1.45] text-mpx-muted">

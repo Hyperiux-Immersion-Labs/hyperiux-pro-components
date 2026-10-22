@@ -10,12 +10,8 @@ import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { useTilt } from "../Animations/useTilt";
 import FilterBar from "../shared/FilterBar";
 import ParallaxImage from "../effects/parallax-image";
-import type { StaticImageData } from "next/image";
-import cloudline from "../../assets/w-cloudline.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import northway from "../../assets/w-northway.webp";
-import drift from "../../assets/w-drift.webp";
-import { ROUTES } from "../../routes";
+import { workPath } from "../../routes";
+import { PROJECTS, type Project } from "./projects";
 
 const FILTERS = [
   { value: "all", label: "All" },
@@ -40,7 +36,7 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
   return (
     <Link
       ref={cardRef}
-      href={ROUTES.caseStudy}
+      href={workPath(project.title)}
       data-cursor="View case"
       onMouseEnter={() => hover(true)}
       onMouseLeave={() => hover(false)}
@@ -51,6 +47,7 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
       <div className="relative isolate overflow-hidden rounded-lg">
         <div ref={zoomRef} className="h-full w-full">
           <ParallaxImage
+            pixel
             image={project.image}
             alt={project.alt}
             sizes="(max-width: 768px) 90vw, 45vw"
@@ -60,15 +57,15 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
         <div
           ref={tintRef}
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
+          className="pointer-events-none  absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
         />
       </div>
-      <div className="flex justify-between gap-4">
+      <div className="flex justify-between gap-4 max-md:px-2">
         <div className="flex flex-col gap-1">
           <h3 className="text-30 tracking-tight">{project.title}</h3>
-          <p className="text-14 text-mpx-muted">{project.meta}</p>
+          <p className="text-14 max-md:text-[3.8vw]! text-mpx-muted">{project.meta}</p>
         </div>
-        <span className="text-14 text-mpx-muted">{project.year}</span>
+        <span className="text-14 max-md:text-[3.8vw]! text-mpx-muted">{project.year}</span>
       </div>
     </Link>
   );
@@ -87,7 +84,7 @@ const WorkGrid = () => {
   }));
 
   return (
-    <div className="flex flex-col gap-14 max-lg:gap-11">
+    <div className="flex flex-col gap-14 pb-[12%] max-lg:gap-11">
       <FilterBar
         label="Filter projects by discipline"
         options={options}
@@ -107,79 +104,3 @@ const WorkGrid = () => {
 };
 
 export default WorkGrid;
-
-export type Project = {
-  title: string;
-  meta: string;
-  year: string;
-  cats: string[];
-  image: StaticImageData;
-  alt: string;
-};
-
-const PROJECTS: Project[] = [
-  {
-    title: "Cloudline",
-    meta: "Identity, packaging, launch",
-    year: "2026",
-    cats: ["branding", "packaging"],
-    image: cloudline,
-    alt: "Model resting in soft pink clouds",
-  },
-  {
-    title: "Kickflip Supply",
-    meta: "Identity, e-commerce",
-    year: "2026",
-    cats: ["branding", "web"],
-    image: kickflip,
-    alt: "Skater mid-trick against a concrete wall",
-  },
-  {
-    title: "Northway Records",
-    meta: "Motion identity",
-    year: "2025",
-    cats: ["motion", "branding"],
-    image: northway,
-    alt: "Portrait lit by a huge orange sun",
-  },
-  {
-    title: "Drift Campers",
-    meta: "Website, booking platform",
-    year: "2025",
-    cats: ["web"],
-    image: drift,
-    alt: "Mint camper van on a desert road",
-  },
-  {
-    title: "Lumen Mobile",
-    meta: "Launch campaign, motion",
-    year: "2025",
-    cats: ["motion"],
-    image: cloudline,
-    alt: "Model resting in soft pink clouds",
-  },
-  {
-    title: "Bloom Hours",
-    meta: "Campaign, art direction",
-    year: "2024",
-    cats: ["branding"],
-    image: kickflip,
-    alt: "Skater mid-trick against a concrete wall",
-  },
-  {
-    title: "Fieldnote",
-    meta: "Editorial design, website",
-    year: "2024",
-    cats: ["web"],
-    image: northway,
-    alt: "Portrait lit by a huge orange sun",
-  },
-  {
-    title: "Orbit Labs",
-    meta: "Brand system, website",
-    year: "2024",
-    cats: ["web", "branding"],
-    image: drift,
-    alt: "Mint camper van on a desert road",
-  },
-];

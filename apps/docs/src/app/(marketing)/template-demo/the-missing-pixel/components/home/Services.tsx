@@ -7,7 +7,7 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { MaskReveal } from "../Animations/gsapAnim";
+import { MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import cloudline from "../../assets/w-cloudline.webp";
@@ -228,9 +228,9 @@ const Services = () => {
         >
           What we’re good at
         </MaskReveal>
-        <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
+        <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
           Six disciplines, one team, no hand-offs. Strategy, design and code share a table, so nothing gets lost in translation.
-        </p>
+        </LineReveal>
         <UnderlineLink
           href={ROUTES.services}
           className="font-mpx-head text-24 font-medium text-mpx-ink "

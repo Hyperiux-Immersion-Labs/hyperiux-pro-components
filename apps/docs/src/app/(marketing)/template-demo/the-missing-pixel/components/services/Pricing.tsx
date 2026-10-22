@@ -5,7 +5,7 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { FadeUp } from "../Animations/gsapAnim";
+import { FadeUp, LineReveal } from "../Animations/gsapAnim";
 import Tilt from "../Animations/Tilt";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
@@ -48,9 +48,9 @@ const Pricing = () => {
       <div className="flex items-end justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-6">
         <div className="flex w-[50%] flex-col gap-4 max-lg:w-full">
           <h2>Pricing</h2>
-          <p className="text-28 text-mpx-muted">
+          <LineReveal className="text-28 text-mpx-muted">
             Published, fixed, agreed before we start. Pay per project or spread it over a retainer.
-          </p>
+          </LineReveal>
         </div>
         <div
           role="group"
