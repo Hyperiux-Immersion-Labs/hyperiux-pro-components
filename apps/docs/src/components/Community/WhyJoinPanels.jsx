@@ -412,7 +412,7 @@ export function FeaturedCard({ joined }) {
       <div className="relative flex aspect-[4/5] w-[78%] max-w-[calc(var(--cvw)*29)] flex-col justify-end gap-[calc(var(--cvw)*0.7)] overflow-hidden bg-black/20 p-[calc(var(--cvw)*1.8)] border-beam backdrop-blur-lg max-md:max-w-none max-md:gap-[2.5vw] max-md:p-[6.6vw] after:absolute after:-top-[30%] after:-right-[30%] after:aspect-square after:w-4/5 after:bg-[radial-gradient(circle,color-mix(in_srgb,var(--primary)_45%,transparent),transparent_65%)] after:content-['']">
         <p className={`${LABEL} relative text-primary-hover`}>Featured on Vault · this week</p>
         <p className="type-h2 relative text-foreground"><span className="block">Your work</span><span className="block">could be here.</span></p>
-        <p className={`${LABEL} relative text-foreground/80`}>by <span className="text-foreground">{joined ? "you, founding member" : "you"}</span></p>
+        <p className={`${LABEL} relative text-foreground/80`}>by <span className="text-foreground">{joined ? "You, founding member" : "You"}</span></p>
       </div>
     </div>
   );
