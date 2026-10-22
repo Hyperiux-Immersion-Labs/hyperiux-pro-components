@@ -1101,7 +1101,7 @@ html[data-sidebar-animate] [data-vault-sidebar-toggle] { transition: left 0.3s e
 @media (hover: none) and (pointer: coarse) {
   .touch-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #f16b0d transparent;
+    scrollbar-color: var(--primary) transparent;
   }
   .touch-scrollbar::-webkit-scrollbar {
     display: block;
@@ -1111,6 +1111,6 @@ html[data-sidebar-animate] [data-vault-sidebar-toggle] { transition: left 0.3s e
     background: color-mix(in srgb, currentColor 12%, transparent);
   }
   .touch-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(to right, #e61216 0%, #f16b0d 100%);
+    background: var(--primary);
   }
 }
