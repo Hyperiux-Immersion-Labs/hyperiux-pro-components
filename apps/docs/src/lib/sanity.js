@@ -36,6 +36,11 @@ function getSanityClient() {
     apiVersion: API_VERSION,
     useCdn: false,
     token: process.env.SANITY_API_TOKEN,
+    // Published content only. With a token and this API version the default is the
+    // "raw" perspective, which also returns drafts (and release versions) - so any
+    // query without a !(_id in path("drafts.**")) filter put unpublished edits on the
+    // live site.
+    perspective: 'published',
   })
 }
 
