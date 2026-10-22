@@ -1,0 +1,11 @@
+{
+  "slug": "animated-form-fields",
+  "exportName": "AnimatedForm",
+  "main": "components/ui/field.tsx",
+  "demos": [
+    "app/components/(default)/form/form-demo.tsx"
+  ],
+  "demoFn": "HpxFormDemo",
+  "title": "Animated Form Fields",
+  "subtitle": "Labels, hints and errors that hold a form's inputs together."
+}

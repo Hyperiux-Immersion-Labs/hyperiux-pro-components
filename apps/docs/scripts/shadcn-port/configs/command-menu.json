@@ -1,0 +1,11 @@
+{
+  "slug": "animated-command-menu",
+  "exportName": "AnimatedCommand",
+  "main": "components/ui/command.tsx",
+  "demos": [
+    "app/components/(default)/command/command-demo.tsx"
+  ],
+  "demoFn": "HpxCommandDemo",
+  "title": "Animated Command Menu",
+  "subtitle": "A searchable list of commands, opened with a shortcut."
+}

@@ -1,0 +1,11 @@
+{
+  "slug": "animated-tabs-bar",
+  "exportName": "AnimatedTabsBar",
+  "main": "components/ui/tabs.tsx",
+  "demos": [
+    "app/components/(default)/tabs/tabs-demo.tsx"
+  ],
+  "demoFn": "HpxTabsDemo",
+  "title": "Animated Tabs Bar",
+  "subtitle": "Switch between views; the highlight glides to the active tab."
+}

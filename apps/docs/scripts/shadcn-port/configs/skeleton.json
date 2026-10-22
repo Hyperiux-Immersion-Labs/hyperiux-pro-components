@@ -1,0 +1,11 @@
+{
+  "slug": "animated-skeleton",
+  "exportName": "AnimatedSkeleton",
+  "main": "components/ui/skeleton.tsx",
+  "demos": [
+    "app/components/(default)/skeleton/skeleton-demo.tsx"
+  ],
+  "demoFn": "HpxSkeletonDemo",
+  "title": "Animated Skeleton",
+  "subtitle": "Placeholders that shimmer while content loads."
+}

@@ -1,0 +1,11 @@
+{
+  "slug": "animated-questionnaire",
+  "exportName": "AnimatedQuestionnaire",
+  "main": "components/ui/questionnaire.tsx",
+  "demos": [
+    "app/components/(default)/questionnaire/questionnaire-demo.tsx"
+  ],
+  "demoFn": "HpxQuestionnaireDemo",
+  "title": "Animated Questionnaire",
+  "subtitle": "A step-by-step set of questions with progress."
+}

@@ -1,0 +1,21 @@
+{
+  "slug": "animated-date-picker",
+  "exportName": "AnimatedDatePicker",
+  "main": "components/ui/date-picker.tsx",
+  "deps": [
+    "hooks/use-prefers-reduced-motion.ts",
+    "components/animated-icons/calendar-range-icon.tsx",
+    "components/ui/button.tsx",
+    "components/ui/popover.tsx",
+    "components/ui/select.tsx",
+    "components/ui/calendar.tsx"
+  ],
+  "demos": [
+    "app/components/(default)/date-picker/page.tsx"
+  ],
+  "demoFn": "DatePickerPage",
+  "title": "Animated Date Picker",
+  "subtitle": "A button that opens a calendar to pick a single date.",
+  "panelClass": "flex min-h-[70vh] items-start justify-center p-[3vw] max-md:p-[5vw]",
+  "schemaPrelude": "var { format } = require(\"date-fns\");"
+}

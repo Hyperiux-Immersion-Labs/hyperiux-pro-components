@@ -1,0 +1,11 @@
+{
+  "slug": "animated-menubar",
+  "exportName": "AnimatedMenubar",
+  "main": "components/ui/menubar.tsx",
+  "demos": [
+    "app/components/(default)/menubar/menubar-demo.tsx"
+  ],
+  "demoFn": "HpxMenubarDemo",
+  "title": "Animated Menubar",
+  "subtitle": "A row of menus, like an app's File and Edit menus."
+}

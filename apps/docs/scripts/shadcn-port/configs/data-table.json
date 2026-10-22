@@ -1,0 +1,18 @@
+{
+  "slug": "animated-data-table",
+  "exportName": "AnimatedDataTable",
+  "main": "components/ui/data-table.tsx",
+  "deps": [
+    "lib/stagger-in.ts",
+    "components/ui/button.tsx",
+    "components/ui/skeleton.tsx",
+    "components/ui/dropdown-menu.tsx"
+  ],
+  "demos": [
+    "app/components/(default)/table/page.tsx"
+  ],
+  "demoFn": "TablePage",
+  "title": "Animated Data Table",
+  "subtitle": "Sort, filter, select and reorder rows that glide into place.",
+  "width": "w-[80vw] max-md:w-full"
+}

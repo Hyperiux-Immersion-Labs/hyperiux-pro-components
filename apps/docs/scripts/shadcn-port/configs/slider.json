@@ -1,0 +1,11 @@
+{
+  "slug": "animated-slider",
+  "exportName": "AnimatedSlider",
+  "main": "components/ui/slider.tsx",
+  "demos": [
+    "app/components/(default)/slider/slider-demo.tsx"
+  ],
+  "demoFn": "HpxSliderDemo",
+  "title": "Animated Slider",
+  "subtitle": "Drag a thumb to pick a value or a range."
+}

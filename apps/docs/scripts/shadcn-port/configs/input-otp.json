@@ -1,0 +1,11 @@
+{
+  "slug": "animated-input-otp",
+  "exportName": "AnimatedInputOtp",
+  "main": "components/ui/input-otp.tsx",
+  "demos": [
+    "app/components/(default)/input-otp/input-otp-demo.tsx"
+  ],
+  "demoFn": "HpxInputOTPDemo",
+  "title": "Animated Input OTP",
+  "subtitle": "One-time code boxes that fill, shake and confirm."
+}

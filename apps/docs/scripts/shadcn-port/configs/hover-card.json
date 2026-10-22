@@ -1,0 +1,21 @@
+{
+  "slug": "animated-hover-card",
+  "exportName": "AnimatedHoverCard",
+  "main": "components/ui/hover-card.tsx",
+  "demos": [
+    "app/components/(default)/hover-card/hover-card-demo.tsx"
+  ],
+  "demoFn": "HpxHoverCardDemo",
+  "title": "Animated Hover Card",
+  "subtitle": "A preview that appears when you hover a link.",
+  "patches": [
+    [
+      "      : fetch(`/api/link-preview?url=${encodeURIComponent(url)}`, { signal: controller.signal }).then(\n          async (response) => {\n            const body = await response.json()\n            if (!response.ok) throw new Error(body.error ?? \"Could not load that link\")\n            previewCache.set(url, body)\n            return body as LinkPreview\n          }\n        )",
+      "      : loadPreview(url).then((body) => {\n          previewCache.set(url, body)\n          return body\n        })"
+    ],
+    [
+      "const previewCache = new Map<string, LinkPreview>()",
+      "const previewCache = new Map<string, LinkPreview>()\n\nconst SAMPLE_PREVIEWS: Record<string, Pick<LinkPreview, \"title\" | \"description\" | \"siteName\">> = {\n  \"vault.hyperiux.com\": { title: \"Hyperiux Vault\", description: \"Animated components and effects, ready to install.\", siteName: \"Hyperiux\" },\n  \"nextjs.org\": { title: \"Next.js\", description: \"The React framework for the web.\", siteName: \"Next.js\" },\n  \"react.dev\": { title: \"React\", description: \"The library for web and native user interfaces.\", siteName: \"React\" },\n  \"tailwindcss.com\": { title: \"Tailwind CSS\", description: \"Rapidly build modern websites without ever leaving your HTML.\", siteName: \"Tailwind CSS\" },\n  \"github.com\": { title: \"GitHub\", description: \"Where the world builds software.\", siteName: \"GitHub\" },\n  \"wikipedia.org\": { title: \"Wikipedia\", description: \"The free encyclopedia.\", siteName: \"Wikipedia\" },\n  \"motion.dev\": { title: \"Motion\", description: \"A modern animation library for JavaScript and React.\", siteName: \"Motion\" },\n}\n\n// Swap for a fetch to your own preview endpoint\nfunction loadPreview(url: string): Promise<LinkPreview> {\n  const hostname = new URL(url).hostname.replace(/^www\\./, \"\")\n  const sample = SAMPLE_PREVIEWS[hostname]\n  return new Promise((resolve) =>\n    setTimeout(() =>\n      resolve({\n        url,\n        hostname,\n        title: sample?.title ?? hostname,\n        description: sample?.description ?? null,\n        siteName: sample?.siteName ?? null,\n        image: null,\n        favicon: null,\n      }), 400)\n  )\n}"
+    ]
+  ]
+}

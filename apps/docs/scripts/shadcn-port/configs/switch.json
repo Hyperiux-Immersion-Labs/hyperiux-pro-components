@@ -1,0 +1,11 @@
+{
+  "slug": "animated-switch",
+  "exportName": "AnimatedSwitch",
+  "main": "components/ui/switch.tsx",
+  "demos": [
+    "app/components/(default)/switch/switch-demo.tsx"
+  ],
+  "demoFn": "HpxSwitchDemo",
+  "title": "Animated Switch",
+  "subtitle": "A toggle between on and off."
+}

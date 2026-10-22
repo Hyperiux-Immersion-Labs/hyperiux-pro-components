@@ -1,0 +1,11 @@
+{
+  "slug": "animated-dialog",
+  "exportName": "AnimatedDialog",
+  "main": "components/ui/dialog.tsx",
+  "demos": [
+    "app/components/(default)/dialog/dialog-demo.tsx"
+  ],
+  "demoFn": "HpxDialogDemo",
+  "title": "Animated Dialog",
+  "subtitle": "A window over the page that asks for a decision before you carry on."
+}

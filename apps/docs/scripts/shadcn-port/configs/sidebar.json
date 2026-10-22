@@ -1,0 +1,63 @@
+{
+  "slug": "animated-sidebar",
+  "exportName": "AnimatedSidebar",
+  "main": "components/ui/sidebar.tsx",
+  "deps": [
+    "hooks/use-mobile.ts",
+    "lib/stagger-in.ts",
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/separator.tsx",
+    "components/ui/skeleton.tsx",
+    "components/ui/tooltip.tsx",
+    "components/ui/sheet.tsx",
+    "components/ui/popover.tsx",
+    "components/ui/dropdown-menu.tsx",
+    "components/animated-icons/calendar-icon.tsx",
+    "components/animated-icons/coffee-icon.tsx",
+    "components/animated-icons/droplets-icon.tsx",
+    "components/animated-icons/folder-icon.tsx",
+    "components/animated-icons/house-icon.tsx",
+    "components/animated-icons/inbox-icon.tsx",
+    "components/animated-icons/search-icon.tsx",
+    "components/animated-icons/settings-icon.tsx",
+    "components/animated-icons/utensils-icon.tsx"
+  ],
+  "demos": [
+    "app/components/sidebar/sidebar-shell.tsx",
+    "app/components/sidebar/page-content.tsx",
+    "app/components/sidebar/receive-message.tsx"
+  ],
+  "demoFn": "SidebarDemo",
+  "extraDemo": "function SidebarDemo(props: Partial<ControlValues>) {\n  return (\n    <HpxSidebarShell {...props}>\n      <HpxPageContent />\n    </HpxSidebarShell>\n  )\n}",
+  "patches": [
+    [
+      "function SidebarShell({ children }: { children: React.ReactNode }) {",
+      "function SidebarShell({ children, ...props }: { children: React.ReactNode } & Partial<ControlValues>) {"
+    ],
+    [
+      "<Link href=\"/\"",
+      "<a href=\"#\""
+    ],
+    [
+      "</Link>",
+      "</a>"
+    ],
+    [
+      "className=\"min-h-[calc(100svh-3.5rem)]\"",
+      "className=\"h-full min-h-0\""
+    ],
+    [
+      "fixed inset-y-0 z-10 hidden h-svh",
+      "fixed inset-y-0 z-10 hidden h-full"
+    ],
+    [
+      "sticky top-14 z-10",
+      "sticky top-0 z-10"
+    ]
+  ],
+  "title": "Animated Sidebar",
+  "subtitle": "A collapsible side navigation with groups, badges and sub-menus.",
+  "width": "w-[90vw] max-md:w-full",
+  "panelClass": "h-[85vh] overflow-hidden [transform:translateZ(0)] p-0"
+}

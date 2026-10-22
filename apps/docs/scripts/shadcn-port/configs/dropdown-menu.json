@@ -1,0 +1,15 @@
+{
+  "slug": "animated-dropdown-menu",
+  "exportName": "AnimatedDropdownMenu",
+  "main": "components/ui/dropdown-menu.tsx",
+  "deps": [
+    "components/ui/button.tsx"
+  ],
+  "demos": [
+    "app/components/(default)/dropdown-menu/page.tsx"
+  ],
+  "demoFn": "DropdownMenuPage",
+  "title": "Animated Dropdown Menu",
+  "subtitle": "A menu of actions or options that opens from a button.",
+  "panelClass": "flex min-h-[60vh] items-start justify-center p-[3vw] max-md:p-[5vw]"
+}

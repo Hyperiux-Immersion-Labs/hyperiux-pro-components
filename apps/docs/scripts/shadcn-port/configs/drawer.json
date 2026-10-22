@@ -1,0 +1,11 @@
+{
+  "slug": "animated-drawer",
+  "exportName": "AnimatedDrawer",
+  "main": "components/ui/drawer.tsx",
+  "demos": [
+    "app/components/(default)/drawer/drawer-demo.tsx"
+  ],
+  "demoFn": "HpxDrawerDemo",
+  "title": "Animated Drawer",
+  "subtitle": "A panel that slides in from the edge and can be swiped away."
+}

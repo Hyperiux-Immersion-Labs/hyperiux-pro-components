@@ -1,0 +1,14 @@
+{
+  "slug": "animated-toast",
+  "exportName": "AnimatedToast",
+  "main": "components/ui/toast.tsx",
+  "deps": [
+    "components/ui/button.tsx"
+  ],
+  "demos": [
+    "app/components/(default)/toast/page.tsx"
+  ],
+  "demoFn": "ToastPage",
+  "title": "Animated Toast",
+  "subtitle": "Brief messages that stack in the corner and can be swiped away."
+}

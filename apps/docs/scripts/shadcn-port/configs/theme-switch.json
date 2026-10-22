@@ -1,0 +1,12 @@
+{
+  "slug": "animated-theme-switch",
+  "exportName": "AnimatedThemeSwitch",
+  "main": "components/ui/theme-switch.tsx",
+  "demos": [
+    "app/components/(default)/theme-switch/theme-switch-demo.tsx"
+  ],
+  "demoFn": "HpxThemeSwitchDemo",
+  "title": "Animated Theme Switch",
+  "subtitle": "Switch between light and dark with a transition.",
+  "panelClass": "flex min-h-[40vh] items-center justify-center rounded-2xl bg-(--hx-background) p-[3vw] transition-colors duration-500"
+}

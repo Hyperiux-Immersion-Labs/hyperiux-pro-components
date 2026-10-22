@@ -1,0 +1,11 @@
+{
+  "slug": "animated-tooltip",
+  "exportName": "AnimatedTooltip",
+  "main": "components/ui/floating-tooltip.tsx",
+  "demos": [
+    "app/components/(default)/tooltip/tooltip-demo.tsx"
+  ],
+  "demoFn": "HpxTooltipDemo",
+  "title": "Animated Tooltip",
+  "subtitle": "A label that follows the pointer or appears on hover."
+}
