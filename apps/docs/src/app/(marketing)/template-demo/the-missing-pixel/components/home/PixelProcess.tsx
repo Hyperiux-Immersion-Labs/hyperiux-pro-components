@@ -200,10 +200,10 @@ const PixelProcess = () => {
       aria-label="How we work"
       className="relative h-[400vh] overflow-clip max-lg:h-auto"
     >
-      <div className="sticky top-0 flex h-screen pl-[5vw] max-lg:px-[4vw] max-md:px-[5vw] items-center justify-between gap-9 max-lg:relative max-lg:h-auto max-lg:flex-col-reverse max-lg:items-start max-lg:gap-14 max-lg:py-[11vw] max-md:gap-10 max-md:py-[20vw]">
-        <div className="flex w-[42%] flex-col gap-9 max-lg:w-full max-lg:gap-10 max-md:gap-8">
+      <div className="sticky top-0 flex h-screen pl-[5vw] max-lg:px-[6vw] max-md:px-[7vw] items-center justify-between gap-9 max-lg:relative max-lg:h-auto max-lg:flex-col-reverse max-lg:items-start max-lg:gap-14 max-lg:py-[12%] max-md:gap-10 max-md:py-[15%]">
+        <div className="flex w-[42%] flex-col gap-9 max-lg:w-full max-lg:gap-10 max-md:gap-18">
           <h2>How we find it</h2>
-          <div className="grid max-lg:gap-10 max-md:gap-8">
+          <div className="grid max-lg:gap-10 max-md:gap-12">
             {STEPS.map((step, index) => (
               <div
                 key={step.title}
@@ -212,12 +212,12 @@ const PixelProcess = () => {
                   index === 0 ? "" : "opacity-0 max-lg:opacity-100"
                 }`}
               >
-                <span className="text-14 tabular-nums text-mpx-muted">
+                <span className="text-14 tabular-nums max-md:hidden text-mpx-muted">
                   {String(index + 1).padStart(2, "0")} / {String(STEPS.length).padStart(2, "0")}
                 </span>
-                <h3 className="text-30 leading-none">{step.title}</h3>
-                <p className="text-28 leading-[1.5] text-mpx-muted">{step.text}</p>
-                <span className="text-14 text-mpx-ink">{step.time}</span>
+                <h3 className="text-30 max-md:text-[6vw]! leading-none">{step.title}</h3>
+                <p className="text-28 leading-[1.5] max-md:leading-[1.3] text-mpx-muted">{step.text}</p>
+                <span className="text-14 max-md:pt-2 max-md:text-[4vw]! text-mpx-ink">{step.time}</span>
               </div>
             ))}
           </div>
@@ -233,7 +233,7 @@ const PixelProcess = () => {
                 <span
                   key={index}
                   data-px-missing
-                  className="rounded-xs bg-[#ff5f00] will-change-transform"
+                  className="rounded-xs bg-(--mpx-accent) will-change-transform"
                 />
               ) : (
                 <span
@@ -244,7 +244,7 @@ const PixelProcess = () => {
                   <span
                     data-px-hover
                     className={`block h-full w-full rounded-xs will-change-transform ${
-                      (index + 1) % 17 === 0 ? "bg-[#ff5f00]" : "bg-[#0a0a0a]"
+                      (index + 1) % 17 === 0 ? "bg-(--mpx-accent)" : "bg-[#0a0a0a]"
                     }`}
                   />
                 </span>

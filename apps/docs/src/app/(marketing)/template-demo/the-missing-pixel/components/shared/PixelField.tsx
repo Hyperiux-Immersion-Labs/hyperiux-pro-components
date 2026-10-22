@@ -142,11 +142,16 @@ const PixelField = () => {
       }
       if (!ink.length) return;
 
-      const target = { x: width * 0.64, y: centreY + fontSize * 0.45 };
+      const secondLine = lines[1];
+      const letterIndex = secondLine.indexOf("pixel");
+      const lineLeft = width / 2 - ctx.measureText(secondLine).width / 2;
+      const glyphWidth = ctx.measureText("p").width;
+      const dotX = lineLeft + ctx.measureText(secondLine.slice(0, letterIndex)).width + glyphWidth / 2;
+      const dotY = centreY + fontSize * 0.45;
       let best = 0;
       let bestDistance = Infinity;
       ink.forEach(([x, y], index) => {
-        const distance = Math.hypot(x - target.x, y - target.y);
+        const distance = Math.hypot(x - dotX, y - dotY);
         if (distance < bestDistance) {
           bestDistance = distance;
           best = index;

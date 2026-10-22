@@ -24,7 +24,7 @@ export const H3 = ({ children }: { children: ReactNode }) => (
 );
 
 export const Quote = ({ children }: { children: ReactNode }) => (
-  <FadeUp as="blockquote" className="font-mpx-head border-l-2 border-[#ff5f00] px-[2vw] text-40 font-medium leading-[1.2] max-lg:px-[4vw] max-md:px-[5vw]">
+  <FadeUp as="blockquote" className="font-mpx-head border-l-2 border-(--mpx-accent) px-[2vw] text-40 font-medium leading-[1.2] max-lg:px-[4vw] max-md:px-[5vw]">
     {children}
   </FadeUp>
 );
@@ -33,7 +33,7 @@ export const Bullets = ({ items }: { items: { lead: string; text: string }[] }) 
   <FadeUp as="ul" className="flex flex-col gap-3">
     {items.map((item) => (
       <li key={item.lead} className="flex items-start gap-3 text-28">
-        <span aria-hidden className="mt-[0.9vh] aspect-square h-[1vh] shrink-0 rounded-full bg-[#ff5f00] max-md:mt-[1.2vh]" />
+        <span aria-hidden className="mt-[0.9vh] aspect-square h-[1vh] shrink-0 rounded-full bg-(--mpx-accent) max-md:mt-[1.2vh]" />
         <span>
           <strong className="font-medium">{item.lead}</strong> <span className="text-mpx-muted">{item.text}</span>
         </span>

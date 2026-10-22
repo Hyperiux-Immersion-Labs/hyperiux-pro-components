@@ -211,7 +211,7 @@ const PixelTransition = () => {
         ref={rootRef}
         data-mpx-transition
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-150 bg-[#ff5f00]"
+        className="pointer-events-none fixed inset-0 z-150 bg-(--mpx-accent)"
       >
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div

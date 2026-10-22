@@ -157,7 +157,7 @@ const Header = () => {
           solid ? "border-black/10 bg-[#fafafa]" : "border-transparent bg-transparent"
         } ${menuOpen ? "text-[#f5f5f5]" : "text-[#0a0a0a]"}`}
       >
-        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[4.6vh] max-lg:px-[4vw] max-md:h-[7.4vh] max-md:px-[5vw]">
+        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[4.6vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
           <Link
             href={ROUTES.home}
             onClick={handleLogo}

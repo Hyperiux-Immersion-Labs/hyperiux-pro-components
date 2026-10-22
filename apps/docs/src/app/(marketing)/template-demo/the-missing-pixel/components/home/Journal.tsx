@@ -53,7 +53,7 @@ function PostCard({ post, index }: PostCardProps) {
       <PixelReveal
         gridSize={26}
         edgeHeight={0.4}
-        direction="up"
+        direction="down"
         className="aspect-7/5 w-full rounded-[1.4vw] max-lg:rounded-[2.5vw] max-md:rounded-[4vw]"
       >
         <div ref={zoomRef} className="h-full w-full">
@@ -66,14 +66,14 @@ function PostCard({ post, index }: PostCardProps) {
         </div>
       </PixelReveal>
       <FadeUp delay={0.2 + (index % 3) * 0.1} className="flex flex-col gap-[1.2vw] max-lg:gap-[2vw] max-md:gap-4">
-        <div className="flex gap-[1vw] text-[1vw] text-mpx-muted max-lg:gap-4 max-lg:text-[2vw] max-md:text-[3.4vw]">
+        <div className="flex gap-[1vw] text-22 text-mpx-muted max-lg:gap-4 max-md:justify-between max-md:px-2">
           <span>{post.category}</span>
           <time dateTime={post.dateTime}>{post.date}</time>
         </div>
-        <h3 className="text-[1.75vw] leading-[1.2] tracking-tight max-lg:text-[3.2vw] max-md:text-[5.6vw]">
+        <h3 className="text-30 max-md:px-2 leading-[1.2] tracking-tight">
           {post.title}
         </h3>
-        <p className="text-[1vw] leading-[1.5] text-mpx-muted max-lg:text-[2vw] max-md:text-[3.6vw]">
+        <p className="text-22 max-md:px-2 leading-[1.2] text-mpx-muted">
           {post.excerpt}
         </p>
       </FadeUp>
@@ -84,21 +84,20 @@ function PostCard({ post, index }: PostCardProps) {
 const Journal = () => (
   <section
     id="journal"
-    className="flex flex-col gap-[4.5vw] px-[5vw] py-[9vw] max-lg:gap-[8vw] max-lg:px-[4vw] max-lg:py-[12vw] max-md:gap-10 max-md:px-[5vw] max-md:py-[16vw]"
+    className="flex flex-col gap-[6vw] px-[5vw] py-[7%] max-lg:gap-[10vw] max-lg:px-[6vw] max-lg:py-[12%] max-md:gap-14 max-md:px-[7vw] max-md:py-[15%]"
   >
     <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] max-lg:grid-cols-1 max-lg:gap-y-4">
       <MaskReveal
         as="h2"
-        className="[.mpx-page_&]:text-[2.9vw] [.mpx-page_&]:tracking-[-0.1vw] max-lg:[.mpx-page_&]:text-[5vw] max-md:[.mpx-page_&]:text-[8vw]"
       >
         Notes from the studio
       </MaskReveal>
-      <p className="w-[83%] text-[1vw] leading-[1.55] text-mpx-muted max-lg:w-[70%] max-lg:text-[2vw] max-md:w-full max-md:text-[3.6vw]">
+      <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] max-md:w-full">
         Opinions, process and the occasional confession.
       </p>
       <UnderlineLink
         href={ROUTES.journal}
-        className="font-mpx-head text-[1vw] font-medium text-mpx-ink max-lg:text-[2vw] max-md:text-[3.6vw]"
+        className="font-mpx-head text-24 font-medium text-mpx-ink"
       >
         Read the journal
       </UnderlineLink>

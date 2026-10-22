@@ -60,7 +60,7 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
         <div
           ref={tintRef}
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[#ff5f00] opacity-0 mix-blend-multiply"
+          className="pointer-events-none absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
         />
       </div>
       <div className="flex justify-between gap-4">

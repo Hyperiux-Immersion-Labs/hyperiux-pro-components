@@ -51,7 +51,7 @@ const BASE_CLASSES: Record<Tone, Record<Variant, string>> = {
 };
 
 const HOVER_TEXT: Record<Tone, Record<Variant, string>> = {
-  light: { primary: "#0a0a0a", outline: "#fafafa" },
+  light: { primary: "#0a0a0a", outline: "#0a0a0a" },
   dark: { primary: "#0a0a0a", outline: "#0a0a0a" },
   media: { primary: "#0a0a0a", outline: "#0a0a0a" },
 };
@@ -63,9 +63,9 @@ const REST_TEXT: Record<Tone, Record<Variant, string>> = {
 };
 
 const FILL_CLASSES: Record<Tone, Record<Variant, string>> = {
-  light: { primary: "bg-[#ff5f00]", outline: "bg-[#0a0a0a]" },
-  dark: { primary: "bg-[#ff5f00]", outline: "bg-[#f5f5f5]" },
-  media: { primary: "bg-[#ff5f00]", outline: "bg-white" },
+  light: { primary: "bg-mpx-grad", outline: "bg-mpx-grad" },
+  dark: { primary: "bg-mpx-grad", outline: "bg-mpx-grad" },
+  media: { primary: "bg-mpx-grad", outline: "bg-mpx-grad" },
 };
 
 const PixelButton = ({
@@ -115,6 +115,12 @@ const PixelButton = ({
         { yPercent: -100, duration: 0.6, ease: "expo.out", stagger: 0.012 },
         0,
       );
+
+    if (tone !== "light") {
+      timeline
+        .to(el, { borderColor: "transparent", duration: 0.6, ease: "power3.out" }, 0)
+        .to(el, { backgroundColor: variant === "primary" ? "#ff5f00" : "transparent", duration: 0.6, ease: "power3.out" }, 0);
+    }
 
     const arrows = trackRef.current?.querySelectorAll<SVGElement>("[data-arrow]");
     if (arrows && arrows.length === 2) {

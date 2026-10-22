@@ -7,7 +7,7 @@
   --mpx-paper: #fafafa;
   --mpx-muted: #5e5e5e;
   --mpx-surface: #eeeeee;
-  --mpx-grad: linear-gradient(135deg, #ffb27a 0%, #ff7a2e 38%, #ff5f00 68%, #c24400 100%);
+  --mpx-grad: linear-gradient(120deg, #ffa033 0%, #ff5f00 50%, #e83a00 100%);
 
   background-color: var(--mpx-paper);
   color: var(--mpx-ink);
@@ -45,7 +45,7 @@
 }
 
 .mpx-page h3 {
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .mpx-page h3 {
@@ -174,7 +174,7 @@
 html:has(.mpx-page),
 html:has(.mpx-page) body {
   background-color: #fafafa;
-  scrollbar-color: #ff5f00 transparent;
+  scrollbar-color: var(--mpx-accent) transparent;
   scrollbar-width: thin;
 }
 
@@ -188,7 +188,7 @@ html:has(.mpx-page) ::-webkit-scrollbar-track {
 }
 
 html:has(.mpx-page) ::-webkit-scrollbar-thumb {
-  background-color: #ff5f00;
+  background-color: var(--mpx-accent);
   border-radius: 9999px;
 }
 
@@ -271,6 +271,14 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
   .mpx-page .text-40 {
     font-size: 6.8vw;
     letter-spacing: -0.2vw;
+  }
+
+  .mpx-page h3.text-30 {
+    font-size: 6.2vw;
+  }
+
+  .mpx-page h3.text-28 {
+    font-size: 5.4vw;
   }
 
   .mpx-page .text-30 {

@@ -57,7 +57,7 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
         autoScrub={autoScrub}
         gridSize={28}
         edgeHeight={0.4}
-        direction="up"
+        direction="down"
         className="h-[24vw] w-full shrink-0 rounded-[1.8vw] max-lg:h-[36vw] max-lg:rounded-[2.5vw] max-md:h-[62vw] max-md:rounded-[4vw]"
       >
         <div data-work-scale className="h-full w-full will-change-transform">
@@ -72,9 +72,9 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
         </div>
       </PixelReveal>
       <div className="flex flex-col gap-[0.8vw] max-lg:gap-[1.4vw] max-md:gap-[2vw]">
-        <h3 className="text-[2vw] leading-[1.15] tracking-tight max-lg:text-[3.4vw] max-md:text-[6vw]">{project.title}</h3>
-        <p className="text-[1.2vw] leading-[1.5] text-mpx-muted max-lg:text-[2.2vw] max-md:text-[4vw]">{project.text}</p>
-        <span className="text-[1vw] text-mpx-muted max-lg:text-[1.9vw] max-md:text-[3.4vw]">{project.meta}</span>
+        <h3 className="text-28 leading-[1.15] tracking-tight">{project.title}</h3>
+        <p className="text-22 leading-[1.2] text-mpx-muted">{project.text}</p>
+        <span className="text-14 text-mpx-muted">{project.meta}</span>
       </div>
     </Link>
   );
@@ -186,29 +186,28 @@ const WorkScroll = () => {
 
   return (
     <section ref={sectionRef} id="work" aria-label="Selected work" className="relative">
-      <div className="sticky top-0 flex h-screen flex-col justify-center gap-[3.6vw] overflow-hidden max-lg:relative max-lg:h-auto max-lg:gap-10 max-lg:py-[11vw] max-md:gap-8 max-md:py-[20vw]">
-        <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] px-[5vw] max-lg:grid-cols-1 max-lg:gap-y-4 max-lg:px-[4vw] max-md:px-[5vw]">
+      <div className="sticky top-0 flex h-screen flex-col justify-center gap-[6vw] overflow-hidden max-lg:relative max-lg:h-auto max-lg:gap-[10vw] max-lg:py-[12%] max-md:gap-14 max-md:py-[15%]">
+        <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] px-[5vw] max-lg:grid-cols-1 max-lg:gap-y-4 max-lg:px-[6vw] max-md:px-[7vw]">
           <MaskReveal
             as="h2"
-            className="[.mpx-page_&]:text-[2.9vw] [.mpx-page_&]:tracking-[-0.1vw] max-lg:[.mpx-page_&]:text-[5vw] max-md:[.mpx-page_&]:text-[8vw]"
           >
             Work we’d put on the fridge
           </MaskReveal>
-          <p className="w-[83%] text-[1vw] leading-[1.55] text-mpx-muted max-lg:w-[70%] max-lg:text-[2vw] max-md:w-full max-md:text-[3.6vw]">
+          <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] ] max-md:w-full ">
             Keep scrolling. The work moves sideways, which is how good ideas tend to arrive.
           </p>
           <UnderlineLink
             href={ROUTES.work}
-            className="font-mpx-head text-[1vw] font-medium text-mpx-ink max-lg:text-[2vw] max-md:text-[3.6vw]"
+            className="font-mpx-head text-24 font-medium text-mpx-ink  "
           >
             All eight projects
           </UnderlineLink>
         </div>
 
-        <div className="max-lg:snap-x max-lg:snap-mandatory max-lg:overflow-x-auto max-lg:py-2">
+        <div className="max-lg:snap-x max-lg:snap-mandatory max-lg:scroll-px-[6vw] max-md:scroll-px-[7vw] max-lg:overflow-x-auto max-lg:py-2">
           <div
             ref={trackRef}
-            className="flex w-max gap-[3.2vw] px-[5vw] will-change-transform max-lg:gap-6 max-lg:px-[4vw] max-md:gap-4 max-md:px-[5vw]"
+            className="flex w-max gap-[3.2vw] px-[5vw] will-change-transform max-lg:gap-6 max-lg:px-[6vw] max-md:gap-7 max-md:px-[7vw]"
           >
             {PROJECTS.map((project, index) => (
               <WorkCard

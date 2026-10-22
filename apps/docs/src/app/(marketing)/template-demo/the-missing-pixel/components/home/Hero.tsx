@@ -42,7 +42,7 @@ const Hero = () => {
       }
 
       gsap.to(drift, {
-        y: () => hero.offsetHeight * 0.3,
+        y: () => hero.offsetHeight * (window.innerWidth <= 767 ? 0.1 : window.innerWidth <= 1025 ? 0.2 : 0.3),
         ease: "none",
         scrollTrigger: {
           trigger: hero,
@@ -60,7 +60,7 @@ const Hero = () => {
     <section
       ref={heroRef}
       id="top"
-      className="relative flex flex-col gap-[3.8vw] px-[5vw] pb-[4.4vw] pt-[calc(5.2vw+12vh)] max-lg:gap-[7vw] max-lg:px-[4vw] max-lg:pb-[8vw] max-lg:pt-[calc(10vw+10vh)] max-md:gap-10 max-md:px-[5vw] max-md:pb-[12vw] max-md:pt-[calc(20vw+8vh)]"
+      className="relative flex max-md:h-screen flex-col max-md:justify-center gap-[3.8vw] px-[5vw] pb-[4.4vw] pt-[calc(5.2vw+12vh)] max-lg:gap-[7vw] max-lg:px-[6vw] max-lg:pb-[8vw] max-lg:pt-[calc(10vw+10vh)] max-md:gap-20 max-md:px-[7vw] max-md:pb-[12vw] max-md:pt-[calc(20vw+8vh)]"
     >
       
       <div ref={driftRef} className="w-full will-change-transform">
@@ -93,14 +93,14 @@ const Hero = () => {
       
         <FadeUp
           delay={INTRO_DELAY + 0.75}
-          className="flex w-[46%] flex-col gap-[1.9vw] max-lg:w-[80%] max-lg:gap-7 max-md:w-full"
+          className="flex w-[46%] flex-col gap-[1.9vw] max-lg:w-[80%] max-lg:gap-7 max-md:gap-14 max-md:w-full"
         >
           <p className="w-[90%] text-28 leading-[1.5] text-mpx-ink max-lg:w-full">
             The Missing Pixel is a brand and digital studio in Delhi, London,
             Dubai and New York. We obsess over the small thing that makes the
             big thing work.
           </p>
-          <div className="flex flex-wrap gap-3 max-md:gap-2">
+          <div className="flex flex-wrap max-md:flex-col  gap-3 max-md:gap-4">
             <PixelButton label="See The Work" href={ROUTES.work} icon />
             <PixelButton label="Start A Project" href={ROUTES.contact} variant="outline" />
           </div>

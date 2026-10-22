@@ -26,7 +26,7 @@ const ServiceList = () => (
           data-cursor="Explore"
           className="group flex items-center justify-between gap-9 border-t border-black/10 py-[2.4vw] max-lg:flex-col max-lg:items-start max-lg:gap-6 max-lg:py-[5vw] max-md:py-[8vw]"
         >
-          <h2 className="w-[30%] text-[#0a0a0a] transition-colors duration-300 group-hover:text-[#ff5f00] max-lg:w-full">{service.title}</h2>
+          <h2 className="w-[30%] text-[#0a0a0a] transition-colors duration-300 group-hover:text-(color:--mpx-accent) max-lg:w-full">{service.title}</h2>
           <div className="flex w-[34%] flex-col items-start gap-5 max-lg:w-full">
             <p className="text-28 text-mpx-muted">{service.text}</p>
             <ul className="flex flex-wrap gap-2">
@@ -39,7 +39,7 @@ const ServiceList = () => (
                 </li>
               ))}
             </ul>
-            <span className="font-mpx-head inline-flex items-center gap-2 text-22 font-medium text-[#0a0a0a] transition-colors duration-300 group-hover:text-[#ff5f00]">
+            <span className="font-mpx-head inline-flex items-center gap-2 text-22 font-medium text-[#0a0a0a] transition-colors duration-300 group-hover:text-(color:--mpx-accent)">
               Explore {service.title}
               <ArrowUpRight className="size-[1.2vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
             </span>

@@ -220,21 +220,20 @@ const Services = () => {
   return (
     <section
       id="services"
-      className="flex flex-col gap-[4.5vw] px-[5vw] py-[9vw] max-lg:gap-[8vw] max-lg:px-[4vw] max-lg:py-[12vw] max-md:gap-10 max-md:px-[5vw] max-md:py-[16vw]"
+      className="flex flex-col gap-[6vw] px-[5vw] py-[7%] max-lg:gap-[10vw] max-lg:px-[6vw] max-lg:py-[12%] max-md:gap-14 max-md:px-[7vw] max-md:py-[15%]"
     >
-      <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] max-lg:grid-cols-1 max-lg:gap-y-4">
+      <div className="grid grid-cols-[1fr_31%] items-start gap-x-[2vw] gap-y-[1vw] max-lg:grid-cols-1 max-lg:gap-y-4">
         <MaskReveal
           as="h2"
-          className="[.mpx-page_&]:text-[2.9vw] [.mpx-page_&]:tracking-[-0.1vw] max-lg:[.mpx-page_&]:text-[5vw] max-md:[.mpx-page_&]:text-[8vw]"
         >
           What we’re good at
         </MaskReveal>
-        <p className="w-[83%] text-[1vw] leading-[1.55] text-mpx-muted max-lg:w-[70%] max-lg:text-[2vw] max-md:w-full max-md:text-[3.6vw]">
+        <p className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
           Six disciplines, one team, no hand-offs. Strategy, design and code share a table, so nothing gets lost in translation.
         </p>
         <UnderlineLink
           href={ROUTES.services}
-          className="font-mpx-head text-[1vw] font-medium text-mpx-ink max-lg:text-[2vw] max-md:text-[3.6vw]"
+          className="font-mpx-head text-24 font-medium text-mpx-ink "
         >
           All services
         </UnderlineLink>
@@ -273,7 +272,7 @@ const Services = () => {
               </span>
             ))}
           </div>
-          <span className="text-[0.9vw] tabular-nums text-mpx-muted">{pad(active + 1)} / {pad(SERVICES.length)}</span>
+          <span className="text-14 tabular-nums text-mpx-muted">{pad(active + 1)} / {pad(SERVICES.length)}</span>
         </div>
 
         <ol className="col-span-full row-start-1 border-b border-black/10">
@@ -291,40 +290,40 @@ const Services = () => {
                   href={ROUTES.service}
                   data-cursor="View"
                   onClick={(event) => handleClick(event, index)}
-                  className={`grid min-h-[15.5vw] grid-cols-12 items-center gap-x-[3.3vw] py-[1.4vw] transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:text-mpx-ink focus-visible:text-mpx-ink motion-reduce:transition-none max-lg:min-h-0 max-lg:gap-y-2 max-lg:py-5 max-lg:text-mpx-ink ${
+                  className={`grid min-h-[15.5vw] grid-cols-12 items-center gap-x-[3.3vw] py-[1.4vw] transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] hover:text-mpx-ink focus-visible:text-mpx-ink motion-reduce:transition-none max-lg:min-h-0 max-lg:gap-y-2 max-lg:py-5 max-lg:text-mpx-ink max-md:gap-y-3 max-md:py-6 ${
                     isActive ? "text-mpx-ink" : "text-mpx-muted"
                   }`}
                 >
                   <span
-                    className={`font-mpx-head col-span-5 text-[2.7vw] font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-8 max-lg:row-start-1 max-lg:translate-x-0 max-lg:text-[5vw] max-md:text-[7vw] ${
+                    className={`font-mpx-head col-span-5 max-md:pt-3 text-40 font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-8 max-lg:row-start-1 max-lg:translate-x-0 max-md:col-span-12 max-md:row-start-2 ${
                       isActive ? "translate-x-[0.8vw]" : "translate-x-0"
                     }`}
                   >
                     {service.title}
                   </span>
-                  <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-[1vw] max-lg:col-span-8 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-[2vw] max-lg:text-mpx-muted max-md:text-[3.4vw]">
+                  <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-22 max-lg:col-span-8 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-mpx-muted max-md:col-span-12 max-md:row-start-3">
                     <span
                       aria-hidden
-                      className={`size-1.5 shrink-0 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${
-                        isActive ? "bg-[#ff5f00]" : "bg-current"
+                      className={`size-1.5 max-md:hidden shrink-0 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${
+                        isActive ? "bg-(--mpx-accent)" : "bg-current"
                       }`}
                     />
                     {service.meta}
                   </span>
                   <span
                     aria-hidden
-                    className="col-start-12 justify-self-end text-[1vw] tabular-nums max-lg:hidden"
+                    className="col-start-12 justify-self-end text-22 tabular-nums max-lg:hidden"
                   >
                     {pad(index + 1)}
                   </span>
                   <span
                     aria-hidden
-                    className="hidden aspect-4/3 overflow-hidden rounded-[1.2vw] max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:rounded-[2.5vw]"
+                    className="hidden aspect-4/3 overflow-hidden rounded-[1.2vw] max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1 max-md:rounded-[4vw]"
                   >
                     <Image
                       src={service.image}
                       alt=""
-                      sizes="(max-width: 768px) 30vw, 30vw"
+                      sizes="(max-width: 768px) 100vw, 30vw"
                       className="h-full w-full object-cover"
                     />
                   </span>

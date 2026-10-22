@@ -34,7 +34,7 @@ const FeaturedPost = () => (
         <p className="text-28 text-mpx-muted">
           The longer the rulebook, the less your brand looks like itself. How we write guidelines people open on purpose.
         </p>
-        <span className="font-mpx-head inline-flex items-center gap-2 text-22 font-medium text-[#0a0a0a] transition-colors duration-300 group-hover:text-[#ff5f00]">
+        <span className="font-mpx-head inline-flex items-center gap-2 text-22 font-medium text-[#0a0a0a] transition-colors duration-300 group-hover:text-(color:--mpx-accent)">
           Read The Essay
           <ArrowUpRight className="size-[1.2vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
         </span>

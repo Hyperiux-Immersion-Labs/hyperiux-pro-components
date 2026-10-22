@@ -163,6 +163,14 @@ const TestimonialSwiper = ({
   if (!total || !item) return null;
 
   const faces = items.slice(0, 4);
+  const longestRole = items.reduce(
+    (longest, entry) => (entry.role.length > longest.length ? entry.role : longest),
+    "",
+  );
+  const longestQuote = items.reduce(
+    (longest, entry) => (entry.quote.length > longest.length ? entry.quote : longest),
+    "",
+  );
 
   return (
     <div
@@ -186,7 +194,7 @@ const TestimonialSwiper = ({
               />
             ))}
           </div>
-          <span className="absolute bottom-0 left-1/2 z-10 flex w-max -translate-x-1/2 translate-y-1/2 items-center gap-[0.8vw] rounded-full border border-black/10 bg-[#fafafa] py-[0.3vw] pl-[1.2vw] pr-[0.35vw] text-[0.9vw] font-medium shadow-[0_10px_30px_rgb(0_0_0/0.18)] max-lg:gap-3 max-lg:py-1.5 max-lg:pl-4 max-lg:pr-1.5 max-lg:text-[2vw] max-md:text-[3.2vw]">
+          <span className="absolute bottom-0 left-1/2 z-10 flex w-max -translate-x-1/2 translate-y-1/2 max-md:hidden items-center gap-[0.8vw] rounded-full border border-black/10 bg-[#fafafa] py-[0.3vw] pl-[1.2vw] pr-[0.35vw] text-14 font-medium shadow-[0_10px_30px_rgb(0_0_0/0.18)] max-lg:gap-3 max-lg:py-1.5 max-lg:pl-4 max-lg:pr-1.5 ">
             Trusted clients
             <span className="flex items-center -space-x-[0.6vw] max-lg:-space-x-2">
               {faces.map((face) => (
@@ -197,7 +205,7 @@ const TestimonialSwiper = ({
                   <Image src={face.image} alt="" sizes="4vw" className="h-full w-full object-cover" />
                 </span>
               ))}
-              <span className="grid size-[2vw] place-items-center rounded-full border-2 border-[#fafafa] bg-[#ff5f00] text-[0.7vw] font-semibold text-[#0a0a0a] max-lg:size-[4.4vw] max-lg:text-[1.6vw] max-md:size-8 max-md:text-[2.6vw]">
+              <span className="grid size-[2vw] place-items-center rounded-full border-2 border-[#fafafa] bg-(--mpx-accent) text-14 font-semibold text-[#0a0a0a] max-lg:size-[4.4vw]  max-md:size-8 ">
                 +{Math.max(total - faces.length, 0)}
               </span>
             </span>
@@ -209,7 +217,7 @@ const TestimonialSwiper = ({
             <svg
               viewBox="0 0 48 36"
               aria-hidden
-              className="h-auto w-[3vw] fill-[#ff5f00] max-lg:w-[6vw] max-md:w-10"
+              className="h-auto w-[3vw] fill-(--mpx-accent) max-lg:w-[6vw] max-md:w-10"
             >
               <path d={QUOTE_PATH} />
             </svg>
@@ -223,7 +231,7 @@ const TestimonialSwiper = ({
                   key={star}
                   viewBox="0 0 20 20"
                   aria-hidden
-                  className="size-[1vw] fill-[#ff5f00] max-lg:size-[2.4vw] max-md:size-4"
+                  className="size-[1vw] fill-(--mpx-accent) max-lg:size-[2.4vw] max-md:size-4"
                 >
                   <path d={STAR_PATH} />
                 </svg>
@@ -231,10 +239,16 @@ const TestimonialSwiper = ({
             </span>
           </div>
 
-          <blockquote data-cursor-fill className="font-mpx-head">
+          <blockquote data-cursor-fill className="font-mpx-head grid">
+            <p
+              aria-hidden
+              className="invisible col-start-1 row-start-1 w-[90%] text-30 leading-[1.38] tracking-tight max-lg:w-full"
+            >
+              {longestQuote}
+            </p>
             <p
               ref={quoteRef}
-              className="w-[90%] text-[1.75vw] leading-[1.38] tracking-tight max-lg:w-full max-lg:text-[3.4vw] max-md:text-[5vw]"
+              className="col-start-1 row-start-1 w-[90%] text-30 leading-[1.38] tracking-tight max-lg:w-full "
             >
               {item.quote}
             </p>
@@ -245,10 +259,15 @@ const TestimonialSwiper = ({
               <Image src={item.image} alt="" sizes="6vw" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col gap-[0.1vw]">
-              <cite className="font-mpx-head text-[1.2vw] font-medium not-italic max-lg:text-[2.6vw] max-md:text-[4.2vw]">
+              <cite className="font-mpx-head text-24 font-medium not-italic ">
                 {item.name}
               </cite>
-              <span className="text-[1vw] text-mpx-muted max-lg:text-[2vw] max-md:text-[3.4vw]">{item.role}</span>
+              <div className="grid text-24 text-mpx-muted">
+                <span aria-hidden className="invisible col-start-1 row-start-1">
+                  {longestRole}
+                </span>
+                <span className="col-start-1 row-start-1">{item.role}</span>
+              </div>
             </div>
           </figcaption>
         </figure>
@@ -270,7 +289,7 @@ const TestimonialSwiper = ({
             >
               <span
                 className={`h-[0.2vw] w-full rounded-full transition-colors duration-500 max-lg:h-0.5 ${
-                  isActive ? "bg-[#ff5f00]" : "bg-black/30 hover:bg-mpx-muted"
+                  isActive ? "bg-(--mpx-accent)" : "bg-black/30 hover:bg-mpx-muted"
                 }`}
               />
             </button>

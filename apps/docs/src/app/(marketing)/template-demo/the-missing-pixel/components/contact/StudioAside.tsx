@@ -22,7 +22,7 @@ const StudioAside = () => {
     <aside className="flex flex-col gap-10 max-md:gap-8">
       {STUDIOS.map((studio, index) => (
         <FadeUp key={studio.city} delay={index * 0.08} className="flex flex-col gap-3">
-          <h3 className="font-mpx-body text-22 font-medium text-mpx-muted">
+          <h3 className="font-mpx-body text-22 text-mpx-muted">
             {studio.city} <span className="tabular-nums">{times[index]}</span>
           </h3>
           <address className="text-28 not-italic">

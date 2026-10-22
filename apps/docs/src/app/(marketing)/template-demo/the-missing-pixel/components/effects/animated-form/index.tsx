@@ -6,7 +6,7 @@ import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "r
 const FIELD_BASE =
   "w-full border bg-transparent px-[1.2vw] text-22 text-[#0a0a0a] outline-none transition-colors duration-300 max-lg:px-[2.4vw] max-md:px-[4vw]";
 const FIELD_STATE = "border-black/30 hover:border-[#0a0a0a] focus:border-[#0a0a0a]";
-const FIELD_ERROR = "border-[#cc4a00] hover:border-[#cc4a00] focus:border-[#cc4a00]";
+const FIELD_ERROR = "border-(--mpx-accent-deep) hover:border-(--mpx-accent-deep) focus:border-(--mpx-accent-deep)";
 const FIELD_HEIGHT = "h-[6.4vh] max-lg:h-[4.8vh] max-md:h-[6.8vh]";
 
 const LABEL_BASE =
@@ -15,7 +15,7 @@ const LABEL_BASE =
 type ErrorLineProps = { id: string; error?: string };
 
 const ErrorLine = ({ id, error }: ErrorLineProps) => (
-  <p id={`${id}-error`} aria-live="polite" className="min-h-[1.4vh] px-[1.2vw] text-14 text-[#cc4a00] max-lg:px-[2.4vw] max-md:px-[4vw]">
+  <p id={`${id}-error`} aria-live="polite" className="min-h-[1.4vh] px-[1.2vw] text-14 text-(color:--mpx-accent-deep) max-lg:px-[2.4vw] max-md:px-[4vw]">
     {error}
   </p>
 );
@@ -213,7 +213,7 @@ export const FloatCheckbox = ({ id, label, checked, error, onChange }: FloatChec
         className={`flex aspect-square h-[3vh] shrink-0 items-center justify-center rounded-md border transition-colors duration-300 max-lg:h-[2.4vh] max-md:h-[3.2vh] ${
           checked
             ? "border-[#0a0a0a] bg-[#0a0a0a] text-[#fafafa]"
-            : `${error ? "border-[#cc4a00]" : "border-black/30 hover:border-[#0a0a0a]"}`
+            : `${error ? "border-(--mpx-accent-deep)" : "border-black/30 hover:border-[#0a0a0a]"}`
         }`}
       >
         <svg
@@ -265,7 +265,7 @@ export const ChoiceGroup = ({ legend, name, options, values, multiple = false, o
               onChange={() => toggle(option)}
               className="peer absolute inset-0 cursor-pointer opacity-0"
             />
-            <span className="inline-flex h-[5vh] items-center rounded-full border border-black/30 px-[1.2vw] text-22 transition-colors duration-300 peer-checked:border-[#0a0a0a] peer-checked:bg-[#0a0a0a] peer-checked:text-[#fafafa] peer-hover:border-[#0a0a0a] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-[#ff5f00] max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]">
+            <span className="inline-flex h-[5vh] items-center rounded-full border border-black/30 px-[1.2vw] text-22 transition-colors duration-300 peer-checked:border-[#0a0a0a] peer-checked:bg-[#0a0a0a] peer-checked:text-[#fafafa] peer-hover:border-[#0a0a0a] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-(--mpx-accent) max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]">
               {option}
             </span>
           </label>

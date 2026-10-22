@@ -30,7 +30,7 @@ const ReadingProgress = ({ targetId }: { targetId: string }) => {
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-x-0 top-0 z-90 h-0.5">
-      <div ref={barRef} className="h-full w-full origin-left bg-[#ff5f00] [transform:scaleX(0)]" />
+      <div ref={barRef} className="h-full w-full origin-left bg-(--mpx-accent) [transform:scaleX(0)]" />
     </div>
   );
 };

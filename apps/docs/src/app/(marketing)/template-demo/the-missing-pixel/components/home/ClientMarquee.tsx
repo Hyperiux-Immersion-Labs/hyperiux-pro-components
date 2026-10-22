@@ -52,7 +52,7 @@ const ClientMarquee = () => {
       aria-label="Some of the brands we work with"
       onPointerEnter={() => setSpeed(0)}
       onPointerLeave={() => setSpeed(1)}
-      className="overflow-hidden py-16 [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] max-lg:py-10"
+      className="overflow-hidden pt-[7%] [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] max-lg:py-[12%] max-md:pt-[15%]"
     >
       <div ref={trackRef} className="flex w-max">
         {[0, 1].map((group) => (
@@ -64,7 +64,7 @@ const ClientMarquee = () => {
             {CLIENTS.map((client) => (
               <li
                 key={`${group}-${client.name}`}
-                className={`font-mpx-head whitespace-nowrap text-3xl text-[#5e5e5e] max-lg:text-2xl max-md:text-xl transition-colors duration-300 hover:text-[#0a0a0a] ${client.style}`}
+                className={`font-mpx-head whitespace-nowrap text-30 text-[#5e5e5e] transition-colors duration-300 hover:text-[#0a0a0a] ${client.style}`}
               >
                 {client.name}
               </li>

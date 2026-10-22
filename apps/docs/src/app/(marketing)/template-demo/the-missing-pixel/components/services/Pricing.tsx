@@ -92,7 +92,7 @@ const Pricing = () => {
               <div className="flex items-center justify-between gap-4">
                 <h3 className="text-30">{tier.name}</h3>
                 {tier.featured && (
-                  <span className="inline-flex h-[3.2vh] items-center rounded-full bg-[#ff5f00] px-[0.9vw] text-14 text-[#0a0a0a] max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]">
+                  <span className="inline-flex h-[3.2vh] items-center rounded-full bg-(--mpx-accent) px-[0.9vw] text-14 text-[#0a0a0a] max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]">
                     Most chosen
                   </span>
                 )}
