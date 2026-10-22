@@ -7,9 +7,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
-import AutoVideo from "../shared/AutoVideo";
+import FilmCanvas from "./FilmCanvas";
 import PixelButton from "../Buttons/PixelButton";
-import reelPoster from "../../assets/pictures/reel-poster.webp";
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -81,11 +80,7 @@ const ReelReveal = () => {
       <div className="sticky top-0 h-screen overflow-hidden motion-reduce:relative motion-reduce:h-[78vh]">
         <div ref={frameRef} className="absolute inset-0 will-change-[clip-path]">
           <div ref={mediaRef} className="h-full w-full will-change-transform">
-            <AutoVideo
-              src="/templates/the-missing-pixel/reel.mp4"
-              poster={reelPoster.src}
-              label="Studio showreel"
-            />
+            <FilmCanvas sectionRef={sectionRef} label="Studio showreel" />
           </div>
           <div
             ref={shadeRef}

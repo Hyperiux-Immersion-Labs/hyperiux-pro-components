@@ -117,9 +117,7 @@ const PixelButton = ({
       );
 
     if (tone !== "light") {
-      timeline
-        .to(el, { borderColor: "transparent", duration: 0.6, ease: "power3.out" }, 0)
-        .to(el, { backgroundColor: variant === "primary" ? "#ff5f00" : "transparent", duration: 0.6, ease: "power3.out" }, 0);
+      timeline.to(el, { borderColor: "transparent", duration: 0.6, ease: "power3.out" }, 0);
     }
 
     const arrows = trackRef.current?.querySelectorAll<SVGElement>("[data-arrow]");

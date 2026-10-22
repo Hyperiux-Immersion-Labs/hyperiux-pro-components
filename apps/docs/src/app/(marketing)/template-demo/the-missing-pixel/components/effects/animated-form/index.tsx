@@ -4,13 +4,14 @@
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 const FIELD_BASE =
-  "w-full border bg-transparent px-[1.2vw] text-22 text-[#0a0a0a] outline-none transition-colors duration-300 max-lg:px-[2.4vw] max-md:px-[4vw]";
+  "w-full border bg-[#fafafa] px-[1.2vw] text-22 text-[#0a0a0a] outline-none transition-colors duration-300 max-lg:px-[2.4vw] max-md:px-[4vw]";
 const FIELD_STATE = "border-black/30 hover:border-[#0a0a0a] focus:border-[#0a0a0a]";
 const FIELD_ERROR = "border-(--mpx-accent-deep) hover:border-(--mpx-accent-deep) focus:border-(--mpx-accent-deep)";
 const FIELD_HEIGHT = "h-[6.4vh] max-lg:h-[4.8vh] max-md:h-[6.8vh]";
 
-const LABEL_BASE =
-  "pointer-events-none absolute left-[1vw] bg-[#fafafa] px-[0.3vw] text-22 text-[#5e5e5e] transition-all duration-200 ease-out max-lg:left-[2vw] max-md:left-[3.4vw]";
+const FIELD_RADIUS = "rounded-lg";
+
+const LABEL_BASE = "text-22 font-medium";
 
 type ErrorLineProps = { id: string; error?: string };
 
@@ -46,27 +47,23 @@ export const FloatInput = ({
   onBlur,
 }: FloatInputProps) => (
   <div className="flex flex-col gap-2">
+    <label htmlFor={id} className={LABEL_BASE}>
+      {label}
+    </label>
     <div className="relative">
       <input
         id={id}
         name={name}
         type={type}
         value={value}
-        placeholder=" "
         autoComplete={autoComplete}
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={`${id}-error`}
         onChange={(event: ChangeEvent<HTMLInputElement>) => onChange(event.target.value)}
         onBlur={onBlur}
-        className={`peer rounded-full ${FIELD_BASE} ${FIELD_HEIGHT} ${error ? FIELD_ERROR : FIELD_STATE}`}
+        className={`${FIELD_RADIUS} ${FIELD_BASE} ${FIELD_HEIGHT} ${error ? FIELD_ERROR : FIELD_STATE}`}
       />
-      <label
-        htmlFor={id}
-        className={`${LABEL_BASE} top-1/2 -translate-y-1/2 peer-focus:top-0 peer-focus:text-14 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-14`}
-      >
-        {label}
-      </label>
     </div>
     <ErrorLine id={id} error={error} />
   </div>
@@ -85,25 +82,22 @@ type FloatTextareaProps = {
 
 export const FloatTextarea = ({ id, name, label, required, value, error, onChange, onBlur }: FloatTextareaProps) => (
   <div className="flex flex-col gap-2">
+    <label htmlFor={id} className={LABEL_BASE}>
+      {label}
+    </label>
     <div className="relative">
       <textarea
         id={id}
         name={name}
         value={value}
-        placeholder=" "
+        placeholder="Who it’s for, what success looks like, and what keeps you up at night."
         required={required}
         aria-invalid={error ? true : undefined}
         aria-describedby={`${id}-error`}
         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => onChange(event.target.value)}
         onBlur={onBlur}
-        className={`peer h-[24vh] resize-none rounded-lg py-[2.4vh] max-lg:h-[18vh] max-md:h-[22vh] ${FIELD_BASE} ${error ? FIELD_ERROR : FIELD_STATE}`}
+        className={`h-[24vh] resize-none ${FIELD_RADIUS} py-[2vh] max-lg:h-[18vh] max-md:h-[22vh] ${FIELD_BASE} ${error ? FIELD_ERROR : FIELD_STATE}`}
       />
-      <label
-        htmlFor={id}
-        className={`${LABEL_BASE} top-[3.6vh] -translate-y-1/2 peer-focus:top-0 peer-focus:text-14 peer-[:not(:placeholder-shown)]:top-0 peer-[:not(:placeholder-shown)]:text-14`}
-      >
-        {label}
-      </label>
     </div>
     <ErrorLine id={id} error={error} />
   </div>
@@ -137,10 +131,11 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
     };
   }, [open]);
 
-  const floated = open || value !== "";
-
   return (
     <div className="flex flex-col gap-2">
+      <span id={`${id}-label`} className={LABEL_BASE}>
+        {label}
+      </span>
       <div ref={rootRef} className="relative">
         <button
           type="button"
@@ -148,22 +143,17 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
-          className={`flex items-center rounded-full pr-[3vw] text-left ${FIELD_BASE} ${FIELD_HEIGHT} ${open ? "border-[#0a0a0a]" : "border-black/30 hover:border-[#0a0a0a]"}`}
+          className={`flex items-center ${FIELD_RADIUS} pr-[3vw] text-left ${FIELD_BASE} ${FIELD_HEIGHT} ${open ? "border-[#0a0a0a]" : "border-black/30 hover:border-[#0a0a0a]"}`}
         >
-          {value}
+          {value || options[0]}
         </button>
-        <span
-          className={`${LABEL_BASE} ${floated ? "top-0 -translate-y-1/2 text-14" : "top-1/2 -translate-y-1/2"}`}
-        >
-          {label}
-        </span>
         <span
           aria-hidden
           className={`pointer-events-none absolute right-[1.2vw] top-1/2 h-[1vh] aspect-square -translate-y-1/2 border-b border-r border-current transition-transform duration-300 max-lg:right-[2.4vw] max-md:right-[4vw] ${open ? "rotate-[225deg]" : "rotate-45"}`}
         />
         <ul
           role="listbox"
-          aria-labelledby={id}
+          aria-labelledby={`${id}-label`}
           className={`absolute inset-x-0 top-full z-30 flex origin-top flex-col gap-1 rounded-lg border border-black/10 bg-white px-[0.4vw] py-[0.4vw] transition-all duration-200 max-lg:px-[1vw] max-lg:py-[1vw] max-md:px-[2vw] max-md:py-[2vw] ${
             open ? "visible translate-y-2 scale-100 opacity-100" : "invisible translate-y-0 scale-95 opacity-0"
           }`}

@@ -118,7 +118,7 @@ const ContactForm = () => {
       <div
         ref={successRef}
         tabIndex={-1}
-        className="flex flex-col items-start gap-6 rounded-lg border border-black/10 bg-white px-[3.9vw] py-[3.9vw] outline-none max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[8vw] max-md:py-[8vw]"
+        className="flex flex-col items-start gap-6 outline-none"
       >
         <h2>Got it.</h2>
         <p className="text-28 text-mpx-muted">
@@ -206,20 +206,15 @@ const ContactForm = () => {
         label={
           <>
             Store my details so you can reply. We never share them.{" "}
-            <a href="#" className="underline underline-offset-4">
-              Privacy policy
-            </a>
+            <span className="cursor-pointer underline underline-offset-4">Privacy policy</span>
           </>
         }
       />
-      <div className="flex flex-col gap-6">
-        <div className="h-px w-full bg-black/10" />
-        <div className="flex flex-wrap items-center justify-between gap-6">
-          <p id="form-note" className="text-14 text-mpx-muted">
-            Fields marked * are required.
-          </p>
-          <PixelButton label="Send It" type="submit" icon />
-        </div>
+      <div className="flex flex-wrap items-center justify-between gap-6">
+        <p id="form-note" className="text-14 text-mpx-muted">
+          Fields marked * are required.
+        </p>
+        <PixelButton label="Send It" type="submit" icon />
       </div>
     </form>
   );

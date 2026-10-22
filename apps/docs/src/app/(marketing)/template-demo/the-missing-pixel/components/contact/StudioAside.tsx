@@ -1,45 +1,43 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
-"use client";
-
-import { useEffect, useState } from "react";
 import { FadeUp } from "../Animations/gsapAnim";
 
-const formatTime = (zone: string) =>
-  new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: zone }).format(new Date());
-
-const StudioAside = () => {
-  const [times, setTimes] = useState<string[]>(STUDIOS.map(() => ""));
-
-  useEffect(() => {
-    const tick = () => setTimes(STUDIOS.map((studio) => formatTime(studio.zone)));
-    tick();
-    const timer = window.setInterval(tick, 30000);
-    return () => window.clearInterval(timer);
-  }, []);
-
-  return (
-    <aside className="flex flex-col gap-10 max-md:gap-8">
-      {STUDIOS.map((studio, index) => (
-        <FadeUp key={studio.city} delay={index * 0.08} className="flex flex-col gap-3">
-          <h3 className="font-mpx-body text-22 text-mpx-muted">
-            {studio.city} <span className="tabular-nums">{times[index]}</span>
-          </h3>
-          <address className="text-28 not-italic">
-            <span className="block">{studio.lines[0]}</span>
-            <span className="block">{studio.lines[1]}</span>
-          </address>
-        </FadeUp>
-      ))}
-    </aside>
-  );
-};
+const StudioAside = () => (
+  <aside
+    aria-label="Other ways to reach us"
+    className="sticky top-[12vh] flex flex-col gap-10 rounded-[2vw] bg-[#0a0a0a] p-[3vw] text-[#f5f5f5] max-lg:static max-lg:rounded-[3vw] max-lg:p-[5vw] max-md:rounded-[5vw] max-md:p-[7vw]"
+  >
+    <FadeUp className="flex flex-col items-start gap-4">
+      <p className="text-22 text-[#9a9a9a]">Prefer email?</p>
+      <a
+        href="mailto:hello@themissingpixel.studio"
+        className="font-mpx-head text-30 break-all underline underline-offset-4 transition-colors duration-300 hover:text-[#ff5f00]"
+      >
+        hello@themissingpixel.studio
+      </a>
+    </FadeUp>
+    <FadeUp delay={0.1} className="flex flex-col gap-4">
+      <p className="font-mpx-body! text-22! tracking-normal! text-[#9a9a9a]">What happens next</p>
+      <ol>
+        {STEPS.map((step, index) => (
+          <li
+            key={step.title}
+            className="grid grid-cols-[2.5vw_1fr_auto] items-baseline gap-4 border-t border-[#f5f5f5]/15 py-4 last:border-b max-lg:grid-cols-[5vw_1fr_auto] max-md:grid-cols-[8vw_1fr]"
+          >
+            <span className="text-14 text-[#9a9a9a] tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+            <span className="font-mpx-head text-24">{step.title}</span>
+            <span className="text-14 text-[#9a9a9a] max-md:col-start-2">{step.time}</span>
+          </li>
+        ))}
+      </ol>
+    </FadeUp>
+  </aside>
+);
 
 export default StudioAside;
 
-const STUDIOS = [
-  { city: "Delhi", zone: "Asia/Kolkata", lines: ["14 Hauz Khas Village", "New Delhi 110016"] },
-  { city: "London", zone: "Europe/London", lines: ["22 Redchurch Street", "London E2 7DJ"] },
-  { city: "Dubai", zone: "Asia/Dubai", lines: ["Alserkal Avenue, Warehouse 47", "Al Quoz, Dubai"] },
-  { city: "New York", zone: "America/New_York", lines: ["88 Walker Street", "New York, NY 10013"] },
+const STEPS = [
+  { title: "We read it properly", time: "Within two working days" },
+  { title: "A thirty-minute call", time: "Week 1" },
+  { title: "A proposal you can forward", time: "Week 2" },
 ];

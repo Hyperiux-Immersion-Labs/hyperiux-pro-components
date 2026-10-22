@@ -194,7 +194,7 @@ const Header = () => {
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
-              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[3.6vh] max-lg:px-[0.6vw] max-md:h-[5.8vh] max-md:border-transparent max-md:px-[1.3vw] ${
+              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[3.6vh] max-lg:px-[0.6vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
                 menuOpen ? "border-[#ff8a4d]/60" : "border-black/30"
               }`}
             >
@@ -219,7 +219,7 @@ const Header = () => {
               <span
                 ref={iconRef}
                 aria-hidden
-                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[2.7vh] max-md:h-[4.1vh] ${
+                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[2.7vh] max-md:h-full ${
                   menuOpen ? "bg-[#ff8a4d] text-[#0e0e0e]" : "bg-[#0a0a0a] text-[#fafafa]"
                 }`}
               >

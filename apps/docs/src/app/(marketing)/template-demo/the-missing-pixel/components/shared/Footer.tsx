@@ -222,9 +222,9 @@ const Footer = () => {
           <span>© {new Date().getFullYear()} The Missing Pixel. Made with an unreasonable amount of care.</span>
           <nav aria-label="Legal" className="flex gap-5 max-lg:gap-6">
             {LEGAL.map((item) => (
-              <a key={item} href="#" className="transition-colors duration-300 hover:text-[#f5f5f5]">
+              <span key={item} className="cursor-pointer transition-colors duration-300 hover:text-[#f5f5f5]">
                 {item}
-              </a>
+              </span>
             ))}
           </nav>
           <button
