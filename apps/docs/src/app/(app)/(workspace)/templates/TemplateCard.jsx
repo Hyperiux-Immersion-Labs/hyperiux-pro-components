@@ -11,6 +11,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { CARD_BTN } from "../effects/EffectCard";
 import { useTemplatePurchase } from "./useTemplatePurchase";
 import { BADGE, DISPLAY, PRICE, T11, T13, T14, T18, T20, catalogueLabel, catalogueOf, priceOf } from "./tokens";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // The effect cards' action slide (EffectCard ACTION_SLIDE), but triggered by the whole
 // card (group/card) rather than just the shot. A named group, so the Buy Button - which
@@ -39,6 +40,7 @@ const formatViews = (n) => (n >= 1000 ? new Intl.NumberFormat("en", { notation: 
 // hover lift or tech tags; the shot at the effects' ratio, then title and category on one
 // line. No price, description or Buy (an admin looking at what someone owns).
 export function TemplateCard({ template, priority = false, isWishlisted = false, onToggleWishlist, onOpen, hasAccess = false, small = false, compact = false }) {
+  const bid = useButtonId();
   const [imageError, setImageError] = useState(false);
   const { buy, modals } = useTemplatePurchase();
 
@@ -141,6 +143,7 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
         <div className="absolute right-3 bottom-3 z-2 flex gap-1.5">
           <Tooltip label={isWishlisted ? "Saved" : "Save"} className={`${CARD_SLIDE} delay-0`}>
             <button
+              id={bid("template-card-save", template.slug)}
               type="button"
               onClick={() => onToggleWishlist?.(template)}
               aria-pressed={isWishlisted}
@@ -223,6 +226,7 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
           <p className={`line-clamp-2 min-w-0 flex-1 ${T14} text-black/60`}>{template.tagline}</p>
           {template.tier === "pro" && (
             <Button
+              id={bid(hasAccess ? "template-card-download" : "template-card-buy", template.slug)}
               text={hasAccess ? "Download" : "Buy Template"}
               preventDefault
               onClick={() => buy(template, hasAccess)}
@@ -241,6 +245,7 @@ export function TemplateCard({ template, priority = false, isWishlisted = false,
 
 /** The card's shot: opens the preview drawer when there is one, else links to the template page. */
 function ShotTarget({ href, onOpen, label, children }) {
+  const bid = useButtonId();
   if (!onOpen) {
     return (
       <Link href={href} prefetch={false} aria-label={label} className="absolute inset-0 block">
@@ -251,6 +256,7 @@ function ShotTarget({ href, onOpen, label, children }) {
   return (
     <div
       role="button"
+      id={bid("template-card-preview", label)}
       tabIndex={0}
       aria-label={`Preview ${label}`}
       onClick={onOpen}

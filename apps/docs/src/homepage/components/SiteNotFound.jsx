@@ -116,8 +116,8 @@ export default function SiteNotFound({ pages = [] }) {
                         ))}
                     </ul>
                     <div className={`flex flex-wrap justify-center gap-[0.6vw] max-md:gap-[2vw] ${riseIn} [animation-delay:.16s]`}>
-                        <Button text="Back to home" href="/" className={COMPACT_BTN} />
-                        <Button text="Browse All Effects" href="/effects" variant="outline" className={`bg-transparent! ${COMPACT_BTN}`} />
+                        <Button id="site-not-found-back-to-home" text="Back to home" href="/" className={COMPACT_BTN} />
+                        <Button id="site-not-found-browse-all-effects" text="Browse All Effects" href="/effects" variant="outline" className={`bg-transparent! ${COMPACT_BTN}`} />
                     </div>
                     <p className={`text18 text-foreground/60 ${riseIn} [animation-delay:.24s]`}>
                         Or try{" "}
@@ -132,6 +132,7 @@ export default function SiteNotFound({ pages = [] }) {
             )}
 
             <button
+                id="site-not-found-skip-the-physics"
                 type="button"
                 onClick={skip}
                 className={`fixed bottom-[2vw] left-1/2 z-3 -translate-x-1/2 cursor-pointer whitespace-nowrap text-foreground/60 underline decoration-foreground/20 underline-offset-4 transition-colors duration-400 hover:text-foreground hover:decoration-primary max-md:bottom-6 ${label}`}

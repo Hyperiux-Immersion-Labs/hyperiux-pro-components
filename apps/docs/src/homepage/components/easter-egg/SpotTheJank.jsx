@@ -6,6 +6,7 @@ import Link from "next/link";
 import CornerMarks from "../CornerMarks";
 import { ButtonChrome, buttonClassName } from "../Button";
 import { BADGES, CYCLE_S, FLAW_KEYS, FLAWS, SCENES, drawScene, lerp } from "./jank-scenes";
+import { buttonId } from "@/lib/button-id";
 
 const STORAGE = { best: "hx-jank-best", badges: "hx-jank-badges" };
 const TICK_MS = 250;
@@ -294,7 +295,7 @@ export default function SpotTheJank({ onClose, sound, toast, realHref = "/effect
                         <span key={name}>{name} <b className="ml-1.5 font-semibold text-white tabular-nums">{value}</b></span>
                     ))}
                 </div>
-                <button type="button" onClick={requestClose} aria-label="Close game" className={`absolute top-3 right-4 z-20 h-[30px] border border-grey bg-background px-2.5 text-white transition-colors duration-500 hover:border-primary hover:text-foreground ${label}`}>
+                <button id="spot-the-jank-close-game" type="button" onClick={requestClose} aria-label="Close game" className={`absolute top-3 right-4 z-20 h-[30px] border border-grey bg-background px-2.5 text-white transition-colors duration-500 hover:border-primary hover:text-foreground ${label}`}>
                     Esc
                 </button>
 
@@ -312,6 +313,7 @@ export default function SpotTheJank({ onClose, sound, toast, realHref = "/effect
                         if (isFlawed) ring = "ring-2 ring-inset ring-danger/60";
                         return (
                             <button
+                                id={buttonId("spot-the-jank-choose", side)}
                                 key={side}
                                 type="button"
                                 onClick={() => choose(side)}
@@ -344,6 +346,7 @@ export default function SpotTheJank({ onClose, sound, toast, realHref = "/effect
                         </p>
                         <p className={`text-light-grey ${label}`}>Click a panel or press ← / → · 3 lives</p>
                         <button
+                            id="spot-the-jank-start"
                             ref={startBtnRef}
                             type="button"
                             onClick={start}
@@ -372,6 +375,7 @@ export default function SpotTheJank({ onClose, sound, toast, realHref = "/effect
                         </ul>
                         <div className="flex flex-wrap justify-center gap-2">
                             <button
+                                id="spot-the-jank-play-again"
                                 ref={againBtnRef}
                                 type="button"
                                 onClick={start}
@@ -384,7 +388,7 @@ export default function SpotTheJank({ onClose, sound, toast, realHref = "/effect
                                 <ButtonChrome label="Play Again" hovered={againHovered} />
                             </button>
                             <Link href={realHref} onClick={requestClose} className={btnGhost}>See how Vault avoids jank</Link>
-                            <button type="button" onClick={share} className={btnGhost}>Copy Score</button>
+                            <button id="spot-the-jank-copy-score" type="button" onClick={share} className={btnGhost}>Copy Score</button>
                         </div>
                     </div>
                 )}

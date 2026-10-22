@@ -270,12 +270,14 @@ export default function Hero() {
                             className="pointer-events-auto flex w-fit gap-[calc(var(--cvw)*1)] max-lg:w-full max-lg:flex-col max-lg:gap-5 max-md:pt-4"
                         >
                             <Button
+                                id="hero-read-docs"
                                 text="Read Docs"
                                 href="/docs"
                                 variant="outline"
                                 className="max-lg:w-[40%] max-lg:py-[2vw] max-lg:justify-center max-md:w-full"
                             />
                             <Button
+                                id="hero-browse-all-effects"
                                 text="Browse All Effects"
                                 href="/effects"
                                 variant="orange"

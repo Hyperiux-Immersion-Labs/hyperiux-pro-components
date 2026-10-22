@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
@@ -13,6 +13,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 import { MEDIA } from "@/lib/breakpoints";
 import { useCommunity } from "./community-store";
 import { CritiqueCard, FeaturedCard, TeardownCard, VoteCard } from "./WhyJoinPanels";
+import { buttonId } from "@/lib/button-id";
 
 const FAMILIAR = [
   { text: "You’ve rebuilt the same scroll reveal six times this year." },
@@ -59,6 +60,13 @@ export default function CommunityFamiliar() {
   const { joined } = useCommunity();
   const [lit, setLit] = useState(-1);
   const [spy, setSpy] = useState(0);
+  // The sound object can change identity between renders; read it from a ref so the
+  // scroll triggers below are built once, not torn down and rebuilt (which re-fired
+  // enter / leave-back and flashed the lines)
+  const soundRef = useRef(sound);
+  useEffect(() => {
+    soundRef.current = sound;
+  }, [sound]);
 
   useFadeUp(rootRef);
   useSectionOverlay(rootRef);
@@ -71,7 +79,7 @@ export default function CommunityFamiliar() {
         start: "top 62%",
         end: "max",
         // Lines stay lit once reached, and go dark again only when scrolled back above them
-        onEnter: () => { setLit((cur) => Math.max(cur, i)); sound?.note?.(i); },
+        onEnter: () => { setLit((cur) => Math.max(cur, i)); soundRef.current?.note?.(i); },
         onLeaveBack: () => setLit((cur) => Math.min(cur, i - 1)),
       });
     });
@@ -82,66 +90,65 @@ export default function CommunityFamiliar() {
         end: "bottom 55%",
         onToggle: (self) => { if (self.isActive) setSpy(i); },
       });
-    });
+    }); 
     if (prefersReducedMotion()) return;
 
     const list = root.querySelector("[data-fam-list]");
     const rows = gsap.utils.toArray("[data-fam]", root);
     if (list && rows.length) {
+      // The line nearest the scroll position leans right, its neighbours less (impact
+      // lines either side). One quickTo per row, made once: scrolling only retargets
+      // them, rather than starting a new tween per row on every frame
       const impact = 3;
-      const getShift = () => list.offsetWidth * 0.04;
-      const getTranslateProgress = (p) => (p < 0.1 ? 0 : p > 0.9 ? 1 : (p - 0.1) / 0.8);
-      gsap.set(rows, { willChange: "transform", force3D: true });
+      const moveTo = rows.map((row) => gsap.quickTo(row, "x", { duration: 0.8, ease: "power3.out" }));
+      const settle = () => moveTo.forEach((to) => to(0));
       ScrollTrigger.create({
         trigger: list,
-        start: "top 50%",
-        end: "bottom 50%",
-        scrub: true,
+        start: "top 62%",
+        end: "bottom 62%",
         onUpdate: ({ progress }) => {
-          const current = getTranslateProgress(progress) * (rows.length - 1);
-          const shift = getShift();
-          rows.forEach((row, i) => {
-            gsap.to(row, {
-              x: shift * (1 - Math.min(Math.abs(i - current) / impact, 1)),
-              duration: 0.4,
-              ease: "power2.out",
-              overwrite: true,
-            });
-          });
+          const p = progress < 0.1 ? 0 : progress > 0.9 ? 1 : (progress - 0.1) / 0.8;
+          const current = p * (rows.length - 1);
+          // The lean grows in over the first 15% of the scroll and out over the last 15%,
+          // so entering or leaving the list never snaps a line sideways
+          const ramp = Math.min(1, progress / 0.15, (1 - progress) / 0.15);
+          const shift = list.offsetWidth * 0.04 * Math.max(0, ramp);
+          moveTo.forEach((to, i) => to(shift * (1 - Math.min(Math.abs(i - current) / impact, 1))));
         },
-        onLeave: () => gsap.to(rows, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
-        onLeaveBack: () => gsap.to(rows, { x: 0, duration: 0.6, ease: "power2.out", overwrite: true }),
+        onLeave: settle,
+        onLeaveBack: settle,
       });
     }
 
     root.querySelectorAll("[data-panel] > :first-child").forEach((card) => {
       gsap.from(card, { opacity: 0, y: 60, duration: 2, ease: "expo.out", scrollTrigger: { trigger: card, start: "top 90%" } });
     });
-  }, { scope: rootRef, dependencies: [sound] });
+  }, { scope: rootRef });
 
+  // Desktop: once scrolling stops inside the panels, ease to the nearest one. Done with
+  // Lenis (the page's smooth scroll), not ScrollTrigger's snap, which scrolls the page
+  // natively underneath Lenis - the two fought, so the page jumped and lagged
   useGSAP(() => {
     const mm = gsap.matchMedia();
     mm.add(`(not ${MEDIA.tablet})`, () => {
-      if (prefersReducedMotion()) return;
+      if (prefersReducedMotion() || !lenis) return;
       const panels = [...rootRef.current.querySelectorAll("[data-panel]")];
       if (panels.length < 2) return;
-      const tops = () => panels.map((panel) => window.scrollY + panel.getBoundingClientRect().top - SPY_OFFSET);
-      ScrollTrigger.create({
-        start: () => tops()[0],
-        end: () => tops()[panels.length - 1] + panels[panels.length - 1].offsetHeight * 0.5,
-        invalidateOnRefresh: true,
-        snap: {
-          snapTo: (progress, self) => {
-            const points = tops().map((top) => (top - self.start) / (self.end - self.start));
-            return points.reduce((nearest, p) => (Math.abs(p - progress) < Math.abs(nearest - progress) ? p : nearest));
-          },
-          duration: { min: 0.3, max: 0.9 },
-          delay: 0.03,
-          ease: "power2.inOut",
-        },
-      });
+      const onScrollEnd = () => {
+        const tops = panels.map((panel) => window.scrollY + panel.getBoundingClientRect().top - SPY_OFFSET);
+        const last = panels.at(-1);
+        const y = window.scrollY;
+        if (y < tops[0] - window.innerHeight * 0.25 || y > tops.at(-1) + last.offsetHeight * 0.5) return;
+        const nearest = tops.reduce((a, b) => (Math.abs(b - y) < Math.abs(a - y) ? b : a));
+        // close enough already, or too far to be a nudge
+        if (Math.abs(nearest - y) < 4 || Math.abs(nearest - y) > window.innerHeight * 0.45) return;
+        lenis.scrollTo(nearest, { duration: 0.7, easing: (t) => 1 - Math.pow(1 - t, 3) });
+      };
+      ScrollTrigger.addEventListener("scrollEnd", onScrollEnd);
+      return () => ScrollTrigger.removeEventListener("scrollEnd", onScrollEnd);
     });
-  }, { scope: rootRef });
+    return () => mm.revert();
+  }, { scope: rootRef, dependencies: [lenis] });
 
   const goToPanel = (i) => {
     const panel = rootRef.current.querySelector(`[data-panel="${i}"]`);
@@ -163,10 +170,10 @@ export default function CommunityFamiliar() {
               data-fam
               className="flex items-baseline gap-[calc(var(--cvw)*1)] border-t border-black/10 py-[calc(var(--cvw)*3)] last:border-b max-lg:gap-[3vw] max-lg:py-[4vw] max-md:gap-[4vw] max-md:py-[6vw]"
             >
-              <span className={`type-label w-[calc(var(--cvw)*5)] shrink-0 transition-colors duration-1200 ease-[cubic-bezier(.16,1,.3,1)] max-lg:w-[8vw] max-md:w-[11vw] ${lit >= i ? "text-primary" : "text-black/20"}`}>
+              <span className={`type-label w-[calc(var(--cvw)*5)] shrink-0 transition-colors duration-500 max-lg:w-[8vw] max-md:w-[11vw] ${lit >= i ? "text-primary" : "text-black/20"}`}>
                 {String(i + 1).padStart(2, "0")}
               </span>
-              <p className={`type-h2 text-[calc(var(--cvw)*2.2)] max-lg:text-[3.2vw] max-md:text-[5vw] font-avenir min-w-0 flex-1 font-light! transition-colors duration-1200 tracking-tight ease-[cubic-bezier(.16,1,.3,1)] ${lit >= i ? "text-ink" : "text-black/20"}`}>
+              <p className={`type-h2 text-[calc(var(--cvw)*2.2)] max-lg:text-[3.2vw] max-md:text-[5vw] font-avenir min-w-0 flex-1 tracking-tight transition-colors duration-500 ${lit >= i ? "text-ink" : "text-black/20"}`}>
                 {item.text}
                 {item.em && <> <em className=" not-italic">{item.em}</em>{item.after}</>}
               </p>
@@ -184,11 +191,12 @@ export default function CommunityFamiliar() {
         <div className="sticky top-[35vh] flex w-[32%] flex-col items-start gap-[calc(var(--cvw)*1)] self-start max-lg:hidden">
           {PANELS.map((p, i) => (
             <button
+              id={buttonId("community-familiar-go-to-panel", p.nav)}
               key={p.nav}
               type="button"
               aria-current={spy === i ? "true" : undefined}
               onClick={() => goToPanel(i)}
-              className={`type-h2 text-left transition-colors duration-900 ease-[cubic-bezier(.16,1,.3,1)] ${spy === i ? "text-ink" : "text-black/20 hover:text-black/40"}`}
+              className={`type-h2 cursor-pointer text-left transition-colors duration-300 ${spy === i ? "text-ink" : "text-black/20 hover:text-black/40"}`}
             >
               {p.nav}
             </button>

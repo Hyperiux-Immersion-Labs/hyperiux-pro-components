@@ -60,6 +60,7 @@ export function StepField({ id, field, value, message, busy, submitLabel, onChan
 
         {isPassword && (
           <button
+            id="step-field-show-password"
             type="button"
             onClick={() => {
               setRevealed((current) => !current);
@@ -75,6 +76,7 @@ export function StepField({ id, field, value, message, busy, submitLabel, onChan
         )}
 
         <button
+          id="step-field-submit"
           type="submit"
           disabled={busy}
           aria-label={submitLabel}

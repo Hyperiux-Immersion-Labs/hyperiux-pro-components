@@ -79,6 +79,7 @@ export default function RemixerLauncher({
       >
         <div className={styles.launcherRow}>
           <button
+            id="remixer-launcher-move-controls-panel"
             type="button"
             className={styles.dragHandle}
             onPointerDown={(event) => dragControls.start(event.nativeEvent)}
@@ -88,6 +89,7 @@ export default function RemixerLauncher({
           </button>
 
           <button
+            id="remixer-launcher-toggle"
             type="button"
             onClick={() => setIsExpanded((current) => !current)}
             className={`${styles.launcherButton} ${buttonClassName}`}

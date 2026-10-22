@@ -40,7 +40,7 @@ export default function TextDemo() {
     return (
         <div className="relative flex h-full items-center overflow-hidden bg-background px-[8%]">
             <FluidGrid />
-            <button type="button" onClick={() => setRun((n) => n + 1)} className="relative z-1 cursor-pointer text-left" title="Click to replay">
+            <button id="text-demo-click-to-replay" type="button" onClick={() => setRun((n) => n + 1)} className="relative z-1 cursor-pointer text-left" title="Click to replay">
                 {primary && (
                 <RectangularTextReveal
                     key={run}

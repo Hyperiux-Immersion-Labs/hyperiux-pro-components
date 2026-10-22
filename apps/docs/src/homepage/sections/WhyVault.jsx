@@ -14,6 +14,7 @@ import TuneCard from "../components/why-vault/TuneCard";
 import { TOTAL_LABEL, FREE_EFFECTS } from "@/lib/library-counts";
 import { prefersReducedMotion } from "@/lib/motion";
 import { MEDIA } from "@/lib/breakpoints";
+import { buttonId } from "@/lib/button-id";
 
 const WHY_VAULT_ITEMS = [
     {
@@ -136,6 +137,7 @@ export default function WhyVault() {
                 <nav className="sticky top-[40svh] grid gap-[calc(var(--cvw)*1.2)] self-start max-md:hidden" aria-label="Why Vault sections">
                     {WHY_VAULT_ITEMS.map((item, i) => (
                         <button
+                            id={buttonId("why-vault-go-to", item.id)}
                             key={item.id}
                             type="button"
                             onClick={() => goTo(i)}

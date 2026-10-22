@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { prefersReducedMotion } from "@/lib/motion";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
 import CardFluid from "@/homepage/components/CardFluid";
+import { buttonId } from "@/lib/button-id";
 
 // Teardown timeline
 const TD_DURATION = 2.4;
@@ -300,6 +301,7 @@ export function VoteCard() {
                 <span className="type-small text-foreground/80">{VOTE_IDEAS[i].text}</span>
               </div>
               <button
+                id={buttonId("why-join-panels-toggle", i)}
                 type="button"
                 aria-pressed={on}
                 onClick={() => toggle(i)}
@@ -365,6 +367,7 @@ export function CritiqueCard() {
           <i ref={playRef} className="absolute -top-px left-0 h-px w-0 bg-primary" />
           {CRIT_PINS.map((pin, i) => (
             <button
+              id={buttonId("why-join-panels-button", pin.who)}
               key={pin.who}
               type="button"
               aria-label={`${pin.who}: ${pin.text}`}

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Script from "next/script";
 import { useUser } from "@clerk/nextjs";
+import { buttonId } from "@/lib/button-id";
 
 // Razorpay Standard Checkout button. Two modes:
 //   <RazorpayCheckoutButton amount={1} />                        one-time order (testing)
@@ -153,6 +154,7 @@ export default function RazorpayCheckoutButton({
         onLoad={() => setScriptReady(true)}
       />
       <button
+        id={buttonId("razorpay-checkout", templateSlug || tier, interval)}
         type="button"
         onClick={handlePay}
         disabled={loading || !scriptReady}

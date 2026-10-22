@@ -26,6 +26,7 @@ import {
 import { usePrefersReducedMotion, useResendCooldown, useSiteHeaderHeight, useVaultScene } from "./hooks";
 import { useVaultClerk } from "./useVaultClerk";
 import { getClerkErrorField, getFillEnergy, getStepHint, validateField } from "./utils";
+import { buttonId } from "@/lib/button-id";
 
 gsap.registerPlugin(useGSAP);
 
@@ -386,7 +387,7 @@ export default function VaultDoorAuth({ catalogue }) {
                 {resendSeconds > 0 ? (
                   <span className="text-white/30">Resend in {resendSeconds}s</span>
                 ) : (
-                  <UnderlineButton onClick={handleResend}>Resend code</UnderlineButton>
+                  <UnderlineButton id="vault-door-resend-code" onClick={handleResend}>Resend code</UnderlineButton>
                 )}
               </p>
             )}
@@ -418,6 +419,7 @@ export default function VaultDoorAuth({ catalogue }) {
                     const Icon = OAUTH_ICONS[strategy];
                     return (
                       <button
+                        id={buttonId("vault-door-oauth", strategy)}
                         key={strategy}
                         type="button"
                         onClick={() => handleOAuth(strategy)}

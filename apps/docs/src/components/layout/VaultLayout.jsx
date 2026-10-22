@@ -3,6 +3,7 @@
 import { createContext, useContext, Suspense, useCallback, useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import { useLenis } from "lenis/react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ButtonIdsProvider } from "@/components/ui/ButtonIds";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
@@ -104,6 +105,7 @@ export function VaultLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const isAdminDashboard = /^\/dashboard\/[^/]+\/admin(\/|$)/.test(pathname || "");
 
   const totalEffects =
     propTotalEffects !== undefined ? propTotalEffects : effects.length;
@@ -523,44 +525,48 @@ export function VaultLayout({
   const pageHeight = pathname?.startsWith("/dashboard") ? "min-h-svh" : "min-h-[200vh]";
 
   return (
-    <VaultLayoutContext.Provider value={contextValue}>
-      <div className={`relative ${pageHeight} text-foreground`}>
-        <Suspense fallback={null}>
-          <RouteChangeWatcher
-            isSidebarReady={isSidebarReady}
-            onRouteChange={handleRouteChange}
-          />
-        </Suspense>
-
-        <div className={`relative z-300 flex ${pageHeight} items-start`}>
-          <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
-            <Sidebar
-              effects={effects}
-              effectCounts={effectCounts}
-              totalEffects={totalEffects}
-              isExpanded={isSidebarOpen}
-              onToggle={toggleSidebar}
-              onClose={closeSidebar}
-              activeCategory={activeCategory}
-              topLinks={DOCS_TOP_LINKS}
-              onOverviewNavigate={handleOverviewNavigate}
-              onCategoryNavigate={handleCategoryNavigate}
-              onDocumentationNavigate={handleDocumentationNavigate}
-              disableInitialTransition={!allowSidebarTransition}
-              onMounted={markSidebarMounted}
+    // No button ids anywhere on the admin dashboard (sidebar, header, the pages): GTM
+    // mustn't track admin clicks (components/ui/ButtonIds)
+    <ButtonIdsProvider on={!isAdminDashboard}>
+      <VaultLayoutContext.Provider value={contextValue}>
+        <div className={`relative ${pageHeight} text-foreground`}>
+          <Suspense fallback={null}>
+            <RouteChangeWatcher
+              isSidebarReady={isSidebarReady}
+              onRouteChange={handleRouteChange}
             />
           </Suspense>
 
-          <main className="relative min-w-0 flex-1">
-            {isNavigating ? (
-              // Same loader as loading.js: locks scrolling and stops Lenis while it shows
-              <RouteLoading className="absolute inset-x-0 top-0 flex h-screen items-center justify-center" />
-            ) : (
-              renderedChildren
-            )}
-          </main>
+          <div className={`relative z-300 flex ${pageHeight} items-start`}>
+            <Suspense fallback={<SidebarFallback isExpanded={isSidebarOpen} />}>
+              <Sidebar
+                effects={effects}
+                effectCounts={effectCounts}
+                totalEffects={totalEffects}
+                isExpanded={isSidebarOpen}
+                onToggle={toggleSidebar}
+                onClose={closeSidebar}
+                activeCategory={activeCategory}
+                topLinks={DOCS_TOP_LINKS}
+                onOverviewNavigate={handleOverviewNavigate}
+                onCategoryNavigate={handleCategoryNavigate}
+                onDocumentationNavigate={handleDocumentationNavigate}
+                disableInitialTransition={!allowSidebarTransition}
+                onMounted={markSidebarMounted}
+              />
+            </Suspense>
+
+            <main className="relative min-w-0 flex-1">
+              {isNavigating ? (
+                // Same loader as loading.js: locks scrolling and stops Lenis while it shows
+                <RouteLoading className="absolute inset-x-0 top-0 flex h-screen items-center justify-center" />
+              ) : (
+                renderedChildren
+              )}
+            </main>
+          </div>
         </div>
-      </div>
-    </VaultLayoutContext.Provider>
+      </VaultLayoutContext.Provider>
+    </ButtonIdsProvider>
   );
 }

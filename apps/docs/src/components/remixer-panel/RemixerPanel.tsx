@@ -7,6 +7,7 @@ import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { prefersReducedMotion } from "@/lib/motion";
 import styles from "./remixer-panel.module.css";
 import type { RemixerControl, RemixerOption, RemixerPanelProps } from "./types";
+import { buttonId } from "@/lib/button-id";
 
 async function copyTextToClipboard(text: string) {
   if (navigator.clipboard?.writeText) {
@@ -162,7 +163,7 @@ function ControlField({
 
   if (control.type === "checkbox" || control.type === "toggle") {
     return (
-      <button type="button" onClick={() => onChange(!value)} className={`${styles.field} ${styles.toggleRow}`}>
+      <button id={buttonId("remixer-panel-toggle", control.id)} type="button" onClick={() => onChange(!value)} className={`${styles.field} ${styles.toggleRow}`}>
         <span className={styles.fieldLabel}>{control.label}</span>
         <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
           <CheckTick />
@@ -228,6 +229,7 @@ function ControlField({
 
             return (
               <button
+                id={buttonId("remixer-panel-option", control.id, String(optionValue))}
                 key={String(optionValue)}
                 type="button"
                 onClick={() => onChange(optionValue)}
@@ -413,7 +415,7 @@ export default function RemixerPanel({
           const isOpen = openGroupId === group.id;
           return (
             <section key={group.id} className={`${styles.group} ${isOpen ? styles.groupOpen : ""}`}>
-              <button type="button" onClick={() => setOpenGroupId(isOpen ? null : group.id ?? null)} className={styles.groupTrigger}>
+              <button id={buttonId("remixer-panel-open-group-id", group.id)} type="button" onClick={() => setOpenGroupId(isOpen ? null : group.id ?? null)} className={styles.groupTrigger}>
                 <span className={styles.groupTitle}>{group.title}</span>
                 <ChevronDown className={styles.groupChevron} />
               </button>
@@ -431,11 +433,11 @@ export default function RemixerPanel({
       <div className={styles.footer}>
         <div className={styles.footerActions}>
           {canCopy ? (
-            <button type="button" onClick={handleCopy} aria-label={copied ? "Props copied" : "Copy props"} className={`${styles.footerButton} ${copied ? styles.footerButtonDone : ""}`}>
+            <button id="remixer-panel-copy-props" type="button" onClick={handleCopy} aria-label={copied ? "Props copied" : "Copy props"} className={`${styles.footerButton} ${copied ? styles.footerButtonDone : ""}`}>
               <CopyButtonContent copied={copied} labelClassName={styles.footerButtonText} />
             </button>
           ) : null}
-          <button type="button" onClick={handleReset} className={styles.footerButton}>
+          <button id="remixer-panel-reset" type="button" onClick={handleReset} className={styles.footerButton}>
             <span ref={resetIconRef} className={styles.resetIcon}>
               <RotateCcw className={styles.actionIcon} />
             </span>

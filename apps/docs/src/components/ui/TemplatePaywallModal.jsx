@@ -117,6 +117,7 @@ export function TemplatePaywallModal({
         onClick={(event) => event.stopPropagation()}
       >
         <button
+          id="template-paywall-modal-close"
           type="button"
           aria-label="Close"
           onClick={onClose}

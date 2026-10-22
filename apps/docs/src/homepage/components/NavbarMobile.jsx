@@ -14,6 +14,7 @@ import { prefersReducedMotion } from "@/lib/motion";
 import Button from "./Button";
 import NavMenuIcon from "./NavMenuIcon";
 import { NAV_MENUS } from "./nav-menu";
+import { buttonId } from "@/lib/button-id";
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -304,6 +305,7 @@ export default function NavbarMobile({
           />
           {SHOW_HEADER_SEARCH && (
             <button
+              id="navbar-mobile-search-effects"
               type="button"
               onClick={handleSearch}
               aria-label="Search effects"
@@ -328,6 +330,7 @@ export default function NavbarMobile({
           )}
 
           <button
+            id="navbar-mobile-open-menu"
             type="button"
             onClick={() => setOpen((current) => !current)}
             aria-label={open ? "Close menu" : "Open menu"}
@@ -390,6 +393,7 @@ export default function NavbarMobile({
                 >
                   <div className="flex items-center justify-between">
                     <button
+                      id={buttonId("navbar-mobile-section", key)}
                       type="button"
                       onClick={() =>
                         setSection((current) => (current === key ? null : key))
@@ -446,12 +450,14 @@ export default function NavbarMobile({
             {/* Across the menu; tablet: touch-sized (15-17px text, 48px tall), as VaultHeader */}
             {isSignedIn ? (
               <Button
+                id="navbar-mobile-go-to-dashboard"
                 text="Go to Dashboard"
                 href="/dashboard"
                 className="w-full max-lg:py-3 max-lg:text-[clamp(15px,1.8vw,17px)] max-md:py-[1.5vw] max-md:text-[4vw]"
               />
             ) : (
               <Button
+                id="navbar-mobile-sign-in"
                 text="Sign In"
                 href="/sign-in"
                 className="w-full max-lg:py-3 max-lg:text-[clamp(15px,1.8vw,17px)]"

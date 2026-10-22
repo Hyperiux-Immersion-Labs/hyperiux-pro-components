@@ -11,6 +11,7 @@ import { DarkSegment } from "@/components/ui/DarkSegment";
 import { displayName } from "@/lib/display-name";
 import { useAdminRole } from "@/lib/useAdminRole";
 import { dashboardUsername } from "@/lib/user-slug";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const VIEWS = [
   { id: "user", label: "User" },
@@ -36,6 +37,7 @@ function MenuLink({ href, label, figure, onClick }) {
  * Admin switch on top that swaps the links between their own dashboard and the admin one.
  */
 export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "free" }) {
+  const bid = useButtonId();
   const { user } = useUser();
   const { signOut } = useClerk();
   const pathname = usePathname();
@@ -87,6 +89,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
   return (
     <div ref={dropdownRef} className="relative">
       <button
+        id={bid("profile-drop-down-user-menu")}
         onClick={() => setOpen(!open)}
         className="group relative flex size-(--vault-ctl-h) shrink-0 items-center justify-center p-0.5 rounded-full cursor-pointer outline-none focus-visible:ring-1 focus-visible:ring-primary"
         aria-label="User menu"
@@ -133,7 +136,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
 
         {isAdmin && (
           <div className="border-b border-white/10 px-5 py-3">
-            <DarkSegment label="Menu links" items={VIEWS} value={view} onChange={setViewPick} itemClassName="w-30" />
+            <DarkSegment id={bid("profile-drop-down-menu-links")} label="Menu links" items={VIEWS} value={view} onChange={setViewPick} itemClassName="w-30" />
           </div>
         )}
 
@@ -145,6 +148,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
 
         <div className="border-t border-white/10 p-2">
           <button
+            id={bid("profile-drop-down-sign-out")}
             // Stay on this page (reloaded, so account-dependent content - unlocked code,
             // saved hearts, plan buttons - shows the signed-out view). The dashboard needs
             // a session, so signing out there goes to the effects listing instead.

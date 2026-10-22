@@ -8,6 +8,7 @@ import { useCopyLimit } from "./useCopyLimit";
 import { getLimitNudge } from "@/lib/limitNudge";
 import { AnimatePresence, motion } from "motion/react";
 import { MEDIA } from "@/lib/breakpoints";
+import { buttonId } from "@/lib/button-id";
 
 // The trigger's text rolls like the code block's Copy -> Copied label
 const ROLL_EASE = [0.65, 0, 0.35, 1];
@@ -158,6 +159,7 @@ function ProLockOverlay({ onUpgrade }) {
       </p>
       <div className="contents" onPointerEnter={() => setHovered(true)} onPointerLeave={() => setHovered(false)}>
         <button
+          id="get-code-menu-upgrade"
           type="button"
           role="menuitem"
           onClick={onUpgrade}
@@ -431,6 +433,7 @@ export default function GetCodeMenu({
   return (
     <div ref={rootRef} className={`relative flex shrink-0 self-stretch ${className}`}>
       <button
+        id="get-code-menu-get-code"
         ref={triggerRef}
         type="button"
         aria-haspopup="menu"
@@ -537,6 +540,7 @@ export default function GetCodeMenu({
 
               {["jsx", "tsx"].map((option) => (
                 <MenuItem
+                  id={buttonId("get-code-menu-copy-file", option)}
                   key={option}
                   onSelect={() => copyFromServer(option)}
                   disabled={codeLocked || codeLimited || busy}
@@ -554,6 +558,7 @@ export default function GetCodeMenu({
               <span aria-hidden="true" className="block py-1.5"><span className="block h-px w-full bg-foreground/10" /></span>
 
               <MenuItem
+                id="get-code-menu-copy-cli"
                 onSelect={() => copyLocalText("cli", cliCommand)}
                 disabled={codeLocked}
                 aria-label="Copy CLI Command"
@@ -566,6 +571,7 @@ export default function GetCodeMenu({
               </MenuItem>
 
               <MenuItem
+                id="get-code-menu-copy-mcp"
                 onSelect={onMcpSelect}
                 disabled={codeLocked}
                 aria-label="Copy MCP prompt"
@@ -578,6 +584,7 @@ export default function GetCodeMenu({
               </MenuItem>
 
               <MenuItem
+                id="get-code-menu-copy-ai-prompt"
                 onSelect={() => copyFromServer("prompt")}
                 disabled={codeLocked || busy}
                 aria-label="Copy AI Prompt"
@@ -594,6 +601,7 @@ export default function GetCodeMenu({
                   <span>You&apos;ve reached today&apos;s copy limit.</span>
                   {lockedCtaHref && (
                     <button
+                      id="get-code-menu-limit-upgrade"
                       type="button"
                       role="menuitem"
                       onClick={() => {
@@ -614,6 +622,7 @@ export default function GetCodeMenu({
                 Is the Hyperiux MCP installed in your project?
               </p>
               <MenuItem
+                id="get-code-menu-mcp-confirm"
                 onSelect={() => {
                   rememberMcpInstalled();
                   copyLocalText("mcp", buildMcpPrompt(effectSlug, title));
@@ -635,7 +644,7 @@ export default function GetCodeMenu({
                   No, show me how to install it
                 </span>
               </Link>
-              <MenuItem onSelect={() => setView("menu")} className="text-foreground/60">
+              <MenuItem id="get-code-menu-back" onSelect={() => setView("menu")} className="text-foreground/60">
                 Back
               </MenuItem>
             </div>

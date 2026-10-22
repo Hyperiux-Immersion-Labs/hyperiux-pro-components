@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { buttonId } from "@/lib/button-id";
 
 // Matches the two select-trigger sizes already used across the admin pages:
 // the filter-bar style (default) and the compact per-table-row style.
@@ -73,6 +74,7 @@ export function CustomSelect({
   return (
     <div ref={rootRef} className={`relative inline-block text-sm ${className}`}>
       <button
+        id="custom-select-open"
         type="button"
         disabled={disabled}
         onClick={() => setOpen((isOpen) => !isOpen)}
@@ -103,6 +105,7 @@ export function CustomSelect({
 
             return (
               <button
+                id={buttonId("custom-select-change", option.value)}
                 key={option.value}
                 type="button"
                 role="option"

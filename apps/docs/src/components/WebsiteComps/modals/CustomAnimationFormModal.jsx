@@ -135,6 +135,7 @@ function CustomAnimationFormTriggerInner({
 
   return (
     <button
+      id="custom-animation-form-modal-open-custom-animation-form"
       type="button"
       onClick={openCustomAnimationForm}
       className={className}
@@ -352,6 +353,7 @@ function CustomAnimationFormModalInner() {
             >
               {/* Same close control as the site's other modals. */}
               <button
+                id="custom-animation-form-modal-close"
                 type="button"
                 aria-label="Close"
                 onClick={closeCustomAnimationForm}
@@ -468,7 +470,7 @@ function CustomAnimationFormModalInner() {
 
                   {/* Same submit control as the sign-in page: Button + a hidden real
                       submit button so Enter in a field still submits. */}
-                  <SubmitButton loading={isSubmitting} formRef={formRef} className="w-fit">
+                  <SubmitButton id="custom-animation-form-modal-send-request" loading={isSubmitting} formRef={formRef} className="w-fit">
                     Send Request
                   </SubmitButton>
                 </form>

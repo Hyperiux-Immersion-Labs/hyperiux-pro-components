@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useFadeIn, useFadeUp } from "@/components/Animations/gsapAnimations";
+import { buttonId } from "@/lib/button-id";
 
 // Same chips and text sizes as the effects listing's light catalogue sheet
 const CHIP = `inline-flex h-8 shrink-0 cursor-pointer items-center gap-[calc(var(--cvw)*0.5)] px-3 type-small transition-[background-color,color,box-shadow] duration-500 max-md:gap-[2vw]`;
@@ -64,6 +65,7 @@ function SlidingSegment({ label, items, value, onChange, itemClassName, classNam
         const active = item.id === value;
         return (
           <button
+            id={buttonId("blog-listing-change", item.id)}
             key={item.id}
             type="button"
             aria-pressed={active}
@@ -153,6 +155,7 @@ export default function BlogListing({
           </div>
 
           <SlidingSegment
+            id="blog-listing-columns"
             label="Columns"
             items={COLUMN_ITEMS}
             value={cols}

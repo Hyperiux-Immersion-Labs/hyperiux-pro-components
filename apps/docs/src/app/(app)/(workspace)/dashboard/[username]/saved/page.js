@@ -105,7 +105,7 @@ export default function SavedEffectsPage() {
         <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
           <p className="type-h3">We couldn’t load your saved effects.</p>
           <p className="type-body text-black/60">Check your connection and try again.</p>
-          <Button text="Try again" preventDefault onClick={retry} />
+          <Button id="dashboard-saved-try-again" text="Try again" preventDefault onClick={retry} />
         </div>
       ) : rows === null ? (
         <div aria-busy="true" aria-label="Loading your saved effects" className="flex flex-col gap-[calc(var(--cvw)*1.6)] max-lg:gap-6">
@@ -128,7 +128,7 @@ export default function SavedEffectsPage() {
         <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
           <p className="type-h3">Nothing saved yet.</p>
           <p className="type-body text-black/60">Tap the heart on any effect to keep it here.</p>
-          <Button href="/effects" text="Browse All Effects" />
+          <Button id="dashboard-saved-browse-all-effects" href="/effects" text="Browse All Effects" />
         </div>
       ) : (
         <>
@@ -136,9 +136,10 @@ export default function SavedEffectsPage() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <FilteredCount shown={shown.length} total={rows.length} noun="saved" />
             <div className={TOOLBAR}>
-              <SlidingSegment label="Tier" items={TIERS} value={tier} onChange={setTier} itemClassName="w-14" />
+              <SlidingSegment id="dashboard-saved-tier" label="Tier" items={TIERS} value={tier} onChange={setTier} itemClassName="w-14" />
               {categoryChips.length > 1 && (
                 <FilterMenu
+                  id="dashboard-saved-category"
                   tone="light"
                   variant="label"
                   alignRight
@@ -152,6 +153,7 @@ export default function SavedEffectsPage() {
                 />
               )}
               <FilterMenu
+                id="dashboard-saved-sort"
                 tone="light"
                 alignRight
                 panelClassName="left-auto! right-0"
@@ -162,7 +164,7 @@ export default function SavedEffectsPage() {
                 onClear={() => setSort("recent")}
               />
               <DateRangeFilter label="Saved" value={dates} onChange={setDates} />
-              <SlidingSegment label="Columns" items={COLUMN_ITEMS} value={shownCols} onChange={(n) => { captureGrid(); chooseCols(n); }} itemClassName="w-8.5" className="max-lg:hidden" />
+              <SlidingSegment id="dashboard-saved-columns" label="Columns" items={COLUMN_ITEMS} value={shownCols} onChange={(n) => { captureGrid(); chooseCols(n); }} itemClassName="w-8.5" className="max-lg:hidden" />
             </div>
           </div>
 

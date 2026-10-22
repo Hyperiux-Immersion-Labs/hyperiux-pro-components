@@ -16,6 +16,7 @@ import { DarkSegment } from "@/components/ui/DarkSegment";
 import { ADMIN_TABS, USER_TABS, activeTab, canSeeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
 import { DashboardProvider, HERO_ASIDE_ID } from "./DashboardContext";
 import { YourAccess } from "./YourAccess";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Each tab's header: the heading (its last words orange) and the line under it.
 // Overview's heading is the greeting, built in the shell.
@@ -106,6 +107,7 @@ function TabRow({ children, activeKey, tabsKey }) {
  * by account (Activity, Users, Invoicing) put that choice beside their own date filter.
  */
 export function DashboardShell({ username, effects = [], catalog = [], children }) {
+  const bid = useButtonId();
   const pathname = usePathname();
   const router = useRouter();
   const { user, isLoaded: clerkLoaded, isSignedIn } = useUser();
@@ -191,6 +193,7 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
           <div className="flex items-center justify-between gap-4">
             <div className="flex min-w-0 items-center gap-4">
               <button
+                id={bid("dashboard-shell-go-back")}
                 type="button"
                 onClick={() => router.back()}
                 aria-label="Go back"
@@ -209,7 +212,7 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
                 {/* which admin they are and what they may do */}
                 <YourAccess className="max-md:hidden" owner={isSuperAdmin} roleNames={previewRole?.roleNames || role.roleNames} permissions={previewRole?.permissions || role.permissions} />
                 <span className="type-label self-center text-foreground/80 max-md:hidden">View as</span>
-                <DarkSegment buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20 max-md:w-16 max-md:text-[15px]!" />
+                <DarkSegment id={bid("dashboard-shell-dashboard-view")} buttonSize label="Dashboard view" items={VIEWS} value={view} onChange={switchView} itemClassName="w-[calc(var(--cvw)*6)] max-lg:w-20 max-md:w-16 max-md:text-[15px]!" />
               </div>
             )}
           </div>

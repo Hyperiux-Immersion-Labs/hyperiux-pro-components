@@ -4,6 +4,7 @@ import { useState } from "react";
 import { getSafeRedirectPath } from "@/lib/safe-redirect";
 import { Eye, EyeOff } from "lucide-react";
 import Button from "@/homepage/components/Button";
+import { buttonId } from "@/lib/button-id";
 
 // Shared auth helpers (also used by components/auth/vault-door) plus the
 // form building blocks CustomAnimationFormModal still renders.
@@ -72,6 +73,7 @@ export function TextField({ id, label, type = "text", value, onChange, placehold
         />
         {isPassword && (
           <button
+            id="auth-form-show-password"
             type="button"
             onClick={() => setVisible((v) => !v)}
             className="absolute right-3.5 top-1/2 -translate-y-1/2 text-white/40 transition hover:text-white"
@@ -114,6 +116,7 @@ export function SubmitButton({ loading, formRef, children, className }) {
   return (
     <>
       <button
+        id="auth-form-submit-hidden"
         type="submit"
         disabled={loading}
         tabIndex={-1}
@@ -121,6 +124,7 @@ export function SubmitButton({ loading, formRef, children, className }) {
         className="h-0 w-0 overflow-hidden border-0 p-0 opacity-0"
       />
       <Button
+        id="auth-form-submit"
         href="#"
         preventDefault
         disabled={loading}
@@ -136,6 +140,7 @@ export function SubmitButton({ loading, formRef, children, className }) {
 export function SecondaryButton({ onClick, children }) {
   return (
     <button
+      id={buttonId("auth-form", typeof children === "string" ? children : "secondary")}
       type="button"
       onClick={onClick}
       className="text-sm text-white/50 transition hover:text-primary duration-300 ease-in-out "

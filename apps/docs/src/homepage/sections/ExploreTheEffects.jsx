@@ -11,6 +11,7 @@ import { useInteraction } from "@/homepage/components/InteractionProvider";
 import { prefersReducedMotion } from "@/lib/motion";
 import Image from "next/image";
 import { LISTING_IMAGE, resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";
+import { buttonId } from "@/lib/button-id";
 
 gsap.registerPlugin(useGSAP);
 
@@ -182,6 +183,7 @@ export default function ExploreTheEffects() {
                 </span>
                 {CATEGORIES.map((category, i) => (
                     <button
+                        id={buttonId("explore-the-effects-choose", category.label)}
                         key={category.label}
                         type="button"
                         role="tab"
@@ -222,7 +224,7 @@ export default function ExploreTheEffects() {
                                 <h3 className="type-h3">{item.title}</h3>
                                 <p className="type-body text-white/60">{item.text}</p>
                             </div>
-                            <LinkButton href={item.href} text="Explore" underline tilted={false} underlineClassName="mt-0" className="type-small text-white hover:text-primary transition-colors duration-300" />
+                            <LinkButton id={buttonId("explore-the-effects-explore", item.href)} href={item.href} text="Explore" underline tilted={false} underlineClassName="mt-0" className="type-small text-white hover:text-primary transition-colors duration-300" />
                         </div>
                     </article>
                 ))}

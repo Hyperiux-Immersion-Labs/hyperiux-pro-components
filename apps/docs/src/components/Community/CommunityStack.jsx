@@ -9,6 +9,7 @@ import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { useInteraction } from "@/homepage/components/InteractionProvider";
 import { prefersReducedMotion } from "@/lib/motion";
 import { setStack, useCommunity } from "./community-store";
+import { buttonId } from "@/lib/button-id";
 
 const STACKS = ["React", "Next.js", "GSAP", "Three.js", "WebGL", "Motion", "Lenis", "Vue", "Svelte", "Webflow"];
 
@@ -64,6 +65,7 @@ export default function CommunityStack() {
           <div data-chips className="flex flex-wrap justify-center gap-[calc(var(--cvw)*0.7)] max-lg:gap-[1.5vw] max-md:gap-[2.5vw]" role="group" aria-label="Your stack">
             {STACKS.map((name, i) => (
               <button
+                id={buttonId("community-stack-toggle", name)}
                 key={name}
                 type="button"
                 data-chip

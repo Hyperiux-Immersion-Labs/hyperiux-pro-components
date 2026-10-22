@@ -36,6 +36,7 @@ export function StepTrack({ stepIndex, total, direction, stepKey, onBack, busy =
       <div className="grid gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
         <div className="flex items-center justify-between gap-4">
           <button
+            id="step-track-back-to-the-previous-step"
             type="button"
             onClick={onBack}
             disabled={busy || stepIndex === 0}

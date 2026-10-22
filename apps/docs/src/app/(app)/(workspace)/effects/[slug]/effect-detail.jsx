@@ -338,6 +338,7 @@ export function EffectDetailContent({
                     when the visitor came from that category's listing */}
                 <div className="flex min-w-0 items-center gap-4">
                   <button
+                    id="effect-detail-go-back"
                     type="button"
                     onClick={() => router.back()}
                     aria-label="Go back"
@@ -488,6 +489,7 @@ export function EffectDetailContent({
                       {showRelatedSliderControls && (
                         <div className="flex items-center justify-center gap-[calc(var(--cvw)*2)] max-md:justify-start">
                           <SliderArrowButton
+                            id="effect-detail-show-previous-related-effects"
                             direction="prev"
                             tone="light"
                             onClick={() => stepRelated(-1)}
@@ -495,6 +497,7 @@ export function EffectDetailContent({
                             ariaLabel="Show previous related effects"
                           />
                           <SliderArrowButton
+                            id="effect-detail-show-next-related-effects"
                             direction="next"
                             tone="light"
                             onClick={() => stepRelated(1)}

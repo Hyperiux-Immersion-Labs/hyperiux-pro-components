@@ -25,6 +25,7 @@ import { DarkSegment } from "@/components/ui/DarkSegment";
 import { CARD_LAYOUT_TRANSITION } from "../effects/EffectCard";
 import { PLANS, getCreditsPerYear } from "@/lib/plans";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+import { buttonId } from "@/lib/button-id";
 
 // three.js only loads when the corridor is shown.
 const TemplateCorridor = dynamic(() => import("./TemplateCorridor"), {
@@ -195,11 +196,12 @@ export function TemplatesListing({ templates: baseTemplates = [], description = 
 
         {/* view on the left · category + catalogue on the right */}
         <motion.div {...heroFadeUp(1.2)} className="flex flex-wrap items-center justify-between gap-3.5 pt-7 max-md:pt-3">
-          {canChooseView && <DarkSegment label="View" items={viewItems} value={view} onChange={setChosenView} itemClassName="w-[calc(var(--cvw)*5.5)] max-lg:w-20" />}
+          {canChooseView && <DarkSegment id="templates-listing-view" label="View" items={viewItems} value={view} onChange={setChosenView} itemClassName="w-[calc(var(--cvw)*5.5)] max-lg:w-20" />}
           <div className="ml-auto flex flex-wrap items-center gap-3.5 max-md:ml-0">
             <div role="group" aria-label="Category" className="flex flex-wrap gap-1.5">
               {categories.map((c) => (
                 <button
+                  id={buttonId("templates-listing-category", c)}
                   key={c}
                   type="button"
                   aria-pressed={category === c}
@@ -213,6 +215,7 @@ export function TemplatesListing({ templates: baseTemplates = [], description = 
             {/* Phones: just the category chips - the All / Selected / Pro+ filter is hidden. */}
             <div className="max-md:hidden">
               <FilterMenu
+                id="templates-listing-catalogue"
                 alignRight
                 // Same resting look as the category chips beside it
                 idleClassName={CHIP_OFF}
@@ -252,6 +255,7 @@ export function TemplatesListing({ templates: baseTemplates = [], description = 
               <b className="type-h2">No templates match that filter yet.</b>
               <p className="type-body text-black/60">New templates land in the vault regularly.</p>
               <button
+                id="templates-listing-clear-filters"
                 type="button"
                 onClick={clearFilters}
                 className={`${LABEL} h-11 cursor-pointer px-5 ring-1 ring-inset ring-black/10 transition-shadow duration-500 hover:ring-primary`}
@@ -292,7 +296,7 @@ export function TemplatesListing({ templates: baseTemplates = [], description = 
               Buy a template outright, or redeem a credit from your plan. Either way the whole source is yours.
             </p>
             <div className="fadeup flex">
-              <Button className="tracking-normal!" text="Compare Plans" href="/pricing#compare" />
+              <Button id="templates-listing-compare-plans" className="tracking-normal!" text="Compare Plans" href="/pricing#compare" />
             </div>
           </div>
 

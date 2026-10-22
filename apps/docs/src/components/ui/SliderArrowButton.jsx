@@ -3,6 +3,7 @@
 import { twMerge } from "tailwind-merge";
 import { ArrowIcon } from "@/components/WebsiteComps/Icons";
 import Button from "@/homepage/components/Button";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const TONES = {
   // On dark surfaces (the listing's trending row)
@@ -21,7 +22,9 @@ const TONES = {
  * so the waiting arrow is always fully outside the box - at any button size (an
  * offset based on the icon's own width left it peeking in on large screens).
  */
-export function SliderArrowButton({ direction = "next", onClick, disabled = false, ariaLabel, tone = "dark", className = "" }) {
+// `id` defaults to the label: "previous-effects", "next-page"
+export function SliderArrowButton({ direction = "next", onClick, disabled = false, ariaLabel, tone = "dark", className = "", id }) {
+  const bid = useButtonId();
   const isPrev = direction === "prev";
   // ArrowIcon points up-right; these turn it to point left / right.
   const rotate = isPrev ? "-rotate-135" : "rotate-45";
@@ -33,6 +36,7 @@ export function SliderArrowButton({ direction = "next", onClick, disabled = fals
   return (
     <button
       type="button"
+      id={id || bid(ariaLabel ?? (isPrev ? "previous" : "next"))}
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel ?? (isPrev ? "Previous" : "Next")}
@@ -69,18 +73,21 @@ export function SliderNav({
   nextLabel = "Next",
   tone = "light",
   className = "",
+  // "<id>-explore", "<id>-prev", "<id>-next"
+  id = "slider",
 }) {
+  const bid = useButtonId();
   // Square, at the Explore button's height: it stretches to the row, and its width is
   // Button's desktop height (text 1.15vw x 1.5 line height + py-2). The nav is hidden
   // below lg, where Button's text size changes.
   const arrow = "h-auto self-stretch w-[calc(var(--hx-vw,1vw)*1.725+1rem)]";
   return (
     <div className={twMerge("flex items-stretch gap-[calc(var(--cvw)*0.5)]", className)}>
-      {exploreText && <Button text={exploreText} href={exploreHref} variant="orange" className="shrink-0" />}
+      {exploreText && <Button id={bid(id, "explore")} text={exploreText} href={exploreHref} variant="orange" className="shrink-0" />}
       {showArrows && (
         <>
-          <SliderArrowButton direction="prev" tone={tone} onClick={onPrev} disabled={!canPrev} ariaLabel={prevLabel} className={arrow} />
-          <SliderArrowButton direction="next" tone={tone} onClick={onNext} disabled={!canNext} ariaLabel={nextLabel} className={arrow} />
+          <SliderArrowButton id={bid(id, "prev")} direction="prev" tone={tone} onClick={onPrev} disabled={!canPrev} ariaLabel={prevLabel} className={arrow} />
+          <SliderArrowButton id={bid(id, "next")} direction="next" tone={tone} onClick={onNext} disabled={!canNext} ariaLabel={nextLabel} className={arrow} />
         </>
       )}
     </div>

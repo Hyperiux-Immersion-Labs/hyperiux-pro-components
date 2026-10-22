@@ -50,6 +50,7 @@ export default function BlogShareLinks({ url, title }) {
       ))}
 
       <button
+        id="blog-share-links-copy-link"
         type="button"
         onClick={copyLink}
         aria-label="Copy link"

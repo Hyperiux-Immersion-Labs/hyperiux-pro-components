@@ -26,6 +26,7 @@ import { GetTemplateModal } from "./GetTemplateModal";
 import { MEDIA } from "@/lib/breakpoints";
 import { markTemplateOwned } from "../useTemplateAccess";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+import { buttonId } from "@/lib/button-id";
 
 // three.js only loads when the exploded view is shown.
 const TemplateExploded = dynamic(() => import("./TemplateExploded"), {
@@ -337,6 +338,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
               {/* items-stretch: heart, Buy and Demo share one height. */}
               <div className="flex flex-wrap items-stretch gap-2">
                 <button
+                  id="template-detail-save-template"
                   type="button"
                   onClick={() => toggleWishlist(template)}
                   aria-pressed={wishlist.includes(template.slug)}
@@ -346,6 +348,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
                   <Heart className={`size-4 ${wishlist.includes(template.slug) ? "fill-primary text-primary" : ""}`} aria-hidden="true" />
                 </button>
                 <button
+                  id="template-detail-buy-template"
                   type="button"
                   disabled={accessPending}
                   aria-busy={accessPending}
@@ -371,6 +374,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
                 </button>
                 {/* The live template, in a new tab */}
                 <Button
+                  id="template-detail-open-the-demo-in-a-new-tab"
                   text="Demo"
                   href={template.previewHref}
                   target_blank
@@ -471,7 +475,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
                 </h2>
               </HeadAnim>
               <div className="fadeup max-md:hidden">
-                <Button className="tracking-normal!" text="All Templates" href="/templates" />
+                <Button id="template-detail-related-all-templates" className="tracking-normal!" text="All Templates" href="/templates" />
               </div>
             </div>
             {/* Same spacing and card width as the /templates grid (TemplatesListing) */}
@@ -484,7 +488,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
               ))}
             </div>
              <div className="fadeup hidden max-md:block">
-                <Button className="tracking-normal!" text="All Templates" href="/templates" />
+                <Button id="template-detail-related-all-templates-mobile" className="tracking-normal!" text="All Templates" href="/templates" />
               </div>
           </section>
         )}
@@ -593,6 +597,7 @@ function LivePreview({ template, device, toolbar = null }) {
       </div>
       {!interactive && (
         <button
+          id="template-detail-click-to-interact-with-the-live-preview"
           type="button"
           aria-label="Click to interact with the live preview"
           onClick={() => setInteractive(true)}
@@ -641,6 +646,7 @@ function Segment({ label, items, value, onChange, itemClassName }) {
         const active = item.id === value;
         return (
           <button
+            id={buttonId("template-detail-change", item.id)}
             key={item.id}
             type="button"
             role="radio"

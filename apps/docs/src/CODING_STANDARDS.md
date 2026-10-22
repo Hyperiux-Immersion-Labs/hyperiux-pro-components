@@ -470,7 +470,36 @@ Prefer helper functions or early returns.
 
 ---
 
-# 16. Self-Contained Effects
+# 16. Button IDs (site code)
+
+Every button in the site's own code has an `id`, so analytics can tell clicks apart. This covers pages, layout, dashboard, admin and shared UI; it does not cover effect components or demo pages.
+
+"Button" means anything clickable: `<button>`, the site `<Button>` (a link), `LinkButton`, `TextButton`, `SubmitButton`, `SliderArrowButton`, `FilterMenu`, `SlidingSegment`, `DarkSegment`, `Toggle`, `Confirm`, and elements with `role="button"`, `"menuitem"`, `"tab"` or `"radio"`.
+
+Ids read `<area>-<action>`: lowercase, words joined by `-`. The area is the page or component; the action is what the button does.
+
+```jsx
+<button id="admin-users-delete-permanently">Delete Permanently</button>
+<Button id="pricing-hero-see-the-plans" text="See the Plans" href="#plans" />
+```
+
+A button drawn in a loop, or a component that appears several times on a page, adds the item with `buttonId()` (`@/lib/button-id`), so every id on the page stays unique.
+
+```jsx
+{users.map((user) => (
+  <button key={user.id} id={buttonId("admin-users-manage", user.id)}>Manage</button>
+))}
+```
+
+Name the action, not the look: `save-access`, not `orange-button`. Keep ids stable: build them from the resting label ("Save", not "Saving…") and from ids or slugs, never from counts or changing text.
+
+Shared components take an `id` prop and pass it to their real button; without one they build it from their label. Pass one anyway when the same label repeats on a page.
+
+Clicks on anything with an id reach GTM as one `button_click` event (`components/WebsiteComps/ButtonClickTracking.jsx`), so a new button is tracked as soon as it has an id. Admin pages are not tracked.
+
+---
+
+# 17. Self-Contained Effects
 
 Every effect must be independent.
 
@@ -490,7 +519,7 @@ No effect-specific files outside its folder.
 
 ---
 
-# 17. Demo Rules
+# 18. Demo Rules
 
 Each demo must import its corresponding component and `DemoHeader`.
 
@@ -514,7 +543,7 @@ Do not add state or interactive logic to the demo.
 
 ---
 
-# 18. Final Checklist
+# 19. Final Checklist
 
 Before submitting an effect, verify:
 
@@ -538,3 +567,7 @@ Before submitting an effect, verify:
 * `page.js` includes `DemoHeader`, the effect component, and optional hint UI only. `ScrollBottom` is optional.
 * No `"use client"` in demo `page.js`.
 * Naming is consistent throughout the project.
+
+For site code (pages, layout, dashboard, admin, shared UI), also verify:
+
+* Every button has an `id` in the `<area>-<action>` form (section 16); repeated ones use `buttonId()`.

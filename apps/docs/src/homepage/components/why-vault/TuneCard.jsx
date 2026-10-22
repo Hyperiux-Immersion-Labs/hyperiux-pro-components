@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { prefersReducedMotion } from "@/lib/motion";
+import { buttonId } from "@/lib/button-id";
 
 const EASINGS = [
     ["Expo", "expo.out"],
@@ -146,6 +147,7 @@ export default function TuneCard({ replayKey }) {
                         />
                         {EASINGS.map(([name, value]) => (
                             <button
+                                id={buttonId("tune-card-ease", value)}
                                 key={value}
                                 type="button"
                                 aria-pressed={ease === value}

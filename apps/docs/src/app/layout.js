@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import DeferredAnalytics from "@/components/WebsiteComps/DeferredAnalytics";
 import DeferredGTM from "@/components/WebsiteComps/DeferredGTM";
+import ButtonClickTracking from "@/components/WebsiteComps/ButtonClickTracking";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -158,6 +159,8 @@ export default function RootLayout({ children }) {
         <Analytics />
         <SpeedInsights />
         <DeferredGTM />
+        {/* every button click with an id, as one GTM event (button_click) */}
+        <ButtonClickTracking />
         <DeferredAnalytics />
       </body>
     </html>

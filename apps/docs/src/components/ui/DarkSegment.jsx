@@ -3,6 +3,7 @@
 import { T14 } from "@/app/(app)/(workspace)/templates/tokens";
 import { BUTTON_TEXT } from "@/homepage/components/Button";
 import { motion, useReducedMotion } from "motion/react";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Overall height = the padding below plus the 3px (p-0.75) the track adds on each side
 const COMPACT = `py-[calc(0.375rem-3px)] ${T14} max-md:py-[calc(0.75rem-3px)]`;
@@ -16,7 +17,10 @@ const BUTTON = `py-[calc(0.5rem-3px)] ${BUTTON_TEXT} max-md:py-[calc(0.75rem-3px
  * `buttonSize` makes it as tall as, and the same text as, the standard Button.
  * `item.hidden` fades and collapses an option together, disabling it immediately.
  */
-export function DarkSegment({ label, items, value, onChange, itemClassName, buttonSize = false }) {
+export function DarkSegment({ label, items, value, onChange, itemClassName, buttonSize = false, id }) {
+  // Each option's id: `<id or label>-<option>` ("dashboard-view-admin")
+  const bid = useButtonId();
+  const base = id || bid(label);
   const index = Math.max(0, items.findIndex((item) => item.id === value));
   const visibleIndex = items.slice(0, index).filter((item) => !item.hidden).length;
   const reducedMotion = useReducedMotion();
@@ -40,6 +44,7 @@ export function DarkSegment({ label, items, value, onChange, itemClassName, butt
             className="relative shrink-0 overflow-hidden"
           >
           <button
+            id={bid(base, item.id)}
             type="button"
             role="radio"
             aria-checked={active}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import CursorDemo from "./CursorDemo";
 import ScrollDemo from "./ScrollDemo";
 import TextDemo from "./TextDemo";
+import { buttonId } from "@/lib/button-id";
 
 const TABS = [
     { id: "scroll", label: "Scroll", effect: "Scroll Distortion", href: "/effects/scroll-effects/scroll-distortion" },
@@ -80,6 +81,7 @@ export default function MomentsCard() {
                 />
                 {TABS.map((t) => (
                     <button
+                        id={buttonId("moments-card-leaving", t.id)}
                         key={t.id}
                         type="button"
                         role="tab"

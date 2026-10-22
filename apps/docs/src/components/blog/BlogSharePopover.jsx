@@ -120,6 +120,7 @@ export default function BlogSharePopover({ url, title }) {
     <div ref={rootRef} className="relative w-fit">
       <Tooltip label="Share" hideOnClick>
         <button
+          id="blog-share-popover-share-this-post"
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-label="Share this post"

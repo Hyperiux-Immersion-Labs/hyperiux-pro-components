@@ -21,7 +21,7 @@ export function timeAgo(value) {
 export const PANEL_CARD = `flex flex-col bg-dark-card text-foreground ring-1 ring-inset ring-foreground/10 ${CARD_PAD}`;
 export const LINE_BUTTON = `inline-flex w-fit shrink-0 cursor-pointer items-center gap-2 px-4 ${BUTTON_SIZE} text-foreground ring-1 ring-inset ring-foreground/20 transition-[color,box-shadow] duration-300 hover:text-primary hover:ring-primary disabled:cursor-default disabled:opacity-60 [&_svg]:size-4`;
 
-// The change about to be made, and Confirm / Cancel - every change here asks first
+// The change about to be made, and Confirm / Cancel - every change here asks first.
 export function Confirm({ lines, busy, onConfirm, onCancel }) {
   return (
     <div className="flex flex-col gap-3 bg-foreground/5 p-4 ring-1 ring-inset ring-foreground/10">

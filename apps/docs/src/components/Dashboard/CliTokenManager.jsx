@@ -36,11 +36,12 @@ function ExampleCommand() {
     <div className="flex flex-col gap-2">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="type-small text-black/60">Use it like this:</p>
-        <SlidingSegment label="Package manager" items={PM_ITEMS} value={pm} onChange={setPackageManager} itemClassName="w-14" />
+        <SlidingSegment id="cli-token-manager-package-manager" label="Package manager" items={PM_ITEMS} value={pm} onChange={setPackageManager} itemClassName="w-14" />
       </div>
       <div className={WELL}>
         <code className="type-small min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-code text-ink">{command}</code>
         <button
+          id="cli-token-manager-copy-command"
           type="button"
           onClick={copy}
           aria-label={copied ? "Command copied" : "Copy command"}
@@ -174,8 +175,9 @@ export default function CliTokenManager({ plan, hasToken = false }) {
 
         {/* phones: stacked, full width */}
         <div className="flex shrink-0 gap-[calc(var(--cvw)*0.6)] max-lg:gap-3 max-md:w-full max-md:flex-col">
-          <Button text="Revoke" variant="outline" preventDefault disabled={isLoading || !live} onClick={revokeToken} className="max-md:w-full" />
+          <Button id="cli-token-manager-revoke" text="Revoke" variant="outline" preventDefault disabled={isLoading || !live} onClick={revokeToken} className="max-md:w-full" />
           <Button
+            id="cli-token-manager-generate-token"
             // "Generate token" makes one straight away; "Regenerate token" (a token is on
             // screen) asks first, since the one shown stops working
             text={isLoading ? "Working…" : token ? "Regenerate Token" : "Generate Token"}
@@ -193,6 +195,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
           <div className={WELL}>
             <code className="type-small min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-code text-primary">{token}</code>
             <button
+              id="cli-token-manager-copy-token"
               type="button"
               onClick={copyToken}
               aria-label={copied ? "Token copied" : "Copy token"}
@@ -210,6 +213,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
             Your current token stops working straight away. Anything using it, like CI or your editor’s MCP config, will need the new one.
             <div className="flex flex-wrap items-center justify-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
               <Button
+                id="cli-token-manager-regenerate"
                 text="Regenerate"
                 preventDefault
                 onClick={() => {
@@ -217,7 +221,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
                   generateToken();
                 }}
               />
-              <TextButton onClick={() => setConfirmOpen(false)}>Keep It</TextButton>
+              <TextButton id="cli-token-manager-keep-it" onClick={() => setConfirmOpen(false)}>Keep It</TextButton>
             </div>
           </Modal>,
           document.body,
@@ -230,6 +234,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
             <div className="flex w-full items-center gap-3 bg-foreground/5 px-4 py-3 ring-1 ring-inset ring-foreground/15">
               <code className="type-small min-w-0 flex-1 break-all text-left font-code text-foreground">{token}</code>
               <button
+                id="cli-token-manager-copy-token-dialog"
                 type="button"
                 onClick={copyToken}
                 aria-label={copied ? "Token copied" : "Copy token"}

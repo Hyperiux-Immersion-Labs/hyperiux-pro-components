@@ -109,6 +109,7 @@ export default function Navbar({ effects = [] }) {
                     ClerkProvider, so this navbar always shows the anonymous
                     state. Plan-aware UI lives in the (app) group. */}
                 <button
+                    id="navbar-search-effects"
                     type="button"
                     onClick={openSearch}
                     className="group flex py-[calc(var(--hx-vw,1vw)*.8)] cursor-pointer items-center gap-10 bg-grey! px-3 text-xs text-white/70 backdrop-blur-lg transition-colors duration-300 hover:bg-white/10 hover:border-primary hover:text-white max-lg:hidden max-lg:gap-3"

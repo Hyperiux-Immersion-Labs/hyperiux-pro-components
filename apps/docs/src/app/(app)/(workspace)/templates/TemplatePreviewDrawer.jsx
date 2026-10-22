@@ -9,6 +9,7 @@ import { useLenisLock } from "@/hooks/useLenisLock";
 import { Download, Heart } from "lucide-react";
 import Button, { ButtonChrome, buttonClassName } from "@/homepage/components/Button";
 import { BADGE, DISPLAY, PRICE, T11, T14, T16, T18, T24, catalogueLabel, catalogueOf, priceOf } from "./tokens";
+import { buttonId } from "@/lib/button-id";
 
 // Off-screen panel: slid out to the right, or (reduced motion) faded out in place.
 const panelHidden = () => (prefersReducedMotion() ? { xPercent: 0, opacity: 0 } : { xPercent: 100, opacity: 1 });
@@ -190,6 +191,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
             <span className={`${T16} text-foreground/80`}>{shown.category}</span>
             {/* Same close control as the site's modals: the cross turns a quarter on hover. */}
             <button
+              id="template-preview-drawer-close-preview-esc"
               ref={closeRef}
               type="button"
               aria-label="Close preview (Esc)"
@@ -258,6 +260,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
                 Demo, then a square heart, filling the row; Buy moves to the pinned bar. */}
             <div className="flex flex-wrap items-stretch gap-2 max-md:w-full max-md:flex-nowrap">
               <button
+                id="template-preview-drawer-save"
                 type="button"
                 aria-pressed={saved}
                 aria-label={saved ? `Remove ${shown.title} from saved` : `Save ${shown.title}`}
@@ -268,10 +271,11 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
                   <Heart className="size-full" aria-hidden="true" />
                 </span>
               </button>
-              <Button text="Demo" href={shown.previewHref || href}  variant="outline" className={`tracking-normal! bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
-              <Button text="View Template" href={href} target_blank className={`tracking-normal! border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
+              <Button id="template-preview-drawer-demo" text="Demo" href={shown.previewHref || href}  variant="outline" className={`tracking-normal! bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
+              <Button id="template-preview-drawer-view-template" text="View Template" href={href} target_blank className={`tracking-normal! border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
                 {/* Buy opens the "Get this template" popup; once it's yours it downloads. */}
                 <button
+                  id="template-preview-drawer-buy"
                   type="button"
                   onClick={() => onBuy(shown)}
                   onPointerEnter={() => setBuyHovered(true)}
@@ -289,7 +293,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
               <div className="grid grid-cols-2 gap-[0.9vw] max-md:grid-cols-1 max-md:gap-[3.5vw]">
                 {/* Same look as the effect drawer's small cards. */}
                 {others.map((t) => (
-                  <button key={t.slug} type="button" onClick={() => onOpen(t)} className="group grid cursor-pointer gap-3.5 text-left">
+                  <button id={buttonId("template-preview-drawer-open", t.slug)} key={t.slug} type="button" onClick={() => onOpen(t)} className="group grid cursor-pointer gap-3.5 text-left">
                     <span className="relative block aspect-[16/8.6] overflow-hidden bg-grey transition-shadow duration-700 group-hover:shadow-float">
                       {(t.screenshots?.[0] || t.fullShot?.src) && (
                         <Image
@@ -323,6 +327,7 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
               <span />
             )}
             <Button
+              id="template-preview-drawer-buy-template"
               text={owned ? "Download" : "Buy template"}
               preventDefault
               onClick={() => onBuy(shown)}

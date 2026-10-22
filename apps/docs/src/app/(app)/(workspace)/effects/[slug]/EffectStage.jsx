@@ -209,7 +209,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
 
           {getCode}
           {/* Standard Button size (Get Code matches it) */}
-          <Button text="Demo" href={previewHref} target_blank variant="orange" className="shrink-0" />
+          <Button id="effect-stage-demo" text="Demo" href={previewHref} target_blank variant="orange" className="shrink-0" />
         </div>
       </div>
 
@@ -258,6 +258,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
           />}
           {!interactive && !isPhone && (
             <button
+              id="effect-stage-click-to-interact-with-the-preview"
               type="button"
               aria-label="Click to interact with the preview"
               onClick={() => setInteractive(true)}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { forwardRef, useEffect, useRef, useState, type ChangeEvent, type ComponentPropsWithoutRef } from "react";
+import { buttonId } from "@/lib/button-id";
 
 export const COUNTRY_CODES = [
   { code: "IN", dial: "+91", flag: "🇮🇳", name: "India" },
@@ -134,6 +135,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function PhoneI
       >
         <div className="relative shrink-0">
           <button
+            id="phone-input-open"
             type="button"
             onClick={() => setOpen((current) => !current)}
             className={joinClasses(
@@ -185,6 +187,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(function PhoneI
 
                 return (
                   <button
+                    id={buttonId("phone-input-country-select", `${country.code}-${country.dial}`)}
                     key={`${country.code}-${country.dial}`}
                     type="button"
                     role="option"

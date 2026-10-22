@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import Link from "next/link";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const DEFAULT_AUTO_DISMISS_MS = 4000;
 
@@ -33,6 +34,7 @@ export function useToastQueue(autoDismissMs = DEFAULT_AUTO_DISMISS_MS) {
 }
 
 export function ToastViewport({ toast, onDismiss, position = "top-right" }) {
+  const bid = useButtonId();
   const [mounted, setMounted] = useState(false);
 
   // SSR-safe mounted flag - `mounted` gates a createPortal() call further
@@ -100,6 +102,7 @@ export function ToastViewport({ toast, onDismiss, position = "top-right" }) {
           </div>
 
           <button
+            id={bid("toast-dismiss")}
             type="button"
             aria-label="Dismiss"
             onClick={onDismiss}

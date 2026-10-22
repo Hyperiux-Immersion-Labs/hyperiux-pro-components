@@ -102,6 +102,7 @@ export function EasterEggDot({ className = "" }) {
     const { openGame } = useEasterEgg();
     return (
         <button
+            id="easter-egg-open"
             type="button"
             aria-label="Something’s hiding here. Play Spot the Jank"
             onClick={(e) => { e.preventDefault(); openGame(); }}

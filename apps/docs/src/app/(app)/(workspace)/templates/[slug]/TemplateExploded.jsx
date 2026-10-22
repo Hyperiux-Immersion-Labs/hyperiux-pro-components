@@ -547,6 +547,7 @@ export default function TemplateExploded({
             <span>Exploded</span>
           </label>
           <button
+            id="template-exploded-reset-view"
             type="button"
             onClick={reset}
             className={`group/reset inline-flex h-9 cursor-pointer items-center gap-2 px-3.5 ${LABEL} text-foreground/80 ring-1 ring-inset ring-foreground/12 transition-colors duration-500 hover:bg-foreground/8 hover:text-foreground`}

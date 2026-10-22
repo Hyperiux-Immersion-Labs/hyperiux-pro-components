@@ -284,12 +284,14 @@ export default function Footer() {
 
         <div className="flex mt-[calc(var(--cvw)*3)] max-lg:mt-[5vw] max-md:mt-[calc(var(--cvw)*3)] pb-[calc(var(--cvw)*2)] mb-[calc(var(--cvw)*4.5)] max-lg:mb-[8vw] max-lg:gap-[3vw] max-md:gap-[calc(var(--cvw)*4)] max-md:mb-[calc(var(--cvw)*10)] relative gap-(--cvw) fadeup max-md:flex-col">
           <Button
+            id="footer-browse-all-effects"
             variant="outline"
             text="Browse All Effects"
             href="/effects"
             className="max-md:w-full"
           />
           <Button
+            id="footer-upgrade-to-pro"
             text="Upgrade to Pro"
             className="max-lg:border max-lg:border-transparent max-md:border-0 max-md:w-full"
             href="/pricing#plans"
@@ -478,6 +480,7 @@ export default function Footer() {
                     className="h-auto min-w-0 flex-1 rounded-none border-0 bg-transparent! px-0! py-[calc(var(--cvw)*0.9)] max-md:py-3 text24 max-md:text-[3.5vw]! text-foreground! caret-foreground shadow-none! outline-none ring-0! placeholder:text-light-grey disabled:opacity-50"
                   />
                   <button
+                    id="footer-subscribe"
                     type="submit"
                     disabled={status === "loading"}
                     className="shrink-0 cursor-pointer py-[calc(var(--cvw)*0.9)] text-[calc(var(--cvw)*1)] max-lg:text-[1.5vw] max-md:text-[3.2vw] font-medium text-secondary transition-colors duration-300 hover:text-primary max-md:text-base disabled:pointer-events-none disabled:opacity-50 max-md:py-3"

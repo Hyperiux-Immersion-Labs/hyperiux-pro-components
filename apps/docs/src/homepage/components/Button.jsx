@@ -300,7 +300,8 @@ export default function Button({
     <Link
       prefetch={prefetchFor(href)}
       href={href}
-      id={id}
+      // no id="" when it has none
+      id={id || undefined}
       onClick={handleClick}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}

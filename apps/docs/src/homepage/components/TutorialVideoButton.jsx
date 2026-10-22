@@ -36,6 +36,7 @@ function closeTutorialVideo() {
 export default function TutorialVideoButton({ className = "", iconClassName = "size-4" }) {
     return (
         <button
+            id="tutorial-video-button-watch-the-vault-walkthrough"
             type="button"
             onClick={openTutorialVideo}
             aria-label="Watch the Vault walkthrough"
@@ -94,6 +95,7 @@ function TutorialVideoModal() {
                 onClick={(e) => e.stopPropagation()}
             >
                 <button
+                    id="tutorial-video-button-close-video"
                     ref={closeRef}
                     type="button"
                     onClick={requestClose}

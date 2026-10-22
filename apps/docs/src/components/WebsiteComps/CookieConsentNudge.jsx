@@ -56,6 +56,8 @@ export function CookieConsentNudge() {
       </p>
 
       <button
+        // no id on the admin dashboard (no admin click tracking)
+        id={/^\/dashboard\/[^/]+\/admin(\/|$)/.test(pathname || "") ? undefined : "cookie-consent-nudge-ok"}
         type="button"
         onClick={dismiss}
         className="shrink-0 cursor-pointer bg-primary px-[1.4vw] py-[0.6vw] text-[0.9vw] text-black transition-colors hover:bg-primary-hover max-lg:px-[2.6vw] max-lg:py-[1.2vw] max-lg:text-[1.7vw] max-md:px-[5vw] max-md:py-[2.4vw] max-md:text-[3.4vw]"

@@ -10,6 +10,7 @@ import { useDashboard } from "@/components/Dashboard/DashboardContext";
 import { ACTION_LINE, ACTION_PRIMARY, CARD, CARD_PAD, CardLink, FIELD, FIELD_LABEL, SubmitButton, TextButton, Toggle } from "@/components/Dashboard/DashboardUI";
 import { Bar, ButtonBar, SkeletonCard } from "@/components/Dashboard/DashboardSkeletons";
 import { getDashboardPreview, samplePreviewUser } from "@/lib/dev/dashboardPreview";
+import { buttonId } from "@/lib/button-id";
 
 const MAX_AVATAR_DIMENSION = 512;
 
@@ -442,12 +443,12 @@ export default function SettingsPage() {
             </div>
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-3">
-                <button type="button" onClick={() => fileInputRef.current?.click()} disabled={savingImage || deletingImage} className={ACTION_PRIMARY}>
+                <button id="dashboard-settings-upload-photo" type="button" onClick={() => fileInputRef.current?.click()} disabled={savingImage || deletingImage} className={ACTION_PRIMARY}>
                   {savingImage ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Upload aria-hidden="true" />}
                   {savingImage ? "Uploading…" : user.hasImage ? "Update Photo" : "Upload Photo"}
                 </button>
                 {user.hasImage && (
-                  <button type="button" onClick={handleImageDelete} disabled={deletingImage || savingImage} className={ACTION_LINE}>
+                  <button id="dashboard-settings-remove" type="button" onClick={handleImageDelete} disabled={deletingImage || savingImage} className={ACTION_LINE}>
                     {deletingImage ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Trash2 aria-hidden="true" />}
                     {deletingImage ? "Removing…" : "Remove"}
                   </button>
@@ -478,7 +479,7 @@ export default function SettingsPage() {
                 {error || message}
               </p>
             )}
-            <SubmitButton label="Save Changes" busy={savingProfile} />
+            <SubmitButton id="dashboard-settings-save-changes" label="Save Changes" busy={savingProfile} />
           </form>
         </section>
 
@@ -507,7 +508,7 @@ export default function SettingsPage() {
                 </p>
               )}
               <div>
-                <button type="button" onClick={handleForgotPassword} disabled={sendingOtp} className={ACTION_PRIMARY}>
+                <button id="dashboard-settings-set-a-password" type="button" onClick={handleForgotPassword} disabled={sendingOtp} className={ACTION_PRIMARY}>
                   {sendingOtp ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <KeyRound aria-hidden="true" />}
                   {sendingOtp ? "Sending a Code…" : "Set a Password"}
                 </button>
@@ -523,7 +524,7 @@ export default function SettingsPage() {
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                <SubmitButton label="Update Password" busy={savingPw} />
+                <SubmitButton id="dashboard-settings-update-password" label="Update Password" busy={savingPw} />
                 <CardLink href="#" arrow={false} onClick={() => !sendingOtp && handleForgotPassword()}>
                   {sendingOtp ? "Sending a Code…" : "Forgot It?"}
                 </CardLink>
@@ -542,8 +543,9 @@ export default function SettingsPage() {
                 </p>
               )}
               <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                <SubmitButton label="Reset Password" busy={resettingPw} />
+                <SubmitButton id="dashboard-settings-reset-password" label="Reset Password" busy={resettingPw} />
                 <TextButton
+                  id="dashboard-settings-cancel"
                   tone="light"
                   onClick={() => {
                     setOtpStep("idle");
@@ -570,14 +572,14 @@ export default function SettingsPage() {
                 <span className="type-body">Product updates</span>
                 <span className="type-small text-black/60">New effects and the occasional behind-the-scenes note. Unsubscribe any time.</span>
               </span>
-              <Toggle label="Product updates" checked={Boolean(productUpdates)} disabled={productUpdates === null || savingUpdates} onChange={changeProductUpdates} />
+              <Toggle id="dashboard-settings-product-updates" label="Product updates" checked={Boolean(productUpdates)} disabled={productUpdates === null || savingUpdates} onChange={changeProductUpdates} />
             </li>
             <li className="flex items-center justify-between gap-4 py-[calc(var(--cvw)*0.9)] max-lg:py-3">
               <span className="flex flex-col gap-1">
                 <span className="type-body">Account and billing</span>
                 <span className="type-small text-black/60">Receipts and security notices. Always on, so you never miss one.</span>
               </span>
-              <Toggle label="Account and billing emails" checked disabled />
+              <Toggle id="dashboard-settings-account-and-billing-emails" label="Account and billing emails" checked disabled />
             </li>
           </ul>
           {emailError && (
@@ -606,7 +608,7 @@ export default function SettingsPage() {
                   {isAdmin ? "Admin accounts can’t be deleted here. Ask a super admin to remove your access first." : "Removes your account and saves. Billing records are kept as the law requires. Installed code in your projects keeps working."}
                 </span>
               </span>
-              <button type="button" onClick={() => setDeleteOpen(true)} disabled={isAdmin} className={ACTION_LINE}>
+              <button id="dashboard-settings-delete-account" type="button" onClick={() => setDeleteOpen(true)} disabled={isAdmin} className={ACTION_LINE}>
                 <Trash2 aria-hidden="true" />
                 Delete Account
               </button>
@@ -628,6 +630,7 @@ export default function SettingsPage() {
                 className="relative flex max-h-[80svh] w-[35vw] flex-col gap-6 overflow-y-auto overscroll-contain border border-white/20 bg-background p-10 text-foreground shadow-2xl max-lg:w-[70%] max-lg:p-6 max-md:w-full"
               >
                 <button
+                  id="dashboard-settings-delete-account-close"
                   type="button"
                   aria-label="Close"
                   onClick={closeDelete}
@@ -669,11 +672,11 @@ export default function SettingsPage() {
                   </p>
                 )}
                 <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                  <button type="button" onClick={deleteAccount} disabled={confirmText !== "DELETE" || deleting} className={ACTION_PRIMARY}>
+                  <button id="dashboard-settings-delete-account-confirm" type="button" onClick={deleteAccount} disabled={confirmText !== "DELETE" || deleting} className={ACTION_PRIMARY}>
                     {deleting ? <LoaderCircle className="animate-spin" aria-hidden="true" /> : <Trash2 aria-hidden="true" />}
                     {deleting ? "Deleting…" : "Delete Account"}
                   </button>
-                  <TextButton onClick={closeDelete} disabled={deleting}>
+                  <TextButton id="dashboard-settings-keep-it" onClick={closeDelete} disabled={deleting}>
                     Keep It
                   </TextButton>
                 </div>
@@ -693,7 +696,7 @@ function PasswordField({ label, shown, onToggle, ...input }) {
       {label}
       <span className="relative block">
         <input type={shown ? "text" : "password"} className={`${FIELD} pr-12`} {...input} />
-        <button type="button" onClick={onToggle} aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown} className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-black/40 transition-colors duration-300 hover:text-ink aria-pressed:text-ink">
+        <button id={buttonId("dashboard-settings-show-password", label)} type="button" onClick={onToggle} aria-label={shown ? "Hide password" : "Show password"} aria-pressed={shown} className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer text-black/40 transition-colors duration-300 hover:text-ink aria-pressed:text-ink">
           {/* the sign-in page's eye: struck while hidden, open while shown, animated between */}
           <PasswordEye revealed={shown} className="size-4.5" />
         </button>

@@ -6,6 +6,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 
 import { vaultLinks } from '@/utils/Links'
 import NavDropdown from './NavDropdown'
+import { buttonId } from "@/lib/button-id";
 
 export default function NavLinks({
     activeItem,
@@ -66,6 +67,7 @@ export default function NavLinks({
                     if (dropdown) {
                         return (
                             <button
+                                id={buttonId("nav-links-button", label)}
                                 key={label}
                                 type="button"
                                 onMouseEnter={() => onNavEnter(index, dropdown)}
