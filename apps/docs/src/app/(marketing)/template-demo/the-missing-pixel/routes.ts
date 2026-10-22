@@ -17,9 +17,14 @@ export const ROUTES = {
 };
 
 export const slugify = (title: string) =>
-  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  title
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 
 export const workPath = (title: string) => `${ROUTES.work}/${slugify(title)}`;
+
+export const servicePath = (slug: string) => `${ROUTES.services}/${slug}`;
 
 export const postPath = (slug: string) => `${ROUTES.blog}/${slug}`;
 

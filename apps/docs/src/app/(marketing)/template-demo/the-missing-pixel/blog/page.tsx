@@ -1,6 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import { pageMetadata } from "../metadata";
-import BlogHero from "../components/blog/BlogHero";
+import PageHero from "../components/shared/PageHero";
+import { ROUTES } from "../routes";
 import FeaturedPost from "../components/blog/FeaturedPost";
 import PostGrid from "../components/blog/PostGrid";
 
@@ -12,7 +13,11 @@ export const metadata = pageMetadata(
 
 const page = () => (
   <>
-    <BlogHero />
+    <PageHero
+      crumbs={[{ label: "Home", href: ROUTES.home }, { label: "Journal" }]}
+      title="Journal"
+      text="Opinions, process and the occasional confession from four studios. New essay every other Thursday."
+    />
     <div className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
       <FeaturedPost />
     </div>

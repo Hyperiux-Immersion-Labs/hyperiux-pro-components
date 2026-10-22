@@ -166,7 +166,7 @@ const Footer = () => {
                 placeholder="Your email"
                 autoComplete="email"
                 required
-                className="h-[5vh] min-w-0 flex-1 rounded-full border border-white/15 bg-transparent px-[1.1vw] text-22 text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-white/60 focus:border-[#f5f5f5] max-lg:h-[3.6vh] max-lg:px-[2vw] max-md:h-[5.8vh] max-md:px-[5vw]"
+                className="h-[5vh] min-w-0 flex-1 rounded-full border border-white/15 bg-transparent px-[1.1vw] text-22 text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-white/60 focus:border-[#f5f5f5] max-lg:h-[3.6vh] max-lg:px-[2vw] max-md:h-[5.8vh] max-md:flex-none max-md:px-[5vw]"
               />
               <PixelButton label="Subscribe" type="submit" size="sm" tone="dark" magnetic={0} />
             </form>

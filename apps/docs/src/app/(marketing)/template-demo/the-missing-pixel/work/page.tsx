@@ -1,6 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import { pageMetadata } from "../metadata";
-import WorkHero from "../components/work/WorkHero";
+import PageHero from "../components/shared/PageHero";
+import { ROUTES } from "../routes";
 import NineBlock from "../components/work/NineBlock";
 import WorkGrid from "../components/work/WorkGrid";
 
@@ -12,7 +13,17 @@ export const metadata = pageMetadata(
 
 const page = () => (
   <>
-    <WorkHero />
+    <PageHero
+      crumbs={[{ label: "Home", href: ROUTES.home }, { label: "Work" }]}
+      title={
+        <>
+          Proof,
+          <br />
+          not promises.
+        </>
+      }
+      text="Eight projects, one obsession. Open any of them for the full story, including the bits that went sideways."
+    />
     <section className="mpx-container flex flex-col gap-14 pb-0 max-lg:gap-11">
       <WorkGrid />
       <NineBlock />

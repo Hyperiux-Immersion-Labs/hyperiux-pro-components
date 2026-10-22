@@ -51,7 +51,7 @@ const SubNav = ({ links }: SubNavProps) => {
       aria-label="On this page"
       className="sticky top-0 z-40 border-y border-black/10 bg-[#fafafa]/90 backdrop-blur-lg"
     >
-      <ul ref={railRef} className="mpx-container flex gap-2 overflow-x-auto py-[1.2vh] [scrollbar-width:none] max-lg:py-[1.4vh] max-md:py-[1.6vh]">
+      <ul ref={railRef} className="flex gap-2 overflow-x-auto px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[1.2vh] [scrollbar-width:none] max-lg:py-[1.4vh] max-md:py-[1.6vh]">
         {links.map((link) => (
           <li key={link.id} ref={(el) => { itemRefs.current[link.id] = el; }} className="shrink-0">
             <a

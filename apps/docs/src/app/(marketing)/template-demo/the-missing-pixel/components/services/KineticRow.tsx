@@ -97,23 +97,21 @@ const KineticRow = () => {
     <section
       ref={sectionRef}
       aria-label="Disciplines: Strategy, Identity, Websites, Motion, Packaging, Campaigns"
-      className="flex cursor-grab touch-pan-y select-none flex-col gap-6 overflow-hidden py-[6vw] active:cursor-grabbing max-lg:py-[9vw] max-md:py-[14vw]"
+      className="flex cursor-grab touch-pan-y select-none flex-col gap-6 overflow-hidden py-[7%] active:cursor-grabbing max-lg:py-[9vw] max-md:py-[14vw]"
     >
       <div ref={trackRef} aria-hidden className="flex w-max">
         {[0, 1].map((group) => (
           <ul key={group} className="flex items-center">
             {WORDS.map((word) => (
-              <li key={`${group}-${word}`} className="flex items-center gap-[3vw] pr-[3vw] max-md:gap-[6vw] max-md:pr-[6vw]">
+              <li key={`${group}-${word}`} className="flex items-center gap-[10vw] pr-[3vw] max-md:gap-[6vw] max-md:pr-[6vw]">
                 <span className="font-mpx-head text-128 font-medium leading-none">{word}</span>
-                <span className="aspect-square h-[3vh] shrink-0 rounded-full bg-mpx-grad max-lg:h-[2.2vh] max-md:h-[3vh]" />
+               
               </li>
             ))}
           </ul>
         ))}
       </div>
-      <p aria-hidden className="text-center text-14 text-mpx-muted">
-        Grab it. Fling it.
-      </p>
+    
     </section>
   );
 };
