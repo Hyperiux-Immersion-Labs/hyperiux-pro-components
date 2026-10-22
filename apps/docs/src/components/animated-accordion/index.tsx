@@ -368,12 +368,13 @@ const AccordionMotionContext = React.createContext<MotionPreset>(
   })
 )
 
-function contentVariants(preset: MotionPreset): Variants {
+function contentVariants(preset: MotionPreset, reduceMotion = false): Variants {
   return {
     open: {
+      // Reduced motion: the panel opens at once, so its text shouldn't wait or trickle in
       transition: {
-        delayChildren: preset.delay,
-        staggerChildren: preset.stagger,
+        delayChildren: reduceMotion ? 0 : preset.delay,
+        staggerChildren: reduceMotion ? 0 : preset.stagger,
       },
     },
     closed: {},
@@ -453,7 +454,8 @@ function Accordion({
             data-slot="accordion"
             className={cn(
               "flex w-full flex-col gap-3",
-              bordered && "rounded-lg border p-[2vw] max-md:p-[4vw]",
+              // The outer border already closes the list, so the last item skips its divider
+              bordered && "rounded-lg border p-6 max-md:p-4 [&>[data-slot=accordion-item]:last-child>[data-slot=accordion-divider]]:hidden",
               className
             )}
             value={valueProp ?? openValue}
@@ -486,12 +488,15 @@ function AccordionItem({
   fill,
   rounded = "rounded-none",
   showLine = false,
+  accent = false,
   onPointerMove,
   ...props
 }: AccordionPrimitive.Item.Props & {
   fill?: keyof typeof FILL_COLOR | false
   rounded?: string
   showLine?: boolean
+  /** Hover line in the theme's primary colour (set when a theme is chosen) */
+  accent?: boolean
 }) {
   const preset = React.useContext(AccordionMotionContext)
   const openFromHover = React.useContext(AccordionHoverContext)
@@ -513,7 +518,7 @@ function AccordionItem({
       }}
       className={cn(
         "group/accordion-item relative py-3",
-        fill && cn("isolate px-4 transition-colors duration-500", rounded, FILL_COLOR[fill].text),
+        fill && cn("isolate px-4 transition-colors duration-500 motion-reduce:transition-none", rounded, FILL_COLOR[fill].text),
         className
       )}
       render={(itemProps, state) => (
@@ -541,13 +546,14 @@ function AccordionItem({
           {itemProps.children}
           <div
             aria-hidden
+            data-slot="accordion-divider"
             className={cn(
               "pointer-events-none absolute inset-x-0 bottom-0 h-px bg-(--hx-border)",
               fill &&
-                "transition-opacity duration-300 group-data-open/accordion-item:opacity-0 group-has-[+[data-open]]/accordion-item:opacity-0"
+                "transition-opacity duration-300 motion-reduce:transition-none group-data-open/accordion-item:opacity-0 group-has-[+[data-open]]/accordion-item:opacity-0"
             )}
           />
-          {showLine && <AccordionItemLine drawn={hovered || state.open} />}
+          {showLine && <AccordionItemLine hovered={hovered} open={state.open} accent={accent} />}
         </motion.div>
       )}
       {...props}
@@ -555,7 +561,19 @@ function AccordionItem({
   )
 }
 
-function AccordionItemLine({ drawn }: { drawn: boolean }) {
+/**
+ * Draws in on hover, stays drawn while the item is open, and scales back to 0 when it
+ * closes - even if the pointer is still over it (a fresh hover draws it again).
+ */
+function AccordionItemLine({ hovered, open, accent = false }: { hovered: boolean; open: boolean; accent?: boolean }) {
+  const [closedUnderPointer, setClosedUnderPointer] = React.useState(false)
+  const [wasOpen, setWasOpen] = React.useState(open)
+  if (wasOpen !== open) {
+    setWasOpen(open)
+    if (!open && hovered) setClosedUnderPointer(true)
+  }
+  if (closedUnderPointer && !hovered) setClosedUnderPointer(false)
+  const drawn = open || (hovered && !closedUnderPointer)
   const preset = React.useContext(AccordionMotionContext)
   const reduceMotion = useReducedMotion()
   const [scope, animate] = useAnimate<HTMLDivElement>()
@@ -585,13 +603,16 @@ function AccordionItemLine({ drawn }: { drawn: boolean }) {
     play()
   }, [drawn])
 
+  // The clip keeps Elastic's overshoot inside the item: the line still springs, but
+  // never pokes past the item's edges.
   return (
-    <motion.div
-      ref={scope}
-      aria-hidden
-      style={{ scaleX: 0 }}
-      className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-current"
-    />
+    <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-px overflow-hidden">
+      <motion.div
+        ref={scope}
+        style={{ scaleX: 0 }}
+        className={cn("size-full", accent ? "bg-(--hx-primary)" : "bg-current")}
+      />
+    </div>
   )
 }
 
@@ -599,9 +620,12 @@ function AccordionTrigger({
   className,
   children,
   icon = "chevron",
+  accent = false,
   ...props
 }: AccordionPrimitive.Trigger.Props & {
   icon?: "chevron" | "plus"
+  /** Question and icon in the theme's primary colour, over the muted icon (set when a theme is chosen) */
+  accent?: boolean
 }) {
   const preset = React.useContext(AccordionMotionContext)
 
@@ -610,7 +634,8 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger px-2 relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-[border-color,box-shadow] outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-(--hx-muted-foreground)",
+          "group/accordion-trigger px-2 relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-[border-color,box-shadow] motion-reduce:transition-none outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-(--hx-muted-foreground)",
+          accent && "text-(--hx-primary) **:data-[slot=accordion-trigger-icon]:text-(--hx-primary)",
           className
         )}
         render={(triggerProps, state) => (
@@ -671,7 +696,7 @@ function AccordionContent({
           <motion.div
             initial={false}
             animate={state.open ? "open" : "closed"}
-            variants={contentVariants(preset)}
+            variants={contentVariants(preset, Boolean(reduceMotion))}
             className={cn(
               "flex max-w-[90%] flex-col gap-4 px-2 pb-2.5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-(--hx-foreground)",
               typeof className === "function" ? className(state) : className
@@ -741,6 +766,22 @@ const controls = {
   multiple: { group: "Accordion", type: "checkbox", label: "Multiple open", value: false },
   openOnHover: { group: "Accordion", type: "checkbox", label: "Open on hover", value: false },
   bordered: { group: "Accordion", type: "checkbox", label: "Border", value: false },
+  borderRounded: {
+    disabled: (v: Record<string, unknown>) => !v.bordered,
+    group: "Accordion",
+    type: "select",
+    label: "Border roundness",
+    value: "rounded-lg",
+    options: [
+      { label: "None", value: "rounded-none" },
+      { label: "Small", value: "rounded-sm" },
+      { label: "Medium", value: "rounded-md" },
+      { label: "Large", value: "rounded-lg" },
+      { label: "xl", value: "rounded-xl" },
+      { label: "2xl", value: "rounded-2xl" },
+      { label: "3xl", value: "rounded-3xl" },
+    ],
+  },
   elastic: { group: "Accordion", type: "checkbox", label: "Elastic", value: false },
   duration: {
     group: "Timing",
@@ -798,7 +839,7 @@ const controls = {
     disabled: (v: Record<string, unknown>) => !v.fill,
     group: "Item",
     type: "select",
-    label: "Roundness",
+    label: "Fill roundness",
     value: "rounded-none",
     options: [
       { label: "None", value: "rounded-none" },
@@ -810,9 +851,9 @@ const controls = {
       { label: "3xl", value: "rounded-3xl" },
     ],
   },
-  showLine: { group: "Item", type: "checkbox", label: "Show line", value: true },
+  showLine: { group: "Item", type: "checkbox", label: "Hover line", value: true },
   icon: {
-    group: "Heading",
+    group: "Icon",
     type: "select",
     label: "Icon",
     value: "plus",
@@ -823,7 +864,7 @@ const controls = {
   },
 }
 
-function AccordionPage(props: Partial<ControlValues>) {
+function AccordionPage({ accent = false, ...props }: Partial<ControlValues> & { accent?: boolean }) {
   const panel = useDemoControls(props)
   const { values } = panel
 
@@ -831,7 +872,9 @@ function AccordionPage(props: Partial<ControlValues>) {
     <div className="mx-auto w-full max-w-2xl">
       <div className="mt-6 flex min-h-48 items-center justify-center">
         <Accordion
-          className="w-full"
+          // Border roundness sets the outer border's corners (tailwind-merge swaps it in
+          // for the border's default rounded-lg); Roundness only shapes the fill
+          className={cn("w-full", values.bordered && values.borderRounded)}
           multiple={values.multiple}
           openOnHover={values.openOnHover}
           bordered={values.bordered}
@@ -846,12 +889,14 @@ function AccordionPage(props: Partial<ControlValues>) {
               key={faq.question}
               value={`item-${i + 1}`}
               showLine={values.showLine}
+              accent={accent}
               fill={values.fill ? (values.fillColor as "muted" | "primary") : false}
               rounded={values.rounded}
             >
               <AccordionTrigger
                 icon={values.icon as "plus" | "chevron"}
-                className="text-[1.5vw] max-[1025px]:text-[2.5vw] max-md:text-[4.5vw]"
+                accent={accent}
+                className="text-lg max-md:text-base"
               >
                 {faq.question}
               </AccordionTrigger>
@@ -894,12 +939,13 @@ export interface AnimatedAccordionProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedAccordion({ theme = "default", mode = "light", className, ...props }: AnimatedAccordionProps) {
+export default function AnimatedAccordion({ theme = "default", mode = "dark", className, ...props }: AnimatedAccordionProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <AccordionPage {...props} />
+        {/* Any theme but the default puts the question, icon and hover line in its primary colour */}
+        <AccordionPage {...props} accent={theme !== "default"} />
       </div>
     </ThemeContext.Provider>
   );

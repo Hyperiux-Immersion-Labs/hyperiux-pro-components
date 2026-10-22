@@ -51,6 +51,7 @@ export function getGroupsFromProps(props: RegistryProp[] = []): RemixerGroup[] {
         step: prop.remixer.step,
         options: prop.remixer.options,
         placeholder: prop.remixer.placeholder,
+        disabledWhen: prop.remixer.disabledWhen,
         docsOnly: prop.docsOnly,
         copyable: prop.copyable,
       }),

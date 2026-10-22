@@ -422,7 +422,7 @@
   font-size: 11px;
   line-height: 1;
   letter-spacing: 0.14em;
-  text-transform: uppercase;
+  text-transform: capitalize;
   color: var(--foreground);
 }
 
@@ -1094,3 +1094,10 @@
 /* .compact .footerButtonText {
   letter-spacing: 0.08em;
 } */
+
+/* A control switched off by its disabledWhen rule (e.g. Roundness while Fill is off) */
+.panelOpen .field.fieldInactive,
+.fieldInactive {
+  opacity: 0.4;
+  pointer-events: none;
+}

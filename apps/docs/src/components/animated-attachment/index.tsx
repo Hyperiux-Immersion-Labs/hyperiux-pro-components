@@ -624,14 +624,17 @@ function Attachment({
 function AttachmentBorderTrace() {
   const rect = React.useRef<SVGRectElement>(null)
 
+  const reduceMotion = useReducedMotion()
   useGSAP(() => {
     matchParentRadius(rect.current)
+    // Reduced motion: no endless loop (the trace is also hidden by motion-reduce:hidden)
+    if (reduceMotion) return
     gsap.fromTo(
       rect.current,
       { strokeDashoffset: 0 },
       { strokeDashoffset: -100, duration: 1.4, ease: "none", repeat: -1 }
     )
-  })
+  }, [reduceMotion])
 
   return (
     <motion.svg
@@ -663,7 +666,7 @@ const attachmentMediaVariants = cva(
       variant: {
         icon: "",
         image:
-          "opacity-60 group-data-[state=done]/attachment:opacity-100 group-data-[state=idle]/attachment:opacity-100 *:transition-[opacity,scale,filter] *:duration-500 group-data-filling/attachment:bg-(--hx-card) group-data-filling/attachment:opacity-100 [&_img]:transition-opacity [&_img]:duration-500 group-data-filling/attachment:[&_img]:opacity-60 *:[img]:aspect-square *:[img]:w-full *:[img]:object-cover [&_img]:size-full [&_img]:object-cover",
+          "opacity-60 group-data-[state=done]/attachment:opacity-100 group-data-[state=idle]/attachment:opacity-100 *:transition-[opacity,scale,filter] *:duration-500 motion-reduce:*:transition-none group-data-filling/attachment:bg-(--hx-card) group-data-filling/attachment:opacity-100 [&_img]:transition-opacity [&_img]:duration-500 group-data-filling/attachment:[&_img]:opacity-60 *:[img]:aspect-square *:[img]:w-full *:[img]:object-cover [&_img]:size-full [&_img]:object-cover",
       },
     },
     defaultVariants: {
@@ -692,9 +695,27 @@ function AttachmentMedia({
   const layoutId = React.useId()
   const isClient = useIsClient()
 
+  const dialogRef = React.useRef<HTMLDivElement>(null)
+  const triggerRef = React.useRef<HTMLDivElement>(null)
+  const wasOpen = React.useRef(false)
+
   React.useEffect(() => {
-    if (!open) return
-    const onKeyDown = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false)
+    if (!open) {
+      // Closing hands focus back to the thumbnail that opened it
+      if (wasOpen.current) triggerRef.current?.focus({ preventScroll: true })
+      wasOpen.current = false
+      return
+    }
+    wasOpen.current = true
+    // Focus moves into the preview; Escape closes it, and Tab stays on it (one focusable)
+    dialogRef.current?.focus({ preventScroll: true })
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false)
+      if (event.key === "Tab") {
+        event.preventDefault()
+        dialogRef.current?.focus({ preventScroll: true })
+      }
+    }
     window.addEventListener("keydown", onKeyDown)
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [open])
@@ -707,10 +728,10 @@ function AttachmentMedia({
         attachmentMediaVariants({ variant }),
         isImage &&
           zoomOnHover &&
-          cn("*:transition-[opacity,scale,filter] *:duration-500 group-hover/attachment:*:scale-110", springyEase),
+          cn("*:transition-[opacity,scale,filter] *:duration-500 group-hover/attachment:*:scale-110 motion-reduce:*:transition-none motion-reduce:group-hover/attachment:*:scale-100", springyEase),
         isImage &&
           blurUntilLoaded &&
-          "transition-opacity duration-700 group-data-[state=processing]/attachment:*:blur-xs group-data-[state=uploading]/attachment:*:blur-sm",
+          "transition-opacity duration-700 motion-reduce:transition-none group-data-[state=processing]/attachment:*:blur-xs group-data-[state=uploading]/attachment:*:blur-sm",
         className
       )}
       {...props}
@@ -719,6 +740,7 @@ function AttachmentMedia({
         <>
           {!open && (
             <motion.div
+              ref={triggerRef}
               layoutId={layoutId}
               role="button"
               tabIndex={0}
@@ -750,11 +772,14 @@ function AttachmentMedia({
                       onClick={() => setOpen(false)}
                     >
                       <motion.div
+                        ref={dialogRef}
                         layoutId={layoutId}
                         role="dialog"
-                        aria-label="Preview"
+                        aria-modal="true"
+                        aria-label="Preview. Press Escape to close."
+                        tabIndex={-1}
                         transition={spring}
-                        className="aspect-square w-[min(80vw,80vh)] overflow-hidden rounded-2xl shadow-2xl [&_img]:size-full [&_img]:object-cover"
+                        className="aspect-square w-[min(80vw,80vh)] overflow-hidden rounded-2xl shadow-2xl outline-none [&_img]:size-full [&_img]:object-cover"
                       >
                         {children}
                       </motion.div>
@@ -868,6 +893,29 @@ function AttachmentContent({
   )
 }
 
+// The shimmer is built in (the source relied on a `shimmer` class from its own global CSS,
+// which installs won't have): a light band sweeps through the name while it uploads.
+const SHIMMER_KEYFRAMES = "@keyframes hx-attachment-shimmer{from{background-position:150% 0}to{background-position:-50% 0}}"
+// Written out in full so Tailwind can find every class. Reduced motion: no sweep, normal colour.
+const SHIMMER_WHILE_UPLOADING = [
+  "group-data-[state=uploading]/attachment:bg-[linear-gradient(90deg,var(--hx-foreground)_35%,var(--hx-muted-foreground)_50%,var(--hx-foreground)_65%)]",
+  "group-data-[state=processing]/attachment:bg-[linear-gradient(90deg,var(--hx-foreground)_35%,var(--hx-muted-foreground)_50%,var(--hx-foreground)_65%)]",
+  "group-data-[state=uploading]/attachment:bg-size-[200%_100%]",
+  "group-data-[state=processing]/attachment:bg-size-[200%_100%]",
+  "group-data-[state=uploading]/attachment:bg-clip-text",
+  "group-data-[state=processing]/attachment:bg-clip-text",
+  "group-data-[state=uploading]/attachment:text-transparent",
+  "group-data-[state=processing]/attachment:text-transparent",
+  "group-data-[state=uploading]/attachment:animate-[hx-attachment-shimmer_1.6s_linear_infinite]",
+  "group-data-[state=processing]/attachment:animate-[hx-attachment-shimmer_1.6s_linear_infinite]",
+  "group-data-[state=uploading]/attachment:motion-reduce:animate-none",
+  "group-data-[state=processing]/attachment:motion-reduce:animate-none",
+  "group-data-[state=uploading]/attachment:motion-reduce:bg-none",
+  "group-data-[state=processing]/attachment:motion-reduce:bg-none",
+  "group-data-[state=uploading]/attachment:motion-reduce:text-(--hx-foreground)",
+  "group-data-[state=processing]/attachment:motion-reduce:text-(--hx-foreground)",
+].join(" ")
+
 function AttachmentTitle({
   className,
   shimmerText = true,
@@ -876,16 +924,14 @@ function AttachmentTitle({
   shimmerText?: boolean
 }) {
   return (
-    <span
-      data-slot="attachment-title"
-      className={cn(
-        "block max-w-full min-w-0 truncate font-medium",
-        shimmerText &&
-          "group-data-[state=processing]/attachment:shimmer group-data-[state=uploading]/attachment:shimmer",
-        className
-      )}
-      {...props}
-    />
+    <>
+      {shimmerText && <style>{SHIMMER_KEYFRAMES}</style>}
+      <span
+        data-slot="attachment-title"
+        className={cn("block max-w-full min-w-0 truncate font-medium", shimmerText && SHIMMER_WHILE_UPLOADING, className)}
+        {...props}
+      />
+    </>
   )
 }
 
@@ -1000,6 +1046,8 @@ function AttachmentAction({
         revealAction &&
           cn(
             "transition-[scale,rotate,opacity,background-color] duration-300 [&_svg]:transition-[rotate,scale] [&_svg]:duration-300 hover:[&_svg]:scale-110 hover:[&_svg]:rotate-90",
+            // Reduced motion: the button just appears, with no spin or grow
+            "motion-reduce:transition-none motion-reduce:[&_svg]:transition-none motion-reduce:hover:[&_svg]:rotate-0 motion-reduce:hover:[&_svg]:scale-100 motion-reduce:scale-100! motion-reduce:rotate-0!",
             "pointer-fine:scale-50 pointer-fine:-rotate-90 pointer-fine:opacity-0",
             "pointer-fine:group-hover/attachment:scale-100 pointer-fine:group-hover/attachment:rotate-0 pointer-fine:group-hover/attachment:opacity-100",
             "pointer-fine:group-focus-within/attachment:scale-100 pointer-fine:group-focus-within/attachment:rotate-0 pointer-fine:group-focus-within/attachment:opacity-100",
@@ -1138,7 +1186,8 @@ function AttachmentGroup({
   return (
     <MotionConfig reducedMotion="user">
       <AttachmentReorderContext.Provider value={reorderable ? reorderContext : null}>
-        <AttachmentTiltContext.Provider value={tiltOnScroll ? lean : null}>
+        {/* Reduced motion: no tilt (a manual spring, which MotionConfig doesn't reach) */}
+        <AttachmentTiltContext.Provider value={tiltOnScroll && !reduceMotion ? lean : null}>
           {reorderable ? (
             <Reorder.Group
               as="div"
@@ -1204,6 +1253,8 @@ function AttachmentDropzone({
 
 function MarchingBorder() {
   const rect = React.useRef<SVGRectElement>(null)
+  // Reduced motion: the dashed border shows, but doesn't march
+  const reduceMotion = useReducedMotion()
   React.useLayoutEffect(() => matchParentRadius(rect.current), [])
 
   return (
@@ -1222,7 +1273,7 @@ function MarchingBorder() {
         stroke="currentColor"
         strokeWidth={1.5}
         strokeDasharray="6 4"
-        animate={{ strokeDashoffset: [0, -20] }}
+        animate={reduceMotion ? undefined : { strokeDashoffset: [0, -20] }}
         transition={{ duration: 0.8, ease: "linear", repeat: Infinity }}
       />
     </motion.svg>
@@ -1247,11 +1298,29 @@ type Item = {
   error?: string
   retryable?: boolean
   failAt?: number
+  /** Too big or the wrong type: fails with this message on the first tick (so it shakes) */
+  rejectWith?: string
   from?: { x: number; y: number }
   delay: number
 }
 
-const MAX_SIZE = 10 * 1024 * 1024
+// Accepted types per "Accepted files" option (MIME prefixes / extensions)
+const ACCEPT = {
+  any: { label: "", input: undefined, test: () => true },
+  images: { label: "Images only", input: "image/*", test: (file: File) => file.type.startsWith("image/") },
+  documents: {
+    label: "Documents only",
+    input: ".pdf,.doc,.docx,.txt,.md,.xls,.xlsx,.csv,.ppt,.pptx",
+    test: (file: File) => /\.(pdf|docx?|txt|md|xlsx?|csv|pptx?)$/i.test(file.name),
+  },
+} as const
+
+/** Checked as files are added, so a file that can't be uploaded says why straight away. */
+function rejectReason(file: File, maxSizeMB: number, accept: keyof typeof ACCEPT) {
+  if (!ACCEPT[accept].test(file)) return `Not accepted · ${ACCEPT[accept].label.toLowerCase()}`
+  if (maxSizeMB > 0 && file.size > maxSizeMB * 1024 * 1024) return `Over ${maxSizeMB} MB · ${formatSize(file.size)}`
+  return undefined
+}
 const TICK = 200
 const PROCESSING_TICKS = 5
 const FAIL_CHANCE = 0.3
@@ -1267,7 +1336,7 @@ const seed: Item[] = [
 
 const controls = {
   animateEnter: { group: "Adding", type: "checkbox", label: "Animate enter", value: true },
-  stagger: { disabled: (v: Record<string, unknown>) => !v.animateEnter, group: "Adding", type: "slider", label: "Stagger", value: 0.08, min: 0, max: 0.3, step: 0.01, unit: "s" },
+  stagger: { group: "Adding", type: "slider", label: "Stagger", value: 0.08, min: 0, max: 0.3, step: 0.01, unit: "s" },
   flyIn: { group: "Adding", type: "checkbox", label: "Fly in from drop", value: true },
   animatedBorder: { group: "Adding", type: "checkbox", label: "Animated border", value: true },
 
@@ -1289,18 +1358,42 @@ const controls = {
     ],
   },
 
-  shakeOnError: { disabled: (v: Record<string, unknown>) => !v.simulateFailures, group: "States", type: "checkbox", label: "Shake on error", value: true },
+  shakeOnError: { group: "States", type: "checkbox", label: "Shake on error", value: true },
 
   revealAction: { group: "Hover", type: "checkbox", label: "Reveal action", value: true },
   zoomOnHover: { group: "Hover", type: "checkbox", label: "Zoom on hover", value: true },
-  blurUntilLoaded: { group: "Hover", type: "checkbox", label: "Blur until loaded", value: true },
+  blurUntilLoaded: { group: "Hover", type: "checkbox", label: "Blur while uploading", value: true },
+  expandable: { group: "Hover", type: "checkbox", label: "Expandable preview", value: true },
 
   reorder: { group: "Group", type: "checkbox", label: "Drag to reorder", value: true },
   tiltOnScroll: { group: "Group", type: "checkbox", label: "Tilt on scroll", value: false },
   wrap: { group: "Group", type: "checkbox", label: "Wrap", value: false },
-  expandable: { group: "Group", type: "checkbox", label: "Expandable preview", value: true },
 
   simulateFailures: { group: "Demo", type: "checkbox", label: "Simulate failures", value: true },
+
+  maxSizeMB: {
+    group: "Limits",
+    type: "select",
+    label: "Max file size",
+    value: 10,
+    options: [
+      { label: "No limit", value: 0 },
+      { label: "5 MB", value: 5 },
+      { label: "10 MB", value: 10 },
+      { label: "25 MB", value: 25 },
+    ],
+  },
+  accept: {
+    group: "Limits",
+    type: "select",
+    label: "Accepted files",
+    value: "any",
+    options: [
+      { label: "Any", value: "any" },
+      { label: "Images", value: "images" },
+      { label: "Documents", value: "documents" },
+    ],
+  },
 }
 
 function truncateName(name: string, limit = 20) {
@@ -1337,8 +1430,8 @@ function UploadDemo(props: Partial<ControlValues>) {
       setItems((current) =>
         current.map((item) => {
           if (item.state === "uploading") {
-            if (item.size > MAX_SIZE && item.progress > 15) {
-              return { ...item, state: "error", error: `Over 10 MB · ${formatSize(item.size)}`, retryable: false }
+            if (item.rejectWith) {
+              return { ...item, state: "error", error: item.rejectWith, rejectWith: undefined, retryable: false }
             }
             const progress = Math.min(100, item.progress + 4 + Math.random() * 9)
             if (item.failAt !== undefined && progress >= item.failAt) {
@@ -1375,6 +1468,22 @@ function UploadDemo(props: Partial<ControlValues>) {
     if (!files.length) return
     const added = files.map<Item>((file, i) => {
       const image = file.type.startsWith("image/")
+      const rejected = rejectReason(file, values.maxSizeMB, values.accept as keyof typeof ACCEPT)
+      if (rejected) {
+        // Too big or the wrong type: fails with the reason on the first tick, no upload
+        return {
+          id: crypto.randomUUID(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          kind: "file",
+          state: "uploading",
+          progress: 0,
+          rejectWith: rejected,
+          from,
+          delay: i * values.stagger,
+        }
+      }
       return {
         id: crypto.randomUUID(),
         name: file.name,
@@ -1583,6 +1692,7 @@ function UploadDemo(props: Partial<ControlValues>) {
           type="file"
           multiple
           hidden
+          accept={ACCEPT[values.accept as keyof typeof ACCEPT].input}
           onChange={(e) => {
             addFiles(Array.from(e.target.files ?? []))
             e.target.value = ""
@@ -1619,7 +1729,7 @@ export interface AnimatedAttachmentProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedAttachment({ theme = "default", mode = "light", className, ...props }: AnimatedAttachmentProps) {
+export default function AnimatedAttachment({ theme = "default", mode = "dark", className, ...props }: AnimatedAttachmentProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

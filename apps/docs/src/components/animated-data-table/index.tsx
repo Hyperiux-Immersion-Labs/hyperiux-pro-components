@@ -1625,16 +1625,18 @@ function DataTableRowView({
     onPointerEnter: (event: React.PointerEvent<HTMLElement>) =>
       context.hoverRowAt(row.id, event.currentTarget),
     onClick: settings.expandable ? () => context.toggleExpand(row.id) : undefined,
+    // Muted text on a primary row: the row redefines --hx-muted-foreground instead of
+    // targeting `.text-(--hx-muted-foreground)`, whose brackets aren't a valid CSS selector
     className: cn(
       "relative transition-colors duration-300",
       settings.rowHighlight === "none" &&
         (settings.rowHighlightColor === "primary"
-          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) [&:hover_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&:hover_[data-slot=status-badge]]:bg-(--hx-background)"
+          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) hover:[--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)] [&:hover_[data-slot=status-badge]]:bg-(--hx-background)"
           : "hover:bg-(--hx-muted)/50"),
       isSelected && "bg-(--hx-primary)/[0.06]",
       settings.expandable && "cursor-pointer",
       onPrimary &&
-        "text-(--hx-primary-foreground) [&_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&_[data-slot=status-badge]]:bg-(--hx-background)"
+        "text-(--hx-primary-foreground) [--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)] [&_[data-slot=status-badge]]:bg-(--hx-background)"
     ),
     children: cells,
   }

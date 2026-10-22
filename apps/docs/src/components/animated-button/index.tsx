@@ -619,8 +619,8 @@ SettingsIcon.displayName = "SettingsIcon"
 
 /** dot-fill: a dot grows from the pointer to fill. char-stagger: letters roll one by one. scramble: letters shuffle into place. link: a line draws under the text. border-draw: the border draws around the button. */
 type AnimatedButtonVariant = "dot-fill" | "char-stagger" | "scramble" | "link" | "border-draw"
-/** filled: solid background. outline: border only. plain: no background or border. */
-type AnimatedButtonSurface = "filled" | "outline" | "plain"
+/** filled: solid background. outline: border only. */
+type AnimatedButtonSurface = "filled" | "outline"
 type AnimatedButtonTone =
   | "primary"
   | "muted"
@@ -654,8 +654,6 @@ type AnimatedButtonMotion = {
   loadingText: string
   /** Label shown once done. */
   successText: string
-  /** A line draws along the bottom on hover. Always on for link. */
-  underline: boolean
   rounded: AnimatedButtonRounded
   /** Seconds. */
   duration: number
@@ -803,7 +801,8 @@ function CharStagger({ text, stagger }: { text: string; stagger: number }) {
             <span
               key={row}
               className={cn(
-                "inline-block transition-transform duration-(--dur)",
+                // Reduced motion: the two rows are the same text, so swapping at once shows no movement
+                "inline-block transition-transform duration-(--dur) motion-reduce:transition-none",
                 ease,
                 row === 1
                   ? "absolute inset-0 translate-y-full group-data-[active=true]/animated-button:translate-y-0"
@@ -901,7 +900,7 @@ function StatusSlot({
                 d="M5 12.5l4.5 4.5L19 7.5"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: reduceMotion ? 0 : 0.4, delay: 0.2, ease: "easeOut" }}
+                transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
               />
             </svg>
           </motion.span>
@@ -1022,7 +1021,6 @@ function AnimatedButton({
   status = "idle",
   loadingText,
   successText,
-  underline = true,
   rounded = "full",
   duration = 0.8,
   stagger = 0.02,
@@ -1058,11 +1056,12 @@ function AnimatedButton({
   const reduceMotion = useReducedMotion()
 
   const borderDraw = variant === "border-draw"
-  const plain = surface === "plain" || variant === "link"
+  // Link is the only bare (no background, no border) look
+  const plain = variant === "link"
   const outlined = surface === "outline" && variant !== "link" && !borderDraw
   // Plain, outlined and border-draw share text and dot colours; only filled differs
   const bare = plain || outlined || borderDraw
-  const line = variant === "link" || (plain && underline)
+  const line = variant === "link"
   const timing = { duration: reduceMotion ? 0 : duration, ease: "easeInOut" as const }
 
   const dotTiming = {
@@ -1151,7 +1150,8 @@ function AnimatedButton({
     <span
       className={cn("inline-flex", magnetic && "-m-4 p-4")}
       onPointerMove={(event) => {
-        if (!magnetic || reduceMotion) return
+        // Touch screens have no hover to pull towards, and a finger drag would drag the button
+        if (!magnetic || reduceMotion || event.pointerType === "touch") return
         const box = event.currentTarget.getBoundingClientRect()
         x.set((event.clientX - (box.left + box.width / 2)) * 0.3)
         y.set((event.clientY - (box.top + box.height / 2)) * 0.3)
@@ -1242,14 +1242,10 @@ function AnimatedButton({
             // Text swaps colour as the dot passes under it
             variant === "dot-fill" &&
               cn(
-                "transition-colors duration-(--flip) delay-(--flip-delay)",
+                // Reduced motion: the dot is there at once, so the text must flip at once too
+                "transition-colors duration-(--flip) delay-(--flip-delay) motion-reduce:transition-none motion-reduce:delay-0",
                 bare ? TONES[tone].plainFlip : TONES[tone].filledFlip
               ),
-            line &&
-              (reduceMotion
-                ? // The whole line appears at once instead of drawing
-                  "after:absolute after:inset-x-2 after:bottom-3.5 after:h-px after:bg-current after:opacity-0 after:transition-opacity after:duration-150 data-[active=true]:after:opacity-100"
-                : "after:absolute after:inset-x-2 after:bottom-3.5 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-(--dur) data-[active=true]:after:origin-left data-[active=true]:after:scale-x-100"),
             className
           )}
           {...props}
@@ -1286,12 +1282,14 @@ function AnimatedButton({
                   style={{ width: "calc(100% - 1.5px)", height: "calc(100% - 1.5px)" }}
                   fill="none"
                   strokeWidth={1.5}
+                  // Round ends close the seam where the drawn line meets its own start
+                  strokeLinecap="round"
                   className={layer === 0 ? "stroke-(--hx-border)" : "stroke-current"}
                   initial={false}
                   animate={layer === 0 ? undefined : { pathLength: hovered ? 1 : 0, opacity: hovered ? 1 : 0 }}
                   transition={{
                     pathLength: timing,
-                    opacity: { duration: reduceMotion ? 0 : 0.15, delay: hovered ? 0 : duration },
+                    opacity: { duration: reduceMotion ? 0 : 0.15, delay: hovered || reduceMotion ? 0 : duration },
                   }}
                 />
               ))}
@@ -1304,17 +1302,29 @@ function AnimatedButton({
               iconPosition === "start" && "flex-row-reverse"
             )}
           >
-            {loadingText || successText ? (
-              <StatusLabel
-                status={status}
-                idle={labelNode}
-                idleText={children}
-                loadingText={loadingText ?? children}
-                successText={successText ?? children}
-              />
-            ) : (
-              labelNode
-            )}
+            {/* Link: the line sits under the label only, not under the icon */}
+            <span
+              className={cn(
+                "relative inline-flex",
+                line &&
+                  (reduceMotion
+                    ? // The whole line appears at once instead of drawing
+                      "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:bg-current after:opacity-0 after:transition-opacity after:duration-150 group-data-[active=true]/animated-button:after:opacity-100"
+                    : "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-(--dur) group-data-[active=true]/animated-button:after:origin-left group-data-[active=true]/animated-button:after:scale-x-100")
+              )}
+            >
+              {loadingText || successText ? (
+                <StatusLabel
+                  status={status}
+                  idle={labelNode}
+                  idleText={children}
+                  loadingText={loadingText ?? children}
+                  successText={successText ?? children}
+                />
+              ) : (
+                labelNode
+              )}
+            </span>
 
             <StatusSlot status={status} icon={icon} hovered={hovered} />
           </span>
@@ -1350,7 +1360,6 @@ const controls = {
     options: [
       { label: "Filled", value: "filled" },
       { label: "Outline", value: "outline" },
-      { label: "Plain", value: "plain" },
     ],
   },
   tone: {
@@ -1368,12 +1377,11 @@ const controls = {
       { label: "Gradient", value: "gradient" },
     ],
   },
-  underline: { disabled: (v: Record<string, unknown>) => v.surface !== "plain" || v.variant === "link", group: "Effect", type: "checkbox", label: "Line under text (plain)", value: true },
   rollingText: { disabled: (v: Record<string, unknown>) => v.variant === "char-stagger" || v.variant === "scramble", group: "Effect", type: "checkbox", label: "Rolling text", value: true },
   shimmerText: { disabled: (v: Record<string, unknown>) => v.variant === "char-stagger" || v.variant === "scramble", group: "Effect", type: "checkbox", label: "Shimmer text", value: false },
   pressFeedback: { group: "Effect", type: "checkbox", label: "Press feedback", value: true },
   magnetic: { group: "Effect", type: "checkbox", label: "Magnetic", value: false },
-  showLoadingState: { group: "State", type: "checkbox", label: "Show loading state", value: false },
+  showLoadingState: { group: "State", type: "checkbox", label: "Show loading state", value: true },
   icon: {
     group: "Icon",
     type: "select",
@@ -1435,6 +1443,14 @@ const controls = {
   },
 }
 
+const HOVER_TIPS: Record<AnimatedButtonVariant, string> = {
+  "dot-fill": "hover in from different sides to see where the dot fill starts.",
+  "char-stagger": "hover over it to see the letters roll one after another.",
+  scramble: "hover over it to see the letters scramble into place.",
+  link: "hover over it to see the line draw under the text.",
+  "border-draw": "hover over it to see the border draw itself around the button.",
+}
+
 function ButtonDemo(props: Partial<ControlValues>) {
   const panel = useDemoControls(props)
   const { values } = panel
@@ -1459,7 +1475,7 @@ function ButtonDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[40vh] items-center justify-center rounded-lg border px-[4vw] py-8">
+      <div className="flex min-h-80 items-center justify-center rounded-lg border px-8 py-8 max-md:px-4">
         <AnimatedButton
           variant={values.variant as AnimatedButtonVariant}
           surface={values.surface as AnimatedButtonSurface}
@@ -1473,7 +1489,6 @@ function ButtonDemo(props: Partial<ControlValues>) {
           successText={values.showLoadingState ? "Success" : undefined}
           onClick={simulate}
           iconPosition={values.iconPosition as AnimatedButtonIconPosition}
-          underline={values.underline}
           icon={values.icon as AnimatedButtonIcon}
           rounded={values.rounded as AnimatedButtonRounded}
           duration={values.duration}
@@ -1482,8 +1497,12 @@ function ButtonDemo(props: Partial<ControlValues>) {
           Hover me
         </AnimatedButton>
       </div>
+      {/* The tip follows the chosen effect and whether clicking shows the loading state */}
       <p className="text-sm text-(--hx-muted-foreground)">
-        Tip: hover in from different sides to see where the dot fill starts. Click it to see the loading and success state.
+        Tip: {HOVER_TIPS[values.variant as AnimatedButtonVariant] ?? HOVER_TIPS["dot-fill"]}{" "}
+        {values.showLoadingState
+          ? "Click it to see the loading and success state."
+          : "Turn on Show loading state to see it load when clicked."}
       </p>
 
     </div>
@@ -1515,7 +1534,7 @@ export interface AnimatedButtonSetProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedButtonSet({ theme = "default", mode = "light", className, ...props }: AnimatedButtonSetProps) {
+export default function AnimatedButtonSet({ theme = "default", mode = "dark", className, ...props }: AnimatedButtonSetProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

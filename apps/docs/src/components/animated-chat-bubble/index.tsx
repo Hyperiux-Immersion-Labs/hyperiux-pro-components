@@ -585,6 +585,7 @@ function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
 const BubbleThreadContext = React.createContext(false)
 
 function BubbleThread({ className, children, ...props }: React.ComponentProps<"div">) {
+  const reduceMotion = useReducedMotion()
   const scroller = React.useRef<HTMLDivElement>(null)
   const content = React.useRef<HTMLDivElement>(null)
 
@@ -598,7 +599,7 @@ function BubbleThread({ className, children, ...props }: React.ComponentProps<"d
       lastHeight = inner.offsetHeight
       const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight - grewBy
       if (grewBy > 0 && distanceFromBottom < 120) {
-        el.scrollTo({ top: el.scrollHeight, behavior: "smooth" })
+        el.scrollTo({ top: el.scrollHeight, behavior: reduceMotion ? "auto" : "smooth" })
       }
     })
     observer.observe(inner)
@@ -617,7 +618,7 @@ function BubbleThread({ className, children, ...props }: React.ComponentProps<"d
       resize.disconnect()
       el.removeEventListener("scroll", onScroll)
     }
-  }, [])
+  }, [reduceMotion])
 
   return (
     <MotionConfig reducedMotion="user">
@@ -639,7 +640,7 @@ function BubbleThread({ className, children, ...props }: React.ComponentProps<"d
 }
 
 const joinedCorners = cn(
-  "gap-0.5 [&_[data-slot=bubble-content]]:transition-[border-radius] [&_[data-slot=bubble-content]]:duration-300",
+  "gap-0.5 [&_[data-slot=bubble-content]]:transition-[border-radius] [&_[data-slot=bubble-content]]:duration-300 motion-reduce:[&_[data-slot=bubble-content]]:transition-none",
   "[&>[data-align=start]:not(:first-child)>[data-slot=bubble-content]]:rounded-tl-sm",
   "[&>[data-align=start]:not(:last-child)>[data-slot=bubble-content]]:rounded-bl-sm",
   "[&>[data-align=end]:not(:first-child)>[data-slot=bubble-content]]:rounded-tr-sm",
@@ -869,7 +870,7 @@ function Bubble({
         "has-data-[slot=bubble-reactions]:z-10",
         (pickerOpen || bursts.length > 0) && "z-20",
         liftOnHover &&
-          "*:data-[slot=bubble-content]:transition-shadow *:data-[slot=bubble-content]:duration-300 hover:*:data-[slot=bubble-content]:shadow-md",
+          "*:data-[slot=bubble-content]:transition-shadow *:data-[slot=bubble-content]:duration-300 hover:*:data-[slot=bubble-content]:shadow-md motion-reduce:*:data-[slot=bubble-content]:transition-none",
         className
       )}
       style={{ ...style, x, originX: align === "end" ? 1 : 0, originY: 1 }}
@@ -956,7 +957,7 @@ function Bubble({
       {revealTime && time && (
         <span
           className={cn(
-            "pointer-events-none absolute top-1/2 -translate-y-1/2 px-2 text-xs whitespace-nowrap text-(--hx-muted-foreground) opacity-0 transition-[opacity,translate] duration-300 ease-out group-hover/bubble:translate-x-0 group-hover/bubble:opacity-100",
+            "pointer-events-none absolute top-1/2 -translate-y-1/2 px-2 text-xs whitespace-nowrap text-(--hx-muted-foreground) opacity-0 transition-[opacity,translate] duration-300 ease-out group-hover/bubble:translate-x-0 group-hover/bubble:opacity-100 motion-reduce:transition-none motion-reduce:translate-x-0",
             align === "end" ? "right-full translate-x-2" : "left-full -translate-x-2"
           )}
         >
@@ -1025,8 +1026,9 @@ function ReactionPicker({
   magnifyEmojis: boolean
   onPick: (emoji: string) => void
 }) {
+  const reduceMotion = useReducedMotion()
   const scaleUnderPointer = (row: HTMLElement, pointerX: number | null) => {
-    if (!magnifyEmojis) return
+    if (!magnifyEmojis || reduceMotion) return
     for (const button of row.querySelectorAll<HTMLElement>("[data-emoji]")) {
       const box = button.getBoundingClientRect()
       const distance = pointerX === null ? Infinity : Math.abs(pointerX - (box.left + box.width / 2))
@@ -1216,6 +1218,7 @@ function BubbleText({
   collapsible?: boolean
   lines?: number
 }) {
+  const reduceMotion = useReducedMotion()
   const tokens = text.split(/(\s+)/)
   const [streams] = React.useState(stream)
   const [shown, setShown] = React.useState(streams ? 1 : tokens.length)
@@ -1271,7 +1274,8 @@ function BubbleText({
       <motion.div
         initial={false}
         animate={{ height: collapsed ? clampHeight : "auto" }}
-        transition={spring}
+        // Height isn't a transform, so MotionConfig doesn't stop it: snap under reduced motion
+        transition={reduceMotion ? { duration: 0 } : spring}
         // The cap stays on until the first toggle; dropping it as soon as the text is measured
         // would let the box grow for a frame before the height animation takes over.
         style={{
@@ -1322,7 +1326,7 @@ function BubbleText({
             }}
             className={cn(
               "relative self-start text-xs font-medium opacity-80 outline-none",
-              "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out",
+              "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out motion-reduce:after:transition-none",
               "hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100"
             )}
           >
@@ -1417,7 +1421,7 @@ function BubbleReactions({
       initial={{ height: 0, marginTop: "-0.25rem" }}
       animate={{ height: "auto", marginTop: 0 }}
       exit={{ height: 0, marginTop: "-0.25rem" }}
-      transition={settle}
+      transition={reduceMotion ? { duration: 0 } : settle}
     >
       {pill}
     </motion.div>
@@ -1480,7 +1484,8 @@ function BubbleStatus({
   const reduceMotion = useReducedMotion()
   const icon = React.useRef<HTMLSpanElement>(null)
   const [spinning, setSpinning] = React.useState(false)
-  const draw = animated ? { pathLength: 0 } : false
+  // pathLength isn't a transform, so it's switched off here for reduced motion
+  const draw = animated && !reduceMotion ? { pathLength: 0 } : false
 
   const retry = async () => {
     if (spinning) return
@@ -1531,7 +1536,7 @@ function BubbleStatus({
               strokeLinejoin="round"
               aria-hidden
               className={cn(
-                "size-3.5 transition-colors duration-500",
+                "size-3.5 transition-colors duration-500 motion-reduce:transition-none",
                 status === "read" && "text-(--hx-info)"
               )}
             >
@@ -1944,7 +1949,7 @@ function ChatDemo(props: Partial<ControlValues>) {
           </Button>
         </div>
       </div>
-      <div className="flex h-[75vh] flex-col overflow-hidden rounded-lg border max-md:mx-[calc(50%-46vw)]">
+      <div className="flex h-150 flex-col overflow-hidden rounded-lg border max-md:h-130">
         <BubbleThread className="min-h-0 flex-1 px-6 py-6 max-md:px-4">
           {groupMessages(messages).map((group) => (
             <BubbleGroup key={group.id} joined={values.joined}>
@@ -2065,12 +2070,15 @@ export interface AnimatedChatBubbleProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedChatBubble({ theme = "default", mode = "light", className, ...props }: AnimatedChatBubbleProps) {
+export default function AnimatedChatBubble({ theme = "default", mode = "dark", className, ...props }: AnimatedChatBubbleProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <ChatDemo {...props} />
+        {/* Covers parts outside the thread too (suggestions, input, standalone bubbles) */}
+        <MotionConfig reducedMotion="user">
+          <ChatDemo {...props} />
+        </MotionConfig>
       </div>
     </ThemeContext.Provider>
   );

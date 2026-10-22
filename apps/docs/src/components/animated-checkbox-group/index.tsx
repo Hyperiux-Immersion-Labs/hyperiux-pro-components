@@ -32,6 +32,8 @@ const spring = { type: "spring", visualDuration: 0.35, bounce: 0.3 } as const;
 const snappy = { type: "spring", visualDuration: 0.25, bounce: 0 } as const;
 const springyEase = "ease-[cubic-bezier(0.34,1.56,0.64,1)]";
 const shake = [0, -6, 6, -4, 4, -2, 0];
+// Gentler than the shake: a small "no more" nudge when At most is reached
+const nudge = [0, 4, -3, 0];
 const CASCADE_MS = 60;
 
 const cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(" ");
@@ -71,8 +73,8 @@ const CheckboxOptionsContext = React.createContext<CheckboxOptions>(defaultOptio
 const CheckboxIndexContext = React.createContext(0);
 
 const toolbarButton = cx(
-  "relative font-medium text-(--checkbox-muted-text) transition-[color,opacity] outline-none hover:text-(--checkbox-text) focus-visible:text-(--checkbox-text) disabled:pointer-events-none disabled:opacity-40",
-  "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out",
+  "relative font-medium text-(--checkbox-muted-text) transition-[color,opacity] motion-reduce:transition-none outline-none hover:text-(--checkbox-text) focus-visible:text-(--checkbox-text) disabled:pointer-events-none disabled:opacity-40",
+  "after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out motion-reduce:after:transition-none",
   "hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100"
 );
 
@@ -136,7 +138,7 @@ const PAGE_COLORS: Record<`${CheckboxTheme}:${CheckboxMode}`, { background: stri
 };
 
 // Lets a page match the palette behind the group
-export function getThemeProps(theme: CheckboxTheme = "default", mode: CheckboxMode = "light") {
+export function getThemeProps(theme: CheckboxTheme = "default", mode: CheckboxMode = "dark") {
   const colors = PAGE_COLORS[`${theme}:${mode}`] ?? PAGE_COLORS["default:light"];
   return {
     "data-theme": mode,
@@ -292,6 +294,8 @@ const colorVars = (theme: CheckboxTheme, mode: CheckboxMode, colors: CheckboxCol
     "--checkbox-accent": colors.accentColor || palette.accentColor,
     "--checkbox-on-accent": colors.onAccentColor || palette.onAccentColor,
     "--checkbox-text": colors.textColor || palette.textColor,
+    // Any theme but the default puts ticked labels in its accent colour
+    "--checkbox-marked-text": colors.textColor || (theme === "default" ? palette.textColor : colors.accentColor || palette.accentColor),
     "--checkbox-muted-text": colors.mutedTextColor || palette.mutedTextColor,
     "--checkbox-border": colors.borderColor || palette.borderColor,
     "--checkbox-muted": colors.mutedColor || palette.mutedColor,
@@ -340,7 +344,7 @@ export function CheckboxGroup({
   variant = "default",
   cardFillColor = "muted",
   theme = "default",
-  mode = "light",
+  mode = "dark",
   accentColor,
   onAccentColor,
   textColor,
@@ -395,6 +399,7 @@ export function CheckboxGroup({
 
   const flashLimit = () => {
     setLimitHit(true);
+    if (!reduceMotion) animate(x, nudge, { duration: 0.3, ease: "easeOut" });
     window.clearTimeout(limitTimer.current);
     limitTimer.current = window.setTimeout(() => setLimitHit(false), 2000);
   };
@@ -572,7 +577,7 @@ export function CheckboxItem({
   indeterminate = false,
   onCheckedChange,
   theme = "default",
-  mode = "light",
+  mode = "dark",
   ...colors
 }: CheckboxItemProps) {
   const group = React.useContext(CheckboxGroupContext);
@@ -644,11 +649,11 @@ export function CheckboxItem({
           </span>
           <span
             className={cx(
-              "col-start-1 row-start-1 transition-[color,font-weight] duration-200",
+              "col-start-1 row-start-1 transition-[color,font-weight] duration-200 motion-reduce:transition-none",
               onAccent
                 ? "font-medium text-(--checkbox-on-accent)"
                 : marked
-                  ? "font-medium text-(--checkbox-text)"
+                  ? "font-medium text-(--checkbox-marked-text)"
                   : "font-normal text-(--checkbox-muted-text) group-hover/checkbox:text-(--checkbox-text)"
             )}
           >
@@ -696,7 +701,7 @@ export function CheckboxItem({
         "rounded-md has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-(--checkbox-accent)/50",
       card &&
         cx(
-          "isolate overflow-hidden rounded-xl border px-4 py-3 transition-colors duration-300",
+          "isolate overflow-hidden rounded-xl border px-4 py-3 transition-colors duration-300 motion-reduce:transition-none",
           checked
             ? solid
               ? "border-(--checkbox-accent)"
@@ -716,7 +721,7 @@ export function CheckboxItem({
     initial: { opacity: 0, y: 6 },
     animate: { opacity: dimmed ? 0.5 : 1, y: 0 },
     onAnimationComplete: () => setEntered(true),
-    transition: { ...spring, delay: entered ? 0 : index * 0.05, layout: spring },
+    transition: { ...spring, delay: entered || reduceMotion ? 0 : index * 0.05, layout: spring },
   };
 
   const content = (
@@ -736,7 +741,8 @@ export function CheckboxItem({
               ? `circle(${checked ? "135%" : "0%"} at 1.75rem ${description !== undefined ? "1.5rem" : "50%"})`
               : `circle(${checked ? "150%" : "0%"} at 0% 50%)`,
           }}
-          transition={options.fill ? { duration: 0.6, ease: [0.65, 0, 0.35, 1] } : { duration: 0 }}
+          // clipPath isn't a transform, so MotionConfig doesn't stop it: snap under reduced motion
+          transition={options.fill && !reduceMotion ? { duration: 0.6, ease: [0.65, 0, 0.35, 1] } : { duration: 0 }}
         >
           {solid && (
             <>
@@ -753,7 +759,7 @@ export function CheckboxItem({
         <span
           aria-hidden
           className={cx(
-            "pointer-events-none absolute -inset-1 scale-75 border-2 border-(--checkbox-accent)/40 opacity-0 transition-[opacity,scale] duration-300 group-has-focus-visible/checkbox:scale-100 group-has-focus-visible/checkbox:opacity-100",
+            "pointer-events-none absolute -inset-1 scale-75 border-2 border-(--checkbox-accent)/40 opacity-0 transition-[opacity,scale] duration-300 motion-reduce:transition-none motion-reduce:scale-100 group-has-focus-visible/checkbox:scale-100 group-has-focus-visible/checkbox:opacity-100",
             springyEase
           )}
           style={{ borderRadius: cornerRadius + 4 }}
@@ -763,7 +769,7 @@ export function CheckboxItem({
           ref={visual}
           aria-hidden
           className={cx(
-            "absolute inset-0 overflow-hidden border transition-colors duration-200",
+            "absolute inset-0 overflow-hidden border transition-colors duration-200 motion-reduce:transition-none",
             invalid
               ? "border-(--checkbox-error)"
               : onFill
@@ -774,7 +780,7 @@ export function CheckboxItem({
           )}
           initial={false}
           animate={{ borderRadius: cornerRadius }}
-          transition={spring}
+          transition={reduceMotion ? { duration: 0 } : spring}
         >
           <motion.span
             className={cx("absolute inset-0", onFill ? "bg-(--checkbox-on-accent)" : "bg-(--checkbox-accent)")}
@@ -790,7 +796,7 @@ export function CheckboxItem({
             strokeLinecap="round"
             strokeLinejoin="round"
             className={cx(
-              "absolute inset-0 size-full transition-colors duration-200",
+              "absolute inset-0 size-full transition-colors duration-200 motion-reduce:transition-none",
               markOnAccent ? "text-(--checkbox-on-accent)" : "text-(--checkbox-accent)"
             )}
           >
@@ -800,7 +806,7 @@ export function CheckboxItem({
                 initial={false}
                 animate={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
                 transition={{
-                  pathLength: { duration: 0.25, ease: "easeOut", delay: checked ? 0.08 : 0 },
+                  pathLength: reduceMotion ? { duration: 0 } : { duration: 0.25, ease: "easeOut", delay: checked ? 0.08 : 0 },
                   opacity: { duration: 0.1 },
                 }}
               />
@@ -826,7 +832,7 @@ export function CheckboxItem({
                 initial={false}
                 animate={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
                 transition={{
-                  pathLength: { duration: 0.3, ease: "easeOut", delay: checked ? 0.08 : 0 },
+                  pathLength: reduceMotion ? { duration: 0 } : { duration: 0.3, ease: "easeOut", delay: checked ? 0.08 : 0 },
                   opacity: { duration: 0.1 },
                 }}
               />
@@ -875,7 +881,12 @@ export function CheckboxItem({
     );
   }
 
-  return <motion.label {...rootProps}>{content}</motion.label>;
+  // A checkbox outside a group has no group MotionConfig, so it brings its own
+  return (
+    <MotionConfig reducedMotion="user">
+      <motion.label {...rootProps}>{content}</motion.label>
+    </MotionConfig>
+  );
 }
 
 function RollingNumber({ value }: { value: number }) {
@@ -930,6 +941,7 @@ export default function AnimatedCheckboxGroup({
   value,
   variant = "default",
   max = 0,
+  min = 0,
   showDescription = true,
   colorful = false,
   className,
@@ -942,8 +954,9 @@ export default function AnimatedCheckboxGroup({
     <CheckboxGroup
       {...groupProps}
       variant={variant}
-      // 0 means no upper limit
+      // 0 means no upper limit. At least can't exceed At most (it could never be met)
       max={max > 0 ? max : undefined}
+      min={max > 0 ? Math.min(min, max) : min}
       value={value}
       defaultValue={value === undefined ? (defaultValue ?? options.slice(1, 2).map((o) => o.value)) : undefined}
       aria-label={ariaLabel}

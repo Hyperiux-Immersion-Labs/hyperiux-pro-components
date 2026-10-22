@@ -13,8 +13,24 @@ export type RemixerOption =
       [key: string]: unknown;
     };
 
+/**
+ * Greys a control out (and makes it non-interactive) while another prop has a given
+ * value - e.g. `{ prop: "fill", equals: false }` for a setting that only applies with
+ * fill on. One condition per rule (`equals`, `notEquals` or `in`); an array of rules
+ * disables the control when any of them matches. Plain JSON so it can live in registry.json.
+ */
+export interface RemixerDisabledRule {
+  prop: string;
+  equals?: RemixerValue;
+  notEquals?: RemixerValue;
+  in?: RemixerValue[];
+}
+
+export type RemixerDisabledWhen = RemixerDisabledRule | RemixerDisabledRule[];
+
 export interface RemixerControl {
   id?: string;
+  disabledWhen?: RemixerDisabledWhen;
   name?: string;
   label?: string;
   title?: string;
@@ -47,6 +63,7 @@ export interface RemixerGroup {
 }
 
 export interface RegistryPropRemixer {
+  disabledWhen?: RemixerDisabledWhen;
   group?: string;
   groupTitle?: string;
   groupCollapsible?: boolean;

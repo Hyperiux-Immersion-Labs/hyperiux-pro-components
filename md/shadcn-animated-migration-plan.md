@@ -12,7 +12,7 @@ Last updated: 2026-10-22.
 | Phase | What | Status |
 |---|---|---|
 | 0 | Port all 25 components to single files + Phase 0 demo pages | **Done** (type-check, lint and browser-load clean) |
-| 1 | Review & QA each component | Not started |
+| 1 | Review & QA each component | **In progress.** Polish standard (below) applied, and audit fixes done, for 5 of 25: Accordion, Attachment, Button, Chat Bubble, Checkbox Group. One owner decision open (see "Open items"). |
 | 2 | Registry sync (`component-ship.mjs registry`) | Not started |
 | 3 | Codegen: global Remixer swap + Sanity JSX handoff | Not started |
 | 4 | Distribution: `public/r`, npm tarball, free mirror | Not started |
@@ -33,11 +33,13 @@ These were agreed with the owner and should not be revisited without asking.
 | File shape | **One self-contained `index.tsx` per component.** Every local helper it needs (button, popover, select, calendar, icons…) is inlined. No shared local imports. |
 | Tier / category | `free`, category `components` |
 | Naming | No `Hpx` anywhere. Default export `Animated<Name>`; compound parts exported by plain name (`Accordion`, `AccordionItem`…). |
-| Remixer parity | Every control from the source demo's panel is exposed, with the **source's labels, groups and defaults**. |
+| Remixer parity | Every control from the source demo's panel is exposed, starting from the **source's labels, groups and defaults**. The polish standard below then changes some of them on purpose: Mode defaults to dark, labels and groups are renamed where the source's were unclear, and controls that do nothing are removed. |
 | Theme | Two remixer dropdowns on every component: **Theme** (`default`, `caffeine`, `claude`, `ghibli`, `spotify`, `valorant`, `vscode`) and **Mode** (`light`, `dark`). The theme also recolours the whole demo page. |
 | External deps | npm packages are fine (installed by the user); local files are not. |
 | Motion version | Stay on Motion 12. Drag-to-reorder is one axis (`"x"` or `"y"`); upgrading every shipped effect for 2-D drag in three components isn't worth the risk. |
 | Corner radius | Keep the source's Tailwind classes as they are (`rounded-lg`, `rounded-xl`…). Corners follow the host project's radius scale, so our demos (where `rounded-lg` = 16px) look rounder than the source app. |
+| Default mode | **Dark.** Every component and its remixer start in dark mode (see the polish standard). |
+| Button: no Plain | Animated Button has no Plain background and no "Line under text" option. Link is its only bare look. |
 
 ---
 
@@ -67,6 +69,212 @@ A ported file always has this shape, top to bottom:
 | Radius classes stay as Tailwind scale names (`rounded-lg`) | Owner's call: corners follow each project's own radius scale. Don't rewrite them to fixed values. |
 | No server calls | Hover Card's link previews come from built-in sample data, not the source's `/api/link-preview` route. |
 | No `next/*` | `next/link` → `<a>`; `next-themes` → a built-in `useTheme` that flips the component's own mode. |
+| Sizes use Tailwind's scale (`p-6`, `text-lg`, `gap-4`), never viewport units (`p-[2vw]`, `text-[1.5vw]`) | The component sits in the user's layout, not a full-width page: viewport units scale with the browser window, not its container. Viewport sizing belongs only in our demo page (`DemoContent.tsx`), not in `index.tsx`. One exception: a full-screen overlay (a lightbox like Attachment's image preview) is sized against the window, so viewport units are right there. |
+| Props that only work with another prop set get a `disabledWhen` rule (`{ prop: "fill", equals: false }`) | The remixer greys them out until they apply, instead of letting a change do nothing. Use it for any prop that is ignored while another prop has a given value. |
+
+---
+
+## Polish standard (do this for every component)
+
+Apply all of this to each component during Phase 1, before its audits. The first five
+(Accordion, Attachment, Button, Chat Bubble, Checkbox Group) already follow it; use them as
+worked examples. Files: `src/components/<slug>/index.tsx` (the component) and
+`src/app/(marketing)/demo/<slug>/DemoContent.tsx` (its remixer props).
+
+### 1. Dark by default
+
+Set `mode = "dark"` in **every** place a default mode is declared, not just one:
+
+- the default export: `export default function Animated<Name>({ theme = "default", mode = "dark", … })`
+- any inner component with its own `mode = "light"` default (Checkbox Group had two)
+- `getThemeProps` / `themeProps` if it is exported with a mode default
+- the `mode` prop in `DemoContent.tsx`: `default: "dark"`
+
+Check with `grep -n 'mode = "light"\|mode: .* = "light"' index.tsx`; it should find nothing.
+
+### 2. Theme colour
+
+When a theme other than **Default** is chosen, the component's key accents take the theme's
+`--hx-primary`. These include the main text it acts on, its icons and any line or indicator.
+This also **overrides "muted" styling** (for example a `--hx-muted-foreground` icon).
+**Default** keeps the source's neutral look.
+
+- First check what already uses `--hx-primary`. Button, Attachment and Chat Bubble already
+  coloured their main parts with it, so they needed no change, only an accurate Theme
+  description.
+- If the key parts use `--hx-foreground` / `--hx-muted-foreground` instead, add an `accent` flag
+  that is `theme !== "default"`. Pass it down from the default export, and switch those classes
+  to `--hx-primary` when it is set.
+  - Accordion: the question, the icon and the hover line.
+  - Checkbox Group: ticked labels, through a `--checkbox-marked-text` variable.
+- Something drawn **on** a primary fill uses `--hx-primary-foreground`, not primary, so it stays
+  readable.
+- The Theme prop's description says what the theme recolours, for example *"Colour palette. Any
+  theme but Default also tints the questions, icon and hover line."*
+
+### 3. Tailwind sizes, not viewport units
+
+Already in the Rules table above. In practice:
+
+| Was | Now |
+|---|---|
+| `p-[2vw] max-md:p-[4vw]` | `p-6 max-md:p-4` |
+| `text-[1.5vw] … max-md:text-[4.5vw]` | `text-lg max-md:text-base` |
+| `min-h-[40vh] px-[4vw]` | `min-h-80 px-8 max-md:px-4` |
+| `h-[75vh]` plus a `-46vw` bleed | `h-150 max-md:h-130` |
+
+The only exception is a full-screen overlay (Attachment's image preview). Viewport sizing stays
+allowed in `DemoContent.tsx`, because that is our page, not the shipped component.
+
+### 4. Dependent props: `disabledWhen`
+
+Any prop that does nothing while another prop has some value gets a rule. The remixer then
+greys it out (40% opacity, not clickable), and it keeps its value for when it applies again.
+**Don't remove the prop or hide it.** The source demos mark these with
+`disabled: (v) => …` in their `controls` object; translate every one of them, then look for
+more.
+
+Format (plain JSON, so it can go into `registry.json` as is):
+
+```ts
+remixer: { …, disabledWhen: { prop: "fill", equals: false } }        // off while fill is off
+remixer: { …, disabledWhen: { prop: "variant", notEquals: "card" } }  // only for the card variant
+remixer: { …, disabledWhen: { prop: "variant", in: ["a", "b"] } }      // off for either value
+remixer: { …, disabledWhen: [ruleA, ruleB] }                           // off if ANY rule matches
+```
+
+There is no "all of these" form yet. If a prop only works when A **and** B hold, say so in its
+description instead.
+
+Rules of thumb:
+
+- **Grey out only what truly does nothing.** Check the code path before adding a rule.
+  - Attachment's Stagger also spaces the fly-in, so it was wrongly tied to Animate enter.
+  - Its Shake on error also fires for rejected files, so it was wrongly tied to Simulate failures.
+- **Two settings that fight each other:** grey out the one that loses. Multiple open does
+  nothing while Open on hover is on.
+- **One control doing two jobs:** split it into two controls, each with its own rule. Accordion
+  had one Roundness for the fill and the border. It now has Fill roundness (needs Fill) and
+  Border roundness (needs Border).
+- **A control that only exists for a removed option:** remove it too. Button's "Line under
+  text" went with Plain.
+- Number `select` options are currently sent as strings. See "Open items".
+
+### 5. Descriptions
+
+Every prop gets one short sentence saying **what it does**, written from the code, not the
+label repeated.
+
+- Lead with the effect: *"Draws a line under an item on hover and while it's open."*
+- Units for numbers: *"How long opening and closing take, in seconds."*
+- Name the dependency when there is one: *"… Needs Fill on."* or *"Not used by Link."*
+- Name side effects a user wouldn't guess: *"Off on touch screens."* or *"Off while Open on
+  hover is on."*
+- Verify anything that isn't obvious by reading the code. "Blur until loaded" actually blurred
+  while uploading, so it was relabelled. Chat replies use the theme's muted colour, not a primary
+  tint.
+- Rename a label when the source's is misleading (Show line → **Hover line**, Blur until loaded
+  → **Blur while uploading**).
+- Put a control in the group it belongs to. If a group would hold one control that just repeats
+  the group's name, give the control its own group (the accordion's Icon).
+
+### 6. Behaviour polish
+
+Check each of these that applies:
+
+- **Overshoot stays inside.** Elastic or spring animations that can overshoot (lines, fills)
+  must not poke out of their container. Clip them with an `overflow-hidden` wrapper rather than
+  removing the bounce (accordion hover line).
+- **No doubled lines.** With an outer border on, the last item skips its own bottom divider.
+- **Lines retract on close.** A hover line that stays drawn while open shrinks back on close,
+  even if the pointer is still over it.
+- **Touch screens.** Hover-only effects that misbehave under a finger are switched off for
+  `pointerType === "touch"` (Button's Magnetic), and the description says so.
+- **Feedback when something is refused.** Pair a visible message with motion: a shake for an
+  error, a gentler nudge for "no more" (Checkbox Group's At most limit), skipped under reduced
+  motion.
+- **Validate early.** Reject bad input when it's added, not partway through a fake process.
+  Attachment checks size and type on add, and the card fails with the reason, for example
+  *"Over 10 MB · 14.2 MB"*. The limits are remixer controls.
+- **Dialogs.** Escape closes the dialog, focus moves into it and stays there, `aria-modal="true"`
+  is set, and focus returns to what opened it.
+- **Demo tips follow the settings.** Any "Tip:" text under a demo reflects the chosen variant and
+  options (Button's tip changes with the hover effect and the loading setting).
+- **Useful defaults.** Demo-only states that show off the component start on (Button's loading
+  state).
+
+### 7. Remixer panel (shared, already done)
+
+These are global and need no per-component work. Don't undo them.
+
+- Values on the right of each control are **capitalised**, not uppercase
+  (`.fieldValue` in `remixer-panel.module.css`).
+- `disabledWhen` support lives in `RemixerPanel.tsx`, `remixer-utils.ts` and `types.ts`. The greyed
+  class goes on the field itself, never a wrapper, so the panel's `.field` child selectors keep
+  their spacing and dividers.
+
+### 8. Checks before calling a component done
+
+```bash
+cd apps/docs
+npx tsc --noEmit -p tsconfig.json | grep animated-<name>
+npx eslint src/components/animated-<name> "src/app/(marketing)/demo/animated-<name>"
+grep -n 'from "@/\|from "next/\|hpx' src/components/animated-<name>/index.tsx   # nothing
+grep -n 'vw\|vh\b\|svh' src/components/animated-<name>/index.tsx              # only a full-screen overlay
+grep -n 'mode = "light"' src/components/animated-<name>/index.tsx             # nothing
+```
+
+Then run both audit agents on it (`reduced-motion-audit`, `props-remixer-audit`), fix what they
+find, and open `/demo/animated-<name>` to try every control in light and dark, with Default and
+one coloured theme.
+
+### Open items for the first five
+
+The audit fixes for the first five are done:
+- the remixer `select` now keeps number options as numbers
+- the missing and wrong rules and descriptions are fixed
+- the reduced-motion gaps are closed in all five
+
+Still open:
+
+- **Checkbox Group, Drag to reorder:** it uses `axis="y"`, but the inline layout is a wrapping
+  row and Cards is a two-column grid. It probably only reorders properly in single-column
+  layouts (phones). **Needs an owner decision:** sideways drag for the inline layout, or grey it
+  out except in single-column layouts.
+- **Chat Bubble's named parts used on their own** (a bare `Bubble` outside the default export)
+  get no `MotionConfig`. The default export now wraps everything in one, so the shipped demo is
+  covered.
+- **Not possible from the CLI:** the 1440 / 1024 / 390 and Firefox / Safari pass needs a browser
+  session, and the real install test needs Phase 2.
+
+### Lessons from the first five's audits
+
+Check these on every remaining component:
+
+- **No global utility classes.** Attachment used a `shimmer` class that only existed in the
+  source app's global CSS, so Shimmer text silently did nothing. Any class the component relies
+  on must be standard Tailwind or defined inside the file. Attachment now injects its own
+  `@keyframes` with a `<style>` tag. Write such classes out in full; Tailwind can't see classes
+  built with template strings.
+- **Reduced motion beyond `MotionConfig`.** `MotionConfig reducedMotion="user"` only stops
+  transform and layout animations. Handle each of these yourself with `useReducedMotion()` or
+  `motion-reduce:`:
+  - `height`, `clipPath`, `pathLength`, `borderRadius` and `strokeDashoffset` animations
+  - imperative `animate(el, …)` calls, GSAP tweens and `repeat: Infinity` loops
+  - manual springs (`useSpring` / `useVelocity`)
+  - `scrollTo({ behavior: "smooth" })`
+  - every CSS `transition-*`, which needs `motion-reduce:transition-none`
+  - stagger and delay values (zero them, or the content just waits)
+- **`MotionConfig` reach.** Wrap the default export's whole body. Give any named part that can
+  be used on its own its own `MotionConfig`, as Checkbox Item now does.
+- **No `--hx-*` classes inside selectors.** The bundler turns the source's
+  `[&_.text-muted-foreground]:…` into `[&_.text-(--hx-muted-foreground)]:…`. Brackets aren't
+  valid in a CSS class selector, so the production build warns ("Expected identifier in class
+  selector") and the rule doesn't work. Redefine the variable on the parent instead, for example
+  `[--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)]` (Data
+  Table rows). To check: `grep -n '_\.[a-z-]*-(--hx' index.tsx` should find nothing.
+- **Number dropdowns.** The remixer keeps option types now, but still compare numbers loosely in
+  components if they can also come from user code.
 
 ---
 
@@ -129,6 +337,8 @@ judging the page; the `DemoHeader` Controls tab only behaves normally after it.
 ### Manual review (things the bundler can't judge)
 
 - [ ] No `@/`, `next/`, `hpx` left: `grep -n 'from "@/\|from "next/\|hpx' index.tsx`
+- [ ] No viewport units in the shipped file: `grep -n 'vw\|vh\b\|svh' index.tsx`
+- [ ] Every prop that only works alongside another prop has a `disabledWhen` rule
 - [ ] Every popup (menu, popover, select, tooltip, dialog, drawer, toast) is themed in **dark mode** and in a coloured palette
 - [ ] The demo's own heading was removed (our page renders its own)
 - [ ] Nothing sits under the source site's navbar offset (`top-14`, `100svh-3.5rem`…)
@@ -141,7 +351,7 @@ judging the page; the `DemoHeader` Controls tab only behaves normally after it.
 
 ### Phase 1 – Review & QA (per component)
 
-Run `md/section-qc-checklist.md` sections 2–9 and 13 on each component. Points specific to this batch:
+Start by applying the **Polish standard** above to the component. Then run `md/section-qc-checklist.md` sections 2–9 and 13 on it. Points specific to this batch:
 
 1. **Descriptions.** The generated remixer descriptions are just the control labels. Write a real one-line description for each prop (these become the docs props table).
 2. **Reduced motion.** Most components wrap in `MotionConfig reducedMotion="user"`. Toast does not, a gap carried over from the source. Run the `reduced-motion-audit` agent.
