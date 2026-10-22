@@ -36,6 +36,8 @@ These were agreed with the owner and should not be revisited without asking.
 | Remixer parity | Every control from the source demo's panel is exposed, with the **source's labels, groups and defaults**. |
 | Theme | Two remixer dropdowns on every component: **Theme** (`default`, `caffeine`, `claude`, `ghibli`, `spotify`, `valorant`, `vscode`) and **Mode** (`light`, `dark`). The theme also recolours the whole demo page. |
 | External deps | npm packages are fine (installed by the user); local files are not. |
+| Motion version | Stay on Motion 12. Drag-to-reorder is one axis (`"x"` or `"y"`); upgrading every shipped effect for 2-D drag in three components isn't worth the risk. |
+| Corner radius | Keep the source's Tailwind classes as they are (`rounded-lg`, `rounded-xl`…). Corners follow the host project's radius scale, so our demos (where `rounded-lg` = 16px) look rounder than the source app. |
 
 ---
 
@@ -62,6 +64,7 @@ A ported file always has this shape, top to bottom:
 | State variants are plain data variants: `data-open:`, `data-checked:`, `data-[orientation=vertical]:` | The source's custom `hpx-*` variants live in its `globals.css`, which users won't have. |
 | Enter/exit animations use Base UI's `data-starting-style:` / `data-ending-style:` | Replaces `tw-animate-css` classes (`animate-in fade-in-0 zoom-in-95…`), which users may not have. |
 | `Reorder.Group axis` is `"x"` or `"y"` only | Our repo is on Motion 12; `"xy"` is Motion 13. |
+| Radius classes stay as Tailwind scale names (`rounded-lg`) | Owner's call: corners follow each project's own radius scale. Don't rewrite them to fixed values. |
 | No server calls | Hover Card's link previews come from built-in sample data, not the source's `/api/link-preview` route. |
 | No `next/*` | `next/link` → `<a>`; `next-themes` → a built-in `useTheme` that flips the component's own mode. |
 
@@ -144,9 +147,8 @@ Run `md/section-qc-checklist.md` sections 2–9 and 13 on each component. Points
 2. **Reduced motion.** Most components wrap in `MotionConfig reducedMotion="user"`. Toast does not, a gap carried over from the source. Run the `reduced-motion-audit` agent.
 3. **Remixer.** Run the `props-remixer-audit` agent against each demo.
 4. **Responsive.** Check 1440 / 1024 / 390 widths. Source layouts use `max-[1025px]:` and `max-md:`, which is fine for demos.
-5. **Corner radius.** Our site's Tailwind theme overrides `--radius-*`, so corners look rounder in our demos than in the source. Users get their own scale; decide whether that's acceptable or whether to hard-code radii.
-6. **Cross-browser.** Chromium and WebKit were spot-checked during the port; still do Firefox and real Safari.
-7. **Ownership/licensing.** Confirm the source project is ours to publish (Hpx = Hyperiux). Every npm dependency is MIT/ISC; record them per section 11 of the QC checklist.
+5. **Cross-browser.** Chromium and WebKit were spot-checked during the port; still do Firefox and real Safari.
+6. **Ownership/licensing.** Confirm the source project is ours to publish (Hpx = Hyperiux). Every npm dependency is MIT/ISC; record them per section 11 of the QC checklist.
 
 **Exit criteria:** checklist signed off, descriptions written, no console errors.
 
@@ -247,12 +249,12 @@ Versions installed in `apps/docs` for this work: `@base-ui/react@1.8.0`,
 
 ---
 
-## Known gaps and decisions still open
+## Known gaps
+
+Motion version and corner radius are decided; see "Decisions already made".
 
 | Item | Detail | Owner decision needed? |
 |---|---|---|
-| Motion 12 vs 13 | `Reorder` 2-D drag is downgraded to one axis (Radio, Checkbox, Attachment wrap mode). Upgrading Motion repo-wide would restore it but touches every effect. | Yes |
-| Corner radius scale | See Phase 1, item 5. | Yes |
 | Remixer descriptions | Currently the control labels. | No, just Phase 1 work |
 | Hover Card previews | Built-in sample data; `loadPreview()` is the swap point for a real endpoint. | No |
 | Theme Switch | Flips the component's own mode, not the user's site theme. Document how to wire it to their theme provider. | No |
