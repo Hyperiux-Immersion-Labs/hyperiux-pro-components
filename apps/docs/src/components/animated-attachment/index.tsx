@@ -409,7 +409,11 @@ function useIsClient() {
   )
 }
 
-const AttachmentReorderContext = React.createContext<{ draggable: boolean } | null>(null)
+const AttachmentReorderContext = React.createContext<{
+  draggable: boolean
+  /** The group's box: a dragged card can't leave it */
+  constraints: React.RefObject<HTMLDivElement | null>
+} | null>(null)
 
 const AttachmentTiltContext = React.createContext<MotionValue<number> | null>(null)
 
@@ -598,6 +602,9 @@ function Attachment({
           value={value}
           dragListener={false}
           dragControls={dragControls}
+          // Stays inside its row instead of following the pointer across the page
+          dragConstraints={reorderContext?.constraints}
+          dragElastic={0.08}
           whileDrag={{ scale: 1.04, zIndex: 10, cursor: "grabbing" }}
           onPointerDown={(event: React.PointerEvent<HTMLDivElement>) => {
             onPointerDown?.(event)
@@ -1169,7 +1176,7 @@ function AttachmentGroup({
   const lean = useTransform(speed, [-1500, 1500], [12, -12], { clamp: true })
 
   const reorderable = values !== undefined && onReorder !== undefined
-  const reorderContext = React.useMemo(() => ({ draggable: reorder }), [reorder])
+  const reorderContext = React.useMemo(() => ({ draggable: reorder, constraints: scroller }), [reorder])
   const groupProps = {
     ref: scroller,
     "data-slot": "attachment-group",
@@ -1189,9 +1196,12 @@ function AttachmentGroup({
         {/* Reduced motion: no tilt (a manual spring, which MotionConfig doesn't reach) */}
         <AttachmentTiltContext.Provider value={tiltOnScroll && !reduceMotion ? lean : null}>
           {reorderable ? (
+            // layoutScroll: the row scrolls sideways, so Motion must account for its scroll
+            // when measuring cards, or dragged cards land in the wrong place and jump
             <Reorder.Group
               as="div"
               axis="x"
+              layoutScroll
               values={values}
               onReorder={onReorder}
               {...groupProps}
@@ -1199,7 +1209,7 @@ function AttachmentGroup({
               {children}
             </Reorder.Group>
           ) : (
-            <motion.div {...groupProps}>{children}</motion.div>
+            <motion.div layoutScroll {...groupProps}>{children}</motion.div>
           )}
         </AttachmentTiltContext.Provider>
       </AttachmentReorderContext.Provider>
@@ -1640,7 +1650,7 @@ function UploadDemo(props: Partial<ControlValues>) {
           </AttachmentMedia>
           <AttachmentContent>
             <AttachmentTitle>Add files</AttachmentTitle>
-            <AttachmentDescription>Up to 10 MB each</AttachmentDescription>
+            <AttachmentDescription>{values.maxSizeMB > 0 ? `Up to ${values.maxSizeMB} MB each` : "Any size"}</AttachmentDescription>
           </AttachmentContent>
           <AttachmentTrigger aria-label="Add files" onClick={() => inputRef.current?.click()} />
         </Attachment>
@@ -1663,6 +1673,26 @@ function UploadDemo(props: Partial<ControlValues>) {
         onFiles={addFiles}
         className="flex min-h-76 flex-col gap-4 p-6 max-md:p-4"
       >
+        {/* Empty (e.g. after Delete all): say how to add files; clicking it opens the picker */}
+        <AnimatePresence>
+          {items.length === 0 && (
+            <motion.button
+              key="empty"
+              type="button"
+              onClick={() => inputRef.current?.click()}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="m-auto flex cursor-pointer flex-col items-center gap-1.5 rounded-lg px-4 py-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)"
+            >
+              <span className="text-sm font-medium text-(--hx-foreground)">No files yet</span>
+              <span className="text-sm text-(--hx-muted-foreground)">
+                Drop files here, or click to upload.
+              </span>
+            </motion.button>
+          )}
+        </AnimatePresence>
         <AttachmentGroup
           reorder={values.reorder}
           tiltOnScroll={values.tiltOnScroll}

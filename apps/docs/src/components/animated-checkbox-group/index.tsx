@@ -66,6 +66,8 @@ type CheckboxGroupContextValue = {
   invalid: boolean;
   full: boolean;
   reorder: boolean;
+  /** The list's box: a dragged option can't leave it */
+  dragBox: React.RefObject<HTMLDivElement | null>;
 };
 
 const CheckboxGroupContext = React.createContext<CheckboxGroupContextValue | null>(null);
@@ -461,7 +463,9 @@ export function CheckboxGroup({
   };
 
   const options: CheckboxOptions = { ...defaultOptions, ...optionProps };
+  const dragBox = React.useRef<HTMLDivElement>(null);
   const context: CheckboxGroupContextValue = {
+    dragBox,
     variant,
     cardFillColor,
     selected,
@@ -506,6 +510,7 @@ export function CheckboxGroup({
               </div>
             )}
             <Reorder.Group
+              ref={dragBox}
               as="div"
               axis="y"
               values={currentOrder}
@@ -663,8 +668,9 @@ export function CheckboxItem({
             <motion.span
               aria-hidden
               className={cx(
-                "pointer-events-none absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 origin-left rounded-full opacity-70",
-                onAccent ? "bg-(--checkbox-on-accent)" : "bg-(--checkbox-text)"
+                // Solid, and the same colour as the ticked label (the theme's accent with a theme on)
+                "pointer-events-none absolute inset-x-0 top-1/2 h-0.5 -translate-y-1/2 origin-left rounded-full",
+                onAccent ? "bg-(--checkbox-on-accent)" : "bg-(--checkbox-marked-text)"
               )}
               initial={false}
               animate={{ scaleX: checked ? 1 : 0 }}
@@ -867,6 +873,9 @@ export function CheckboxItem({
         as="label"
         value={value}
         drag={draggable}
+        // Stays inside the list instead of following the pointer across the page
+        dragConstraints={group?.dragBox}
+        dragElastic={0.08}
         whileDrag={{ scale: 1.03, zIndex: 10 }}
         onDragStart={() => (dragged.current = true)}
         onClickCapture={(event) => {
