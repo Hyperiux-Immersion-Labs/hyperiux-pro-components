@@ -6,11 +6,12 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
-import { FadeUp, MediaReveal } from "../Animations/gsapAnim";
+import { FadeUp } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
+import PixelReveal from "../effects/pixel-reveal";
 import FilterBar from "../shared/FilterBar";
-import { ROUTES } from "../../routes";
+import { postPath } from "../../routes";
 import { POSTS, type Post } from "./posts";
 
 export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) => {
@@ -24,7 +25,7 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
   return (
     <FadeUp delay={(index % 3) * 0.1}>
       <Link
-        href={ROUTES.article}
+        href={postPath(post.slug)}
         data-cursor="Read"
         onMouseEnter={() => hover(true)}
         onMouseLeave={() => hover(false)}
@@ -32,28 +33,24 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
         onBlur={() => hover(false)}
         className="group flex flex-col gap-4"
       >
-        <div className="aspect-[7/5] w-full overflow-hidden rounded-lg bg-mpx-surface">
-          <MediaReveal className="h-full w-full">
-            <div ref={zoomRef} className="h-full w-full">
+        <div className="aspect-[7/5] w-full overflow-hidden rounded-lg">
+          <div ref={zoomRef} className="h-full w-full">
+            <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
               <Image
                 src={post.image}
                 alt=""
                 sizes="(max-width: 768px) 90vw, (max-width: 1025px) 45vw, 30vw"
                 className="h-full w-full object-cover"
               />
-            </div>
-          </MediaReveal>
+            </PixelReveal>
+          </div>
         </div>
         <div className="flex gap-4 text-14 text-mpx-muted">
           <span>{post.category}</span>
           <time dateTime={post.dateTime}>{post.date}</time>
         </div>
-        <h3 className="text-30 tracking-tight">
-          <span className="bg-[linear-gradient(currentColor,currentColor)] bg-[position:0_100%] bg-no-repeat [background-size:0_1px] transition-[background-size] duration-500 group-hover:[background-size:100%_1px]">
-            {post.title}
-          </span>
-        </h3>
-        <p className="text-22 text-mpx-muted">{post.excerpt}</p>
+        <h3 className="text-28">{post.title}</h3>
+        <p className="text-14 text-mpx-muted">{post.excerpt}</p>
       </Link>
     </FadeUp>
   );

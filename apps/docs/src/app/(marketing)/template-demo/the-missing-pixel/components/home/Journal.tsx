@@ -96,7 +96,7 @@ const Journal = () => (
         Opinions, process and the occasional confession.
       </LineReveal>
       <UnderlineLink
-        href={ROUTES.journal}
+        href={ROUTES.blog}
         className="font-mpx-head text-24 font-medium text-mpx-ink"
       >
         Read the journal

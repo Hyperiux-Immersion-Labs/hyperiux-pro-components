@@ -27,7 +27,7 @@ const MENU_LINKS = [
   { label: "Work", target: ROUTES.work, preview: workCloudline },
   { label: "Services", target: ROUTES.services, preview: serviceIdentity },
   { label: "About", target: ROUTES.about, preview: studio },
-  { label: "Journal", target: ROUTES.journal, preview: journal },
+  { label: "Journal", target: ROUTES.blog, preview: journal },
   { label: "Contact", target: ROUTES.contact, preview: founder },
 ];
 

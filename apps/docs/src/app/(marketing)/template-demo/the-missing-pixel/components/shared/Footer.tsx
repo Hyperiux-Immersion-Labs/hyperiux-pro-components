@@ -25,7 +25,7 @@ const COLUMNS = [
       { label: "Work", href: ROUTES.work },
       { label: "Services", href: ROUTES.services },
       { label: "About", href: ROUTES.about },
-      { label: "Journal", href: ROUTES.journal },
+      { label: "Journal", href: ROUTES.blog },
       { label: "Contact", href: ROUTES.contact },
     ],
   },

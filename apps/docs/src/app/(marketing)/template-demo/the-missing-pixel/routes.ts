@@ -10,8 +10,8 @@ export const ROUTES = {
   service: `${BASE}/services/brand-identity`,
   about: `${BASE}/about`,
   team: `${BASE}/about#team`,
-  journal: `${BASE}/journal`,
-  article: `${BASE}/journal/brand-guidelines`,
+  blog: `${BASE}/blog`,
+  article: `${BASE}/blog/brand-guidelines`,
   contact: `${BASE}/contact`,
   notFound: `${BASE}/404`,
 };
@@ -21,6 +21,8 @@ export const slugify = (title: string) =>
 
 export const workPath = (title: string) => `${ROUTES.work}/${slugify(title)}`;
 
+export const postPath = (slug: string) => `${ROUTES.blog}/${slug}`;
+
 export const PAGE_NAMES: Record<string, string> = {
   [ROUTES.home]: "Missing Pixel",
   [ROUTES.work]: "Work",
@@ -28,7 +30,7 @@ export const PAGE_NAMES: Record<string, string> = {
   [ROUTES.services]: "Services",
   [ROUTES.service]: "Brand identity",
   [ROUTES.about]: "About",
-  [ROUTES.journal]: "Journal",
+  [ROUTES.blog]: "Journal",
   [ROUTES.article]: "Article",
   [ROUTES.contact]: "Contact",
   [ROUTES.notFound]: "404",

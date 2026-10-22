@@ -1,70 +1,39 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+
 import Image from "next/image";
-import { pageMetadata } from "../../metadata";
 import { ROUTES } from "../../routes";
-import { FadeUp, MaskReveal, PAGE_DELAY } from "../../components/Animations/gsapAnim";
-import PixelButton from "../../components/Buttons/PixelButton";
-import ArticleAside from "../../components/journal/ArticleAside";
-import { Bullets, Callout, Figure, H2, H3, P, Quote, Steps } from "../../components/journal/ArticleParts";
-import { PostCard } from "../../components/journal/PostGrid";
-import { POSTS } from "../../components/journal/posts";
-import ReadingProgress from "../../components/journal/ReadingProgress";
-import Breadcrumb from "../../components/shared/Breadcrumb";
-import ParallaxImage from "../../components/effects/parallax-image";
-import SectionHead from "../../components/shared/SectionHead";
-import cloudline from "../../assets/w-cloudline.webp";
+import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import UnderlineLink from "../Buttons/UnderlineLink";
+import ParallaxImage from "../effects/parallax-image";
+import ArticleAside from "./ArticleAside";
+import { Bullets, Callout, Figure, H2, H3, P, Quote, Steps } from "./ArticleParts";
+import { PostCard } from "./PostGrid";
+import { POSTS, type Post } from "./posts";
 import drift from "../../assets/w-drift.webp";
 import team1 from "../../assets/team-1.webp";
 
-export const metadata = pageMetadata(
-  "Your brand guidelines are too long | The Missing Pixel",
-  "The longer the rulebook, the less your brand looks like itself. How we write guidelines people open on purpose.",
-  "/journal/brand-guidelines",
-);
+type PostBodyProps = {
+  post: Post;
+};
 
-const page = () => (
+const PostBody = ({ post }: PostBodyProps) => {
+  const related = POSTS.filter((item) => item.slug !== post.slug).slice(0, 3);
+
+  return (
   <>
-    <ReadingProgress targetId="article-body" />
-    <section className="mpx-container flex flex-col gap-11 py-[3vw] max-lg:gap-8 max-lg:py-[6vw] max-md:gap-9 max-md:py-[10vw]">
-      <Breadcrumb
-        crumbs={[
-          { label: "Home", href: ROUTES.home },
-          { label: "Journal", href: ROUTES.journal },
-          { label: "Brand guidelines" },
-        ]}
-      />
-      <header className="flex flex-col items-start gap-8 max-lg:gap-6">
-        <span className="inline-flex h-[3.2vh] items-center rounded-full border border-black/20 px-[0.9vw] text-14 max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]">
-          Branding
-        </span>
-        <MaskReveal as="h1" delay={PAGE_DELAY} className="w-[75%] max-lg:w-full">
-          Your brand guidelines are too long. Nobody reads page 74.
-        </MaskReveal>
-        <FadeUp delay={PAGE_DELAY + 0.3} className="flex flex-wrap items-center gap-x-9 gap-y-3 text-22 text-mpx-muted max-lg:gap-x-6">
-          <span className="flex items-center gap-3">
-            <span className="aspect-square h-[5vh] shrink-0 overflow-hidden rounded-full max-lg:h-[4vh] max-md:h-[6vh]">
-              <Image src={team1} alt="" sizes="4vw" className="h-full w-full object-cover" />
-            </span>
-            Clara Whitfield, head of writing
-          </span>
-          <time dateTime="2026-09-24">Sep 24, 2026</time>
-          <span>6 min read</span>
-        </FadeUp>
-      </header>
-    </section>
-
-    <div className="mpx-container">
+    <div className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
       <ParallaxImage
-        image={cloudline}
-        alt="Model resting in soft pink clouds"
+        pixel
+        image={post.image}
+        alt={post.title}
         className="aspect-video rounded-lg"
         priority
       />
     </div>
 
-    <section className="mpx-container mpx-section">
+    <section className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
       <div className="flex justify-between gap-11 max-lg:flex-col max-lg:gap-9">
-        <ArticleAside links={TOC} subject="Your brand guidelines are too long" />
+        <ArticleAside links={TOC} subject={post.title} />
         <article id="article-body" className="flex w-[62%] flex-col gap-7 max-lg:w-full">
           <P>
             Most brand guidelines are written to protect the brand from the people using it. Which is exactly why the people using it ignore them.
@@ -126,19 +95,19 @@ const page = () => (
             {TAGS.map((tag) => (
               <li
                 key={tag}
-                className="inline-flex h-[3.2vh] items-center rounded-full border border-black/20 px-[0.9vw] text-14 max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
+                className="inline-flex h-[4vh] items-center rounded-full bg-[#eeeeee] px-[1vw] text-14 text-[#0a0a0a] max-lg:h-[3.4vh] max-lg:px-[2vw] max-md:h-[5vh] max-md:px-[4vw]"
               >
                 {tag}
               </li>
             ))}
           </FadeUp>
-          <FadeUp className="flex items-start gap-5 border-t border-black/10 py-[2vw] max-lg:py-[4vw] max-md:py-[7vw]">
-            <div className="aspect-square h-[9vh] shrink-0 overflow-hidden rounded-full max-lg:h-[7vh] max-md:h-[10vh]">
+          <FadeUp className="flex items-center gap-[2vw] rounded-lg border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:gap-[3vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:flex-col max-md:items-start max-md:gap-[5vw] max-md:px-[5vw] max-md:py-[6vw]">
+            <div className="aspect-square h-[11vh] shrink-0 overflow-hidden rounded-full max-lg:h-[8vh] max-md:h-[10vh]">
               <Image src={team1} alt="" sizes="8vw" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col gap-2">
-              <h3 className="text-30">Clara Whitfield</h3>
-              <p className="text-24 text-mpx-muted">
+              <h3 className="text-28">Clara Whitfield</h3>
+              <p className="text-22 leading-[1.5] text-mpx-muted">
                 Clara runs writing out of the London studio. Before that she spent eight years in-house, so she has read a great many guidelines she didn’t write.
               </p>
             </div>
@@ -147,21 +116,25 @@ const page = () => (
       </div>
     </section>
 
-    <section className="mpx-container flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]">
-      <SectionHead title="Keep reading">
-        <PixelButton label="All Essays" href={ROUTES.journal} variant="outline" size="sm" />
-      </SectionHead>
-      <div className="grid grid-cols-3 gap-x-9 gap-y-14 max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-11 max-md:grid-cols-1 max-md:gap-y-12">
-        {POSTS.slice(0, 3).map((post, index) => (
-          <PostCard key={post.title} post={post} index={index} />
+
+    <section className="flex flex-col gap-[6vw] px-[5vw] py-[7%] max-lg:gap-[10vw] max-lg:px-[6vw] max-lg:py-[12%] max-md:gap-14 max-md:px-[7vw] max-md:py-[15%]">
+      <div className="flex flex-col items-start gap-[2vw] max-lg:gap-4">
+        <MaskReveal as="h2">Keep reading</MaskReveal>
+        <UnderlineLink href={ROUTES.blog} className="font-mpx-head text-24 font-medium text-mpx-ink">
+          All Essays
+        </UnderlineLink>
+      </div>
+      <div className="grid grid-cols-3 gap-x-[3.3vw] gap-y-[5vw] max-lg:grid-cols-2 max-lg:gap-x-[4vw] max-lg:gap-y-[8vw] max-md:grid-cols-1 max-md:gap-y-12">
+        {related.map((item, index) => (
+          <PostCard key={item.slug} post={item} index={index} />
         ))}
       </div>
     </section>
-    <div aria-hidden className="h-[10vh]" />
   </>
-);
+  );
+};
 
-export default page;
+export default PostBody;
 
 const TOC = [
   { label: "Why long rulebooks fail", id: "rules-fail" },
