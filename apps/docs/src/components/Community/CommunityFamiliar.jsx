@@ -90,7 +90,7 @@ export default function CommunityFamiliar() {
         end: "bottom 55%",
         onToggle: (self) => { if (self.isActive) setSpy(i); },
       });
-    });
+    }); 
     if (prefersReducedMotion()) return;
 
     const list = root.querySelector("[data-fam-list]");
