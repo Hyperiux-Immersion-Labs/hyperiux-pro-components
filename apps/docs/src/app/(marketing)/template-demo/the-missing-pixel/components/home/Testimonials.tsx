@@ -2,12 +2,18 @@
 
 import TestimonialSwiper from "../effects/testimonial-swiper/index";
 import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
-import cloudline from "../../assets/w-cloudline.webp";
-import northway from "../../assets/w-northway.webp";
-import drift from "../../assets/w-drift.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import menuPoster from "../../assets/menu-poster.webp";
-import reelPoster from "../../assets/reel-poster.webp";
+import cloudline from "../../assets/pictures/tst-cloudline.webp";
+import orbit from "../../assets/pictures/tst-orbit.webp";
+import drift from "../../assets/pictures/tst-drift.webp";
+import kickflip from "../../assets/pictures/tst-kickflip.webp";
+import northway from "../../assets/pictures/tst-northway.webp";
+import lumen from "../../assets/pictures/tst-lumen.webp";
+import faceCloudline from "../../assets/pictures/q-2.webp";
+import faceOrbit from "../../assets/pictures/q-1.webp";
+import faceDrift from "../../assets/pictures/q-3.webp";
+import faceKickflip from "../../assets/pictures/q-4.webp";
+import faceNorthway from "../../assets/pictures/q-5.webp";
+import faceLumen from "../../assets/pictures/q-6.webp";
 
 const Testimonials = () => (
   <section
@@ -38,7 +44,7 @@ const TESTIMONIALS = [
       "They found the one sentence we’d been circling for five years. Sell-through doubled in our first quarter on shelf.",
     name: "Ama Owusu",
     role: "Founder at Cloudline",
-    image: cloudline,
+    image: faceCloudline,
     media: cloudline,
   },
   {
@@ -46,15 +52,15 @@ const TESTIMONIALS = [
       "Our board was nervous. They treated that as a design problem, not an obstacle, and twelve weeks later every team wanted to use the brand.",
     name: "Daniel Cho",
     role: "CEO at Orbit Labs",
-    image: northway,
-    media: northway,
+    image: faceOrbit,
+    media: orbit,
   },
   {
     quote:
       "On time, 100 on accessibility, bookings doubled in a season. I keep waiting for the catch.",
     name: "Elena Ruiz",
     role: "Head of product at Drift Campers",
-    image: drift,
+    image: faceDrift,
     media: drift,
   },
   {
@@ -62,7 +68,7 @@ const TESTIMONIALS = [
       "They spent a week at the skatepark before they opened a sketchbook. The identity finally looks like it was made by people who skate.",
     name: "Leo Marquez",
     role: "Founder at Kickflip Supply",
-    image: kickflip,
+    image: faceKickflip,
     media: kickflip,
   },
   {
@@ -70,15 +76,15 @@ const TESTIMONIALS = [
       "Our logo now moves with the music on every release. Fans were remixing it themselves within a month.",
     name: "Freya Holt",
     role: "Label manager at Northway Records",
-    image: menuPoster,
-    media: menuPoster,
+    image: faceNorthway,
+    media: northway,
   },
   {
     quote:
       "A launch with real personality, on a deadline that scared other agencies off. Pre-orders beat our forecast by a third.",
     name: "Omar Fayed",
     role: "VP marketing at Lumen Mobile",
-    image: reelPoster,
-    media: reelPoster,
+    image: faceLumen,
+    media: lumen,
   },
 ];

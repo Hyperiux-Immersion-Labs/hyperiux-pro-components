@@ -10,11 +10,7 @@ import Credits from "./Credits";
 import Gallery from "./Gallery";
 import NextProject from "./NextProject";
 import type { Project } from "./projects";
-import gallery1 from "../../assets/w-kickflip.webp";
-import gallery2 from "../../assets/w-northway.webp";
-import gallery3 from "../../assets/w-drift.webp";
-import reelPoster from "../../assets/reel-poster.webp";
-import quote from "../../assets/w-cloudline.webp";
+import quote from "../../assets/pictures/q-2.webp";
 
 type CaseBodyProps = {
   project: Project;
@@ -54,12 +50,7 @@ const CaseBody = ({ project, next }: CaseBodyProps) => (
         </FadeUp>
       </div>
       <Gallery
-        items={[
-          { image: gallery1, alt: "Skater mid-trick against a concrete wall", full: true },
-          { image: gallery2, alt: "Portrait lit by a huge orange sun" },
-          { image: gallery3, alt: "Mint camper van on a desert road" },
-          { image: reelPoster, alt: `${project.title} launch campaign`, full: true },
-        ]}
+        items={project.gallery.map((item, index) => ({ ...item, full: index === 0 || index === 3 }))}
       />
     </div>
     <section className="mpx-section flex flex-col gap-24 px-[5vw] max-lg:gap-11 max-lg:px-[6vw] max-md:px-[7vw]">

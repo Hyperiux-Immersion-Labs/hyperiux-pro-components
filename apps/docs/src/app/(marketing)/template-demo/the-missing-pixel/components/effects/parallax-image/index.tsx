@@ -74,6 +74,7 @@ const ParallaxImage = ({
         <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
         <div ref={moveRef} className="h-full w-full will-change-transform">
           <Image
+            quality={95}
             src={image}
             alt={alt}
             sizes={sizes}
@@ -86,6 +87,7 @@ const ParallaxImage = ({
       <MediaReveal zoom={false} className="h-full w-full">
         <div ref={moveRef} className="h-full w-full will-change-transform">
           <Image
+            quality={95}
             src={image}
             alt={alt}
             sizes={sizes}

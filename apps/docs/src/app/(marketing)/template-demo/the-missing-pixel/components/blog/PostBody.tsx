@@ -9,8 +9,8 @@ import ArticleAside from "./ArticleAside";
 import { Bullets, Callout, Figure, H2, H3, P, Quote, Steps } from "./ArticleParts";
 import { PostCard } from "./PostGrid";
 import { POSTS, type Post } from "./posts";
-import drift from "../../assets/w-drift.webp";
-import team1 from "../../assets/team-1.webp";
+import journalSix from "../../assets/pictures/j-6.webp";
+import author from "../../assets/pictures/team-5.webp";
 
 type PostBodyProps = {
   post: Post;
@@ -62,8 +62,8 @@ const PostBody = ({ post }: PostBodyProps) => {
           />
           <P>Usually fewer than a dozen rules survive as fixed. Everything else becomes an example rather than a law.</P>
           <Figure
-            image={drift}
-            alt="Mint camper van on a desert road"
+            image={journalSix}
+            alt="Chrome letters A and a on a dark set with an orange glow"
             caption="One clear focal point beats a page of things to avoid."
           />
           <H2 id="how-we-write">How we write them now</H2>
@@ -103,7 +103,7 @@ const PostBody = ({ post }: PostBodyProps) => {
           </FadeUp>
           <FadeUp className="flex items-center gap-[2vw] rounded-lg border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:gap-[3vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:flex-col max-md:items-start max-md:gap-[5vw] max-md:px-[5vw] max-md:py-[6vw]">
             <div className="aspect-square h-[11vh] shrink-0 overflow-hidden rounded-full max-lg:h-[8vh] max-md:h-[10vh]">
-              <Image src={team1} alt="" sizes="8vw" className="h-full w-full object-cover" />
+              <Image quality={95} src={author} alt="" sizes="8vw" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col gap-2">
               <h3 className="text-28">Clara Whitfield</h3>

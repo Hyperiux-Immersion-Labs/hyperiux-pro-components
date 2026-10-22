@@ -4,9 +4,9 @@ import { ROUTES } from "../../routes";
 import { LineReveal, MaskReveal, PAGE_DELAY } from "../Animations/gsapAnim";
 import ParallaxImage from "../effects/parallax-image";
 import Breadcrumb from "../shared/Breadcrumb";
-import founder from "../../assets/founder.webp";
-import studio1 from "../../assets/studio-1.webp";
-import studio2 from "../../assets/studio-2.webp";
+import founder from "../../assets/pictures/founder.webp";
+import studio1 from "../../assets/pictures/studio-1.webp";
+import studio2 from "../../assets/pictures/studio-2.webp";
 
 const AboutHero = () => (
   <>

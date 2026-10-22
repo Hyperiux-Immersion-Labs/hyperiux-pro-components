@@ -10,9 +10,9 @@ import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import PixelReveal from "../effects/pixel-reveal";
-import cloudline from "../../assets/w-cloudline.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import northway from "../../assets/w-northway.webp";
+import journalOne from "../../assets/pictures/j-1.webp";
+import journalTwo from "../../assets/pictures/j-2.webp";
+import journalThree from "../../assets/pictures/j-3.webp";
 import { ROUTES } from "../../routes";
 
 type Post = {
@@ -58,6 +58,7 @@ function PostCard({ post, index }: PostCardProps) {
       >
         <div ref={zoomRef} className="h-full w-full">
           <Image
+            quality={95}
             src={post.image}
             alt=""
             sizes="(max-width: 768px) 90vw, (max-width: 1025px) 45vw, 30vw"
@@ -120,7 +121,7 @@ const POSTS: Post[] = [
     title: "Your brand guidelines are too long. Nobody reads page 74.",
     excerpt:
       "The longer the rulebook, the less your brand looks like itself. How we write guidelines people open on purpose.",
-    image: cloudline,
+    image: journalOne,
   },
   {
     category: "Process",
@@ -129,7 +130,7 @@ const POSTS: Post[] = [
     title: "We rebuilt a bank in twelve weeks. Here’s what broke first.",
     excerpt:
       "A hard deadline, a cautious board and one very long spreadsheet. The schedule forced better decisions.",
-    image: kickflip,
+    image: journalTwo,
   },
   {
     category: "Design",
@@ -137,6 +138,6 @@ const POSTS: Post[] = [
     dateTime: "2026-08-27",
     title: "If your logo can’t move, it’s only half a logo.",
     excerpt: "Your brand lives on screens now. A still logo is a photo of a dancer.",
-    image: northway,
+    image: journalThree,
   },
 ];

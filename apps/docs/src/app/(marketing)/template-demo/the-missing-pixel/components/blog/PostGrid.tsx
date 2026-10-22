@@ -37,6 +37,7 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
           <div ref={zoomRef} className="h-full w-full">
             <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
               <Image
+                quality={95}
                 src={post.image}
                 alt=""
                 sizes="(max-width: 768px) 90vw, (max-width: 1025px) 45vw, 30vw"

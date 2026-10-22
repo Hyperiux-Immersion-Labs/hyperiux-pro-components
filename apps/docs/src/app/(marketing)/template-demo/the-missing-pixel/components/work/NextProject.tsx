@@ -47,7 +47,7 @@ const NextProject = ({ title, image, alt, href }: NextProjectProps) => {
           <span className="aspect-[4/3] w-[28%] overflow-hidden rounded-lg max-lg:w-[60%] max-md:w-full">
             <span ref={zoomRef} className="block h-full w-full">
               <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
-                <Image src={image} alt={alt} sizes="28vw" className="h-full w-full object-cover" />
+                <Image quality={95} src={image} alt={alt} sizes="28vw" className="h-full w-full object-cover" />
               </PixelReveal>
             </span>
           </span>

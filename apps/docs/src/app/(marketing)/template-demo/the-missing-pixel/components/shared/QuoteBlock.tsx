@@ -24,6 +24,7 @@ const QuoteBlock = ({ quote, name, role, image }: QuoteBlockProps) => (
     <figcaption className="flex items-center gap-4">
       <div className="aspect-square h-[7vh] shrink-0 overflow-hidden rounded-full max-lg:h-[5vh] max-md:h-[8vh]">
         <Image
+          quality={95}
           src={image}
           alt=""
           sizes="6vw"

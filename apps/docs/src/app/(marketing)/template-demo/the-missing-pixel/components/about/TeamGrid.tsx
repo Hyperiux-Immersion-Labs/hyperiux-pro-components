@@ -4,8 +4,13 @@ import Link from "next/link";
 import { FadeUp } from "../Animations/gsapAnim";
 import { ArrowUpRight } from "../Buttons/icons";
 import ParallaxImage from "../effects/parallax-image";
-import team1 from "../../assets/team-1.webp";
-import team2 from "../../assets/team-2.webp";
+import member1 from "../../assets/pictures/member-1.webp";
+import member2 from "../../assets/pictures/member-2.webp";
+import member3 from "../../assets/pictures/member-3.webp";
+import member4 from "../../assets/pictures/member-4.webp";
+import member5 from "../../assets/pictures/member-5.webp";
+import member6 from "../../assets/pictures/member-6.webp";
+import member7 from "../../assets/pictures/member-7.webp";
 import { ROUTES } from "../../routes";
 
 const LINK_CLASSES =
@@ -21,7 +26,7 @@ const TeamGrid = () => (
               <div className="transform-gpu will-change-transform transition-transform duration-1400 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105">
                 <ParallaxImage
                   pixel
-                  image={index % 2 === 0 ? team1 : team2}
+                  image={member.image}
                   alt={`Portrait of ${member.name}`}
                   sizes="(max-width: 768px) 45vw, (max-width: 1025px) 30vw, 22vw"
                   className="aspect-[4/5]"
@@ -67,11 +72,11 @@ const TeamGrid = () => (
 export default TeamGrid;
 
 const TEAM = [
-  { name: "Leila Haddad", role: "Design director, Dubai" },
-  { name: "Mei Lin", role: "Producer, Dubai" },
-  { name: "Marcus Bell", role: "Head of strategy, London" },
-  { name: "Ana Sofía Reyes", role: "Senior designer, New York" },
-  { name: "Clara Whitfield", role: "Head of writing, London" },
-  { name: "Kenji Park", role: "Creative technologist, New York" },
-  { name: "Riya Kapoor", role: "Design lead, Delhi" },
+  { name: "Leila Haddad", role: "Design director, Dubai", image: member1 },
+  { name: "Mei Lin", role: "Producer, Dubai", image: member2 },
+  { name: "Marcus Bell", role: "Head of strategy, London", image: member3 },
+  { name: "Ana Sofía Reyes", role: "Senior designer, New York", image: member4 },
+  { name: "Clara Whitfield", role: "Head of writing, London", image: member5 },
+  { name: "Kenji Park", role: "Creative technologist, New York", image: member6 },
+  { name: "Riya Kapoor", role: "Design lead, Delhi", image: member7 },
 ];

@@ -11,13 +11,13 @@ import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import ClipNav from "../effects/immersive-full-screen-nav";
 import UnderlineLink from "../Buttons/UnderlineLink";
-import menuPoster from "../../assets/menu-poster.webp";
-import reelPoster from "../../assets/reel-poster.webp";
-import workCloudline from "../../assets/w-cloudline.webp";
-import serviceIdentity from "../../assets/w-kickflip.webp";
-import studio from "../../assets/studio-1.webp";
-import journal from "../../assets/w-northway.webp";
-import founder from "../../assets/founder.webp";
+import menuPoster from "../../assets/pictures/menu-ink-poster.webp";
+import reelPoster from "../../assets/pictures/reel-poster.webp";
+import workCloudline from "../../assets/pictures/w-cloudline.webp";
+import serviceIdentity from "../../assets/pictures/s-identity.webp";
+import studio from "../../assets/pictures/studio-1.webp";
+import journal from "../../assets/pictures/j-1.webp";
+import founder from "../../assets/pictures/founder.webp";
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP);
@@ -235,7 +235,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
 
           <div className="flex w-[30%] flex-col gap-6 max-lg:w-full max-lg:gap-8 max-md:gap-7">
             <div data-menu-fade className="relative aspect-[4/5] h-[min(46vh,24vw)] overflow-hidden rounded-lg bg-[#0a0a0a] max-lg:hidden">
-              <Image src={menuPoster} alt="" sizes="24vw" className="h-full w-full object-cover" />
+              <Image quality={95} src={menuPoster} alt="" sizes="24vw" className="h-full w-full object-cover" />
               {MENU_LINKS.map((link, index) => (
                 <div
                   key={link.label}
@@ -244,7 +244,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
                   }}
                   className="absolute inset-0 [clip-path:inset(100%_0%_0%_0%)]"
                 >
-                  <Image src={link.preview} alt="" sizes="24vw" className="h-full w-full object-cover" />
+                  <Image quality={95} src={link.preview} alt="" sizes="24vw" className="h-full w-full object-cover" />
                 </div>
               ))}
             </div>

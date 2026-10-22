@@ -17,7 +17,7 @@ import SubNav from "./SubNav";
 import { WorkListCard } from "../work/WorkGrid";
 import { PROJECTS } from "../work/projects";
 import { DETAIL, SERVICES, type Service } from "./services";
-import founder from "../../assets/founder.webp";
+import danielCho from "../../assets/pictures/q-1.webp";
 
 const PX = "px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]";
 const SECTION = `${PX} flex flex-col gap-14 py-[4vw] max-lg:gap-11 max-lg:py-[6vw] max-md:py-[10vw]`;
@@ -217,7 +217,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
         quote="Our board was nervous. They treated that as a design problem, not an obstacle, and twelve weeks later every team wanted to use the brand."
         name="Daniel Cho"
         role="CEO, Orbit Labs"
-        image={founder}
+        image={danielCho}
       />
     </div>
 

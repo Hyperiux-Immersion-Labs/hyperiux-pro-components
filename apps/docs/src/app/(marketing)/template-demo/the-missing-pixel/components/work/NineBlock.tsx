@@ -31,6 +31,7 @@ const NineBlock = () => (
             className="block aspect-square w-full overflow-hidden rounded-lg"
           >
             <Image
+              quality={95}
               src={project.image}
               alt=""
               sizes="12vw"

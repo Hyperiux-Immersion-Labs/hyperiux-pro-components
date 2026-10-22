@@ -12,7 +12,7 @@ import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
 import StatusDot from "../shared/StatusDot";
 import { ROUTES } from "../../routes";
-import reelPixel from "../../assets/reel-pixel.webp";
+import reelPixel from "../../assets/pictures/reel-pixel.webp";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -73,6 +73,7 @@ const Hero = () => {
             className="relative inline-block size-[0.8em] overflow-hidden rounded-[0.1em] bg-mpx-surface align-[-0.1em] [clip-path:inset(50%)] motion-reduce:[clip-path:none]"
           >
             <Image
+              quality={95}
               src={reelPixel}
               alt=""
               loading="eager"

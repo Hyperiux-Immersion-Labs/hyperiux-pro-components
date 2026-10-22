@@ -182,7 +182,7 @@ const TestimonialSwiper = ({
         <div className="relative h-[29vw] rounded-lg bg-mpx-surface max-lg:h-[56vw] max-md:h-[64vw]">
           <div ref={mediaRef} className="absolute inset-0 rounded-[inherit]">
             {items.map((entry, index) => (
-              <Image
+              <Image quality={95}
                 key={entry.name}
                 src={entry.media}
                 alt=""
@@ -202,7 +202,7 @@ const TestimonialSwiper = ({
                   key={face.name}
                   className="size-[2vw] overflow-hidden rounded-full border-2 border-[#fafafa] max-lg:size-[4.4vw] max-md:size-8"
                 >
-                  <Image src={face.image} alt="" sizes="4vw" className="h-full w-full object-cover" />
+                  <Image quality={95} src={face.image} alt="" sizes="4vw" className="h-full w-full object-cover" />
                 </span>
               ))}
               <span className="grid size-[2vw] place-items-center rounded-full border-2 border-[#fafafa] bg-(--mpx-accent) text-14 font-semibold text-[#0a0a0a] max-lg:size-[4.4vw]  max-md:size-8 ">
@@ -256,7 +256,7 @@ const TestimonialSwiper = ({
 
           <figcaption ref={captionRef} className="flex items-center gap-[0.85vw] max-lg:gap-4">
             <div className="size-[3.3vw] shrink-0 overflow-hidden rounded-full max-lg:size-[8vw] max-md:size-12">
-              <Image src={item.image} alt="" sizes="6vw" className="h-full w-full object-cover" />
+              <Image quality={95} src={item.image} alt="" sizes="6vw" className="h-full w-full object-cover" />
             </div>
             <div className="flex flex-col gap-[0.1vw]">
               <cite className="font-mpx-head text-24 font-medium not-italic ">

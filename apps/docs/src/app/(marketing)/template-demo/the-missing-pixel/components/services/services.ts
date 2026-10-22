@@ -1,10 +1,12 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import type { StaticImageData } from "next/image";
-import cloudline from "../../assets/w-cloudline.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import northway from "../../assets/w-northway.webp";
-import drift from "../../assets/w-drift.webp";
+import strategy from "../../assets/pictures/s-strategy.webp";
+import identity from "../../assets/pictures/s-identity.webp";
+import web from "../../assets/pictures/s-web.webp";
+import motion from "../../assets/pictures/s-motion.webp";
+import packaging from "../../assets/pictures/s-packaging.webp";
+import content from "../../assets/pictures/s-content.webp";
 
 export type Service = {
   slug: string;
@@ -23,7 +25,7 @@ export const SERVICES: Service[] = [
     description:
       "Positioning, naming and messaging that make your whole company sound like one person, built from real conversations instead of guesses.",
     tags: ["Research", "Positioning", "Naming", "Messaging", "Tone of voice"],
-    image: cloudline,
+    image: strategy,
   },
   {
     slug: "brand-identity",
@@ -32,7 +34,7 @@ export const SERVICES: Service[] = [
     description:
       "A complete identity, from the first conversation to the last guideline, built to work everywhere your brand turns up.",
     tags: ["Logo systems", "Visual language", "Guidelines", "Toolkits"],
-    image: northway,
+    image: identity,
   },
   {
     slug: "websites-and-products",
@@ -46,7 +48,7 @@ export const SERVICES: Service[] = [
       "Design systems",
       "Accessibility",
     ],
-    image: kickflip,
+    image: web,
   },
   {
     slug: "motion-and-3d",
@@ -55,7 +57,7 @@ export const SERVICES: Service[] = [
     description:
       "Identities that move, launch films and product visuals people actually replay, made by the same team that designed the brand.",
     tags: ["Motion identity", "Launch films", "3D product", "UI motion"],
-    image: drift,
+    image: motion,
   },
   {
     slug: "packaging",
@@ -64,7 +66,7 @@ export const SERVICES: Service[] = [
     description:
       "Packs that win the shelf, then earn a second life on someone’s bookcase, from structure and range to the print file.",
     tags: ["Structure", "Range architecture", "Production", "Sustainability"],
-    image: cloudline,
+    image: packaging,
   },
   {
     slug: "content-and-campaigns",
@@ -73,13 +75,13 @@ export const SERVICES: Service[] = [
     description:
       "Launches and social systems with something to say, and the nerve to say it, from the big idea to the last post.",
     tags: ["Campaign ideas", "Social systems", "Art direction", "Copywriting"],
-    image: kickflip,
+    image: content,
   },
 ];
 
 export const DETAIL = {
-  image: northway,
-  alt: "Portrait lit by a huge orange sun",
+  image: identity,
+  alt: "A sculpted sage-green ampersand on a round plinth",
   facts: [
     { label: "Timeline", value: "8 to 12 weeks" },
     { label: "From", value: "$18,000" },

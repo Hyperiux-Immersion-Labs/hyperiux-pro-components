@@ -328,7 +328,7 @@ const InteractiveListPreview = ({
               }}
               className="invisible absolute left-[77%] top-1/2 aspect-[13/15] w-[15vw] -translate-y-1/2 overflow-hidden rounded-lg will-change-[clip-path,opacity]"
             >
-              <Image src={item.image} alt="" sizes="15vw" className="h-full w-full object-cover" />
+              <Image quality={95} src={item.image} alt="" sizes="15vw" className="h-full w-full object-cover" />
             </div>
           ))}
         </div>
@@ -385,7 +385,7 @@ const InteractiveListPreview = ({
                 <span className="text-22 text-[#5e5e5e]">{item.text}</span>
               </span>
               <span className="relative aspect-[13/15] w-[32%] overflow-hidden rounded-lg max-md:w-[36%]">
-                <Image
+                <Image quality={95}
                   src={item.image}
                   alt=""
                   fill

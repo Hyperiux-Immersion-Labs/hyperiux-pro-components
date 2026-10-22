@@ -13,10 +13,12 @@ import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { ArrowUpRight } from "../Buttons/icons";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import PixelReveal, { type PixelRevealHandle } from "../effects/pixel-reveal";
-import cloudline from "../../assets/w-cloudline.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import northway from "../../assets/w-northway.webp";
-import drift from "../../assets/w-drift.webp";
+import cloudline from "../../assets/pictures/w-cloudline.webp";
+import kickflip from "../../assets/pictures/w-kickflip.webp";
+import northway from "../../assets/pictures/w-northway.webp";
+import drift from "../../assets/pictures/w-drift.webp";
+import lumen from "../../assets/pictures/w-lumen.webp";
+import bloom from "../../assets/pictures/w-bloom.webp";
 import { ROUTES, workPath } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -63,6 +65,7 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
         <div data-work-scale className="h-full w-full will-change-transform">
           <div ref={zoomRef} className="h-full w-full">
             <Image
+              quality={95}
               src={project.image}
               alt={project.alt}
               sizes="(max-width: 768px) 78vw, (max-width: 1025px) 45vw, 25vw"
@@ -255,41 +258,41 @@ const PROJECTS: Project[] = [
     text: "Haircare that sells a feeling, not a formula.",
     meta: "Identity, packaging, launch, 2026",
     image: cloudline,
-    alt: "Model resting in soft pink clouds",
+    alt: "A lilac Cloudline bottle on a pastel podium",
   },
   {
     title: "Kickflip Supply",
     text: "A skate brand that finally looks like skaters.",
     meta: "Identity, e-commerce, 2026",
     image: kickflip,
-    alt: "Skater mid-trick against a concrete wall",
+    alt: "Skater holding a patterned longboard across her shoulders under a bright sky",
   },
   {
     title: "Northway Records",
     text: "A label logo that plays along with the music.",
     meta: "Motion identity, 2025",
     image: northway,
-    alt: "Portrait lit by a huge orange sun",
+    alt: "Studio microphone lit green and gold against a red glow",
   },
   {
     title: "Drift Campers",
     text: "Bookings doubled. The vans stayed charming.",
     meta: "Website, booking platform, 2025",
     image: drift,
-    alt: "Mint camper van on a desert road",
+    alt: "Glowing bell tent under olive trees at night",
   },
   {
     title: "Lumen Mobile",
     text: "A phone launch with actual personality.",
     meta: "Launch campaign, motion, 2025",
-    image: cloudline,
-    alt: "Model resting in soft pink clouds",
+    image: lumen,
+    alt: "Hand holding a smartphone with a dark screen that glows orange at the bottom",
   },
   {
     title: "Bloom Hours",
     text: "Fragrance photographed like a memory.",
     meta: "Campaign, art direction, 2024",
-    image: kickflip,
-    alt: "Skater mid-trick against a concrete wall",
+    image: bloom,
+    alt: "Black-and-white close-up of a glass perfume bottle with a silver cap",
   },
 ];

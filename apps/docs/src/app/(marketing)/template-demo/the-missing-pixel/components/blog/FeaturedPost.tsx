@@ -6,7 +6,7 @@ import { FadeUp, LineReveal, MaskReveal } from "../Animations/gsapAnim";
 import Tilt from "../Animations/Tilt";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import PixelReveal from "../effects/pixel-reveal";
-import cloudline from "../../assets/w-cloudline.webp";
+import journalOne from "../../assets/pictures/j-1.webp";
 import { postPath } from "../../routes";
 import { FEATURED_POST } from "./posts";
 
@@ -24,7 +24,8 @@ const FeaturedPost = () => (
         <div className="h-full w-full transition-transform duration-700 group-hover:scale-105">
           <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
             <Image
-              src={cloudline}
+              quality={95}
+              src={journalOne}
               alt=""
               priority
               sizes="(max-width: 1025px) 90vw, 57vw"

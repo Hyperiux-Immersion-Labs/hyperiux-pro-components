@@ -5,7 +5,7 @@ import { ROUTES } from "../../routes";
 import { FadeUp, LineReveal, MaskReveal, PAGE_DELAY } from "../Animations/gsapAnim";
 import Breadcrumb from "../shared/Breadcrumb";
 import type { Post } from "./posts";
-import team1 from "../../assets/team-1.webp";
+import author from "../../assets/pictures/team-5.webp";
 
 type PostHeroProps = {
   post: Post;
@@ -36,7 +36,7 @@ const PostHero = ({ post }: PostHeroProps) => (
       <FadeUp delay={PAGE_DELAY + 0.3} className="flex flex-wrap items-center gap-x-9 gap-y-3 text-14 text-mpx-muted max-lg:gap-x-6">
         <span className="flex items-center gap-3">
           <span className="aspect-square h-[5vh] shrink-0 overflow-hidden rounded-full max-lg:h-[4vh] max-md:h-[6vh]">
-            <Image src={team1} alt="" sizes="4vw" className="h-full w-full object-cover" />
+            <Image quality={95} src={author} alt="" sizes="4vw" className="h-full w-full object-cover" />
           </span>
           Clara Whitfield, head of writing
         </span>

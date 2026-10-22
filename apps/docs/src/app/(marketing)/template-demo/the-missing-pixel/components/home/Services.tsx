@@ -10,12 +10,12 @@ import gsap from "gsap";
 import { MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import UnderlineLink from "../Buttons/UnderlineLink";
-import cloudline from "../../assets/w-cloudline.webp";
-import kickflip from "../../assets/w-kickflip.webp";
-import northway from "../../assets/w-northway.webp";
-import drift from "../../assets/w-drift.webp";
-import studioOne from "../../assets/studio-1.webp";
-import studioTwo from "../../assets/studio-2.webp";
+import strategy from "../../assets/pictures/s-strategy.webp";
+import identity from "../../assets/pictures/s-identity.webp";
+import web from "../../assets/pictures/s-web.webp";
+import motion from "../../assets/pictures/s-motion.webp";
+import packaging from "../../assets/pictures/s-packaging.webp";
+import content from "../../assets/pictures/s-content.webp";
 import { ROUTES } from "../../routes";
 
 const DESKTOP_QUERY = "(min-width: 1026px)";
@@ -30,12 +30,12 @@ type Service = {
 };
 
 const SERVICES: Service[] = [
-  { title: "Brand strategy", meta: "Positioning, naming and messaging", image: cloudline },
-  { title: "Brand identity", meta: "Logos, type and visual systems", image: kickflip },
-  { title: "Websites and products", meta: "UX, UI and engineering", image: northway },
-  { title: "Motion and 3D", meta: "Moving identities and launch films", image: drift },
-  { title: "Packaging", meta: "Structure, range and production", image: studioOne },
-  { title: "Content and campaigns", meta: "Launches and social systems", image: studioTwo },
+  { title: "Brand strategy", meta: "Positioning, naming and messaging", image: strategy },
+  { title: "Brand identity", meta: "Logos, type and visual systems", image: identity },
+  { title: "Websites and products", meta: "UX, UI and engineering", image: web },
+  { title: "Motion and 3D", meta: "Moving identities and launch films", image: motion },
+  { title: "Packaging", meta: "Structure, range and production", image: packaging },
+  { title: "Content and campaigns", meta: "Launches and social systems", image: content },
 ];
 
 const pad = (value: number) => String(value).padStart(2, "0");
@@ -260,6 +260,7 @@ const Services = () => {
                 }`}
               >
                 <Image
+                  quality={95}
                   ref={(el: HTMLImageElement | null) => {
                     picRefs.current[index] = el;
                   }}
@@ -321,6 +322,7 @@ const Services = () => {
                     className="hidden aspect-4/3 overflow-hidden rounded-lg max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1"
                   >
                     <Image
+                      quality={95}
                       src={service.image}
                       alt=""
                       sizes="(max-width: 768px) 100vw, 30vw"

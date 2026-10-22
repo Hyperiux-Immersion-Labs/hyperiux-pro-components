@@ -49,6 +49,7 @@ const ServiceList = () => (
                 className="h-full w-full"
               >
                 <Image
+                  quality={95}
                   src={service.image}
                   alt=""
                   sizes="(max-width: 768px) 90vw, 26vw"

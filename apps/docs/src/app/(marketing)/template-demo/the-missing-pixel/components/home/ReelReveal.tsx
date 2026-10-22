@@ -9,7 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import AutoVideo from "../shared/AutoVideo";
 import PixelButton from "../Buttons/PixelButton";
-import reelPoster from "../../assets/reel-poster.webp";
+import reelPoster from "../../assets/pictures/reel-poster.webp";
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
