@@ -54,7 +54,7 @@ function PostCard({ post, index }: PostCardProps) {
         gridSize={26}
         edgeHeight={0.4}
         direction="down"
-        className="aspect-7/5 w-full rounded-[1.4vw] max-lg:rounded-[2.5vw] max-md:rounded-[4vw]"
+        className="aspect-7/5 w-full rounded-lg"
       >
         <div ref={zoomRef} className="h-full w-full">
           <Image

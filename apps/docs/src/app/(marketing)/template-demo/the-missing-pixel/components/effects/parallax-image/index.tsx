@@ -7,6 +7,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MediaReveal } from "../../Animations/gsapAnim";
+import PixelReveal from "../pixel-reveal";
 import { prefersReducedMotion } from "../../Animations/reducedMotion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -17,6 +18,7 @@ type ParallaxImageProps = {
   className?: string;
   sizes?: string;
   priority?: boolean;
+  pixel?: boolean;
   travel?: number;
   scale?: number;
   start?: string;
@@ -29,6 +31,7 @@ const ParallaxImage = ({
   className = "",
   sizes = "(max-width: 768px) 90vw, 90vw",
   priority = false,
+  pixel = false,
   travel = 7,
   scale = 1.2,
   start = "top bottom",
@@ -44,9 +47,9 @@ const ParallaxImage = ({
 
       gsap.fromTo(
         move,
-        { yPercent: travel, scale },
+        { yPercent: -travel, scale },
         {
-          yPercent: -travel,
+          yPercent: travel,
           scale,
           ease: "none",
           scrollTrigger: {
@@ -63,7 +66,23 @@ const ParallaxImage = ({
   );
 
   return (
-    <div ref={wrapRef} className={`relative w-full overflow-hidden bg-mpx-surface ${className}`.trim()}>
+    <div
+      ref={wrapRef}
+      className={`relative w-full overflow-hidden ${pixel ? "" : "bg-mpx-surface"} ${className}`.trim()}
+    >
+      {pixel ? (
+        <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
+        <div ref={moveRef} className="h-full w-full will-change-transform">
+          <Image
+            src={image}
+            alt={alt}
+            sizes={sizes}
+            priority={priority}
+            className="h-full w-full object-cover"
+          />
+        </div>
+        </PixelReveal>
+      ) : (
       <MediaReveal zoom={false} className="h-full w-full">
         <div ref={moveRef} className="h-full w-full will-change-transform">
           <Image
@@ -75,6 +94,7 @@ const ParallaxImage = ({
           />
         </div>
       </MediaReveal>
+      )}
     </div>
   );
 };

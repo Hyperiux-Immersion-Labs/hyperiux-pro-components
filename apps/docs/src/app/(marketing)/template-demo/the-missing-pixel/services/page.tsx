@@ -38,7 +38,7 @@ const page = () => (
             as="li"
             key={model.title}
             delay={index * 0.1}
-            className="flex h-[32vh] flex-col justify-between gap-6 rounded-3xl border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:h-auto max-lg:gap-9 max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw]"
+            className="flex h-[32vh] flex-col justify-between gap-6 rounded-lg border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:h-auto max-lg:gap-9 max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw]"
           >
             <div className="flex flex-col gap-7">
               <h3 className="text-30">{model.title}</h3>

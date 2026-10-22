@@ -82,7 +82,7 @@ const Pricing = () => {
         {TIERS.map((tier, index) => (
           <FadeUp as="li" key={tier.name} delay={index * 0.1} className="flex">
             <Tilt
-              className={`flex w-full flex-col justify-between gap-9 rounded-3xl border px-[2.2vw] py-[2.2vw] max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw] ${
+              className={`flex w-full flex-col justify-between gap-9 rounded-lg border px-[2.2vw] py-[2.2vw] max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw] ${
                 tier.featured
                   ? "border-transparent bg-[#0a0a0a] text-[#f5f5f5]"
                   : "border-black/10 bg-white"

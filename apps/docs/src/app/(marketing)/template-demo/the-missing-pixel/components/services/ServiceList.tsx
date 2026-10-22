@@ -44,7 +44,7 @@ const ServiceList = () => (
               <ArrowUpRight className="size-[1.2vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
             </span>
           </div>
-          <div className="aspect-[4/3] w-[26%] overflow-hidden rounded-2xl bg-mpx-surface max-lg:w-[60%] max-md:w-full">
+          <div className="aspect-[4/3] w-[26%] overflow-hidden rounded-lg bg-mpx-surface max-lg:w-[60%] max-md:w-full">
             <Image
               src={service.image}
               alt=""

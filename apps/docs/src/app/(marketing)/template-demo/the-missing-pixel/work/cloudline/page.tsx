@@ -47,7 +47,7 @@ const page = () => (
       <ParallaxImage
         image={cloudline}
         alt="Model resting in soft pink clouds, from the Cloudline launch"
-        className="aspect-video rounded-3xl"
+        className="aspect-video rounded-lg"
         priority
       />
       <div className="flex flex-col gap-14 py-[3vw] max-lg:gap-11 max-lg:py-[6vw]">

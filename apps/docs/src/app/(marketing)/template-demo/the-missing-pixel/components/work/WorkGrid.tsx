@@ -48,7 +48,7 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
       onBlur={() => hover(false)}
       className={`flex flex-col gap-5 max-lg:gap-4 ${offset ? "translate-y-[7vw] max-lg:translate-y-0" : ""}`}
     >
-      <div className="relative isolate overflow-hidden rounded-2xl">
+      <div className="relative isolate overflow-hidden rounded-lg">
         <div ref={zoomRef} className="h-full w-full">
           <ParallaxImage
             image={project.image}

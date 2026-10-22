@@ -24,7 +24,7 @@ const NewsletterBand = () => {
   };
 
   return (
-    <FadeUp className="flex items-center justify-between gap-9 rounded-3xl bg-[#0a0a0a] px-[4.4vw] py-[4.4vw] text-[#f5f5f5] max-lg:flex-col max-lg:items-start max-lg:gap-8 max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[8vw] max-md:py-[8vw]">
+    <FadeUp className="flex items-center justify-between gap-9 rounded-lg bg-[#0a0a0a] px-[4.4vw] py-[4.4vw] text-[#f5f5f5] max-lg:flex-col max-lg:items-start max-lg:gap-8 max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[8vw] max-md:py-[8vw]">
       <div className="flex w-[64%] flex-col gap-3 max-lg:w-full">
         <h2>One email a month. Zero filler.</h2>
         <p className="text-28 text-white/60">No tracking pixels. Yes, we see the irony.</p>

@@ -234,7 +234,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
           </nav>
 
           <div className="flex w-[30%] flex-col gap-6 max-lg:w-full max-lg:gap-8 max-md:gap-7">
-            <div data-menu-fade className="relative aspect-[4/5] h-[min(46vh,24vw)] overflow-hidden rounded-3xl bg-[#0a0a0a] max-lg:hidden">
+            <div data-menu-fade className="relative aspect-[4/5] h-[min(46vh,24vw)] overflow-hidden rounded-lg bg-[#0a0a0a] max-lg:hidden">
               <Image src={menuPoster} alt="" sizes="24vw" className="h-full w-full object-cover" />
               {MENU_LINKS.map((link, index) => (
                 <div

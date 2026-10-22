@@ -16,7 +16,7 @@ const FeaturedPost = () => (
       data-cursor="Read"
       className="group flex items-center justify-between gap-11 max-lg:flex-col max-lg:items-start max-lg:gap-7"
     >
-      <div className="aspect-[16/11] w-[57%] overflow-hidden rounded-2xl bg-mpx-surface max-lg:w-full">
+      <div className="aspect-[16/11] w-[57%] overflow-hidden rounded-lg bg-mpx-surface max-lg:w-full">
         <Image
           src={cloudline}
           alt=""

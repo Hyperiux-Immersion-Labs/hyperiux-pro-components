@@ -194,7 +194,7 @@ const Services = () => {
     const box = window_.getBoundingClientRect();
     const overlay = document.createElement("div");
     overlay.setAttribute("data-service-expand", "");
-    overlay.className = "pointer-events-none fixed z-120 overflow-hidden rounded-[0.7vw]";
+    overlay.className = "pointer-events-none fixed z-120 overflow-hidden rounded-lg";
     gsap.set(overlay, { top: box.top, left: box.left, width: box.width, height: box.height });
 
     const picture = document.createElement("img");
@@ -247,7 +247,7 @@ const Services = () => {
         >
           <div
             data-service-window
-            className="relative aspect-4/3 h-[12.5vw] max-w-full overflow-hidden rounded-[0.7vw] bg-mpx-surface"
+            className="relative aspect-4/3 h-[12.5vw] max-w-full overflow-hidden rounded-lg bg-mpx-surface"
           >
             {SERVICES.map((service, index) => (
               <span
@@ -318,7 +318,7 @@ const Services = () => {
                   </span>
                   <span
                     aria-hidden
-                    className="hidden aspect-4/3 overflow-hidden rounded-[1.2vw] max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1 max-md:rounded-[4vw]"
+                    className="hidden aspect-4/3 overflow-hidden rounded-lg max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1"
                   >
                     <Image
                       src={service.image}

@@ -96,7 +96,7 @@ export const FloatTextarea = ({ id, name, label, required, value, error, onChang
         aria-describedby={`${id}-error`}
         onChange={(event: ChangeEvent<HTMLTextAreaElement>) => onChange(event.target.value)}
         onBlur={onBlur}
-        className={`peer h-[24vh] resize-none rounded-2xl py-[2.4vh] max-lg:h-[18vh] max-md:h-[22vh] ${FIELD_BASE} ${error ? FIELD_ERROR : FIELD_STATE}`}
+        className={`peer h-[24vh] resize-none rounded-lg py-[2.4vh] max-lg:h-[18vh] max-md:h-[22vh] ${FIELD_BASE} ${error ? FIELD_ERROR : FIELD_STATE}`}
       />
       <label
         htmlFor={id}
@@ -164,7 +164,7 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
         <ul
           role="listbox"
           aria-labelledby={id}
-          className={`absolute inset-x-0 top-full z-30 flex origin-top flex-col gap-1 rounded-2xl border border-black/10 bg-white px-[0.4vw] py-[0.4vw] transition-all duration-200 max-lg:px-[1vw] max-lg:py-[1vw] max-md:px-[2vw] max-md:py-[2vw] ${
+          className={`absolute inset-x-0 top-full z-30 flex origin-top flex-col gap-1 rounded-lg border border-black/10 bg-white px-[0.4vw] py-[0.4vw] transition-all duration-200 max-lg:px-[1vw] max-lg:py-[1vw] max-md:px-[2vw] max-md:py-[2vw] ${
             open ? "visible translate-y-2 scale-100 opacity-100" : "invisible translate-y-0 scale-95 opacity-0"
           }`}
         >
@@ -177,7 +177,7 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
                   onChange(option);
                   setOpen(false);
                 }}
-                className={`w-full rounded-xl px-[1vw] py-[1.2vh] text-left text-22 transition-colors duration-200 hover:bg-[#eeeeee] max-lg:px-[2vw] max-md:px-[3vw] ${
+                className={`w-full rounded-lg px-[1vw] py-[1.2vh] text-left text-22 transition-colors duration-200 hover:bg-[#eeeeee] max-lg:px-[2vw] max-md:px-[3vw] ${
                   value === option ? "bg-[#eeeeee]" : ""
                 }`}
               >

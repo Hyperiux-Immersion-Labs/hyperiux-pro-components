@@ -58,7 +58,7 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
         gridSize={28}
         edgeHeight={0.4}
         direction="down"
-        className="h-[24vw] w-full shrink-0 rounded-[1.8vw] max-lg:h-[36vw] max-lg:rounded-[2.5vw] max-md:h-[62vw] max-md:rounded-[4vw]"
+        className="h-[24vw] w-full shrink-0 rounded-lg max-lg:h-[36vw] max-md:h-[62vw]"
       >
         <div data-work-scale className="h-full w-full will-change-transform">
           <div ref={zoomRef} className="h-full w-full">
@@ -221,7 +221,7 @@ const WorkScroll = () => {
             ))}
             <Link
               href={ROUTES.work}
-              className={`group font-mpx-head flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start rounded-[1.8vw] bg-[#0a0a0a] p-[1.7vw] h-[24vw] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-[#fafafa] max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
+              className={`group font-mpx-head flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start rounded-lg bg-[#0a0a0a] p-[1.7vw] h-[24vw] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-[#fafafa] max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
             >
               <span>All Eight Projects</span>
               <ArrowUpRight className="size-[1.8vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[4vw] max-md:size-[9vw]" />

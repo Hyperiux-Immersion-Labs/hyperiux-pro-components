@@ -9,7 +9,7 @@ const StackCards = ({ steps }: { steps: Step[] }) => (
     {steps.map((step, index) => (
       <article
         key={step.title}
-        className="flex min-h-[40vh] items-start gap-9 rounded-3xl border border-black/10 bg-white px-[4vw] py-[4vw] max-lg:min-h-[40vh] max-lg:flex-col max-lg:gap-5 max-lg:px-[5vw] max-lg:py-[6vw] max-md:min-h-0 max-md:px-[6vw] max-md:py-[8vw]"
+        className="flex min-h-[40vh] items-start gap-9 rounded-lg border border-black/10 bg-white px-[4vw] py-[4vw] max-lg:min-h-[40vh] max-lg:flex-col max-lg:gap-5 max-lg:px-[5vw] max-lg:py-[6vw] max-md:min-h-0 max-md:px-[6vw] max-md:py-[8vw]"
       >
         <span className="font-mpx-head w-[14%] text-64 leading-none text-mpx-accent max-lg:w-full">
           {String(index + 1).padStart(2, "0")}

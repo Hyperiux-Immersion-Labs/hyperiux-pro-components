@@ -54,7 +54,7 @@ export const Steps = ({ items }: { items: string[] }) => (
 );
 
 export const Callout = ({ title, children }: { title: string; children: ReactNode }) => (
-  <FadeUp className="flex flex-col gap-3 rounded-2xl bg-mpx-surface px-[2vw] py-[2vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]">
+  <FadeUp className="flex flex-col gap-3 rounded-lg bg-mpx-surface px-[2vw] py-[2vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]">
     <strong className="font-mpx-head text-30 font-medium">{title}</strong>
     <p className="text-28 text-mpx-muted">{children}</p>
   </FadeUp>
@@ -62,7 +62,7 @@ export const Callout = ({ title, children }: { title: string; children: ReactNod
 
 export const Figure = ({ image, alt, caption }: { image: StaticImageData; alt: string; caption: string }) => (
   <FadeUp as="figure" className="flex flex-col gap-3">
-    <ParallaxImage image={image} alt={alt} sizes="(max-width: 1025px) 90vw, 60vw" className="aspect-[4/3] rounded-3xl" />
+    <ParallaxImage image={image} alt={alt} sizes="(max-width: 1025px) 90vw, 60vw" className="aspect-[4/3] rounded-lg" />
     <figcaption className="text-14 text-mpx-muted">{caption}</figcaption>
   </FadeUp>
 );

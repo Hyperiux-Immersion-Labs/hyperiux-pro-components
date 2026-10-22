@@ -54,7 +54,7 @@ const page = () => (
       <ParallaxImage
         image={northway}
         alt="Portrait lit by a huge orange sun"
-        className="aspect-video rounded-3xl"
+        className="aspect-video rounded-lg"
         priority
       />
     </div>
@@ -114,7 +114,7 @@ const page = () => (
     </section>
 
     <section id="approach" className="mpx-container">
-      <div className="flex flex-col gap-14 rounded-3xl bg-[#0a0a0a] px-[4vw] py-[5vw] text-[#f5f5f5] max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
+      <div className="flex flex-col gap-14 rounded-lg bg-[#0a0a0a] px-[4vw] py-[5vw] text-[#f5f5f5] max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
         <div className="flex items-end justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-5">
           <MaskReveal as="h2" className="w-[55%] max-lg:w-full">
             Our approach

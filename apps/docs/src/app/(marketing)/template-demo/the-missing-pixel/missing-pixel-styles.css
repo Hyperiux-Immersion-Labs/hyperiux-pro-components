@@ -264,8 +264,8 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
 
   .mpx-page h2,
   .mpx-page .text-64 {
-    font-size: 8.5vw;
-    letter-spacing: -0.3vw;
+    font-size: 10.5vw;
+    letter-spacing: -0.4vw;
   }
 
   .mpx-page .text-40 {

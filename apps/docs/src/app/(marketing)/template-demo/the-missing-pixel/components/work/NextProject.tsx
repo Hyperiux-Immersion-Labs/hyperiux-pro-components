@@ -38,7 +38,7 @@ const NextProject = () => {
             {next.title}
           </span>
         </span>
-        <span className="aspect-[4/3] w-[28%] overflow-hidden rounded-2xl bg-mpx-surface max-lg:w-[60%] max-md:w-full">
+        <span className="aspect-[4/3] w-[28%] overflow-hidden rounded-lg bg-mpx-surface max-lg:w-[60%] max-md:w-full">
           <span ref={zoomRef} className="block h-full w-full">
             <Image src={next.image} alt={next.alt} sizes="28vw" className="h-full w-full object-cover" />
           </span>

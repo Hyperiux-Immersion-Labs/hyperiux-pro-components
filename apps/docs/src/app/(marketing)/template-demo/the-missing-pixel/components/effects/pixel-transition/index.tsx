@@ -9,7 +9,7 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "../../Animations/reducedMotion";
 import { playSound } from "../../Sound/pixelSfx";
-import { BASE, PAGE_NAMES } from "../../../routes";
+import { BASE, PAGE_NAMES, ROUTES } from "../../../routes";
 import NumberCounter, { LOADER_COUNTER_DURATION } from "../number-counter";
 
 gsap.registerPlugin(useGSAP);
@@ -93,7 +93,7 @@ const PixelTransition = () => {
     const count = countRef.current;
     if (!root || !canvas || !label || !count) return;
 
-    if (prefersReducedMotion()) {
+    if (prefersReducedMotion() || pathname === ROUTES.about) {
       gsap.set(root, { display: "none" });
       return;
     }
@@ -211,7 +211,7 @@ const PixelTransition = () => {
         ref={rootRef}
         data-mpx-transition
         aria-hidden
-        className="pointer-events-none fixed inset-0 z-150 bg-(--mpx-accent)"
+        className={`pointer-events-none fixed inset-0 z-150 bg-(--mpx-accent) ${pathname === ROUTES.about ? "hidden" : ""}`}
       >
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div

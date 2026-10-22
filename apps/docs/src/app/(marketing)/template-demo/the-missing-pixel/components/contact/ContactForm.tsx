@@ -118,7 +118,7 @@ const ContactForm = () => {
       <div
         ref={successRef}
         tabIndex={-1}
-        className="flex flex-col items-start gap-6 rounded-3xl border border-black/10 bg-white px-[3.9vw] py-[3.9vw] outline-none max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[8vw] max-md:py-[8vw]"
+        className="flex flex-col items-start gap-6 rounded-lg border border-black/10 bg-white px-[3.9vw] py-[3.9vw] outline-none max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[8vw] max-md:py-[8vw]"
       >
         <h2>Got it.</h2>
         <p className="text-28 text-mpx-muted">

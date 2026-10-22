@@ -17,11 +17,11 @@ const Gallery = ({ items, video }: GalleryProps) => (
         key={item.alt}
         image={item.image}
         alt={item.alt}
-        className={`rounded-3xl ${item.full ? "col-span-2 aspect-video max-md:col-span-1" : "aspect-[4/5] max-md:aspect-[4/3]"}`}
+        className={`rounded-lg ${item.full ? "col-span-2 aspect-video max-md:col-span-1" : "aspect-[4/5] max-md:aspect-[4/3]"}`}
         sizes={item.full ? "90vw" : "45vw"}
       />
     ))}
-    <MediaReveal className="col-span-2 aspect-video rounded-3xl bg-[#0a0a0a] max-md:col-span-1">
+    <MediaReveal className="col-span-2 aspect-video rounded-lg bg-[#0a0a0a] max-md:col-span-1">
       <AutoVideo src={video.src} poster={video.poster} label={video.label} />
     </MediaReveal>
   </div>

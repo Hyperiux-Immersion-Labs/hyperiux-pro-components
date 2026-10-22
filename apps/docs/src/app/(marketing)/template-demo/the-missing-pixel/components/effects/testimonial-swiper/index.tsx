@@ -179,7 +179,7 @@ const TestimonialSwiper = ({
       className="flex flex-col gap-[3.3vw] max-lg:gap-10 max-md:gap-9"
     >
       <div className="grid grid-cols-[4fr_8fr] items-stretch gap-[2.4vw] max-lg:grid-cols-1 max-lg:gap-[5vw] max-md:gap-8">
-        <div className="relative h-[29vw] rounded-[1.4vw] bg-mpx-surface max-lg:h-[56vw] max-lg:rounded-[2.5vw] max-md:h-[64vw] max-md:rounded-[4vw]">
+        <div className="relative h-[29vw] rounded-lg bg-mpx-surface max-lg:h-[56vw] max-md:h-[64vw]">
           <div ref={mediaRef} className="absolute inset-0 rounded-[inherit]">
             {items.map((entry, index) => (
               <Image
@@ -212,7 +212,7 @@ const TestimonialSwiper = ({
           </span>
         </div>
 
-        <figure className="flex h-[29vw] min-w-0 flex-col justify-between gap-6 overflow-hidden rounded-[1.4vw] bg-mpx-surface p-[3.3vw] max-lg:h-auto max-lg:gap-[6vw] max-lg:rounded-[2.5vw] max-lg:p-[5vw] max-md:gap-8 max-md:rounded-[4vw] max-md:p-[6vw]">
+        <figure className="flex h-[29vw] min-w-0 flex-col justify-between gap-6 overflow-hidden rounded-lg bg-mpx-surface p-[3.3vw] max-lg:h-auto max-lg:gap-[6vw] max-lg:p-[5vw] max-md:gap-8 max-md:p-[6vw]">
           <div className="flex items-center justify-between gap-4">
             <svg
               viewBox="0 0 48 36"

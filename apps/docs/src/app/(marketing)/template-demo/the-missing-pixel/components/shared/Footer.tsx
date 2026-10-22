@@ -128,7 +128,7 @@ const Footer = () => {
   return (
     <footer
       data-mpx-inert
-      className="overflow-hidden rounded-t-3xl bg-[#0a0a0a] text-[#f5f5f5]"
+      className="overflow-hidden rounded-t-lg bg-[#0a0a0a] text-[#f5f5f5]"
     >
       <div className="flex flex-col px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
         <div className="flex flex-col gap-11 border-b border-white/15 py-[6vw] max-lg:gap-10 max-lg:py-[9vw] max-md:gap-8 max-md:py-[17vw]">

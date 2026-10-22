@@ -12,7 +12,7 @@ const FACTS = [
 
 const Intro = () => (
   <section id="about" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
-    <div className="flex flex-col gap-[6vw] rounded-[2.2vw] border border-black/10 bg-white p-[3.3vw] max-lg:gap-[8vw] max-lg:rounded-[3vw] max-lg:p-[4vw] max-md:gap-[12vw] max-md:rounded-[5vw] max-md:p-[7vw]">
+    <div className="flex flex-col gap-[6vw] rounded-lg border border-black/10 bg-white p-[3.3vw] max-lg:gap-[8vw] max-lg:p-[4vw] max-md:gap-[12vw] max-md:p-[7vw]">
       <div className="flex flex-col items-start gap-5 max-md:gap-4">
        
         <MaskReveal
@@ -37,7 +37,7 @@ const Intro = () => (
             as="li"
             key={fact.value}
             delay={index * 0.1}
-            className="flex min-h-[19.6vw] min-w-0 flex-col justify-between gap-12 rounded-[1.4vw] bg-mpx-surface p-[1.9vw] max-lg:min-h-44 max-lg:rounded-[2.5vw] max-lg:p-[3.5vw] max-md:rounded-[4vw] max-md:p-[5vw]"
+            className="flex min-h-[19.6vw] min-w-0 flex-col justify-between gap-12 rounded-lg bg-mpx-surface p-[1.9vw] max-lg:min-h-44 max-lg:p-[3.5vw] max-md:p-[5vw]"
           >
             <Odometer
               value={fact.value}

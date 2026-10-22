@@ -32,7 +32,7 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
         onBlur={() => hover(false)}
         className="group flex flex-col gap-4"
       >
-        <div className="aspect-[7/5] w-full overflow-hidden rounded-2xl bg-mpx-surface">
+        <div className="aspect-[7/5] w-full overflow-hidden rounded-lg bg-mpx-surface">
           <MediaReveal className="h-full w-full">
             <div ref={zoomRef} className="h-full w-full">
               <Image

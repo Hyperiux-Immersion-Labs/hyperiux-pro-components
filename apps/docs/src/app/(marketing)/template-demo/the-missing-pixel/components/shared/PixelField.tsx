@@ -298,7 +298,7 @@ const PixelField = () => {
   return (
     <div
       ref={hostRef}
-      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-3xl bg-[#0d0d0d] max-lg:h-[60vh] max-md:h-[46vh]"
+      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-lg bg-[#0d0d0d] max-lg:h-[60vh] max-md:h-[46vh]"
     >
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
       <div className="pointer-events-none absolute inset-x-[2.5vw] bottom-[1.6vw] flex items-end justify-between gap-4 text-[#f5f5f5] max-lg:inset-x-[4vw] max-lg:bottom-[3vw] max-md:inset-x-[5vw] max-md:bottom-[5vw] max-md:flex-col max-md:items-start max-md:gap-2">
