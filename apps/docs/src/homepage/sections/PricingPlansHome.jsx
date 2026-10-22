@@ -23,6 +23,7 @@ import {
     getPrice,
     getYearlySaving,
 } from "@/lib/plans";
+import { buttonId } from "@/lib/button-id";
 
 
 // Real checkout needs Clerk, which marketing routes (the homepage) don't load
@@ -257,6 +258,7 @@ export default function PricingPlansHome({ currency: initialCurrency, checkout =
                         const on = period === b.id;
                         return (
                             <button
+                                id={buttonId("pricing-plans-home-choose", b.id)}
                                 key={b.id}
                                 type="button"
                                 role="radio"
@@ -347,6 +349,7 @@ export default function PricingPlansHome({ currency: initialCurrency, checkout =
                                     // Homepage: the checkout page, which opens Razorpay when signed
                                     // in, or signs in first and comes back
                                     <Button
+                                        id={buttonId("pricing-plans-home-button", plan.id)}
                                         href={`/checkout/${plan.tier}.${period === "y" ? "yearly" : "quarterly"}`}
                                         text={plan.cta.text}
                                         variant={plan.cta.variant}

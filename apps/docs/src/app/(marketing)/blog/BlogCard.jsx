@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import LineWipe from "@/components/Animations/LineWipe";
+import { buttonId } from "@/lib/button-id";
 
 function formatCardDate(value) {
   if (!value) return "";
@@ -72,6 +73,7 @@ export default function BlogCard({ post, priority = false, light = false }) {
 
         <div className="fadein mt-auto" data-fadein-delay="0.3">
           <LinkButton
+            id={buttonId("blog-card-read-more", post.slug)}
             href={`/blog/${post.slug}`}
             text="Read More"
             tilted={false}

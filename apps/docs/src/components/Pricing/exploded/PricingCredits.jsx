@@ -12,6 +12,7 @@ import CreditTiles from "./CreditTiles";
 import RollNumber from "./RollNumber";
 import RollText from "./RollText";
 import { getCreditsPerYear } from "@/lib/plans";
+import { buttonId } from "@/lib/button-id";
 
 const FLY_DURATION = 0.9;
 const FLY_FADE_DELAY = 0.75;
@@ -68,6 +69,7 @@ function RedeemButton({ done, label, disabled, onClick }) {
 
   return (
     <button
+      id={buttonId("pricing-credits-redeem", typeof label === "string" ? label : "")}
       ref={btnRef}
       type="button"
       disabled={disabled}
@@ -235,6 +237,7 @@ export default function PricingCredits() {
             <div ref={toggleRef} role="radiogroup" aria-label="Plan for this demo" className="relative isolate flex w-fit border border-foreground/10 bg-foreground/5 p-[calc(var(--cvw)*0.3)] max-lg:p-[0.6vw] max-md:p-[1vw]">
               {PLAN_OPTIONS.map((p) => (
                 <button
+                  id={buttonId("pricing-credits-choose", p.id)}
                   key={p.id}
                   type="button"
                   role="radio"
@@ -268,7 +271,7 @@ export default function PricingCredits() {
               <RollText fixed text={note} dir={dir} className="h-full min-w-0 flex-1 max-lg:w-[40%] max-lg:flex-none max-md:w-auto max-md:flex-1" />
             </div>
             <div className="relative mt-auto">
-              <Button text="Reset Wallet" variant="outline" preventDefault onClick={refill} className="w-fit" />
+              <Button id="pricing-credits-reset-wallet" text="Reset Wallet" variant="outline" preventDefault onClick={refill} className="w-fit" />
             </div>
           </div>
 

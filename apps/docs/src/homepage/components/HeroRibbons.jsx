@@ -47,6 +47,7 @@ function UnlockNotice({ onClose }) {
                 <p className="type-label text-primary">{UNLOCK_TITLE}</p>
                 <p className="mt-2 type-small text-white/80">{UNLOCK_BODY}</p>
                 <button
+                    id="hero-ribbons-dismiss"
                     type="button"
                     onClick={() => requestClose()}
                     aria-label="Dismiss"

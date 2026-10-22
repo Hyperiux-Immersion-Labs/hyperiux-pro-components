@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { Check, Copy } from "lucide-react";
 import { tv } from "tailwind-variants";
+import { buttonId } from "@/lib/button-id";
 
 const COPY_ICON_RESET_DELAY_MS = 2_000;
 
@@ -94,6 +95,8 @@ export default function CopyBtn({
   disabled = false,
   onBeforeCopy,
   onCopiedChange,
+  // Defaults to the label: "copy-to-clipboard", "copy-install-command" (lib/button-id)
+  id,
 }) {
   const [copied, setCopiedState] = useState(false);
   const iconRef = useRef(null);
@@ -172,6 +175,7 @@ export default function CopyBtn({
 
   return (
     <button
+      id={id || buttonId(ariaLabel)}
       type="button"
       onClick={handleClick}
       disabled={disabled}

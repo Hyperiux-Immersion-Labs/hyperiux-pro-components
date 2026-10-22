@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { T14 } from "@/app/(app)/(workspace)/templates/tokens";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Same shadcn "range date picker" pattern (trigger button showing the
 // formatted range -> popover with a month grid, click a start day then an
@@ -96,6 +97,7 @@ function buildMonthGrid(monthDate) {
 }
 
 function MonthGrid({ monthDate, from, to, hoverDate, onSelectDay, onHoverDay, tone }) {
+  const bid = useButtonId();
   const cells = buildMonthGrid(monthDate);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -125,6 +127,7 @@ function MonthGrid({ monthDate, from, to, hoverDate, onSelectDay, onHoverDay, to
 
           return (
             <button
+              id={bid("date-range-calendar-picker-select-day", index)}
               key={index}
               type="button"
               disabled={future}
@@ -148,6 +151,7 @@ function MonthGrid({ monthDate, from, to, hoverDate, onSelectDay, onHoverDay, to
  * range is picked; with `onClear`, a picked range gets an × that clears it.
  */
 export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "dark", placeholder = "Pick a date range", onClear }) {
+  const bid = useButtonId();
   const tone = TONES[toneName];
   const [open, setOpen] = useState(false);
   const [hoverDate, setHoverDate] = useState(null);
@@ -210,6 +214,7 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
     // calendar opens centred under it rather than hanging off the screen's left edge
     <div ref={rootRef} className="relative inline-flex max-md:flex max-md:w-full">
       <button
+        id={bid("date-range-calendar-picker-open")}
         type="button"
         onClick={() => setOpen((isOpen) => !isOpen)}
         aria-haspopup="dialog"
@@ -220,7 +225,7 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
         <span className={fromDate ? tone.value : tone.placeholder}>{label}</span>
       </button>
       {onClear && fromDate && (
-        <button type="button" onClick={onClear} aria-label="Clear the date range" className={`grid w-9.5 cursor-pointer place-items-center transition ${tone.clear}`}>
+        <button id={bid("date-range-calendar-picker-clear-the-date-range")} type="button" onClick={onClear} aria-label="Clear the date range" className={`grid w-9.5 cursor-pointer place-items-center transition ${tone.clear}`}>
           <X className="size-3.5" aria-hidden="true" />
         </button>
       )}
@@ -233,6 +238,7 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
           className={`absolute top-full right-0 z-30 mt-2 origin-top-right animate-[hx-scale-in_0.39s_cubic-bezier(0.33,1,0.68,1)] p-4 motion-reduce:animate-none max-md:right-auto max-md:left-1/2 max-md:origin-top max-md:-translate-x-1/2 ${tone.panel}`}
         >
           <button
+            id={bid("date-range-calendar-picker-previous-month")}
             type="button"
             onClick={() => shiftMonth(-1)}
             aria-label="Previous month"
@@ -241,6 +247,7 @@ export function DateRangeCalendarPicker({ from, to, onChange, tone: toneName = "
             <ChevronLeft className="h-4 w-4" />
           </button>
           <button
+            id={bid("date-range-calendar-picker-next-month")}
             type="button"
             onClick={() => shiftMonth(1)}
             aria-label="Next month"

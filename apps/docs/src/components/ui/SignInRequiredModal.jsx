@@ -11,6 +11,32 @@ const T14 = "text-[1vw] max-lg:text-[1.7vw] max-md:text-[3.6vw]";
 const T24 = "text-[1.7vw] max-lg:text-[2.9vw] max-md:text-[6vw]";
 
 const subscribeNever = () => () => {};
+// The dialogs' fade (duration-300)
+const FADE_MS = 300;
+
+// A dialog is in the page only while it's open and fading out: a page can hold several
+// (a sign-in prompt per action), and closed ones would otherwise keep a whole hidden form
+// each, repeating its field and button ids. `present`: render it; `shown`: it's opening
+// or open (two frames after it appears, so it fades in rather than popping).
+function usePresence(open) {
+  const [present, setPresent] = useState(open);
+  const [entered, setEntered] = useState(false);
+  if (open && !present) setPresent(true);
+  useEffect(() => {
+    if (open) {
+      // two frames: the first paints it hidden, so the second has something to fade from
+      let frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(() => setEntered(true));
+      });
+      return () => cancelAnimationFrame(frame);
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setEntered(false);
+    const timer = setTimeout(() => setPresent(false), FADE_MS);
+    return () => clearTimeout(timer);
+  }, [open]);
+  return { present: present || open, shown: open && entered };
+}
 
 /**
  * The vault's small centred dialog: a title, one line of text and an optional action
@@ -19,20 +45,23 @@ const subscribeNever = () => () => {};
  */
 export function Modal({ open, onClose, title, children }) {
   useLenisLock(open, { closeMs: 300 });
+  const { present, shown } = usePresence(open);
   const [text, action] = Array.isArray(children) ? children : [children, null];
+  if (!present) return null;
   return (
     <div
       onClick={onClose}
-      className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 p-4 backdrop-blur-lg transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+      className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 p-4 backdrop-blur-lg transition-opacity duration-300 ${shown ? "opacity-100" : "pointer-events-none opacity-0"}`}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(event) => event.stopPropagation()}
-        className={`relative flex w-[35vw] flex-col items-center gap-6 border border-white/20 bg-background p-10 text-center shadow-2xl transition-transform duration-300 max-lg:w-[70%] max-lg:p-6 max-md:w-full ${open ? "scale-100" : "scale-95"}`}
+        className={`relative flex w-[35vw] flex-col items-center gap-6 border border-white/20 bg-background p-10 text-center shadow-2xl transition-transform duration-300 max-lg:w-[70%] max-lg:p-6 max-md:w-full ${shown ? "scale-100" : "scale-95"}`}
       >
         <button
+          id="sign-in-required-modal-close"
           type="button"
           aria-label="Close"
           onClick={onClose}
@@ -60,6 +89,7 @@ export function SignInRequiredModal({ open, onClose, onSignedIn: onSignedInProp,
   // Portals need <body>; false on the server and during hydration.
   const mounted = useSyncExternalStore(subscribeNever, () => true, () => false);
   useLenisLock(open, { closeMs: 300 });
+  const { present, shown } = usePresence(open);
   // "You're signed in" once the form finishes (it stays up after the modal closes)
   const { toast, showToast, dismissToast } = useToastQueue();
   const onSignedIn = ({ isNewAccount, alreadySignedIn } = {}) => {
@@ -111,9 +141,11 @@ export function SignInRequiredModal({ open, onClose, onSignedIn: onSignedInProp,
 
   return createPortal(
     <>
+    {/* the toast stays in the page: it reports a sign-in after the dialog has gone */}
+    {present && (
     <div
       onClick={onClose}
-      className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 p-4 backdrop-blur-lg transition-opacity duration-300 ${open ? "opacity-100" : "pointer-events-none opacity-0"}`}
+      className={`fixed inset-0 z-9999 flex items-center justify-center bg-black/40 p-4 backdrop-blur-lg transition-opacity duration-300 ${shown ? "opacity-100" : "pointer-events-none opacity-0"}`}
     >
       <div
         role="dialog"
@@ -121,9 +153,10 @@ export function SignInRequiredModal({ open, onClose, onSignedIn: onSignedInProp,
         aria-label="Sign in required"
         data-lenis-prevent
         onClick={(event) => event.stopPropagation()}
-        className={`relative max-h-[92svh] w-[34vw] overflow-y-auto overscroll-contain border border-white/20 bg-background p-[2.6vw] shadow-2xl transition-transform duration-300 max-lg:w-[70%] max-lg:p-8 max-md:w-full max-md:p-6 ${open ? "scale-100" : "scale-95"}`}
+        className={`relative max-h-[92svh] w-[34vw] overflow-y-auto overscroll-contain border border-white/20 bg-background p-[2.6vw] shadow-2xl transition-transform duration-300 max-lg:w-[70%] max-lg:p-8 max-md:w-full max-md:p-6 ${shown ? "scale-100" : "scale-95"}`}
       >
         <button
+          id="sign-in-required-modal-close-panel"
           type="button"
           aria-label="Close"
           onClick={onClose}
@@ -142,6 +175,7 @@ export function SignInRequiredModal({ open, onClose, onSignedIn: onSignedInProp,
         />
       </div>
     </div>
+    )}
     <ToastViewport toast={toast} onDismiss={dismissToast} />
     </>,
     document.body,

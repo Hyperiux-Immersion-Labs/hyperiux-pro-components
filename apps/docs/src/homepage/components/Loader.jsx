@@ -453,6 +453,7 @@ export default function Loader() {
         className="invisible absolute bottom-[20vh] left-1/2 z-10 flex w-max justify-center opacity-0 max-md:bottom-[11svh]"
       >
         <Button
+          id="loader-enter-the-vault"
           text="Enter the Vault"
           variant="outline"
           // Border, text, square and arrow turn primary on hover

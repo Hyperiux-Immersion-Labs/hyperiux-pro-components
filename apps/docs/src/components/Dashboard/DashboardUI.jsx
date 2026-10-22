@@ -7,6 +7,7 @@ import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { DateRangeCalendarPicker } from "@/components/admin/DateRangeCalendarPicker";
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { SliderArrowButton } from "@/components/ui/SliderArrowButton";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Building blocks shared by the dashboard tabs on the light sheet.
 
@@ -187,10 +188,12 @@ export function CardLink({ href, children, tone = "light", onClick, arrow = true
 
 // CardLink's look on a <button>, no arrow: a modal's quiet way out ("Keep It", "Cancel").
 // `tone`: "dark" (on the dark modals and drawers) or "light" (on the white cards).
-export function TextButton({ children, onClick, disabled = false, tone = "dark", className = "" }) {
+export function TextButton({ children, onClick, disabled = false, tone = "dark", className = "", id }) {
+  const bid = useButtonId();
   return (
     <LinkButton
       as="button"
+      id={id || bid(typeof children === "string" ? children : "text-button")}
       text={children}
       onClick={onClick}
       disabled={disabled}
@@ -246,6 +249,7 @@ export function resolveDateRange({ preset, from, to }) {
  * "Joined"); `value` is { preset, from, to }.
  */
 export function DateRangeFilter({ label, value, onChange, widthClassName = FILTER_WIDTH, className = "" }) {
+  const bid = useButtonId();
   // The trigger and its panel share one width
   return (
     // On phones the wrapper steps aside (contents): the dropdown sits in the row beside its
@@ -254,6 +258,7 @@ export function DateRangeFilter({ label, value, onChange, widthClassName = FILTE
     // centred on the screen
     <div className={`flex flex-wrap items-center gap-[calc(var(--cvw)*0.7)] max-md:contents ${className}`}>
       <FilterMenu
+        id={bid("dashboard-ui-date-range")}
         tone="light"
         variant="label"
         alignRight
@@ -294,10 +299,12 @@ export function inDateRange(value, from, to) {
 }
 
 // A native <button> (form submit) in the site Button's look: orange, or "outline"
-export function SubmitButton({ label, busy = false, disabled = false, variant = "orange", type = "submit", onClick, className = "" }) {
+export function SubmitButton({ label, busy = false, disabled = false, variant = "orange", type = "submit", onClick, className = "", id }) {
+  const bid = useButtonId();
   const [hovered, setHovered] = useState(false);
   return (
     <button
+      id={id || bid(typeof label === "string" ? label : "submit")}
       type={type}
       onClick={onClick}
       disabled={disabled || busy}
@@ -332,14 +339,18 @@ export function DetailRows({ rows, tone = "light" }) {
 
 // Previous / next for a paged table, with "Page 1 of 5 · 40 events" - the effects listing's
 // Trending arrows. One page only: just the count, no arrows.
+// Its arrows: "<noun>-page-previous" / "-next" ("user-page-next"; the noun singular, so the
+// id doesn't change with the count)
 export function Pager({ page, pages, total, noun, onPage }) {
+  const bid = useButtonId();
+  const idNoun = String(noun || "").replace(/s$/, "");
   return (
     <div className="flex items-center justify-between gap-4">
       <p className="type-small text-black/60">{pages > 1 ? `Page ${page + 1} of ${pages} · ${total} ${noun}` : `${total} ${noun}`}</p>
       {pages > 1 && (
         <div className="flex gap-[calc(var(--cvw)*0.6)] max-lg:gap-2">
-          <SliderArrowButton tone="light" direction="prev" ariaLabel="Previous page" disabled={page === 0} onClick={() => onPage(page - 1)} />
-          <SliderArrowButton tone="light" direction="next" ariaLabel="Next page" disabled={page >= pages - 1} onClick={() => onPage(page + 1)} />
+          <SliderArrowButton id={bid(idNoun, "page-previous")} tone="light" direction="prev" ariaLabel="Previous page" disabled={page === 0} onClick={() => onPage(page - 1)} />
+          <SliderArrowButton id={bid(idNoun, "page-next")} tone="light" direction="next" ariaLabel="Next page" disabled={page >= pages - 1} onClick={() => onPage(page + 1)} />
         </div>
       )}
     </div>
@@ -353,11 +364,13 @@ export const ADMIN_PER_PAGE_OPTIONS = [25, 50, 100, 150, 200];
 export const ADMIN_PER_PAGE = 50;
 
 export function PerPageMenu({ value, onChange, options = PER_PAGE_OPTIONS }) {
+  const bid = useButtonId();
   return (
     // the last full row of a toolbar on phones
     <div className="flex items-center gap-3 max-md:col-span-2 max-md:justify-between">
       <span className="type-small text-black/60">Per page</span>
       <FilterMenu
+        id={bid("dashboard-ui-rows-per-page")}
         tone="light"
         variant="label"
         widthClassName="w-24"
@@ -378,9 +391,11 @@ export const ACTION_PRIMARY = `${ACTION} bg-primary text-background hover:bg-pri
 export const ACTION_LINE = `${ACTION} text-ink ring-1 ring-inset ring-black/10 hover:text-primary hover:ring-primary`;
 
 // An on / off switch (square track, round knob); `disabled` for one that's always on
-export function Toggle({ checked, onChange, label, disabled = false }) {
+export function Toggle({ checked, onChange, label, disabled = false, id }) {
+  const bid = useButtonId();
   return (
     <button
+      id={id || bid(label, "toggle")}
       type="button"
       role="switch"
       aria-checked={checked}

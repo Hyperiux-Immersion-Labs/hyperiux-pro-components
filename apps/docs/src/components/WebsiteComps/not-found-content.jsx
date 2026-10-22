@@ -109,6 +109,7 @@ export default function NotFoundContent() {
         </SplitLine>
         <div className="mt-8 mx-auto w-fit fadeup">
           <Button
+            id="not-found-content-return-home"
             href="/"
             text="Return home"
             className="w-fit"

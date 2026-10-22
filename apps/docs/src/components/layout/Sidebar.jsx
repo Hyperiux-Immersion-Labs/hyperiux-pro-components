@@ -23,6 +23,7 @@ import {
   TemplateIcon
 } from "../WebsiteComps/Icons";
 import Link from "next/link";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const DEFAULT_DOCS_TOP_LINKS = [
   { href: "/docs", label: "Introduction" },
@@ -125,8 +126,10 @@ function SectionButton({
   onClick,
   onMouseEnter,
 }) {
+  const bid = useButtonId();
   const button = (
     <button
+      id={bid("sidebar-section", label)}
       type="button"
       onClick={onClick}
       onMouseEnter={onMouseEnter}
@@ -189,6 +192,7 @@ export function Sidebar({
   onCategoryNavigate,
   onDocumentationNavigate,
 }) {
+  const bid = useButtonId();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -580,6 +584,7 @@ export function Sidebar({
       className="sticky bottom-0 left-0 top-0 z-51 h-screen opacity-0 bg-background text-white max-lg:hidden"
     >
       <button
+        id={bid("sidebar-expand-sidebar")}
         type="button"
         aria-label={isExpanded ? "Collapse sidebar" : "Expand sidebar"}
         onClick={toggle}

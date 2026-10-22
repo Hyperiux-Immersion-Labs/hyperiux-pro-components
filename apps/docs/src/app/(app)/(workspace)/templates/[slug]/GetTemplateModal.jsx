@@ -17,6 +17,7 @@ import { useToastQueue, ToastViewport } from "@/components/ui/Toast";
 import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import { markTemplateOwned } from "../useTemplateAccess";
+import { buttonId } from "@/lib/button-id";
 
 // Most credit coins drawn at once; a bigger balance shows as a number too
 const MAX_COINS = 10;
@@ -230,6 +231,7 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
           >
             {/* Same close control as the effects preview drawer: the cross turns a quarter on hover. */}
             <button
+              id="get-template-modal-close-esc"
               ref={closeRef}
               type="button"
               aria-label="Close (Esc)"
@@ -303,6 +305,7 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
                         </>
                       ) : (
                       <button
+                        id="get-template-modal-continue-to-payment"
                         type="button"
                         onClick={() => {
                           // Signed out: sign in here, without leaving the page
@@ -356,6 +359,7 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
                       <div className="flex flex-wrap gap-2">
                         {canRedeem && (
                           <button
+                            id="get-template-modal-redeem-1-credit"
                             type="button"
                             onClick={redeem}
                             disabled={busy}
@@ -376,6 +380,7 @@ export function GetTemplateModal({ template, open, tab = "buy", onTab, onClose, 
                         {wallet && !wallet.signedIn && (
                           // The header's Sign In button, as a <button> that opens the modal
                           <button
+                            id="get-template-modal-sign-in"
                             type="button"
                             onClick={() => setSignIn(true)}
                             disabled={signIn || signingIn}
@@ -445,6 +450,7 @@ function SlideToggle({ role, ariaLabel, items, value, onChange, activeClassName,
         return (
           <button
             key={item.id}
+            id={buttonId("get-template-modal-option", item.id)}
             type="button"
             role={isTabs ? "tab" : "radio"}
             {...(isTabs ? { "aria-selected": active } : { "aria-checked": active })}

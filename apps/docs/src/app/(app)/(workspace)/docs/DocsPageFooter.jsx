@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { buttonId } from "@/lib/button-id";
 
 // Same order as the docs sidebar.
 const DOCS_PAGES = [
@@ -20,6 +21,7 @@ const label = "type-label";
 function FeedbackButton({ active, onClick, children }) {
   return (
     <button
+      id={buttonId("docs-feedback", typeof children === "string" ? children : "button")}
       type="button"
       aria-pressed={active}
       onClick={onClick}

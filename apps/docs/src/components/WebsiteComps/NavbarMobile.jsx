@@ -20,6 +20,7 @@ import { HyperiuxLogo } from "@/utils/Icons";
 import { navCategoryColumns, navDocsItems, vaultLinks } from "@/utils/Links";
 import { HamburgerIcon } from "./Icons";
 import Button from "@/homepage/components/Button";
+import { buttonId } from "@/lib/button-id";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -237,6 +238,7 @@ function MobileDropdown({
   return (
     <div>
       <button
+        id={buttonId("navbar-mobile-section", label)}
         type="button"
         onClick={onToggle}
         className="flex w-full items-center justify-between py-5 text-left"
@@ -569,6 +571,7 @@ export default function NavbarMobile() {
         </Link>
 
         <button
+          id="navbar-mobile-open-menu"
           type="button"
           onClick={() => setIsMenuOpen((open) => !open)}
           className="relative flex max-md:size-[11vw] max-lg:size-[8vw] items-center justify-center rounded-full text-white transition-colors"
@@ -660,6 +663,7 @@ export default function NavbarMobile() {
                 state. */}
             <div className="flex w-fit max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
               <Button
+                id="navbar-mobile-get-pro"
                 text="Get Pro"
                 href="/sign-up"
                 className="border-white/50! w-full"
@@ -667,7 +671,7 @@ export default function NavbarMobile() {
               />
             </div>
             <div className="flex w-fit  max-md:w-[88%] max-md:mx-auto justify-center" onClick={handleNavigate}>
-              <Button text="Install CLI" href="/docs/installation" className="w-fit max-md:w-full" />
+              <Button id="navbar-mobile-install-cli" text="Install CLI" href="/docs/installation" className="w-fit max-md:w-full" />
             </div>
           </div>
         </div>

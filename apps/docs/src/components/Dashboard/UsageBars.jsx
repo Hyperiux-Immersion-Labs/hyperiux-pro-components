@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Where each delivery came from, as the bars and legend colour it (tip: on the dark tooltip)
 export const SOURCE_BARS = [
@@ -30,6 +31,7 @@ const CHART_H = "h-[calc(var(--cvw)*11)] max-lg:h-44";
  * hover or focus. `days`: [{ date: "YYYY-MM-DD" (local), web, cli, mcp }].
  */
 export function UsageBars({ days, limit = null, todayKey = null }) {
+  const bid = useButtonId();
   const [hovered, setHovered] = useState(null);
   const totals = days.map((d) => d.web + d.cli + d.mcp);
   const top = niceMax(Math.max(limit || 0, ...totals));
@@ -65,6 +67,7 @@ export function UsageBars({ days, limit = null, todayKey = null }) {
           <div className="relative flex h-full items-end gap-0.75">
             {days.map((day, i) => (
               <button
+                id={bid("usage-bars-effects-web-cli-mcp", day.date)}
                 key={day.date}
                 type="button"
                 aria-label={`${longDate(day.date)}: ${totals[i]} effects (${day.web} web, ${day.cli} CLI, ${day.mcp} MCP)`}

@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ToastViewport, useToastQueue } from "../ui/Toast";
+import { buttonId } from "@/lib/button-id";
 
 // Derive an anchor id from plain-text heading children when no id is passed.
 export function slugify(node) {
@@ -35,6 +36,7 @@ export default function HeadingAnchor({ id, label }) {
   return (
     <>
       <button
+        id={buttonId("heading-anchor-copy-link", id)}
         type="button"
         onClick={onClick}
         aria-label={`Copy link to ${label || "this section"}`}

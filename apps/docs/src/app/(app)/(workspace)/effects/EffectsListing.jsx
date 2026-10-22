@@ -39,6 +39,7 @@ import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";
 import RollNumber from "@/components/Pricing/exploded/RollNumber";
 import RollText from "@/components/Pricing/exploded/RollText";
+import { buttonId } from "@/lib/button-id";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -510,8 +511,8 @@ export function EffectsListing({
             </h2>
             {/* Desktop / tablet: arrows beside the heading (phones: below the slider). */}
             <div className="flex gap-[calc(var(--cvw)*0.8)] max-md:hidden max-lg:px-[5vw] max-lg:gap-3 ">
-              <SliderArrowButton direction="prev" ariaLabel="Previous" disabled={trendEdges.start} onClick={() => scrollTrending(-1)} />
-              <SliderArrowButton direction="next" ariaLabel="Next" disabled={trendEdges.end} onClick={() => scrollTrending(1)} />
+              <SliderArrowButton id="effects-listing-trending-previous" direction="prev" ariaLabel="Previous" disabled={trendEdges.start} onClick={() => scrollTrending(-1)} />
+              <SliderArrowButton id="effects-listing-trending-next" direction="next" ariaLabel="Next" disabled={trendEdges.end} onClick={() => scrollTrending(1)} />
             </div>
           </div>
           <div
@@ -532,13 +533,13 @@ export function EffectsListing({
             className="mx-[calc(var(--cvw)*-1)] my-[calc(var(--cvw)*-1)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.3)] overflow-x-hidden overflow-y-hidden px-[calc(var(--cvw)*1)] py-[calc(var(--cvw)*1)] max-lg:px-[5vw] scrollbar-none max-md:px-8! max-lg:gap-[1.4vw] max-lg:overflow-x-auto max-md:mr-0 max-md:gap-[3.6vw] max-md:pr-[8vw]"
           >
             {trendingEffects.map((effect, index) => (
-              <EffectCard key={effect.name} {...cardProps(effect, index, true)} small dark className="w-[calc((100%-var(--cvw)*1.8)/3)] shrink-0 hover:shadow-none! max-lg:w-[45%] max-md:w-[82%]" tagClassName="text-foreground border-foreground/30" metaClassName="text-foreground/80" />
+              <EffectCard key={effect.name} {...cardProps(effect, index, true)} idPrefix="effects-trending-card" small dark className="w-[calc((100%-var(--cvw)*1.8)/3)] shrink-0 hover:shadow-none! max-lg:w-[45%] max-md:w-[82%]" tagClassName="text-foreground border-foreground/30" metaClassName="text-foreground/80" />
             ))}
           </div>
           {/* Phones: arrows below the slider, on the left. */}
           <div className="hidden gap-[calc(var(--cvw)*2)] max-md:flex max-md:px-[7vw] ">
-            <SliderArrowButton direction="prev" ariaLabel="Previous" disabled={trendEdges.start} onClick={() => scrollTrending(-1)} />
-            <SliderArrowButton direction="next" ariaLabel="Next" disabled={trendEdges.end} onClick={() => scrollTrending(1)} />
+            <SliderArrowButton id="effects-listing-trending-previous-mobile" direction="prev" ariaLabel="Previous" disabled={trendEdges.start} onClick={() => scrollTrending(-1)} />
+            <SliderArrowButton id="effects-listing-trending-next-mobile" direction="next" ariaLabel="Next" disabled={trendEdges.end} onClick={() => scrollTrending(1)} />
           </div>
         </section>
       )}
@@ -564,8 +565,9 @@ export function EffectsListing({
 
             <div className="flex flex-wrap max-md:px-[7vw] max-lg:px-[5vw] items-center gap-[calc(var(--cvw)*0.7)] max-md:gap-[2.5vw]">
               {/* The Free / Pro pages are already one tier, so the All · Free · Pro toggle is left out there. */}
-              {!TIER_SCOPES.includes(scope) && <SlidingSegment label="Tier" items={TIERS} value={tier} onChange={setTier} itemClassName="w-14" />}
+              {!TIER_SCOPES.includes(scope) && <SlidingSegment id="effects-listing-tier" label="Tier" items={TIERS} value={tier} onChange={setTier} itemClassName="w-14" />}
               <button
+                id="effects-listing-featured"
                 type="button"
                 aria-pressed={featured}
                 onClick={() => setFeatured((v) => !v)}
@@ -576,6 +578,7 @@ export function EffectsListing({
                 Featured
               </button>
               <FilterMenu
+                id="effects-listing-sort"
                 tone="light"
                 // Opens leftwards from the button's right edge (it sits near the screen edge);
                 // below lg alignRight keeps the fixed panel under it, 16px inside the screen.
@@ -588,6 +591,7 @@ export function EffectsListing({
                 onClear={() => setSort("trend")}
               />
               <SlidingSegment
+                id="effects-listing-columns"
                 label="Columns"
                 items={COLUMN_ITEMS}
                 value={shownCols}
@@ -618,6 +622,7 @@ export function EffectsListing({
                 );
                 return (
                   <button
+                    id={buttonId("effects-listing-category", c.id || "all")}
                     key={c.id || "all"}
                     type="button"
                     aria-pressed={active}
@@ -686,6 +691,7 @@ export function EffectsListing({
               <b className="type-h2">Nothing matches that, yet.</b>
               <p className={`w-[33%] ${T16} text-black/60 max-lg:w-[66%] max-md:w-full`}>Try a broader search, or clear a filter. New effects land in the vault regularly.</p>
               <button
+                id="effects-listing-clear-filters"
                 type="button"
                 onClick={clearAll}
                 className={`${LABEL} h-11 cursor-pointer px-5 ring-1 ring-inset ring-black/10 transition-shadow duration-500 hover:ring-primary`}
@@ -714,6 +720,7 @@ export function EffectsListing({
                 <i className="block h-full origin-left bg-primary transition-transform duration-700" style={{ transform: `scaleX(${visible.length / filtered.length})` }} />
               </div>
               <button
+                id="effects-listing-show-more-effects"
                 type="button"
                 onClick={() => setShown((n) => n + PAGE)}
                 className="type-body h-11 cursor-pointer border border-black/10 bg-black/2 px-5 text-ink transition-colors duration-500 hover:border-primary"
@@ -740,7 +747,7 @@ export function EffectsListing({
                 </p>
               </div>
               <div className="relative flex h-fit flex-wrap gap-2 pt-5">
-                <Button text="See Plans" href="/pricing#plans" />
+                <Button id="effects-listing-see-plans" text="See Plans" href="/pricing#plans" />
               </div>
             </div>
           </section>
@@ -773,7 +780,7 @@ export function EffectsListing({
           <>
             <Modal open={justUpgraded && !upgradeDismissed} onClose={() => setUpgradeDismissed(true)} title="Welcome to Pro">
               Your upgrade is confirmed and the full vault is unlocked. Explore every Pro effect and start shipping right away.
-              <Button text="Explore effects" href="/effects" />
+              <Button id="effects-listing-explore-effects" text="Explore effects" href="/effects" />
             </Modal>
           </>,
           document.body,

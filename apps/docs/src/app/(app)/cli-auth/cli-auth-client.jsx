@@ -80,6 +80,7 @@ export function CliAuthClient({ plan }) {
             )}
 
             <button
+              id="cli-auth-client-generate-token"
               onClick={generateToken}
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 px-5 py-3 bg-white text-black font-semibold text-sm hover:bg-white/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
@@ -94,6 +95,7 @@ export function CliAuthClient({ plan }) {
               <div className="flex items-center justify-between">
                 <span className="text-xs font-medium text-white/40 uppercase tracking-widest">Your Token</span>
                 <button
+                  id="cli-auth-client-copy"
                   onClick={copyToken}
                   className="flex items-center gap-1.5 text-xs text-white/60 hover:text-white transition-colors"
                 >
@@ -124,6 +126,7 @@ export function CliAuthClient({ plan }) {
             </p>
 
             <button
+              id="cli-auth-client-regenerate-token"
               onClick={() => { setToken(null); setCopied(false); }}
               className="w-full px-5 py-2.5 border border-white/20 text-white/60 text-sm hover:bg-white/5 transition-colors"
             >

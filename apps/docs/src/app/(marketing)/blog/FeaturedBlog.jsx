@@ -78,6 +78,7 @@ function FeaturedBlogContent({ featuredPost }) {
           )}
 
           <Button
+            id="featured-blog-read-more"
             text="Read More"
             href={`/blog/${featuredPost.slug}`}
             variant="orange"

@@ -12,6 +12,7 @@ import {
   getMonthlyEquivalent,
   getPrice,
 } from "@/lib/plans";
+import { buttonId } from "@/lib/button-id";
 
 // Pro and Pro+, side by side, in a modal - opened from the effect page when a
 // signed-in user hits something their plan doesn't cover (a Pro effect, or
@@ -120,6 +121,7 @@ export default function UpgradeToProModal({ open, onClose, reason = "pro-effect"
         }`}
       >
         <button
+          id="upgrade-to-pro-modal-close"
           type="button"
           aria-label="Close"
           onClick={onClose}
@@ -141,6 +143,7 @@ export default function UpgradeToProModal({ open, onClose, reason = "pro-effect"
         <div role="radiogroup" aria-label="Billing period" className="flex w-fit border border-foreground/15 p-1">
           {INTERVAL_OPTIONS.map((option) => (
             <button
+              id={buttonId("upgrade-to-pro-modal-billing-interval", option.id)}
               key={option.id}
               type="button"
               role="radio"

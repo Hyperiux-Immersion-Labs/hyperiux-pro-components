@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const LINE_WIDTH = 1.75;
 const MAX_AMPLITUDE_RATIO = 10 / 44; // wave height relative to the button size
@@ -16,6 +17,7 @@ const MORPH_ON_ELASTICITY = 0.025;
 // `fit`: instead of a fixed `size`, stay square at whatever height the button is
 // stretched to (e.g. a header row sized by its tallest button), never below `size`.
 export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44, fit = false, className = "" }) {
+  const bid = useButtonId();
     const canvasRef = useRef(null);
     const buttonRef = useRef(null);
     const stateRef = useRef({ phase: 0, morph: 0, isOn });
@@ -94,6 +96,8 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
 
     return (
         <button
+            // one in the header bar (fit), one in the menus: different ids
+            id={bid(fit ? "sound-toggle-header" : "sound-toggle-menu")}
             ref={buttonRef}
             type="button"
             data-sound-toggle

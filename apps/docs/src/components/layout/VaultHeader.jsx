@@ -35,6 +35,7 @@ import Button from "@/homepage/components/Button";
 import SoundToggle from "@/homepage/components/SoundToggle";
 import { useHideOnScrollDown } from "./useHideOnScrollDown";
 import { useAccountSummary } from "./useAccountSummary";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -131,6 +132,7 @@ export function VaultHeader({
   // rather than showing a second, redundant one.
   mobileOnly = false,
 }) {
+  const bid = useButtonId();
   const [openTrigger, setOpenTrigger] = useState(0);
   const { wishlistCount, usage } = useAccountSummary(isSignedIn);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -410,6 +412,7 @@ export function VaultHeader({
           <div className="pointer-events-auto flex h-(--vault-ctl-h) items-stretch gap-3">
             {showSearch && (
               <button
+                id={bid("vault-header-search-effects")}
                 type="button"
                 onClick={openSearch}
                 className="group flex cursor-pointer items-center gap-4 border border-foreground/20 bg-dark-card px-3 text-xs text-white backdrop-blur-lg transition-colors duration-300 hover:bg-white/10 hover:text-forground max-md:hidden max-md:gap-3"
@@ -488,6 +491,7 @@ export function VaultHeader({
           <SoundToggle size={40} className="bg-dark-card! text-primary!" />
           {showSearch && (
             <button
+              id={bid("vault-header-search-effects-mobile")}
               type="button"
               onClick={handleSearch}
               aria-label="Search effects"
@@ -511,6 +515,7 @@ export function VaultHeader({
           )}
 
           <button
+            id={bid("vault-header-open-navigation-menu")}
             type="button"
             onClick={() => setOpen((current) => !current)}
             aria-label={open ? "Close navigation menu" : "Open navigation menu"}
@@ -591,6 +596,7 @@ export function VaultHeader({
 
             <div data-mobile-row className="border-t border-white/10">
               <button
+                id={bid("vault-header-categories")}
                 type="button"
                 onClick={() => toggleSection("categories")}
                 aria-label={`${section === "categories" ? "Collapse" : "Expand"} Categories`}
@@ -634,6 +640,7 @@ export function VaultHeader({
 
             <div data-mobile-row className="border-t border-white/10">
               <button
+                id={bid("vault-header-documentation")}
                 type="button"
                 onClick={() => toggleSection("documentation")}
                 aria-label={`${section === "documentation" ? "Collapse" : "Expand"} Documentation`}
@@ -688,6 +695,7 @@ export function VaultHeader({
                   phones: stacked, full width, at their own size */}
               {user?.publicMetadata?.plan !== "pro" && (
                 <Button
+                  id={bid("vault-header-upgrade-to-pro")}
                   text="Upgrade to Pro"
                   href="/pricing#plans"
                   onClick={() => {
@@ -701,6 +709,7 @@ export function VaultHeader({
 
               {!isSignedIn && (
                 <Button
+                  id={bid("vault-header-sign-in")}
                   text="Sign In"
                   href="/sign-in"
                   onClick={close}

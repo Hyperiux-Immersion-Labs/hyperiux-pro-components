@@ -11,6 +11,7 @@ import { X } from "lucide-react";
 import { getEffectHref } from "@/lib/categories";
 import { prefersReducedMotion } from "@/lib/motion";
 import { navCategoryColumns, navDocsItems } from "@/utils/Links";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 gsap.registerPlugin(useGSAP);
 
@@ -251,6 +252,7 @@ export function SearchBar({
 }
 
 export function GlobalSearch({ effects = [], externalOpen = 0 }) {
+  const bid = useButtonId();
   const [isOpen, setIsOpen] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [query, setQuery] = useState("");
@@ -595,6 +597,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
           </kbd> */}
 
           <button
+            id={bid("search-bar-close-search")}
             type="button"
             aria-label="Close search"
             onClick={closeSearch}
@@ -640,6 +643,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
             <div className="p-2">
                 {filteredDocs.map((item) => (
                     <button
+                      id={bid("search-bar-docs", item.href)}
                       key={item.href}
                       onClick={() => handleSelect({ ...item, type: "docs" })}
                       className="group relative flex w-full cursor-pointer items-center gap-4 px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"
@@ -678,6 +682,7 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
 
                   return (
                     <button
+                      id={bid("search-bar-effect-select", effect.name || getSafeEffectHref(effect))}
                       key={effect.name || getSafeEffectHref(effect)}
                       onClick={() => handleEffectSelect(effect)}
                       className="group relative flex w-full cursor-pointer items-center gap-4  px-3 py-3 text-left transition-colors duration-200 hover:bg-neutral-800/50"

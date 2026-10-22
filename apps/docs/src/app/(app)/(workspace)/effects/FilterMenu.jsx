@@ -8,6 +8,7 @@ import { ChevronDown, X } from "lucide-react";
 import { EFFECT_SORT_OPTIONS, FILTER_OPTIONS } from "@/lib/effect-sort";
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { T14 } from "../templates/tokens";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 export { FILTER_OPTIONS };
 
@@ -36,8 +37,13 @@ export function FilterMenu({
   triggerClassName,
   // Dark tone only: replaces the trigger's resting (no filter chosen) colours.
   idleClassName = "bg-black/20 backdrop-blur-lg text-foreground hover:text-background hover:bg-primary",
+  // The trigger's id (default: from `label`); its options are "<id>-<option>", the clear
+  // cross "<id>-clear" (lib/button-id)
+  id,
 }) {
+  const bid = useButtonId();
   const light = tone === "light";
+  const baseId = id || bid(label);
   const [open, setOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [menuPos, setMenuPos] = useState(null);
@@ -208,6 +214,7 @@ export function FilterMenu({
             )}
             <button
               type="button"
+              id={bid(baseId, cat)}
               role="menuitem"
               onMouseEnter={() => setHoveredCat(cat)}
               onClick={() => {
@@ -238,6 +245,7 @@ export function FilterMenu({
     <div ref={menuRef} className={`relative shrink-0 ${light && widthClassName ? widthClassName : ""}`}>
       <button
         ref={buttonRef}
+        id={bid(baseId)}
         type="button"
         onClick={handleToggle}
         aria-haspopup="menu"
@@ -289,6 +297,7 @@ export function FilterMenu({
                 {onClear && (
                   <span
                     role="button"
+                    id={bid(baseId, "clear")}
                     tabIndex={0}
                     aria-label="Clear filter"
                     onClick={(event) => {

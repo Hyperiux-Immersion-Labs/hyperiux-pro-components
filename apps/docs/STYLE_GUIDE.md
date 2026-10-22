@@ -227,6 +227,7 @@ New colours (for example a success green or an error red) are added as tokens in
 | `buttonClassName()` + `ButtonChrome` when the element must be a native `<button>` (forms) | Restyling `Button` with `!` (`py-1.5!`, `text-black!`, `tracking-normal!`) |
 | `LinkButton` for underlined text links | Hand-written underline gradients |
 | Links inside article content styled by `blog.css` | `text-[#ff5f00] underline …` on content links |
+| An `id` on every button, `<area>-<action>` (`admin-users-delete-permanently`); `buttonId()` from `@/lib/button-id` for repeated ones (see `src/CODING_STANDARDS.md` section 16) | A button without an id, or the same id twice on a page |
 
 ## Animation
 

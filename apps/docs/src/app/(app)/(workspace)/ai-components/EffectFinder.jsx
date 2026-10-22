@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { buttonId } from "@/lib/button-id";
 
 // Inside .docs-sheet, --foreground is remapped to ink, so white text here is text-light.
 // "Find the Right Effect": ranks the effect records already on the page against a
@@ -121,6 +122,7 @@ export default function EffectFinder({ total }) {
           const active = query.toLowerCase() === useCase.toLowerCase();
           return (
             <button
+              id={buttonId("effect-finder-query", useCase)}
               key={useCase}
               type="button"
               onClick={() => setQuery(active ? "" : useCase)}
@@ -135,6 +137,7 @@ export default function EffectFinder({ total }) {
       <div className="flex flex-wrap items-center gap-2">
         {TIERS.map(([value, label]) => (
           <button
+            id={buttonId("effect-finder-tier", value)}
             key={value}
             type="button"
             onClick={() => setTier(value)}

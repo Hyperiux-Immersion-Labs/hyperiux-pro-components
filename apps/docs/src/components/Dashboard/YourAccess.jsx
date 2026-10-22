@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { ShieldCheck } from "lucide-react";
 import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { describeAccess } from "@/lib/admin-permissions";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 /**
  * "Your access", beside the dashboard's View as switch for admins: which admin they are and,
@@ -11,6 +12,7 @@ import { describeAccess } from "@/lib/admin-permissions";
  * describeAccess). Hidden on phones (the dashboard header hides it).
  */
 export function YourAccess({ owner, roleNames, permissions, className = "" }) {
+  const bid = useButtonId();
   const [open, setOpen] = useState(false);
   const rootRef = useRef(null);
   const access = describeAccess({ owner, roleNames, permissions });
@@ -30,6 +32,7 @@ export function YourAccess({ owner, roleNames, permissions, className = "" }) {
   return (
     <div ref={rootRef} className={`relative flex ${className}`}>
       <button
+        id={bid("your-access-open")}
         type="button"
         aria-expanded={open}
         aria-haspopup="dialog"

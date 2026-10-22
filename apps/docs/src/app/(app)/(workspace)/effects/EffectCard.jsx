@@ -13,6 +13,7 @@ import { LISTING_IMAGE, resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/med
 import { useAutoplayPreviewVideo } from "@/hooks/useAutoplayPreviewVideo";
 import { twMerge } from "tailwind-merge";
 import { T11, T12, T14, T18 } from "../templates/tokens";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Site fonts: body is Avenir, h1–h4 get Aeonik from globals.css, code is IBM Plex Mono.
 export const DISPLAY = "font-normal tracking-tight";
@@ -80,6 +81,8 @@ export function EffectCard({
   // plain: just the preview (video on hover) and the title / category - no frame, padding,
   // hover lift or tech tags (the admin user page's sliders)
   plain = false,
+  // Its ids' prefix (lib/button-id): the same effect in Trending and the grid needs two
+  idPrefix = "effect-card",
   // Above the fold: load the cover eagerly; `highPriority` also fetches it first (the LCP card)
   priority = false,
   highPriority = false,
@@ -95,6 +98,7 @@ export function EffectCard({
   metaClassName = "",
   tagClassName = "",
 }) {
+  const bid = useButtonId();
   const [imageError, setImageError] = useState(false);
   // The copy icon turns into a tick for a moment after copying.
   const [copied, setCopied] = useState(false);
@@ -117,6 +121,7 @@ export function EffectCard({
   return (
     <article
       ref={cardRef}
+      id={bid(idPrefix, effect.name)}
       tabIndex={0}
       role="button"
       aria-label={`Preview ${effect.title}`}
@@ -191,6 +196,7 @@ export function EffectCard({
           <div className="absolute inset-x-3 bottom-3 flex justify-end gap-1.5">
             <Tooltip label={isWishlisted ? "Saved" : "Save"} hideOnClick className={`${ACTION_SLIDE} delay-0`}>
               <button
+                id={bid(idPrefix, "save", effect.name)}
                 type="button"
                 aria-label={isWishlisted ? `Remove ${effect.title} from saved` : `Save ${effect.title}`}
                 aria-pressed={isWishlisted}
@@ -206,6 +212,7 @@ export function EffectCard({
             {canInstall ? (
               <Tooltip label={copied ? "Copied" : "Copy Install Command"} className={`${ACTION_SLIDE} delay-40`}>
                 <button
+                  id={bid(idPrefix, "copy-install", effect.name)}
                   type="button"
                   aria-label={`Copy install command for ${effect.title}`}
                   onClick={async (event) => {

@@ -239,6 +239,7 @@ export default function Navbar({
           <SoundToggle fit size={32} className="self-stretch bg-background/60! backdrop-blur-lg transition-colors duration-300 max-md:hidden" />
           {SHOW_HEADER_SEARCH && (
             <button
+              id="navbar-search-effects"
               type="button"
               onClick={openSearch}
               className="group flex cursor-pointer items-center gap-4 bg-background/60 px-3 py-[calc(var(--hx-vw,1vw)*.86)] text-xs text-foreground backdrop-blur-lg transition-colors duration-300 hover:bg-white/10 hover:text-forground max-md:hidden max-md:gap-3"
@@ -275,7 +276,7 @@ export default function Navbar({
             </Link>
           ) : (
             // leading-normal: the header line height (1.5), so it matches VaultHeader's Sign In
-            !hideSignIn && <Button href="/sign-in" text="Sign In" className="leading-normal" />
+            !hideSignIn && <Button id="navbar-sign-in" href="/sign-in" text="Sign In" className="leading-normal" />
           )}
         </div>
 

@@ -176,7 +176,7 @@ export default function InvoicingPage() {
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your billing.</p>
         <p className="type-body text-black/60">Check your connection and try again.</p>
-        <Button text="Try again" preventDefault onClick={retry} />
+        <Button id="dashboard-invoicing-try-again" text="Try again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -252,8 +252,8 @@ export default function InvoicingPage() {
           {/* manage at Razorpay, and cancel (only a paid subscription that's still renewing) */}
           {isPro && (subscription?.razorpay_short_url || (subscription?.razorpay_subscription_id && !cancelled)) && (
             <div className="flex flex-wrap items-center gap-[calc(var(--cvw)*0.8)] max-lg:gap-3">
-              {subscription?.razorpay_short_url && <Button text="Manage Subscription" href={subscription.razorpay_short_url} target_blank className="w-fit" />}
-              {subscription?.razorpay_subscription_id && !cancelled && <Button text="Cancel Subscription" variant="outline" preventDefault onClick={() => setCancelOpen(true)} className="w-fit" />}
+              {subscription?.razorpay_short_url && <Button id="dashboard-invoicing-manage-subscription" text="Manage Subscription" href={subscription.razorpay_short_url} target_blank className="w-fit" />}
+              {subscription?.razorpay_subscription_id && !cancelled && <Button id="dashboard-invoicing-cancel-subscription" text="Cancel Subscription" variant="outline" preventDefault onClick={() => setCancelOpen(true)} className="w-fit" />}
             </div>
           )}
           {isPro && cancelled && (
@@ -268,8 +268,8 @@ export default function InvoicingPage() {
                 {`You keep ${planName} until ${formatDate(subscription?.current_period_end)}. After that your account moves to Free and you won’t be charged again. The rest of this period isn’t refunded.`}
                 <div className="flex flex-col items-center gap-3">
                   <div className="flex flex-wrap items-center justify-center gap-[calc(var(--cvw)*1.2)] max-lg:gap-4">
-                    <Button text={cancelling ? "Cancelling…" : "Cancel Subscription"} preventDefault disabled={cancelling} onClick={cancelSubscription} />
-                    <TextButton disabled={cancelling} onClick={() => setCancelOpen(false)}>
+                    <Button id="dashboard-invoicing-cancel-subscription-confirm" text={cancelling ? "Cancelling…" : "Cancel Subscription"} preventDefault disabled={cancelling} onClick={cancelSubscription} />
+                    <TextButton id="dashboard-invoicing-keep-it" disabled={cancelling} onClick={() => setCancelOpen(false)}>
                       Keep It
                     </TextButton>
                   </div>
@@ -300,7 +300,7 @@ export default function InvoicingPage() {
             </ul>
             <p className="type-small text-black/60">{upsell.price}</p>
             <div className="mt-auto">
-              <Button text={upsell.cta} href="/pricing#plans" onClick={markScrollToPricingCards} className="w-fit" />
+              <Button id="dashboard-invoicing-upgrade" text={upsell.cta} href="/pricing#plans" onClick={markScrollToPricingCards} className="w-fit" />
             </div>
           </section>
         )}

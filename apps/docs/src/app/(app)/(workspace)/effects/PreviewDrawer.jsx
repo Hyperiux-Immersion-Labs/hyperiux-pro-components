@@ -248,6 +248,7 @@ export function PreviewDrawer({
           <span className={`${T16} text-foreground/80`}>{categoryName}</span>
           {/* Same close control as the site's modals: the cross turns a quarter on hover. */}
           <button
+            id="preview-drawer-close-preview-esc"
             ref={closeRef}
             type="button"
             aria-label="Close preview (Esc)"
@@ -306,6 +307,7 @@ export function PreviewDrawer({
                 then a square heart, filling the row (MOBILE_ROW_BTN). */}
             <div className="flex flex-wrap items-stretch gap-2 max-md:w-full max-md:flex-nowrap">
               <button
+                id="preview-drawer-save"
                 type="button"
                 aria-pressed={saved}
                 onClick={() => onToggleWishlist(shown)}
@@ -316,8 +318,8 @@ export function PreviewDrawer({
                   <Heart className="size-full" />
                 </div>
               </button>
-              <Button text="Demo" href={getEffectPreviewHref(shown)} variant="outline" target_blank className={`bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
-              <Button text="View Article" href={getEffectHref(shown)} className={`border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
+              <Button id="preview-drawer-demo" text="Demo" href={getEffectPreviewHref(shown)} variant="outline" target_blank className={`bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
+              <Button id="preview-drawer-view-article" text="View Article" href={getEffectHref(shown)} className={`border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
             </div>
           </div>
         </div>
@@ -329,7 +331,7 @@ export function PreviewDrawer({
         {!isSignedIn ? (
           <LockRow
             text="Sign in to see the install command."
-            action={<Button text="Sign In" preventDefault onClick={() => setSignInOpen(true)} className="shrink-0" />}
+            action={<Button id="preview-drawer-sign-in" text="Sign In" preventDefault onClick={() => setSignInOpen(true)} className="shrink-0" />}
           />
         ) : installable ? (
           <div className="flex items-center gap-3 border border-foreground/10 bg-foreground/3 py-3 pr-2 pl-4 max-md:items-stretch max-md:gap-2 max-md:border-0 max-md:bg-transparent max-md:p-0">
@@ -339,6 +341,7 @@ export function PreviewDrawer({
               <span className="text-primary">$</span> {installCommand(shown)}
             </code>
             <button
+              id="preview-drawer-copy-install-command"
               type="button"
               onClick={async () => {
                 // Counts as an install (daily limit); "Copied" only once it went through
@@ -357,7 +360,7 @@ export function PreviewDrawer({
         ) : (
           <LockRow
             text="This is a Pro effect. Pro unlocks it with the rest of the library."
-            action={<Button text="Unlock with Pro" href="/pricing#plans" className="shrink-0" />}
+            action={<Button id="preview-drawer-unlock-with-pro" text="Unlock with Pro" href="/pricing#plans" className="shrink-0" />}
           />
         )}
         </div>

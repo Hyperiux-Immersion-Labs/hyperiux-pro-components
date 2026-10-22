@@ -10,13 +10,16 @@ const WAITLIST_ROUTE = "/api/community/waitlist";
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 // Email + submit, used in the hero and in Join. Both instances share the
-// joined state, so signing up in one marks the other done too.
+// joined state, so signing up in one marks the other done too. The field
+// clears after each sign-up so another email can go in straight away.
 // On phones the field sits over a full-width button, at 16px so iOS Safari
 // doesn't zoom the page when it's tapped.
 export default function WaitlistForm({ className = "" }) {
   const inputId = useId();
   const buttonRef = useRef(null);
-  const { stack, joined } = useCommunity();
+  const { stack, celebrateAt } = useCommunity();
+  // Green only flags a fresh sign-up, while its confirmation card is open
+  const justJoined = !!celebrateAt;
   const { sound } = useInteraction() ?? {};
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
@@ -25,7 +28,7 @@ export default function WaitlistForm({ className = "" }) {
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (joined || sending) return;
+    if (sending) return;
     const value = email.trim();
     if (!EMAIL_PATTERN.test(value)) {
       setError(value ? "That email doesn’t look quite right." : "Pop your email in first.");
@@ -57,12 +60,13 @@ export default function WaitlistForm({ className = "" }) {
     // const b = buttonRef.current?.getBoundingClientRect();
     // if (b) getCrowd()?.launch(b.left + b.width / 2, b.top + b.height / 2);
     sound?.note?.(4);
+    setEmail("");
     markJoined();
   };
 
   let label = "Join the Waitlist";
   if (sending) label = "Saving your Seat…";
-  if (joined) label = (
+  if (justJoined && !sending) label = (
     <span className="inline-flex items-center gap-2">
       You’re in
       <DrawCheck active className="size-[1.1em] shrink-0" />
@@ -74,10 +78,10 @@ export default function WaitlistForm({ className = "" }) {
       onSubmit={onSubmit}
       noValidate
       className={`relative flex w-full items-center gap-1.5 bg-background/60 px-1.5 py-1.5 ring-1 ring-inset backdrop-blur-lg transition-shadow duration-700 ease-[cubic-bezier(.16,1,.3,1)] max-md:flex-col max-md:items-stretch max-md:gap-2 max-md:p-2 ${
-        joined
-          ? "ring-[#00E05A]/60"
-          : error
-            ? "ring-[#FF0B0B]/60"
+        error
+          ? "ring-[#FF0B0B]/60"
+          : justJoined
+            ? "ring-[#00E05A]/60"
             : "shadow-2xl ring-foreground/10 focus-within:ring-primary/60"
       } ${className}`}
     >
@@ -86,24 +90,24 @@ export default function WaitlistForm({ className = "" }) {
         id={inputId}
         type="email"
         name="email"
-        placeholder={joined ? "You’re on the list" : "you@studio.com"}
+        placeholder={justJoined ? "You’re on the list" : "you@studio.com"}
         autoComplete="email"
         required
-        disabled={joined}
-        value={joined ? "" : email}
+        value={email}
         onChange={(e) => { setEmail(e.target.value); if (error) setError(""); }}
         aria-invalid={!!error}
         aria-describedby={`${inputId}-msg`}
-        className={`type-body h-11 min-w-0  flex-1 border-0 bg-transparent px-[calc(var(--cvw)*1.2)] text-foreground outline-none [--input-autofill-bg:var(--background)] [--input-autofill-text:var(--foreground)] max-md:h-12 max-md:flex-none max-md:bg-foreground/5 max-md:px-3 max-md:text-[16px] ${joined ? "placeholder:text-[#00E05A]" : "placeholder:text-foreground/60"}`}
+        className={`type-body h-11 min-w-0  flex-1 border-0 bg-transparent px-[calc(var(--cvw)*1.2)] text-foreground outline-none [--input-autofill-bg:var(--background)] [--input-autofill-text:var(--foreground)] max-md:h-12 max-md:flex-none max-md:bg-foreground/5 max-md:px-3 max-md:text-[16px] ${justJoined ? "placeholder:text-[#00E05A]" : "placeholder:text-foreground/60"}`}
       />
       <button
+        id="waitlist-form-join"
         ref={buttonRef}
         type="submit"
-        disabled={joined || sending}
+        disabled={sending}
         onPointerEnter={() => setHovered(true)}
         onPointerLeave={() => setHovered(false)}
         data-sound-kind="primary"
-        className={buttonClassName({ className: "max-md:w-full max-md:justify-center", disabled: joined || sending })}
+        className={buttonClassName({ className: "max-md:w-full max-md:justify-center", disabled: sending })}
       >
         <ButtonChrome label={label} hovered={hovered} />
       </button>

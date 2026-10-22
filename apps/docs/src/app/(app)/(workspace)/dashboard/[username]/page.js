@@ -245,7 +245,7 @@ export default function DashboardOverviewPage() {
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your dashboard.</p>
         <p className="type-body text-black/60">Check your connection and try again.</p>
-        <Button text="Try Again" preventDefault onClick={retry} />
+        <Button id="dashboard-try-again" text="Try Again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -334,11 +334,11 @@ export default function DashboardOverviewPage() {
               {isPro ? (
                 <>
                   {/* Invoicing has the details, receipts, Razorpay's page and Cancel in one place */}
-                  <Button text="Manage Plan" href={path("invoicing")} />
+                  <Button id="dashboard-manage-plan" text="Manage Plan" href={path("invoicing")} />
                   {data.tier === "pro" && <CardLink tone="dark" href="/pricing#plans" onClick={markScrollToPricingCards}>See What Pro+ Adds</CardLink>}
                 </>
               ) : (
-                <Button text="Upgrade to Pro" href="/pricing#plans" onClick={markScrollToPricingCards} />
+                <Button id="dashboard-upgrade-to-pro" text="Upgrade to Pro" href="/pricing#plans" onClick={markScrollToPricingCards} />
               )}
             </div>
           </section>

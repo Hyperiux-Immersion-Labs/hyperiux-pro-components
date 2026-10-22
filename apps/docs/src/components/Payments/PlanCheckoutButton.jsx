@@ -7,6 +7,7 @@ import RazorpayButtonV3 from "./RazorpayButtonV3";
 import { SignInRequiredModal } from "@/components/ui/SignInRequiredModal";
 import { PLANS, formatPrice, getUpgradeKind } from "@/lib/plans";
 import { savePendingCheckout } from "@/lib/pendingCheckout";
+import { buttonId } from "@/lib/button-id";
 
 // The one "buy a plan" button: Pro or Pro+, quarterly or yearly, used by the
 // pricing cards, the plan finder and the upgrade modal.
@@ -70,6 +71,7 @@ export default function PlanCheckoutButton({
     return (
       <>
         <Button
+          id={buttonId("plan-checkout", tier, interval)}
           variant={variant}
           href={`/checkout/${planKey}`}
           preventDefault
@@ -98,6 +100,7 @@ export default function PlanCheckoutButton({
     if (yearlyUpgrade) {
       return (
         <Button
+          id={buttonId("plan-checkout-switch-yearly", tier)}
           variant={variant}
           href="/pricing#plans"
           preventDefault={Boolean(onSwitchToYearly)}
@@ -115,7 +118,7 @@ export default function PlanCheckoutButton({
         : `You're on ${PLANS[tier].name}`;
     }
     // A status, not an action: shown disabled
-    return <Button variant={variant} href="/dashboard" text={status} disabled className={className} />;
+    return <Button id={buttonId("plan-checkout-current", tier, interval)} variant={variant} href="/dashboard" text={status} disabled className={className} />;
   }
 
   let buttonLabel = label;

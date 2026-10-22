@@ -236,6 +236,7 @@ export function ExitIntentInviteModal() {
             transition={MODAL_TRANSITION}
           >
             <button
+              id="exit-intent-invite-modal-close"
               type="button"
               aria-label="Close"
               onClick={close}
@@ -379,6 +380,7 @@ export function ExitIntentInviteModal() {
                     onPointerLeave={() => setSendHovered(false)}
                   >
                     <button
+                      id="exit-intent-invite-modal-send"
                       type="submit"
                       disabled={isSubmitting}
                       data-sound-kind="primary"

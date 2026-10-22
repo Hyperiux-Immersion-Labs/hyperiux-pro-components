@@ -5,6 +5,7 @@ import Button from "@/homepage/components/Button";
 import { dashboardPath } from "@/components/Dashboard/dashboardRoutes";
 import { getDashboardPreview, sampleDashboard } from "@/lib/dev/dashboardPreview";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const PERIOD_MONTHS = { monthly: 1, quarterly: 3, yearly: 12 };
@@ -17,6 +18,7 @@ const INTERVALS = { monthly: "Monthly", quarterly: "Quarterly", yearly: "Yearly"
  * billing for Pro+. Admins get what their role is, with a way into the admin view.
  */
 export function SidebarPlanCard({ username }) {
+  const bid = useButtonId();
   const [info, setInfo] = useState(null);
   const [now, setNow] = useState(null);
 
@@ -96,7 +98,7 @@ export function SidebarPlanCard({ username }) {
           <span className="block h-full bg-primary" style={{ width: `${(elapsed * 100).toFixed(1)}%` }} />
         </span>
       )}
-      <Button text={next.text} href={next.href} onClick={next.onClick} variant={next.outline ? "outline" : undefined} className="w-fit" />
+      <Button id={bid("sidebar-plan-card", next.text)} text={next.text} href={next.href} onClick={next.onClick} variant={next.outline ? "outline" : undefined} className="w-fit" />
     </div>
   );
 }

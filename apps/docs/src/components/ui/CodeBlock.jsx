@@ -15,6 +15,7 @@ import CopyBtn from "@/components/ui/CopyBtn";
 import LinkButton from "@/components/WebsiteComps/LinkButton";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ToastViewport, useToastQueue } from "@/components/ui/Toast";
+import { buttonId } from "@/lib/button-id";
 
 // The one code block used across docs, blog posts and effect detail pages
 // (ported from the Docs prototype's .cb): dark frame, three round dots +
@@ -237,6 +238,7 @@ function HeaderSwitch({ label, options, value, onPick }) {
             />
             {options.map((option) => (
                 <button
+                    id={buttonId("code-block-pick", option.value)}
                     key={option.value}
                     type="button"
                     role="radio"
@@ -375,6 +377,7 @@ export function CodeBlock({
                     )}
                     {showCopyButton && (
                         <button
+                            id={buttonId("code-block-copy", filename || language)}
                             type="button"
                             aria-label="Copy code"
                             onClick={onCopy}

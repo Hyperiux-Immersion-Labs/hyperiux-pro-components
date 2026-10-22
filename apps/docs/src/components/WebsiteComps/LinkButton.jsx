@@ -5,6 +5,7 @@ import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 const ArrowSVG = ({ className = "" }) => (
   <svg
@@ -58,9 +59,10 @@ export default function LinkButton({
   const resolvedTarget = target ?? (isExternal ? "_blank" : "_self");
   const label = text ?? children;
 
-  const autoId = !id && typeof label === "string"
-    ? label.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
-    : undefined;
+  // No id given: one from the label ("read-more") - pass `id` where the same label repeats.
+  // None at all where button ids are off (the admin dashboard, components/ui/ButtonIds)
+  const bid = useButtonId();
+  const autoId = !id && typeof label === "string" ? bid(label) : undefined;
 
   useEffect(() => {
     // Reduced motion: plain label, no looping shimmer

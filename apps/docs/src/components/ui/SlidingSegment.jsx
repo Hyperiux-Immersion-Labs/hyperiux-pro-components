@@ -1,6 +1,7 @@
 "use client";
 
 import { T14 } from "@/app/(app)/(workspace)/templates/tokens";
+import { useButtonId } from "@/components/ui/ButtonIds";
 
 // Two- and three-pane window icons for the column switch.
 const COLUMN_ICONS = {
@@ -34,7 +35,10 @@ export const COLUMN_ITEMS = [2, 3].map((n) => ({
  * whole steps of (its own width + the 2px gap). For light surfaces: the effects
  * listing (tier, columns) and the dashboard's filters.
  */
-export function SlidingSegment({ label, items, value, onChange, itemClassName, className = "" }) {
+export function SlidingSegment({ label, items, value, onChange, itemClassName, className = "", id }) {
+  // Each option's id: `<id or label>-<option>` ("log-razorpay")
+  const bid = useButtonId();
+  const base = id || bid(label);
   const index = Math.max(0, items.findIndex((item) => item.id === value));
   return (
     <div role="group" aria-label={label} className={`relative flex gap-0.5 bg-foreground p-0.75 ring-1 ring-inset ring-black/10 ${className}`}>
@@ -48,6 +52,7 @@ export function SlidingSegment({ label, items, value, onChange, itemClassName, c
         return (
           <button
             key={item.id}
+            id={bid(base, item.id)}
             type="button"
             aria-pressed={active}
             aria-label={item.ariaLabel}

@@ -12,6 +12,7 @@ import { FOCUS_RING_CLASS, LABEL_CLASS, LEGAL_LINKS, OAUTH_PROVIDERS, PANES, SUB
 import { useResendCooldown } from "./vault-door/hooks";
 import { useVaultClerk } from "./vault-door/useVaultClerk";
 import { getClerkErrorField, getStepHint, validateField } from "./vault-door/utils";
+import { buttonId } from "@/lib/button-id";
 
 const EMPTY_VALUES = { name: "", email: "", password: "", newPassword: "", code: "" };
 const OAUTH_ICONS = { oauth_google: GoogleIcon, oauth_github: GitHubIcon };
@@ -175,7 +176,7 @@ export function AuthModalForm({ redirectUrl = "/", initialMode = "sign-in", intr
 
   const fieldMessage = message ?? getStepHint(mode, field, values[field], values.email);
   const modeLink = (nextMode, label) => (
-    <UnderlineButton onClick={() => switchMode(nextMode)} disabled={busy}>
+    <UnderlineButton id={buttonId("auth-modal-switch", nextMode)} onClick={() => switchMode(nextMode)} disabled={busy}>
       {label}
     </UnderlineButton>
   );
@@ -215,7 +216,7 @@ export function AuthModalForm({ redirectUrl = "/", initialMode = "sign-in", intr
           {resendSeconds > 0 ? (
             <span className="text-white/30">Resend in {resendSeconds}s</span>
           ) : (
-            <UnderlineButton onClick={handleResend}>Resend code</UnderlineButton>
+            <UnderlineButton id="auth-modal-resend-code" onClick={handleResend}>Resend code</UnderlineButton>
           )}
         </p>
       )}
@@ -247,6 +248,7 @@ export function AuthModalForm({ redirectUrl = "/", initialMode = "sign-in", intr
               const Icon = OAUTH_ICONS[strategy];
               return (
                 <button
+                  id={buttonId("auth-modal-form-oauth", strategy)}
                   key={strategy}
                   type="button"
                   onClick={() => handleOAuth(strategy)}

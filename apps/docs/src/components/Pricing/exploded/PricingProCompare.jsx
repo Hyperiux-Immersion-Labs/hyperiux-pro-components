@@ -11,6 +11,7 @@ import RollText from "./RollText";
 import { useCurrencyState } from "@/lib/useCurrency";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CURRENCY_SYMBOLS, PLANS, getCreditsPerYear, getMonthlyEquivalent } from "@/lib/plans";
+import { buttonId } from "@/lib/button-id";
 
 // Pro vs Pro+, line by line. Prices, credits and install limits come from
 // lib/plans.js, like the plan cards above.
@@ -130,6 +131,7 @@ export default function PricingProCompare({ currency: initialCurrency }) {
           <div ref={toggleRef} role="radiogroup" aria-label="Billing period" data-sound-hover="off" className="fadeup relative isolate flex w-fit bg-ink p-[calc(var(--cvw)*0.3)] max-lg:p-[0.6vw] max-md:p-[1vw]">
             {PERIODS.map((p) => (
               <button
+                id={buttonId("pricing-pro-compare-choose", p.id)}
                 key={p.id}
                 type="button"
                 role="radio"

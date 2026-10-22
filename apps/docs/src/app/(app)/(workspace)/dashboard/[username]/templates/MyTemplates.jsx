@@ -106,7 +106,7 @@ export function MyTemplates({ templates }) {
           <p className="type-body">
             You have {credits} template credit{credits === 1 ? "" : "s"} left. Redeem one on any template in your catalogue before your plan renews.
           </p>
-          <Button href="/templates" text="Browse Templates" />
+          <Button id="my-templates-browse-templates" href="/templates" text="Browse Templates" />
         </div>
       )}
 
@@ -117,6 +117,7 @@ export function MyTemplates({ templates }) {
             <FilteredCount shown={shown.length} total={total} noun="templates" />
             <div className={TOOLBAR}>
               <FilterMenu
+                id="my-templates-kind"
                 tone="light"
                 variant="label"
                 alignRight
@@ -130,6 +131,7 @@ export function MyTemplates({ templates }) {
               />
               {industries.length > 1 && (
                 <FilterMenu
+                  id="my-templates-industry"
                   tone="light"
                   variant="label"
                   alignRight
@@ -143,6 +145,7 @@ export function MyTemplates({ templates }) {
                 />
               )}
               <FilterMenu
+                id="my-templates-catalogue"
                 tone="light"
                 alignRight
                 panelClassName="left-auto! right-0"
@@ -163,7 +166,7 @@ export function MyTemplates({ templates }) {
         <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
           <p className="type-h3">We couldn’t load your templates.</p>
           <p className="type-body text-black/60">Check your connection and try again.</p>
-          <Button text="Try again" preventDefault onClick={retry} />
+          <Button id="my-templates-try-again" text="Try again" preventDefault onClick={retry} />
         </div>
       ) : owned === null ? (
         // the template cards' shape: cover, then title and meta beside the price, tagline
@@ -186,7 +189,7 @@ export function MyTemplates({ templates }) {
         <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
           <p className="type-h3">No templates yet.</p>
           <p className="type-body text-black/60">Buy a template or redeem a credit to download it here any time, or tap the heart on one to save it for later.</p>
-          <Button href="/templates" text="Browse Templates" />
+          <Button id="my-templates-browse-templates-empty" href="/templates" text="Browse Templates" />
         </div>
       ) : shown.length === 0 ? (
         <p className={EMPTY_TABLE}>No templates match these filters.</p>

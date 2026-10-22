@@ -19,6 +19,7 @@ import { getEffectHref } from "@/lib/categories";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import { PLANS } from "@/lib/plans";
 import { getDashboardPreview, sampleUsage } from "@/lib/dev/dashboardPreview";
+import { buttonId } from "@/lib/button-id";
 
 const SOURCES = [
   { id: "all", label: "All" },
@@ -59,6 +60,7 @@ function CopyCommand({ effect, copyInstall }) {
   const name = effect.title || effect.name;
   return (
     <button
+      id={buttonId("dashboard-usage-copy-install", effect.name)}
       type="button"
       aria-label={copied ? `Copied the install command for ${name}` : `Copy the install command for ${name}`}
       onClick={async () => {
@@ -224,7 +226,7 @@ export default function UsagePage() {
       <div className={`${CARD} ${CARD_PAD} items-start gap-4`}>
         <p className="type-h3">We couldn’t load your usage.</p>
         <p className="type-body text-black/60">Check your connection and try again.</p>
-        <Button text="Try again" preventDefault onClick={retry} />
+        <Button id="dashboard-usage-try-again" text="Try again" preventDefault onClick={retry} />
       </div>
     );
   }
@@ -299,7 +301,7 @@ export default function UsagePage() {
           </div>
           <div className={TOOLBAR}>
             <SearchField value={query} onChange={filter(setQuery)} placeholder="Search effects" label="Search effects" />
-            <SlidingSegment label="Source" items={SOURCES} value={source} onChange={filter(setSource)} itemClassName="w-14" />
+            <SlidingSegment id="dashboard-usage-source" label="Source" items={SOURCES} value={source} onChange={filter(setSource)} itemClassName="w-14" />
             <PerPageMenu value={perPage} onChange={filter(setPerPage)} />
           </div>
         </div>
@@ -307,7 +309,7 @@ export default function UsagePage() {
         {data.events.length === 0 ? (
           <div className={EMPTY_TABLE}>
             <p>Nothing yet. Effects you install - copied on the website, or with the CLI or MCP - show up here.</p>
-            <Button href="/effects" text="Browse All Effects" />
+            <Button id="dashboard-usage-browse-all-effects" href="/effects" text="Browse All Effects" />
           </div>
         ) : events.length === 0 ? (
           <p className={EMPTY_TABLE}>No effects match these filters.</p>

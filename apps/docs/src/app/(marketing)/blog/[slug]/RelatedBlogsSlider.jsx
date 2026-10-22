@@ -76,6 +76,7 @@ export default function RelatedBlogsSlider({ posts = [] }) {
       {showMobileControls && (
         <div className="hidden items-center justify-start gap-2 max-md:flex">
           <SliderArrowButton
+            id="related-blogs-slider-show-previous-related-blogs"
             direction="prev"
             tone="light"
             disabled={!canScrollPrev}
@@ -83,6 +84,7 @@ export default function RelatedBlogsSlider({ posts = [] }) {
             ariaLabel="Show previous related blogs"
           />
           <SliderArrowButton
+            id="related-blogs-slider-show-next-related-blogs"
             direction="next"
             tone="light"
             disabled={!canScrollNext}

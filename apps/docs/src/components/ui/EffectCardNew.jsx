@@ -10,6 +10,7 @@ import { useAutoplayPreviewVideo } from "@/hooks/useAutoplayPreviewVideo";
 import { Download, Eye, Heart } from "lucide-react";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { ArrowIcon } from "../WebsiteComps/Icons";
+import { buttonId } from "@/lib/button-id";
 
 function formatLabel(value = "") {
   return value
@@ -233,6 +234,7 @@ export function EffectCard({
 
           <Tooltip label="Save">
             <button
+              id={buttonId("effect-card-wishlist", effect?.name)}
               type="button"
               data-no-card-link
               onClick={(e) => {
@@ -253,6 +255,7 @@ export function EffectCard({
 
           <Tooltip label="Demo">
             <button
+              id={buttonId("effect-card-preview", effect?.name)}
               type="button"
               data-no-card-link
               onClick={(e) => {
