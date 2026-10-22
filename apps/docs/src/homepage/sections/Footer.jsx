@@ -18,6 +18,7 @@ import { FREE_LABEL } from "@/lib/library-counts";
 const vaultFooterLinks = [
   { label: "Documentation", href: "/docs" },
   { label: "Pricing", href: "/pricing" },
+  { label: "Blog", href: "/blog" },
   { label: "Community", href: "/community" },
   { label: "NPM", href: "https://www.npmjs.com/package/hyperiux" },
   { label: "MCP", href: "/docs/mcp" },

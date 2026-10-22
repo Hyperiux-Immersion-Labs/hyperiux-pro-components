@@ -54,7 +54,8 @@ const DOCS_TOP_LINKS = [
 ];
 
 const MOBILE_SECONDARY_LINKS = [
-   { href: "/pricing", label: "Pricing" },
+  { href: "/pricing", label: "Pricing" },
+  { href: "/blog", label: "Blog" },
   {
     href: "https://github.com/Hyperiux-Immersion-Labs/hyperiux-components",
     label: "Github",
