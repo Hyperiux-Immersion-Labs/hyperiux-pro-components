@@ -10,45 +10,60 @@ import UnderlineLink from "../Buttons/UnderlineLink";
 const VERTEX_SHADER = `
   attribute vec2 a_pos; attribute float a_kind; attribute float a_seed;
   uniform vec2 u_res; uniform vec2 u_mouse; uniform float u_time; uniform float u_size; uniform float u_dpr;
-  uniform vec3 u_ripple; uniform float u_hover; uniform float u_found; uniform float u_near; uniform float u_idle;
-  varying float v_kind; varying float v_glow; varying float v_alpha;
+  uniform vec4 u_ripples[6]; uniform float u_hover; uniform float u_found; uniform float u_near; uniform float u_idle; uniform float u_focus;
+  varying float v_kind; varying float v_glow; varying float v_alpha; varying float v_scale; varying float v_found; varying float v_focus;
   void main() {
     vec2 p = a_pos;
     vec2 d = p - u_mouse; float dist = length(d);
     float push = exp(-dist * dist / 24200.0) * u_hover;
     p += d * push * (a_kind > 0.5 ? 0.06 : 0.14);
     p += vec2(sin(u_time * 0.55 + a_seed * 6.283), cos(u_time * 0.45 + a_seed * 6.283)) * (a_kind > 0.5 ? 0.6 : 1.4) * u_idle;
-    float rt = u_time - u_ripple.z;
     float ring = 0.0;
-    if (rt > 0.0 && rt < 3.5) {
-      vec2 rd = a_pos - u_ripple.xy; float rl = length(rd);
-      float off = (rl - rt * 480.0) / 110.0;
-      ring = exp(-off * off) * exp(-rt * 1.1);
-      p += (rl > 0.001 ? rd / rl : vec2(0.0)) * ring * (a_kind > 0.5 ? 5.0 : 9.0);
+    for (int i = 0; i < 6; i++) {
+      vec4 r = u_ripples[i];
+      float rt = u_time - r.z;
+      if (rt > 0.0 && rt < 3.5) {
+        vec2 rd = a_pos - r.xy; float rl = length(rd);
+        float off = (rl - rt * 480.0) / 110.0;
+        float wave = exp(-off * off) * exp(-rt * 1.1) * r.w;
+        ring += wave;
+        p += (rl > 0.001 ? rd / rl : vec2(0.0)) * wave * (a_kind > 0.5 ? 5.0 : 9.0);
+      }
     }
     v_kind = a_kind; v_glow = max(push, ring * 0.5);
     v_alpha = a_kind > 1.5 ? max(u_found, u_near * (0.18 + 0.12 * sin(u_time * 6.0))) : 1.0;
     vec2 clip = (p / u_res) * 2.0 - 1.0; clip.y = -clip.y;
     gl_Position = vec4(clip, 0.0, 1.0);
-    float sz = a_kind > 1.5 ? u_size : (a_kind > 0.5 ? u_size * 0.86 : u_size * 0.3);
+    float scale = 1.0;
+    if (a_kind > 1.5) scale = min(1.0 + u_found * (5.0 + 1.5 * sin(u_time * 4.0)), 60.0 / (u_size * u_dpr));
+    v_scale = scale; v_found = u_found; v_focus = u_focus;
+    float sz = a_kind > 1.5 ? u_size * scale : (a_kind > 0.5 ? u_size * 0.86 : u_size * 0.3);
     gl_PointSize = sz * u_dpr * (1.0 + push * (a_kind > 0.5 ? 0.02 : 0.25) + ring * (a_kind > 0.5 ? 0.04 : 0.4));
   }`;
 
 const FRAGMENT_SHADER = `
   precision mediump float;
-  varying float v_kind; varying float v_glow; varying float v_alpha;
+  varying float v_kind; varying float v_glow; varying float v_alpha; varying float v_scale; varying float v_found; varying float v_focus;
   void main() {
     vec3 ink = vec3(0.94);
     vec3 coral = vec3(1.0, 0.60, 0.46);
     vec3 red = vec3(0.91, 0.28, 0.23);
     vec3 col; float a;
-    if (v_kind > 1.5) { col = red; a = v_alpha; }
-    else if (v_kind > 0.5) { col = mix(ink, coral, v_glow * 0.45); a = 1.0; }
-    else { col = mix(vec3(1.0), coral, v_glow); a = 0.09 + v_glow * 0.2; }
+    if (v_kind > 1.5) {
+      vec2 c = gl_PointCoord - 0.5;
+      float edge = 0.5 / v_scale;
+      float core = step(abs(c.x), edge) * step(abs(c.y), edge);
+      float dist = length(c) * v_scale;
+      float halo = exp(-dist * dist * 0.3) * v_found;
+      if (core > 0.5) { col = red; a = v_alpha; }
+      else { col = vec3(1.0, 0.45, 0.2); a = halo * 0.8; }
+    }
+    else if (v_kind > 0.5) { col = mix(ink, coral, v_glow * 0.45); a = 1.0 - 0.8 * v_focus; }
+    else { col = mix(vec3(1.0), coral, v_glow); a = (0.09 + v_glow * 0.2) * (1.0 - 0.8 * v_focus); }
     gl_FragColor = vec4(col * a, a);
   }`;
 
-const UNIFORMS = ["u_res", "u_mouse", "u_time", "u_size", "u_dpr", "u_ripple", "u_hover", "u_found", "u_near", "u_idle"] as const;
+const UNIFORMS = ["u_res", "u_mouse", "u_time", "u_size", "u_dpr", "u_ripples", "u_hover", "u_found", "u_near", "u_idle", "u_focus"] as const;
 
 const DEFAULT_TITLE = "Somewhere in here, one pixel is missing.";
 const DEFAULT_HINT = "Move around. Click when you find the gap.";
@@ -59,6 +74,7 @@ const PixelField = () => {
   const [title, setTitle] = useState(DEFAULT_TITLE);
   const [hint, setHint] = useState(DEFAULT_HINT);
   const [found, setFound] = useState(false);
+  const [flash, setFlash] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -135,8 +151,15 @@ const PixelField = () => {
       const ink: [number, number][] = [];
       for (let y = size / 2; y < height; y += size) {
         for (let x = size / 2; x < width; x += size) {
-          const alpha = data[(Math.floor(y) * width + Math.floor(x)) * 4 + 3];
-          if (alpha > 128) ink.push([x, y]);
+          let hits = 0;
+          for (let oy = -1; oy <= 1; oy++) {
+            for (let ox = -1; ox <= 1; ox++) {
+              const sx = Math.min(width - 1, Math.max(0, Math.floor(x + (ox * size) / 4)));
+              const sy = Math.min(height - 1, Math.max(0, Math.floor(y + (oy * size) / 4)));
+              if (data[(sy * width + sx) * 4 + 3] > 128) hits++;
+            }
+          }
+          if (hits >= 3) ink.push([x, y]);
           else if ((Math.round(x / size) + Math.round(y / size)) % 2 === 0) points.push(x, y, 0, Math.random());
         }
       }
@@ -175,9 +198,18 @@ const PixelField = () => {
     };
 
     const mouse = { x: -999, y: -999, tx: -999, ty: -999, hover: 0, hoverTarget: 0 };
-    let ripple = [-9999, -9999, -99];
+    const RIPPLES = 6;
+    const ripples = new Float32Array(RIPPLES * 4).map((_, i) => (i % 4 === 2 ? -99 : -9999));
+    let nextRipple = 0;
+    const addRipple = (x: number, y: number, time: number, strength: number) => {
+      ripples.set([x, y, time, strength], nextRipple * 4);
+      nextRipple = (nextRipple + 1) % RIPPLES;
+    };
     let foundValue = 0;
     let foundTarget = 0;
+    let focusValue = 0;
+    let focusTarget = 0;
+    let focusTimer = 0;
     let near = 0;
     const start = performance.now();
 
@@ -207,14 +239,20 @@ const PixelField = () => {
       const distance = Math.hypot(point.x - missing.x, point.y - missing.y);
       if (!foundTarget && distance < size * 2.4) {
         foundTarget = 1;
-        ripple = [missing.x, missing.y, now];
+        focusTarget = 1;
+        focusTimer = window.setTimeout(() => {
+          focusTarget = 0.45;
+        }, 2200);
+        addRipple(missing.x, missing.y, now, 2.6);
         setFound(true);
+        setFlash(true);
+        window.setTimeout(() => setFlash(false), 80);
         setTitle("Found it. Now imagine what we’d find in your brand.");
         setHint("");
         playSound("found");
         return;
       }
-      ripple = [point.x, point.y, now];
+      addRipple(point.x, point.y, now, 1);
       playSound("tick");
       if (!foundTarget) {
         setHint(
@@ -239,6 +277,7 @@ const PixelField = () => {
       mouse.y += (mouse.ty - mouse.y) * 0.07;
       mouse.hover += (mouse.hoverTarget - mouse.hover) * 0.05;
       foundValue += (foundTarget - foundValue) * 0.08;
+      focusValue += (focusTarget - focusValue) * 0.06;
       const nearDistance = Math.hypot(mouse.x - missing.x, mouse.y - missing.y);
       near += ((nearDistance < size * 6 ? 1 : 0) - near) * 0.1;
 
@@ -248,9 +287,10 @@ const PixelField = () => {
       gl.uniform1f(uniforms.u_time, reduce ? 0 : now);
       gl.uniform1f(uniforms.u_size, size);
       gl.uniform1f(uniforms.u_dpr, dpr);
-      gl.uniform3f(uniforms.u_ripple, ripple[0], ripple[1], reduce ? -99 : ripple[2]);
+      gl.uniform4fv(uniforms.u_ripples, ripples);
       gl.uniform1f(uniforms.u_hover, mouse.hover);
       gl.uniform1f(uniforms.u_found, foundValue);
+      gl.uniform1f(uniforms.u_focus, focusValue);
       gl.uniform1f(uniforms.u_near, near);
       gl.uniform1f(uniforms.u_idle, reduce ? 0 : 1);
       gl.drawArrays(gl.POINTS, 0, count);
@@ -287,6 +327,7 @@ const PixelField = () => {
       running = false;
       cancelAnimationFrame(frameId);
       window.clearTimeout(resizeTimer);
+      window.clearTimeout(focusTimer);
       resizeObserver.disconnect();
       visibility.disconnect();
       host.removeEventListener("pointermove", handleMove);
@@ -301,6 +342,12 @@ const PixelField = () => {
       className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-lg bg-[#0d0d0d] max-lg:h-[60vh] max-md:h-[46vh]"
     >
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
+      <span
+        aria-hidden
+        className={`pointer-events-none absolute inset-0 bg-white transition-opacity ease-out ${
+          flash ? "opacity-30 duration-0" : "opacity-0 duration-[1200ms]"
+        }`}
+      />
       <div className="pointer-events-none absolute inset-x-[2.5vw] bottom-[1.6vw] flex items-end justify-between gap-4 text-[#f5f5f5] max-lg:inset-x-[4vw] max-lg:bottom-[3vw] max-md:inset-x-[5vw] max-md:bottom-[5vw] max-md:flex-col max-md:items-start max-md:gap-2">
         <p
           className={`w-[40%] text-30 max-lg:w-[60%] max-md:w-full leading-[1.2] tracking-tight ${

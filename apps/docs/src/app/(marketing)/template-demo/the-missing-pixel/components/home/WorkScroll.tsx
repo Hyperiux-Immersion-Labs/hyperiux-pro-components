@@ -224,10 +224,14 @@ const WorkScroll = () => {
             ))}
             <Link
               href={ROUTES.work}
-              className={`group font-mpx-head flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start rounded-lg bg-[#0a0a0a] p-[1.7vw] h-[24vw] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-[#fafafa] max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
+              className={`group font-mpx-head relative flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start overflow-hidden rounded-lg bg-mpx-ink p-[1.7vw] h-[24vw] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-mpx-paper transition-colors duration-500 hover:text-mpx-ink max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
             >
-              <span>All Eight Projects</span>
-              <ArrowUpRight className="size-[1.8vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[4vw] max-md:size-[9vw]" />
+              <span
+                aria-hidden
+                className="absolute inset-0 bg-(image:--mpx-grad) opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+              />
+              <span className="relative">All Eight Projects</span>
+              <ArrowUpRight className="relative size-[1.8vw] transition-transform duration-500 group-hover:rotate-45 max-lg:size-[4vw] max-md:size-[9vw]" />
             </Link>
           </div>
         </div>

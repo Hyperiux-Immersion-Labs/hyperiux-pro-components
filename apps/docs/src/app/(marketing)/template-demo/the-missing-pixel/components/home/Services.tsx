@@ -7,7 +7,7 @@ import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import gsap from "gsap";
-import { MaskReveal, LineReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal, RuleDraw } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import strategy from "../../assets/pictures/s-strategy.webp";
@@ -243,8 +243,9 @@ const Services = () => {
         <div
           ref={frameRef}
           aria-hidden
-          className="pointer-events-none sticky top-[calc(50vh-6.3vw)] z-20 col-span-3 col-start-6 row-start-1 my-[1.5vw] grid cursor-none justify-items-center gap-[0.6vw] self-start justify-self-center max-lg:hidden"
+          className="pointer-events-none sticky top-[calc(50vh-6.3vw)] z-20 col-span-3 col-start-6 row-start-1 my-[1.5vw] grid cursor-none justify-items-center self-start justify-self-center max-lg:hidden"
         >
+          <FadeUp className="grid justify-items-center gap-[0.6vw]">
           <div
             data-service-window
             className="relative aspect-4/3 h-[12.5vw] max-w-full overflow-hidden rounded-lg bg-mpx-surface"
@@ -274,9 +275,10 @@ const Services = () => {
             ))}
           </div>
           <span className="text-14 tabular-nums text-mpx-muted">{pad(active + 1)} / {pad(SERVICES.length)}</span>
+          </FadeUp>
         </div>
 
-        <ol className="col-span-full row-start-1 border-b border-black/10">
+        <ol className="col-span-full row-start-1">
           {SERVICES.map((service, index) => {
             const isActive = index === active;
             return (
@@ -285,8 +287,10 @@ const Services = () => {
                 ref={(el) => {
                   rowRefs.current[index] = el;
                 }}
-                className="border-t border-black/10"
+                className="relative"
               >
+                <RuleDraw className="absolute inset-x-0 top-0 h-px bg-black/20" />
+                {index === SERVICES.length - 1 && <RuleDraw className="absolute inset-x-0 bottom-0 h-px bg-black/20" />}
                 <Link
                   href={ROUTES.service}
                   data-cursor="View"
@@ -300,7 +304,7 @@ const Services = () => {
                       isActive ? "translate-x-[0.8vw]" : "translate-x-0"
                     }`}
                   >
-                    {service.title}
+                    <LineReveal as="div">{service.title}</LineReveal>
                   </span>
                   <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-22 max-lg:col-span-8 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-mpx-muted max-md:col-span-12 max-md:row-start-3">
                     <span
@@ -309,15 +313,16 @@ const Services = () => {
                         isActive ? "bg-(--mpx-accent)" : "bg-current"
                       }`}
                     />
-                    {service.meta}
+                    <LineReveal as="span" className="block">{service.meta}</LineReveal>
                   </span>
                   <span
                     aria-hidden
                     className="col-start-12 justify-self-end text-22 tabular-nums max-lg:hidden"
                   >
-                    {pad(index + 1)}
+                    <LineReveal as="span" className="block">{pad(index + 1)}</LineReveal>
                   </span>
-                  <span
+                  <FadeUp
+                    as="span"
                     aria-hidden
                     className="hidden aspect-4/3 overflow-hidden rounded-lg max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1"
                   >
@@ -328,7 +333,7 @@ const Services = () => {
                       sizes="(max-width: 768px) 100vw, 30vw"
                       className="h-full w-full object-cover"
                     />
-                  </span>
+                  </FadeUp>
                 </Link>
               </li>
             );

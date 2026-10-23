@@ -4,6 +4,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { FadeUp } from "../Animations/gsapAnim";
 import Globe from "../effects/globe";
 
 const formatTime = (zone: string) =>
@@ -40,10 +41,10 @@ const StudioMap = () => {
 
   return (
     <div className="flex items-center justify-between gap-[2vw] rounded-[2vw] border border-black/10 bg-white p-[2vw] max-lg:flex-col max-lg:items-stretch max-lg:rounded-[3vw] max-lg:p-[3vw] max-md:rounded-[5vw] max-md:p-[4vw]">
-      <div className="aspect-square w-[56%] overflow-hidden rounded-[1.5vw] max-lg:w-full max-lg:rounded-[2.5vw] max-md:rounded-[4vw]">
-        <Globe mapColor="#ff5f00" activeIndex={active} onActiveChange={setActive} />
-      </div>
-      <div className="flex w-[40%] flex-col gap-6 max-lg:w-full">
+      <FadeUp className="aspect-square w-[56%] overflow-hidden rounded-[1.5vw] max-lg:w-full max-lg:rounded-[2.5vw] max-md:rounded-[4vw]">
+        <Globe mapColor="#ff5f00" activeIndex={active} />
+      </FadeUp>
+      <FadeUp delay={0.1} className="flex w-[40%] flex-col gap-6 max-lg:w-full">
         <ol className="relative flex flex-col gap-2" onMouseLeave={() => setHovered(null)}>
           <span
             aria-hidden
@@ -89,7 +90,18 @@ const StudioMap = () => {
             <ChevronLeft className="h-4 w-4" strokeWidth={1.5} />
           </button>
           <span className="text-22 text-mpx-muted tabular-nums">
-            <span className="text-[#0a0a0a]">{String(active + 1).padStart(2, "0")}</span> / {String(STUDIOS.length).padStart(2, "0")}
+            <span className="text-[#0a0a0a]">0</span>
+            <span className="inline-block h-[1lh] overflow-hidden align-bottom text-[#0a0a0a]">
+              <span
+                style={{ transform: `translateY(-${(active * 100) / STUDIOS.length}%)` }}
+                className="flex flex-col transition-transform duration-700 ease-[cubic-bezier(0.65,0,0.35,1)]"
+              >
+                {STUDIOS.map((studio, index) => (
+                  <span key={studio.city}>{index + 1}</span>
+                ))}
+              </span>
+            </span>{" "}
+            / {String(STUDIOS.length).padStart(2, "0")}
           </span>
           <button
             type="button"
@@ -100,7 +112,7 @@ const StudioMap = () => {
             <ChevronRight className="h-4 w-4" strokeWidth={1.5} />
           </button>
         </div>
-      </div>
+      </FadeUp>
     </div>
   );
 };

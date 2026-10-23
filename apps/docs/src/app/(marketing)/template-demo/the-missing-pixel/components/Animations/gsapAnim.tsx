@@ -112,6 +112,51 @@ export function FadeUp<T extends ElementType = "div">({
   );
 }
 
+type RuleDrawProps = {
+  className?: string;
+  delay?: number;
+};
+
+export function RuleDraw({ className = "", delay = 0 }: RuleDrawProps) {
+  const ref = useRef<HTMLSpanElement | null>(null);
+
+  useGSAP(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (prefersReducedMotion()) {
+      gsap.set(el, { scaleX: 1 });
+      return;
+    }
+
+    const tween = gsap.fromTo(
+      el,
+      { scaleX: 0 },
+      {
+        scaleX: 1,
+        transformOrigin: "left",
+        duration: 0.8,
+        delay,
+        ease: "power2.out",
+        scrollTrigger: { trigger: el.parentElement ?? el, start: "top 65%", once: true },
+      },
+    );
+
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, []);
+
+  return (
+    <span
+      ref={ref}
+      aria-hidden
+      className={`block origin-left [transform:scaleX(0)] ${className}`.trim()}
+    />
+  );
+}
+
 type MaskRevealProps<T extends ElementType> = {
   as?: T;
   children?: ReactNode;

@@ -6,6 +6,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { FadeUp, MaskReveal, RuleDraw } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { testimonialSwiper } from "../effects/testimonial-swiper";
 import { playSound } from "../Sound/pixelSfx";
@@ -54,27 +55,40 @@ const PixelProcess = () => {
       const grid = gridRef.current;
       if (!section || !grid || prefersReducedMotion()) return;
 
-      gsap.fromTo(
-        grid.querySelectorAll("[data-px-hover]"),
-        { opacity: 0, scale: 0.6 },
-        {
-          opacity: 1,
-          scale: 1,
-          ease: "power2.out",
-          duration: 0.5,
-          stagger: { amount: 0.5, from: "random" },
-          scrollTrigger: {
-            trigger: section,
-            start: "top 60%",
-            end: "top 25%",
-            scrub: true,
+      const fadeIn = (start: string) => {
+        const tween = gsap.fromTo(
+          grid.querySelectorAll("[data-px-hover]"),
+          { opacity: 0, scale: 0.6, rotation: () => gsap.utils.random(-45, 45) },
+          {
+            opacity: 1,
+            scale: 1,
+            rotation: 0,
+            ease: "power2.out",
+            duration: 0.8,
+            stagger: { amount: 0.6, from: "random" },
+            paused: true,
           },
-        },
-      );
+        );
+        const trigger = ScrollTrigger.create({
+          trigger: section,
+          start,
+          onEnter: () => tween.play(),
+          onLeaveBack: () => tween.reverse(),
+        });
+        return () => {
+          trigger.kill();
+          tween.kill();
+        };
+      };
 
       const mm = gsap.matchMedia();
 
+      mm.add("(max-width: 1025px)", () => {
+        return fadeIn("top 60%");
+      });
+
       mm.add("(min-width: 1026px)", () => {
+        const killFade = fadeIn("top 40%");
         const cells = gsap.utils.toArray<HTMLElement>("[data-px-cell]", grid);
         const missing = grid.querySelector<HTMLElement>("[data-px-missing]");
         const steps = gsap.utils.toArray<HTMLElement>("[data-px-step]", section);
@@ -83,9 +97,22 @@ const PixelProcess = () => {
         const spreadX = window.innerWidth * 0.3;
         const spreadY = window.innerHeight * 0.36;
 
+        const gridBox = grid.getBoundingClientRect();
+        const centres = cells.map((cell) => {
+          const box = cell.getBoundingClientRect();
+          return {
+            x: box.left + box.width / 2,
+            y: window.innerHeight / 2 + (box.top + box.height / 2 - gridBox.top - gridBox.height / 2),
+          };
+        });
+        const limitX = [window.innerWidth * 0.03, window.innerWidth * 0.97];
+        const limitY = [window.innerHeight * 0.14, window.innerHeight * 0.96];
+        const scatter = (spread: number, centre: number, [min, max]: number[]) =>
+          gsap.utils.clamp(min - centre, max - centre, gsap.utils.random(-spread, spread));
+
         gsap.set(cells, {
-          x: () => gsap.utils.random(-spreadX, spreadX),
-          y: () => gsap.utils.random(-spreadY, spreadY),
+          x: (i) => scatter(spreadX, centres[i].x, limitX),
+          y: (i) => scatter(spreadY, centres[i].y, limitY),
           rotation: () => gsap.utils.random(-12, 12),
           scale: (i) => nearCentre(CELL_INDICES[i]) ? 1 : 0.55,
           opacity: 1,
@@ -133,6 +160,37 @@ const PixelProcess = () => {
         section.addEventListener("pointermove", movePixels);
         section.addEventListener("pointerleave", resetPixels);
 
+        const gather = gsap.to(cells, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          duration: 1.6,
+          ease: "expo.out",
+          stagger: { each: 0.006, from: "random" },
+          paused: true,
+        });
+        const gatherTrigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top -8%",
+          onEnter: () => gather.play(),
+          onLeaveBack: () => gather.reverse(),
+        });
+
+        const arrive = gsap.to(missing, {
+          y: 0,
+          opacity: 1,
+          rotation: 0,
+          duration: 2,
+          ease: "power4.out",
+          paused: true,
+        });
+        const arriveTrigger = ScrollTrigger.create({
+          trigger: section,
+          start: "top -235%",
+          onEnter: () => arrive.play(),
+          onLeaveBack: () => arrive.reverse(),
+        });
+
         const timeline = gsap
           .timeline({
             scrollTrigger: {
@@ -150,7 +208,6 @@ const PixelProcess = () => {
               },
             },
           })
-          .to(cells, { x: 0, y: 0, rotation: 0, scale: (i) => nearCentre(CELL_INDICES[i]) ? 1 : 0.55, opacity: 1, duration: 1.2, ease: "power3.out", stagger: { each: 0.008, from: "random" } }, 0)
           .to(cells, { scale: (i) => (nearCentre(CELL_INDICES[i]) ? 1 : 0.55), opacity: 1, duration: 0.8, stagger: { each: 0.004, from: "center" } }, 1.3)
           .to(hoverPixels, {
             backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#bdbdbd",
@@ -159,7 +216,6 @@ const PixelProcess = () => {
           }, 1.3)
           .to(grid, { rotation: 8, scale: 0.9, duration: 0.8 }, 2.4)
           .to(grid, { rotation: 0, scale: 1, duration: 0.6 }, 3.3)
-          .to(missing, { y: 0, opacity: 1, rotation: 0, duration: 0.9, ease: "power3.inOut" }, 3.5)
           .to(cells, { scale: 1, opacity: 1, duration: 0.5, ease: "power3.inOut" }, 3.9)
           .to([...hoverPixels, missing], {
             backgroundColor: "#0a0a0a",
@@ -179,6 +235,11 @@ const PixelProcess = () => {
         });
 
         return () => {
+          killFade();
+          gatherTrigger.kill();
+          gather.kill();
+          arriveTrigger.kill();
+          arrive.kill();
           textTrigger.kill();
           textSwiper.destroy();
           section.removeEventListener("pointermove", movePixels);
@@ -202,13 +263,13 @@ const PixelProcess = () => {
     >
       <div className="sticky top-0 flex h-screen pl-[5vw] max-lg:px-[6vw] max-md:px-[7vw] items-center justify-between gap-9 max-lg:relative max-lg:h-auto max-lg:flex-col-reverse max-lg:items-start max-lg:gap-14 max-lg:py-[12%] max-md:gap-10 max-md:py-[15%]">
         <div className="flex w-[42%] flex-col gap-9 max-lg:w-full max-lg:gap-10 max-md:gap-18">
-          <h2>How we find it</h2>
-          <div className="grid max-lg:gap-10 max-md:gap-12">
+          <MaskReveal as="h2">How we find it</MaskReveal>
+          <FadeUp delay={0.15} className="grid max-lg:gap-10 max-md:gap-0">
             {STEPS.map((step, index) => (
               <div
                 key={step.title}
                 data-px-step
-                className={`col-start-1 row-start-1 flex w-[90%] flex-col max-lg:w-full gap-3 max-lg:col-auto max-lg:row-auto ${
+                className={`relative col-start-1 row-start-1 flex w-[90%] flex-col max-lg:w-full gap-3 max-lg:col-auto max-lg:row-auto max-md:py-8 ${
                   index === 0 ? "" : "opacity-0 max-lg:opacity-100"
                 }`}
               >
@@ -218,9 +279,12 @@ const PixelProcess = () => {
                 <h3 className="text-30 max-md:text-[6vw]! leading-none">{step.title}</h3>
                 <p className="text-28 leading-[1.5] max-md:leading-[1.3] text-mpx-muted">{step.text}</p>
                 <span className="text-14 max-md:pt-2 max-md:text-[4vw]! text-mpx-ink">{step.time}</span>
+                <div className="absolute inset-x-0 bottom-0 hidden max-md:block">
+                  <RuleDraw className="h-px w-full bg-black/20" />
+                </div>
               </div>
             ))}
-          </div>
+          </FadeUp>
         </div>
 
         <div aria-hidden className="flex w-[50%] items-center justify-center max-lg:w-full">

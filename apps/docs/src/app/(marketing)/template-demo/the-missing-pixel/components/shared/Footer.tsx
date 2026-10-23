@@ -175,14 +175,14 @@ const Footer = () => {
             </p>
           </div>
 
-          {COLUMNS.map((column) => (
+          {COLUMNS.map((column, columnIndex) => (
             <div key={column.title} className="col-span-2 flex flex-col gap-3 max-lg:col-span-1 max-lg:gap-4">
               <h3 className="mpx-eyebrow text-14 text-white/60">{column.title}</h3>
               <ul className="flex flex-col gap-2 text-22">
-                {column.links.map((link) => (
-                  <li key={link.label}>
+                {column.links.map((link, linkIndex) => (
+                  <FadeUp as="li" key={link.label} delay={columnIndex * 0.02 + linkIndex * 0.03}>
                     <UnderlineLink href={link.href}>{link.label}</UnderlineLink>
-                  </li>
+                  </FadeUp>
                 ))}
               </ul>
             </div>
@@ -191,11 +191,11 @@ const Footer = () => {
           <div className="col-span-2 flex flex-col gap-3 max-lg:col-span-1 max-lg:gap-4 max-md:col-span-2">
             <h3 className="mpx-eyebrow text-14 text-white/60">Studios</h3>
             <ul className="flex flex-col gap-3 text-14 max-md:gap-4">
-              {STUDIOS.map((studio) => (
-                <li key={studio.city} className="flex flex-col">
+              {STUDIOS.map((studio, studioIndex) => (
+                <FadeUp as="li" key={studio.city} delay={COLUMNS.length * 0.02 + studioIndex * 0.03} className="flex flex-col">
                   <strong className="font-medium text-[#f5f5f5]">{studio.city}</strong>
                   <span className="text-white/60">{studio.address}</span>
-                </li>
+                </FadeUp>
               ))}
             </ul>
           </div>
