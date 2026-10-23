@@ -1,17 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import RemixerPanel from "@/components/remixer-panel/RemixerPanel";
 import Button from "@/homepage/components/Button";
 import { getGroupsFromRemixerControls } from "@/components/remixer-panel/RegistryRemixerDemo";
 import { useRemixerControls } from "@/components/remixer-panel/useRemixerControls";
 import { buildRemixerJsx } from "@/components/remixer-panel/build-remixer-code";
 import gsap from "gsap";
+import { useVaultLayout } from "@/components/layout/VaultLayout";
 import { MEDIA } from "@/lib/breakpoints";
 import Image from "next/image";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import { resolveCover } from "../EffectCard";
-import { T16 } from "../../templates/tokens";
+import { T13, T16 } from "../../templates/tokens";
 import { prefersReducedMotion } from "@/lib/motion";
 import { resolveEffectVideoUrl } from "@/lib/media";
 
@@ -44,11 +45,17 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
     groups: remixerGroups,
     props: effect?.props ?? [],
   });
-  const hasPlayground = !!remixer.enabled && groups.some((g) => g.controls?.length);
+  const hasRemixer = !!remixer.enabled && groups.some((g) => g.controls?.length);
 
-  // The Preview / Playground tabs were removed from the toolbar, so the stage always
-  // shows Preview; the Playground plumbing below stays for when it comes back.
-  const [view] = useState("preview");
+  const [view, setView] = useState("preview");
+  // Opening the Playground closes the desktop sidebar to give the stage room. Only this
+  // way round: reopening the sidebar leaves the Playground open.
+  const { isSidebarOpen, toggleSidebar } = useVaultLayout();
+  const openPlayground = () => {
+    setView("play");
+    if (isSidebarOpen && !window.matchMedia(MEDIA.tablet).matches) toggleSidebar(false);
+  };
+  const tabsRef = useRef(null);
   const [frameKey, setFrameKey] = useState(0);
   const [loaded, setLoaded] = useState(false);
   // Lighthouse / PSI: the demo iframe (often a WebGL scene) isn't loaded, the cover
@@ -70,6 +77,8 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
     return () => phone.removeEventListener("change", update);
   }, []);
   const showVideo = isPhone && !!video;
+  // Phones play a video, not the live demo, so there's nothing for the props to drive
+  const hasPlayground = hasRemixer && !isPhone;
   // Never the live demo on phones: the video, or the cover if there's no video
   // On phones the cover also sits under the video, so it shows while the video loads
   const showCover = (skipDemo === true || isPhone) && !!cover;
@@ -153,6 +162,7 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
     window.addEventListener("resize", update);
     return () => { ro.disconnect(); window.removeEventListener("resize", update); };
   }, []);
+  const [pill, setPill] = useState({ x: 0, w: 0 });
   const play = hasPlayground && view === "play";
 
   // In Preview the hidden Playground column collapses to zero height (once its
@@ -186,6 +196,12 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
 
   const src = `${previewHref}?embed=1`;
 
+  // Sliding accent pill under the active tab
+  useLayoutEffect(() => {
+    const btn = tabsRef.current?.querySelector(`[data-view="${play ? "play" : "preview"}"]`);
+    if (btn) setPill({ x: btn.offsetLeft - 3, w: btn.offsetWidth });
+  }, [play, hasPlayground]);
+
   const post = useCallback(() => {
     frameRef.current?.contentWindow?.postMessage({ type: MSG, values: cloneable(values) }, location.origin);
   }, [values]);
@@ -200,10 +216,33 @@ export default function EffectStage({ effect, title, previewHref, getCode = null
     [effect, title, values, groups],
   );
 
+  const tabCls = (on) =>
+    `relative z-1 px-5 py-2.5 font-medium ${T13} transition-colors duration-400 ease-out ${on ? "text-background" : "text-foreground/60 hover:text-foreground"}`;
+
   return (
     <section aria-label="Interactive preview" className="flex w-full flex-col gap-[calc(var(--cvw)*1)] max-md:gap-[7vw]">
-      {/* Get Code + Demo (the Preview / Playground tabs and Replay were removed). */}
-      <div className="flex flex-wrap items-center justify-end gap-[calc(var(--cvw)*1)] max-md:justify-start max-md:gap-[3vw]">
+      {/* Preview / Playground tabs (only when the effect has props to tune), then Get Code + Demo */}
+      <div className={`flex flex-wrap items-center gap-[calc(var(--cvw)*1)] max-md:justify-start max-md:gap-[3vw] ${hasPlayground ? "justify-between" : "justify-end"}`}>
+        {hasPlayground && (
+          <div
+            ref={tabsRef}
+            role="tablist"
+            aria-label="Stage view"
+            className="relative isolate inline-flex border border-foreground/20 bg-foreground/6 p-0.75 backdrop-blur-lg"
+          >
+            <button id="effect-stage-tab-preview" role="tab" type="button" data-view="preview" aria-selected={!play} onClick={() => setView("preview")} className={tabCls(!play)}>
+              Preview
+            </button>
+            <button id="effect-stage-tab-playground" role="tab" type="button" data-view="play" aria-selected={play} onClick={openPlayground} className={tabCls(play)}>
+              Playground
+            </button>
+            <i
+              aria-hidden="true"
+              className="absolute top-0.75 bottom-0.75 left-0.75 z-0 bg-primary"
+              style={{ width: pill.w, transform: `translateX(${pill.x}px)`, transition: `transform .7s ${EASE}, width .7s ${EASE}` }}
+            />
+          </div>
+        )}
         {/* items-stretch: Get Code takes Demo's height. */}
         <div className="flex items-stretch gap-[calc(var(--cvw)*0.5)] max-md:gap-[2vw]">
 
