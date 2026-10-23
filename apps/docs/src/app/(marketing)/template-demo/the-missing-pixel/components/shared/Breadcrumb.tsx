@@ -10,7 +10,7 @@ const shorten = (label: string) =>
   label.length > MAX_LABEL ? `${label.slice(0, MAX_LABEL).trimEnd()}…` : label;
 
 const Breadcrumb = ({ crumbs }: { crumbs: Crumb[] }) => (
-  <nav aria-label="Breadcrumb">
+  <nav aria-label="Breadcrumb" className="pt-[1vh] max-lg:pt-[2vh] max-md:pt-[2vh]">
     <ol className="flex flex-wrap items-center gap-2 text-14 text-mpx-muted">
       {crumbs.map((crumb, index) => (
         <li key={crumb.label} className="flex items-center gap-2">

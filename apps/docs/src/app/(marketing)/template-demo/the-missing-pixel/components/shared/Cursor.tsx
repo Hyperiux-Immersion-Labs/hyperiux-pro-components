@@ -42,6 +42,8 @@ const Cursor = () => {
     const scale = { ring: 1, ringTarget: 1, dot: 1, dotTarget: 1, label: 0, labelTarget: 0 };
     let visible = false;
     let lastCheck = 0;
+    let lastLoaderCheck = 0;
+    let loaderOn = false;
 
     const setState = (target: Element | null) => {
       let fill = false;
@@ -107,6 +109,17 @@ const Cursor = () => {
     };
 
     const tick = () => {
+      const now = performance.now();
+      if (now - lastLoaderCheck > 100) {
+        lastLoaderCheck = now;
+        const loader = document.querySelector("[data-mpx-transition]");
+        const on = !!loader && getComputedStyle(loader).display !== "none";
+        if (on !== loaderOn) {
+          loaderOn = on;
+          wrap.style.visibility = on ? "hidden" : "";
+          label.style.visibility = on ? "hidden" : "";
+        }
+      }
       ringPos.x += (pointer.x - ringPos.x) * 0.2;
       ringPos.y += (pointer.y - ringPos.y) * 0.2;
       labelPos.x += (pointer.x - labelPos.x) * 0.2;

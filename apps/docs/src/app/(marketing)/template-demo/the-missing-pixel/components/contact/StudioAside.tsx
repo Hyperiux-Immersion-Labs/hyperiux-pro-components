@@ -12,7 +12,7 @@ const StudioAside = () => (
       <p className="text-22 text-(color:--mpx-grey)">Prefer email?</p>
       <UnderlineLink
         href="mailto:hello@themissingpixel.studio"
-        className="font-mpx-head text-30 break-all transition-colors duration-300 hover:text-(color:--mpx-accent)"
+        className="font-mpx-head text-28 break-all transition-colors duration-300 hover:text-(color:--mpx-accent)"
       >
         hello@themissingpixel.studio
       </UnderlineLink>

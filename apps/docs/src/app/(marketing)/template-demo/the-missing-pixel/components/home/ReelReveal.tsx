@@ -3,11 +3,12 @@
 "use client";
 
 import { useRef } from "react";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
-import FilmCanvas from "./FilmCanvas";
+const FilmCanvas = dynamic(() => import("./FilmCanvas"), { ssr: false });
 import PixelButton from "../Buttons/PixelButton";
 import { ROUTES } from "../../routes";
 

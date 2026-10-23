@@ -16,7 +16,7 @@ import { prefersReducedMotion } from "./reducedMotion";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
 
-export const INTRO_DELAY = 1.6;
+export const INTRO_DELAY = 1.1;
 export const PAGE_DELAY = 0.5;
 
 const FONT_WAIT_CAP = 800;

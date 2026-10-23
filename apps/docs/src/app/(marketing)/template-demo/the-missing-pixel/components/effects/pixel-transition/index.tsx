@@ -166,7 +166,6 @@ const PixelTransition = () => {
       if (url.pathname === window.location.pathname) return;
 
       event.preventDefault();
-      event.stopPropagation();
       coveringRef.current = true;
 
       const target = url.pathname + url.search + url.hash;

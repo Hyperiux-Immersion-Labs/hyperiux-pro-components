@@ -24,9 +24,9 @@ const LINK_CLASSES =
   "translate-y-[250%] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-focus-within:translate-y-0 group-hover:translate-y-0 max-lg:translate-y-0 inline-flex h-[3.2vh] items-center rounded-full bg-(--mpx-paper) px-[0.9vw] text-14 text-(color:--mpx-ink) max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[3.8vh] max-md:px-[3.5vw]";
 
 const TeamGrid = () => (
-  <ul className="grid grid-cols-4 gap-x-9 gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:gap-x-4 max-md:gap-y-9">
+  <ul className="grid grid-cols-4 gap-x-9  gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:flex max-md:w-full max-md:max-w-full max-md:snap-x max-md:snap-mandatory max-md:gap-x-4 max-md:overflow-x-scroll max-md:pb-4 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden">
     {TEAM.map((member, index) => (
-      <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08}>
+      <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08} className="max-md:w-full max-md:shrink-0 max-md:snap-start max-md:px-[7vw]">
         <article className="h-full">
           <SpotlightEffect
             image={member.image}
@@ -53,11 +53,11 @@ const TeamGrid = () => (
         </article>
       </FadeUp>
     ))}
-    <FadeUp as="li" delay={0.24} className="max-md:col-span-2">
+    <FadeUp as="li" delay={0.24} className="max-md:w-full max-md:shrink-0 max-md:snap-start max-md:px-[7vw]">
       <Link
         href={ROUTES.contact}
         data-cursor="Apply"
-        className="group relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-lg bg-mpx-ink px-[1.6vw] py-[1.6vw] text-mpx-paper transition-colors duration-500 hover:text-mpx-ink max-lg:px-[3vw] max-lg:py-[3vw] max-md:gap-[10vw] max-md:px-[5vw] max-md:py-[6vw]"
+        className="group relative flex max-md:px-[7vw] h-full flex-col justify-between gap-6 overflow-hidden rounded-lg bg-mpx-ink px-[1.6vw] py-[1.6vw] text-mpx-paper transition-colors duration-500 hover:text-mpx-ink max-lg:px-[3vw] max-lg:py-[3vw] max-md:gap-[10vw]  max-md:py-[6vw]"
       >
         <span
           aria-hidden

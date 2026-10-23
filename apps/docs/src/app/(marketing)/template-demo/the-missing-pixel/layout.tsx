@@ -4,11 +4,9 @@ import type { ReactNode } from "react";
 import dynamic from "next/dynamic";
 import { DM_Sans, Host_Grotesk } from "next/font/google";
 import PixelTransition from "./components/effects/pixel-transition";
-import Cursor from "./components/shared/Cursor";
+import DeferredEffects from "./components/shared/DeferredEffects";
 import Header from "./components/shared/Header";
-import LenisSmoothScroll from "./components/shared/LenisSmoothScroll";
 import ScrollTopOnLoad from "./components/shared/ScrollTopOnLoad";
-import SoundController from "./components/Sound/SoundController";
 
 const Footer = dynamic(() => import("./components/shared/Footer"));
 
@@ -32,9 +30,7 @@ const layout = ({ children }: { children: ReactNode }) => {
     <div className={`mpx-page relative ${headFont.variable} ${bodyFont.variable}`}>
       <PixelTransition />
       <ScrollTopOnLoad />
-      <LenisSmoothScroll />
-      <SoundController />
-      <Cursor />
+      <DeferredEffects />
       <Header />
       <main data-mpx-inert>{children}</main>
       <Footer />

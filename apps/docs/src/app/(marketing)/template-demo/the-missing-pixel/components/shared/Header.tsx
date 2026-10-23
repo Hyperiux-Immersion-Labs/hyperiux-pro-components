@@ -5,6 +5,7 @@
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLenis } from "lenis/react";
@@ -14,7 +15,7 @@ import PixelButton from "../Buttons/PixelButton";
 import { LogoMark } from "../Buttons/icons";
 import SoundToggle from "../Sound/SoundToggle";
 import { playSound } from "../Sound/pixelSfx";
-import Menu from "./Menu";
+const Menu = dynamic(() => import("./Menu"), { ssr: false });
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP);
@@ -32,6 +33,12 @@ const Header = () => {
   const hiddenRef = useRef(false);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuReady, setMenuReady] = useState(false);
+
+  useEffect(() => {
+    const id = window.setTimeout(() => setMenuReady(true), 2500);
+    return () => window.clearTimeout(id);
+  }, []);
   const [ctaDark, setCtaDark] = useState(false);
 
   useMagnetic(menuButtonRef, 0.2);
@@ -230,7 +237,7 @@ const Header = () => {
           </div>
         </div>
       </header>
-      <Menu open={menuOpen} onClose={closeMenu} />
+      {(menuReady || menuOpen) && <Menu open={menuOpen} onClose={closeMenu} />}
     </>
   );
 };
