@@ -12,10 +12,10 @@ export default function DemoContent() {
       name="animated-drawer"
       category="components"
       render={(values) => (
-        <AnimatedDrawer {...values} className="p-[2vw] max-md:p-[5vw]" />
+        <AnimatedDrawer {...values} className=" max-md:p-[5vw]" />
       )}
       props={[
-        { name: "theme", label: "Theme", type: "string", default: "default", description: "Colour palette, drawer included. Its primary colour fills the main button and the hover fill.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
+        { name: "theme", label: "Theme", type: "string", default: "spotify", description: "Colour palette, drawer included. Its primary colour fills the main button and the hover fill.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
         { name: "mode", label: "Mode", type: "string", default: "dark", description: "Light or dark version of the palette. Starts dark.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } },
         { name: "rollingText", label: "Rolling text", type: "boolean", default: true, description: "The trigger and button labels roll to a second copy on hover.", remixer: { control: "checkbox", group: "button", groupTitle: "Button", hideWhenReducedMotion: true } },
         { name: "fillOnHover", label: "Fill on hover", type: "boolean", default: false, description: "Buttons fill with colour from the edge on hover.", remixer: { control: "checkbox", group: "button", groupTitle: "Button" } },
@@ -35,7 +35,7 @@ export default function DemoContent() {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedDrawerTheme, values.mode as AnimatedDrawerMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] pt-[10%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:pt-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>

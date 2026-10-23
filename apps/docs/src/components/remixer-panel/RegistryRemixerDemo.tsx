@@ -78,23 +78,30 @@ export default function RegistryRemixerDemo({
     );
   }, [embed, setValues]);
 
-  // Keep edited props for this tab, so a reload (or dev recompile) doesn't wipe them.
+  // Keep edited props for this tab, so a reload (or dev recompile) doesn't wipe them. Only the
+  // props that differ from their defaults are kept, so a changed default still shows up; the old
+  // whole-snapshot format (no `v`) is dropped, since it pinned every default as it was then.
   const storeKey = `vault-remixer:${typeof window === "undefined" ? "" : location.pathname}`;
   const [restored, setRestored] = useState(false);
   useEffect(() => {
     if (embed) return;
     try {
-      const saved = sessionStorage.getItem(storeKey);
-      if (saved) setValues((current) => ({ ...current, ...JSON.parse(saved) }));
+      const saved = JSON.parse(sessionStorage.getItem(storeKey) ?? "null");
+      if (saved?.v === 2) setValues((current) => ({ ...current, ...saved.changed }));
     } catch {}
     setRestored(true);
   }, [embed, storeKey, setValues]);
   useEffect(() => {
     if (embed || !restored) return;
     try {
-      sessionStorage.setItem(storeKey, JSON.stringify(values));
+      const changed = Object.fromEntries(
+        Object.entries(values).filter(
+          ([key, value]) => JSON.stringify(value) !== JSON.stringify(initialValues?.[key]),
+        ),
+      );
+      sessionStorage.setItem(storeKey, JSON.stringify({ v: 2, changed }));
     } catch {}
-  }, [embed, restored, storeKey, values]);
+  }, [embed, restored, storeKey, values, initialValues]);
 
   const replay = useCallback(() => setReplayKey((k) => k + 1), []);
 

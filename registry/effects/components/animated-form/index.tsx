@@ -1,7 +1,62 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client';
+import { useSyncExternalStore } from "react";
 import React, { forwardRef, type ChangeEvent, type ComponentPropsWithoutRef, type CSSProperties, type FormEvent, type ReactNode, useCallback, useEffect, useId, useRef, useState } from "react";
 import { type ZodType, z } from "zod";
+
+function usePrefersReducedMotion() {
+  return useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+
+      const mediaQueryList = window.matchMedia("(prefers-reduced-motion: reduce)");
+      mediaQueryList.addEventListener("change", callback);
+
+      return () => mediaQueryList.removeEventListener("change", callback);
+    },
+    () => (typeof window === "undefined" ? false : window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false),
+    () => false
+  );
+}
+
+// ---- motion.tsx ----
+
+export type ErrorAnimation = "slide" | "fade" | "none";
+
+/**
+ * The error line under a field. It slides open (or fades) when an error appears and closes the
+ * same way, keeping the last message on screen while it goes so the text never vanishes first.
+ */
+function FieldError({ id, error, className = "" }: { id?: string; error?: string; className?: string }) {
+  const [shown, setShown] = useState(error);
+  if (error && error !== shown) setShown(error);
+  return (
+    <div data-form-error={error ? "open" : "closed"} aria-hidden={error ? undefined : true}>
+      <div className="min-h-0 overflow-hidden">
+        {shown && (
+          <p id={`${id}-error`} className={`pt-1 text-xs text-red-500 ${className}`}>
+            {shown}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** A tick that draws itself in once the field's value is valid, and fades out when it isn't. */
+function SuccessTick({ on, className = "" }: { on: boolean; className?: string }) {
+  return (
+    <svg
+      aria-hidden
+      data-form-tick={on ? "on" : "off"}
+      viewBox="0 0 24 24"
+      fill="none"
+      className={`pointer-events-none size-4 shrink-0 ${className}`}
+    >
+      <path d="M4 12.5 9.5 18 20 6.5" pathLength={1} stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 // ---- Input.tsx ----
 
@@ -11,11 +66,15 @@ export type InputProps = {
   type?: string;
   error?: string;
   className?: string;
+  /** Valid value: shows the success tick. Leave undefined to never show it. */
+  valid?: boolean;
+  /** Shows "used / maxLength" at the end of the field. Needs maxLength. */
+  showCounter?: boolean;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'id' | 'type'>;
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
  function Input(
- { id, label, placeholder, type ="text", error, className ="", ...rest },
+ { id, label, placeholder, type ="text", error, className ="", valid, showCounter = false, ...rest },
  ref
 ) {
  return (
@@ -68,7 +127,11 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
  placeholder={placeholder ?? " "}
  className={`
  w-full border rounded-full bg-white
- h-14 pl-5 pr-4 text-sm text-gray-800
+ h-14 pl-5 ${
+ showCounter && rest.maxLength
+ ? valid === undefined ? "pr-20" : "pr-28"
+ : valid === undefined ? "pr-4" : "pr-11"
+ } text-sm text-gray-800
  outline-none transition-all
  border-gray-200
  focus:border-gray-400
@@ -79,10 +142,22 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
  aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  />
- </div>
- {error && (
- <p id={`${id}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>
+ {/* Tick first, then the counter at the very end of the field. */}
+ {(valid !== undefined || (showCounter && rest.maxLength)) && (
+ <span className="pointer-events-none absolute right-5 top-1/2 flex -translate-y-1/2 items-center gap-2">
+ {valid !== undefined && <SuccessTick on={valid} />}
+ {showCounter && rest.maxLength ? (
+ <span
+ data-form-counter={String(rest.value ?? "").length >= rest.maxLength * 0.9 ? "near" : undefined}
+ className="text-xs tabular-nums text-gray-400"
+ >
+ {String(rest.value ?? "").length}/{rest.maxLength}
+ </span>
+ ) : null}
+ </span>
  )}
+ </div>
+ <FieldError id={id} error={error} className="ml-4" />
  </div>
  );
 })
@@ -97,11 +172,14 @@ export type TextareaProps = {
   error?: string;
   rows?: number;
   className?: string;
+  valid?: boolean;
+  /** Shows "used / maxLength" in the corner. Needs maxLength. */
+  showCounter?: boolean;
 } & Omit<ComponentPropsWithoutRef<'textarea'>, 'id' | 'rows'>;
 
 const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  function Textarea(
- { id, label, error, rows = 5, className ="", ...rest },
+ { id, label, error, rows = 5, className ="", valid, showCounter = false, ...rest },
  ref
 ) {
  return (
@@ -140,7 +218,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  placeholder=""
  className={`
  w-full border rounded-2xl bg-white
- pt-5 pb-4 pl-5 pr-4 text-sm text-gray-800
+ pt-5 ${showCounter && rest.maxLength ? "pb-9" : "pb-4"} pl-5 ${valid === undefined ? "pr-4" : "pr-11"} text-sm text-gray-800
  outline-none transition-all resize-none
  border-gray-200
  focus:border-gray-400
@@ -151,10 +229,19 @@ const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
  aria-describedby={error ? `${id}-error` : undefined}
  {...rest}
  />
- </div>
- {error && (
- <p id={`${id}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>
+ {valid !== undefined && (
+ <SuccessTick on={valid} className="absolute right-5 top-5" />
  )}
+ {showCounter && rest.maxLength ? (
+ <span
+ data-form-counter={String(rest.value ?? "").length >= rest.maxLength * 0.9 ? "near" : undefined}
+ className="pointer-events-none absolute bottom-3 right-5 text-xs tabular-nums text-gray-400"
+ >
+ {String(rest.value ?? "").length}/{rest.maxLength}
+ </span>
+ ) : null}
+ </div>
+ <FieldError id={id} error={error} className="ml-4" />
  </div>
  );
 })
@@ -176,11 +263,12 @@ export interface SelectProps {
   className?: string;
   value?: string;
   onChange?: (event: { target: { value: string, id?: string } }) => void;
+  valid?: boolean;
 }
 
 const Select = forwardRef<HTMLButtonElement, SelectProps>(
  function Select(
- { id, label, options = [], error, className ="", ...rest },
+ { id, label, options = [], error, className ="", valid, ...rest },
  ref
 ) {
  const [open, setOpen] = useState(false);
@@ -219,7 +307,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  onClick={() => setOpen((prev) => !prev)}
  className={`
  w-full border rounded-full bg-white
- h-14 pl-5 pr-10 text-sm text-left
+ h-14 pl-5 ${valid === undefined ? "pr-10" : "pr-16"} text-sm text-left
  outline-none transition-all cursor-pointer
  border-gray-200
  focus:border-gray-400
@@ -235,6 +323,10 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  >
  {selectedOption ? selectedOption.label : label}
  </button>
+
+ {valid !== undefined && (
+ <SuccessTick on={valid} className="absolute right-10 top-1/2 -translate-y-1/2" />
+ )}
 
  {/* Chevron */}
  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
@@ -286,9 +378,7 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  </div>
  </div>
 
- {error && (
- <p id={`${id}-error`} className="mt-1 ml-4 text-xs text-red-500">{error}</p>
- )}
+ <FieldError id={id} error={error} className="ml-4" />
  </div>
  );
 })
@@ -344,6 +434,7 @@ export type PhoneInputProps = {
   errorClassName?: string;
   placeholder?: string;
   showCountryName?: boolean;
+  valid?: boolean;
 } & Omit<ComponentPropsWithoutRef<'input'>, 'id' | 'value' | 'onChange' | 'placeholder'>;
 
 const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
@@ -373,6 +464,7 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     errorClassName = "",
     placeholder,
     showCountryName = false,
+    valid,
     ...rest
   },
   ref
@@ -533,13 +625,10 @@ const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           aria-describedby={error ? `${id}-error` : undefined}
           {...rest}
         />
+        {valid !== undefined && <SuccessTick on={valid} className="mr-5" />}
       </div>
 
-      {error && (
-        <p id={`${id}-error`} className={joinClasses("ml-4 mt-1 text-xs text-red-500", errorClassName)}>
-          {error}
-        </p>
-      )}
+      <FieldError id={id} error={error} className={joinClasses("ml-4", errorClassName)} />
     </div>
   );
 })
@@ -608,9 +697,7 @@ const Checkbox = forwardRef<HTMLButtonElement, CheckboxProps>(
  </div>
  )}
  </div>
- {error && (
- <p id={`${id}-error`} className="mt-1 ml-8 text-xs text-red-500">{error}</p>
- )}
+ <FieldError id={id} error={error} className="ml-8" />
  </div>
  );
 })
@@ -731,6 +818,8 @@ export interface FieldConfig {
   defaultCountry?: string;
   options?: SelectOption[];
   rows?: number;
+  /** Textarea/text limit; with showCounter the textarea shows "used / max". */
+  maxLength?: number;
   validate?: (value: any) => string | undefined;
 }
 
@@ -770,6 +859,16 @@ export interface ContactFormProps {
   fieldBorderColor?: string;
   inputRoundedness?: number;
   duration?: number;
+  /** How an error message enters under its field. */
+  errorAnimation?: ErrorAnimation;
+  /** Fields with an error give a short shake when Submit is pressed. */
+  shakeOnError?: boolean;
+  /** A tick draws in inside a field once its value is valid. */
+  showSuccessTick?: boolean;
+  /** Fields with a maxLength (name, email, message) show a live character count. */
+  showCounter?: boolean;
+  /** Fields fade up one after another when the form first appears. */
+  staggerEntrance?: boolean;
 }
 
 // component
@@ -784,8 +883,13 @@ function ContactForm({
  textColor ="#111111",
  inputBackgroundColor ="#ffffff",
  fieldBorderColor ="#e5e7eb",
- inputRoundedness = 28,
+ inputRoundedness = 6,
  duration = 0.3,
+ errorAnimation = "slide",
+ shakeOnError = true,
+ showSuccessTick = true,
+ showCounter = true,
+ staggerEntrance = true,
 }: ContactFormProps) {
  const [values, setValues] = useState(() => buildInitialValues(fields));
  const [errors, setErrors] = useState<Record<string, string>>({});
@@ -794,6 +898,26 @@ function ContactForm({
  const [failed, setFailed] = useState(false);
  const uid = useId().replace(/:/g, "");
  const sectionId = `contact-form-${uid}`;
+ const reduceMotion = usePrefersReducedMotion();
+ const fieldRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
+ // Shakes every field that has an error, a short side-to-side nudge.
+ const shake = useCallback((names: string[]) => {
+ if (!shakeOnError || reduceMotion) return;
+ for (const name of names) {
+ fieldRefs.current[name]?.animate(
+ [
+ { transform: "translateX(0)" },
+ { transform: "translateX(-6px)" },
+ { transform: "translateX(5px)" },
+ { transform: "translateX(-3px)" },
+ { transform: "translateX(2px)" },
+ { transform: "translateX(0)" },
+ ],
+ { duration: 420, easing: "ease-out" }
+ );
+ }
+ }, [shakeOnError, reduceMotion]);
 
  // ── value helpers ──
  const setValue = useCallback((name: string, value: any) => {
@@ -847,8 +971,9 @@ function ContactForm({
  }
 
  setErrors(newErrors);
+ shake(Object.keys(newErrors));
  return { valid: Object.keys(newErrors).length === 0, data: values };
- }, [fields, values, validateField, schema]);
+ }, [fields, values, validateField, schema, shake]);
 
  // ── submit ──
  const handleSubmit = useCallback(
@@ -875,11 +1000,29 @@ function ContactForm({
  [fields, validateAll, onSubmit]
  );
 
+ // ── live validity, for the success tick ──
+ const liveIssues: Record<string, boolean> = {};
+ if (showSuccessTick) {
+ if (schema) {
+ const result = schema.safeParse(values);
+ if (!result.success) for (const issue of result.error.issues) liveIssues[String(issue.path[0])] = true;
+ } else {
+ for (const f of fields) if (validateField(f, values[f.name])) liveIssues[f.name] = true;
+ }
+ }
+ const tickFor = (name: string, value: any) => {
+ if (!showSuccessTick) return undefined;
+ // Phone values carry the dial code, so only the typed number counts as "filled".
+ const filled = typeof value === "string" ? value.replace(/^\+\d+\s*/, "").trim() !== "" : !!value;
+ return filled && !liveIssues[name];
+ };
+
  // ── render field ──
  const renderField = (field: FieldConfig) => {
- const { name, type, label, options, rows, defaultCountry } = field;
+ const { name, type, label, options, rows, defaultCountry, maxLength } = field;
  const value = values[name];
  const error = errors[name];
+ const valid = tickFor(name, value);
 
  const commonChange = (val: any) => {
  setValue(name, val);
@@ -894,6 +1037,9 @@ function ContactForm({
  id={name}
  label={label}
  rows={rows}
+ maxLength={maxLength}
+ showCounter={showCounter}
+ valid={valid}
  value={value}
  onChange={(e) => commonChange(e.target.value)}
  error={error}
@@ -907,6 +1053,7 @@ function ContactForm({
  id={name}
  label={label as string | undefined}
  options={options || []}
+ valid={valid}
  value={value}
  onChange={(e) => commonChange(e.target.value)}
  error={error}
@@ -922,6 +1069,7 @@ function ContactForm({
  value={value}
  onChange={(val) => commonChange(val)}
  defaultCountry={defaultCountry ||"IN"}
+ valid={valid}
  error={error}
  />
  );
@@ -946,6 +1094,9 @@ function ContactForm({
  id={name}
  label={label}
  type={type ||"text"}
+ maxLength={maxLength}
+ showCounter={showCounter}
+ valid={valid}
  value={value}
  onChange={(e) => commonChange(e.target.value)}
  error={error}
@@ -958,12 +1109,14 @@ function ContactForm({
  <section
  className="h-full w-full"
  id={sectionId}
+ data-error-animation={errorAnimation}
  style={{
  "--form-text": textColor,
  "--form-input-bg": inputBackgroundColor,
  "--form-field-border": fieldBorderColor,
  "--form-input-radius": `${Math.max(0, Number(inputRoundedness) || 0)}px`,
  "--form-duration": `${Math.max(0.05, Number(duration) || 0.3)}s`,
+ "--form-success": "#16a34a",
  } as CSSProperties & Record<`--${string}`, string>}
  >
  <style>{`
@@ -1034,6 +1187,81 @@ function ContactForm({
    background-color: var(--form-text);
    border-color: var(--form-text);
  }
+
+ /* Error line: slides open (height + lift), fades, or appears at once. */
+ #${sectionId} [data-form-error] {
+   display: grid;
+   grid-template-rows: 0fr;
+   opacity: 0;
+   transform: translateY(-4px);
+   transition: grid-template-rows var(--form-duration) cubic-bezier(0.22, 1, 0.36, 1),
+     opacity var(--form-duration) ease, transform var(--form-duration) cubic-bezier(0.22, 1, 0.36, 1);
+ }
+ #${sectionId} [data-form-error="open"] {
+   grid-template-rows: 1fr;
+   opacity: 1;
+   transform: none;
+ }
+ #${sectionId}[data-error-animation="fade"] [data-form-error] {
+   transform: none;
+   transition: opacity var(--form-duration) ease, grid-template-rows 0s linear var(--form-duration);
+ }
+ #${sectionId}[data-error-animation="fade"] [data-form-error="open"] {
+   transition: opacity var(--form-duration) ease, grid-template-rows 0s;
+ }
+ #${sectionId}[data-error-animation="none"] [data-form-error] {
+   transition: none;
+ }
+
+ /* Success tick draws in along its path. */
+ #${sectionId} [data-form-tick] {
+   color: var(--form-success);
+   opacity: 0;
+   transition: opacity calc(var(--form-duration) * 0.6) ease;
+ }
+ #${sectionId} [data-form-tick] path {
+   stroke-dasharray: 1;
+   stroke-dashoffset: 1;
+   transition: stroke-dashoffset calc(var(--form-duration) * 1.4) cubic-bezier(0.65, 0, 0.35, 1);
+ }
+ #${sectionId} [data-form-tick="on"] {
+   opacity: 1;
+ }
+ #${sectionId} [data-form-tick="on"] path {
+   stroke-dashoffset: 0;
+ }
+
+ /* Counter warms up near the limit. */
+ #${sectionId} [data-form-counter] {
+   transition: color var(--form-duration) ease;
+ }
+ #${sectionId} [data-form-counter="near"] {
+   color: #d97706;
+ }
+
+ /* Fields fade up one after another; status messages rise in. */
+ @keyframes ${sectionId}-enter {
+   from { opacity: 0; transform: translateY(12px); }
+ }
+ #${sectionId} [data-form-enter] {
+   animation: ${sectionId}-enter 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+ }
+ #${sectionId} [data-form-status] {
+   animation: ${sectionId}-enter calc(var(--form-duration) * 1.5) cubic-bezier(0.22, 1, 0.36, 1) backwards;
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+   #${sectionId} [data-form-error],
+   #${sectionId} [data-form-tick],
+   #${sectionId} [data-form-tick] path,
+   #${sectionId} [data-form-counter] {
+     transition: none;
+   }
+   #${sectionId} [data-form-enter],
+   #${sectionId} [data-form-status] {
+     animation: none;
+   }
+ }
  `}</style>
  <div className="w-full h-full">
  <div className="w-full flex flex-col gap-[2vw]">
@@ -1042,9 +1270,24 @@ function ContactForm({
  className="space-y-[1.2vw] max-md:space-y-[4vw] max-lg:space-y-[4vw]"
  onSubmit={handleSubmit}
  >
- {fields.map((field) => renderField(field))}
+ {fields.map((field, index) => (
+ <div
+ key={field.name}
+ ref={(node) => {
+ fieldRefs.current[field.name] = node;
+ }}
+ data-form-enter={staggerEntrance ? "" : undefined}
+ style={staggerEntrance ? { animationDelay: `${index * 70}ms` } : undefined}
+ >
+ {renderField(field)}
+ </div>
+ ))}
 
- <div className="flex items-center justify-start  max-md:mt-[10vw]">
+ <div
+ className="flex items-center justify-start  max-md:mt-[10vw]"
+ data-form-enter={staggerEntrance ? "" : undefined}
+ style={staggerEntrance ? { animationDelay: `${fields.length * 70}ms` } : undefined}
+ >
  <Button
  type="submit"
  isLoading={isLoading}
@@ -1056,10 +1299,10 @@ function ContactForm({
  </div>
 
  {submitted && (
- <p className="text-green-600 text-sm mt-2">{successMessage}</p>
+ <p data-form-status="" role="status" className="text-green-600 text-sm mt-2">{successMessage}</p>
  )}
  {failed && (
- <p className="text-red-600 text-sm mt-2">{errorMessage}</p>
+ <p data-form-status="" role="alert" className="text-red-600 text-sm mt-2">{errorMessage}</p>
  )}
  </form>
  </div>
@@ -1073,8 +1316,8 @@ function ContactForm({
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 const FIELDS: FieldConfig[] = [
- { type:"text", name:"name", label:"Name*", required: true },
- { type:"email", name:"email", label:"Business Email*", required: true },
+ { type:"text", name:"name", label:"Name*", required: true, maxLength: 60 },
+ { type:"email", name:"email", label:"Business Email*", required: true, maxLength: 100 },
  { type:"phone", name:"phone", label:"Phone*", required: true, defaultCountry:"IN" },
  {
  type:"select",
@@ -1086,7 +1329,7 @@ const FIELDS: FieldConfig[] = [
  { value:"partnership", label:"Partnership" },
  ],
  },
- { type:"textarea", name:"message", label:"Your message", rows: 4 },
+ { type:"textarea", name:"message", label:"Your message", rows: 4, maxLength: 500 },
  {
  type:"checkbox",
  name:"terms",
@@ -1136,11 +1379,13 @@ const contactSchema = z.object({
  .string()
  .trim()
  .min(1, "Name is required.")
- .min(2, "Name must be at least 2 characters."),
+ .min(2, "Name must be at least 2 characters.")
+ .max(60, "Name is too long."),
  email: z
  .string()
  .trim()
  .min(1, "Business Email is required.")
+ .max(100, "Email is too long.")
  .pipe(z.email("Please enter a valid email address.")),
  phone: z
  .string()
@@ -1152,7 +1397,7 @@ const contactSchema = z.object({
  topic: z.enum(["general", "partnership"], {
  message: "Please select a topic.",
  }),
- message: z.string().trim().max(1000, "Message is too long.").optional(),
+ message: z.string().trim().max(500, "Message is too long.").optional(),
  terms: z.literal(true, {
  message: "You must agree to the Terms.",
  }),
@@ -1167,8 +1412,25 @@ export default function AnimatedForm({
  textColor = "#111111",
  inputBackgroundColor = "#ffffff",
  fieldBorderColor = "#e5e7eb",
- inputRoundedness = 28,
+ inputRoundedness = 6,
  duration = 0.3,
+ errorAnimation = "slide",
+ shakeOnError = true,
+ showSuccessTick = true,
+ showCounter = true,
+ staggerEntrance = true,
+}: {
+ backgroundColor?: string;
+ textColor?: string;
+ inputBackgroundColor?: string;
+ fieldBorderColor?: string;
+ inputRoundedness?: number;
+ duration?: number;
+ errorAnimation?: ErrorAnimation;
+ shakeOnError?: boolean;
+ showSuccessTick?: boolean;
+ showCounter?: boolean;
+ staggerEntrance?: boolean;
 }) {
  return (
  <main className="w-full min-h-screen mx-auto py-20 max-lg:pt-28 px-6" style={{ backgroundColor }}>
@@ -1183,6 +1445,11 @@ export default function AnimatedForm({
  fieldBorderColor={fieldBorderColor}
  inputRoundedness={inputRoundedness}
  duration={duration}
+ errorAnimation={errorAnimation}
+ shakeOnError={shakeOnError}
+ showSuccessTick={showSuccessTick}
+ showCounter={showCounter}
+ staggerEntrance={staggerEntrance}
  />
  </div>
  </main>

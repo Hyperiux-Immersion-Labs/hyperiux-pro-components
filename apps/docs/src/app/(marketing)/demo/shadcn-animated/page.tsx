@@ -18,7 +18,6 @@ const DEMOS = [
   { slug: "animated-dialog", title: "Animated Dialog", description: "A window over the page that asks for a decision before you carry on." },
   { slug: "animated-drawer", title: "Animated Drawer", description: "A panel that slides in from the edge and can be swiped away." },
   { slug: "animated-dropdown-menu", title: "Animated Dropdown Menu", description: "A menu of actions or options that opens from a button." },
-  { slug: "animated-form-fields", title: "Animated Form Fields", description: "Labels, hints and errors that hold a form’s inputs together." },
   { slug: "animated-hover-card", title: "Animated Hover Card", description: "A preview that appears when you hover a link." },
   { slug: "animated-input-otp", title: "Animated Input OTP", description: "One-time code boxes that fill, shake and confirm." },
   { slug: "animated-menubar", title: "Animated Menubar", description: "A row of menus, like an app’s File and Edit menus." },

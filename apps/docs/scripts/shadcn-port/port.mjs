@@ -546,6 +546,8 @@ for (const f of cfg.demos) {
     autoPrelude += `try { ${js1.replace(/^"use strict";\s*/, "").replace(/\b(const|let)\s+/, "var ")} } catch (e) {}\n`;
   }
 }
+// Patches that touch the controls (add, remove or retune one) reach the panel too.
+for (const [from, to] of cfg.patches || []) controlsSrc = controlsSrc.split(from).join(to);
 const js = ts.transpileModule(`module.exports = ${controlsSrc}`, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText;
 const mod = { exports: {} };
 new Function("module", "require", "React", (cfg.schemaPrelude || "") + "\n" + autoPrelude + "\n" + js)(mod, require, {});
@@ -601,6 +603,8 @@ const rows = [
     `{ name: "mode", label: "Mode", type: "string", default: "${cfg.defaultMode || "light"}", description: "${cfg.modeDescription || `Light or dark version of the palette.${cfg.defaultMode === "dark" ? " Starts dark." : ""}`}", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } }`]),
 ];
 for (const [name, c] of Object.entries(mod.exports)) {
+  // `omitProps`: controls a patch removed from the demo; keep them out of the panel too.
+  if (cfg.omitProps?.includes(name)) continue;
   const group = c.group || "Controls";
   const gid = group.toLowerCase().replace(/[^a-z0-9]+/g, "-");
   const type = c.type === "checkbox" ? "boolean" : c.type === "slider" ? "number" : "string";
@@ -625,7 +629,8 @@ if (cfg.title) {
   cfg.subtitle = cfg.subtitle.replace(/'/g, "\u2019");
   const demoDir = path.join(REPO, "src/app/(marketing)/demo", cfg.slug);
   fs.mkdirSync(demoDir, { recursive: true });
-  fs.writeFileSync(path.join(demoDir, "page.tsx"), `import DemoContent from "./DemoContent";
+  const pagePath = path.join(demoDir, "page.tsx");
+  if (!fs.existsSync(pagePath)) fs.writeFileSync(pagePath, `import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
 
 export default function Page() {
@@ -636,7 +641,15 @@ export async function generateMetadata() {
   return getDemoPageMetadata("${cfg.slug}");
 }
 `);
-  fs.writeFileSync(path.join(demoDir, "DemoContent.tsx"), `"use client";
+  // An existing DemoContent is hand-tuned (padding, layout): only its props list is refreshed.
+  const contentPath = path.join(demoDir, "DemoContent.tsx");
+  const propsList = rows.map((r) => `        ${r},`).join("\n");
+  if (fs.existsSync(contentPath)) {
+    const current = fs.readFileSync(contentPath, "utf8");
+    const block = /(props=\{\[\n)[\s\S]*?(\n {6}\]\})/;
+    if (!block.test(current)) throw new Error(`props list not found in ${contentPath}`);
+    fs.writeFileSync(contentPath, current.replace(block, (_, open, close) => open + propsList + close));
+  } else fs.writeFileSync(contentPath, `"use client";
 
 import ${cfg.exportName}, { getThemeProps, type ${cfg.exportName}Theme, type ${cfg.exportName}Mode } from "@/components/${cfg.slug}";
 import HeadAnim from "@/components/Animations/HeadAnim";

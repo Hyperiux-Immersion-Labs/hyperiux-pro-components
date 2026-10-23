@@ -274,8 +274,13 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 | `textColor` | `#111111` | color | color | Text color for the form heading and field labels. |
 | `inputBackgroundColor` | `#ffffff` | color | color | Background color for inputs, textarea, and select controls. |
 | `fieldBorderColor` | `#e5e7eb` | color | color | Default border color for form controls. |
-| `inputRoundedness` | `28` | number | range/number | Border radius for inputs and the submit button in pixels. |
+| `inputRoundedness` | `6` | number | range/number | Border radius for inputs, dropdowns and the submit button in pixels (6 = rounded-md). |
 | `duration` | `0.3` | number | range/number | Transition duration for focus and button effects. |
+| `errorAnimation` | `"slide"` | string | select | How an error message enters under its field (slide open, fade, none). |
+| `shakeOnError` | `true` | boolean | checkbox | Fields with an error shake when Submit is pressed. |
+| `showSuccessTick` | `true` | boolean | checkbox | A tick draws in inside a field once its value is valid. |
+| `showCounter` | `true` | boolean | checkbox | Name, email and message fields show a live character count. |
+| `staggerEntrance` | `true` | boolean | checkbox | Fields fade up one after another on first render. |
 
 ### Animated Modal (`animated-modal`, pro) - Suggested props
 

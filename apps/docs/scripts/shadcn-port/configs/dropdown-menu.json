@@ -28,12 +28,44 @@
     "pressFeedback": "Items squeeze slightly when pressed.",
     "openOnHover": "Opens the menu when you hover the trigger, not only on click.",
     "closeDelayOnSelect": "Waits a moment after a pick so you see the selection before the menu closes.",
-    "typeahead": "Typing a letter jumps to the item that starts with it."
+    "typeahead": "With the menu open, typing a letter moves the highlight to the first item starting with it (P jumps to Paused). Off: letter keys do nothing."
   },
   "patches": [
     [
       "\"flex min-h-[50vh] items-start justify-center\"",
       "\"flex min-h-96 items-start justify-center\""
+    ],
+    [
+      "rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-none\"",
+      "rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-md ring-1 ring-(--hx-border) outline-none in-data-[theme=dark]:ring-(--hx-input) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]\""
+    ],
+    [
+      "rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-(--hx-foreground)/10 duration-100",
+      "rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-(--hx-border) in-data-[theme=dark]:ring-(--hx-input) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))] duration-100"
+    ],
+    [
+      "              details.preventUnmountOnClose()\n              setActiveItem(null)\n",
+      "              details.preventUnmountOnClose()\n"
+    ],
+    [
+      "const onExitComplete = React.useCallback(() => actionsRef.current?.unmount(), [])",
+      "const onExitComplete = React.useCallback(() => {\n    // The pill stays on its item while the panel fades, and clears once it has gone.\n    setActiveItem(null)\n    actionsRef.current?.unmount()\n  }, [setActiveItem])"
+    ],
+    [
+      "className={cn(\"isolate z-50 outline-none\", morph && \"pointer-events-none\")}",
+      "className={cn(\"isolate outline-none\", morph ? \"pointer-events-none z-50\" : \"z-40\")}"
+    ],
+    [
+      "className=\"h-auto w-[60%] cursor-pointer",
+      "className=\"relative z-45 h-auto w-[60%] cursor-pointer"
+    ],
+    [
+      "const away = side === \"top\" || side === \"left\" ? \"0.5em\" : \"-0.5em\"",
+      "const away = side === \"top\" || side === \"left\" ? \"1.25em\" : \"-1.25em\""
+    ],
+    [
+      "in-data-[theme=dark]:hover:bg-(--hx-input)/30 in-data-[theme=dark]:aria-expanded:bg-(--hx-input)/30\"",
+      "in-data-[theme=dark]:bg-(--hx-background)! in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]\""
     ]
   ],
   "defaultMode": "dark",
@@ -49,5 +81,13 @@
     "rollingValue",
     "pressFeedback"
   ],
-  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaultTheme": "ghibli",
+  "defaults": {
+    "animation": "slide",
+    "selectionIndicator": "dot",
+    "bold": true,
+    "rollingText": true,
+    "pressFeedback": true
+  }
 }

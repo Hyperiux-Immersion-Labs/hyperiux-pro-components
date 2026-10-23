@@ -301,7 +301,7 @@ const COMPONENT_CSS = "@keyframes hx-skeleton-sweep{from{background-position:0 0
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -319,14 +319,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md in-data-[slot=button-group]:rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -707,7 +707,7 @@ function DataTable({
   loadingSkeleton = true,
   showPagination = false,
   bordered = true,
-  rounded = "lg",
+  rounded = "md",
   showHorizontalLines = true,
   showVerticalLines = true,
   pageSize = 5,
@@ -1047,7 +1047,7 @@ function DataTable({
   )
 
   const thClass = cn(
-    "relative h-12 px-2 text-left align-middle whitespace-nowrap text-(--hx-foreground)",
+    "relative h-12 px-2 max-md:px-4 text-left align-middle whitespace-nowrap text-(--hx-foreground)",
     boldHeader ? "font-semibold" : "font-normal",
     stickyHeader && "sticky top-0 z-20 bg-(--hx-background) transition-shadow duration-300",
     stickyHeader && scrolled && "shadow-[0_6px_10px_-6px_rgb(0_0_0/0.2)]"
@@ -1265,6 +1265,8 @@ function DataTable({
                 RADIUS_CLASS[rounded],
                 // The outline is a plain border, there from the start; only the inner lines draw.
                 bordered && "border",
+                // A plain thin scrollbar in the theme's colours, not the page's branded one.
+                "[scrollbar-width:thin] [scrollbar-color:color-mix(in_oklab,var(--hx-muted-foreground)_45%,transparent)_transparent]",
                 "overflow-auto"
               )}
             >
@@ -1305,7 +1307,7 @@ function DataTable({
                           <td
                             key={j}
                             className={cn(
-                              "px-2 py-3 align-middle",
+                              "px-2 py-3 align-middle max-md:px-4",
                               showVerticalLines &&
                                 j < leading + ordered.length + trailing - 1 &&
                                 "border-r"
@@ -1362,7 +1364,7 @@ function DataTable({
                       {ordered.map((column, j) => (
                         <motion.td
                           key={column.key}
-                          className={cn(footClass, "px-2 py-3 align-middle", ALIGN_CLASS[textAlign])}
+                          className={cn(footClass, "px-2 py-3 align-middle max-md:px-4", ALIGN_CLASS[textAlign])}
                         >
                           {(column.key === totalKey || j === 0) && (
                             <LoadingCell loading={showSkeleton}>
@@ -1594,7 +1596,7 @@ function DataTableRowView({
           data-col={column.key}
           data-row={row.id}
           className={cn(
-            "relative px-2 align-middle whitespace-nowrap",
+            "relative px-2 align-middle whitespace-nowrap max-md:px-4",
             ALIGN_CLASS[settings.textAlign],
             column.className
           )}
@@ -1652,12 +1654,12 @@ function DataTableRowView({
       "relative transition-colors duration-300",
       settings.rowHighlight === "none" &&
         (settings.rowHighlightColor === "primary"
-          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) [&:hover_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&:hover_[data-slot=status-badge]]:bg-(--hx-background)"
+          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) [&:hover_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70"
           : "hover:bg-(--hx-muted)/50"),
       isSelected && "bg-(--hx-primary)/[0.06]",
       settings.expandable && "cursor-pointer",
       onPrimary &&
-        "text-(--hx-primary-foreground) [&_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70 [&_[data-slot=status-badge]]:bg-(--hx-background)"
+        "text-(--hx-primary-foreground) [&_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70"
     ),
     children: cells,
   }
@@ -2009,9 +2011,9 @@ function AnimatedNumber({
 }
 
 const toneClasses: Record<DataTableStatusTone, string> = {
-  success: "bg-(--hx-success)/12 text-(--hx-success)",
-  warning: "bg-(--hx-warning)/15 text-(--hx-warning)",
-  danger: "bg-(--hx-destructive)/12 text-(--hx-destructive)",
+  success: "bg-[color-mix(in_oklab,var(--hx-success)_12%,var(--hx-background))] text-(--hx-success)",
+  warning: "bg-[color-mix(in_oklab,var(--hx-warning)_15%,var(--hx-background))] text-(--hx-warning)",
+  danger: "bg-[color-mix(in_oklab,var(--hx-destructive)_12%,var(--hx-background))] text-(--hx-destructive)",
   neutral: "bg-(--hx-muted) text-(--hx-muted-foreground)",
 }
 
@@ -2215,14 +2217,14 @@ function FilterChips({
             aria-checked={active}
             onClick={() => onChange(chip.value)}
             className={cn(
-              "relative isolate flex items-center gap-1.5 rounded-full px-3 py-1 text-sm outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50",
+              "relative isolate flex items-center gap-1.5 rounded-md px-3 py-1 text-sm outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50",
               active ? "text-(--hx-primary-foreground)" : "text-(--hx-muted-foreground) hover:text-(--hx-foreground)"
             )}
           >
             {active && (
               <motion.span
                 layoutId={`${id}-chip`}
-                className="absolute inset-0 -z-10 rounded-full bg-(--hx-primary)"
+                className="absolute inset-0 -z-10 rounded-md bg-(--hx-primary)"
                 transition={glide}
               />
             )}
@@ -2492,20 +2494,6 @@ const controls = {
     ],
   },
   bordered: { group: "Layout", type: "checkbox", label: "Border", value: true },
-  rounded: {
-    group: "Layout",
-    type: "select",
-    label: "Roundness",
-    value: "lg",
-    options: [
-      { label: "None", value: "none" },
-      { label: "sm", value: "sm" },
-      { label: "md", value: "md" },
-      { label: "lg", value: "lg" },
-      { label: "xl", value: "xl" },
-      { label: "2xl", value: "2xl" },
-    ],
-  },
   showHorizontalLines: { group: "Layout", type: "checkbox", label: "Show horizontal lines", value: true },
   showVerticalLines: { group: "Layout", type: "checkbox", label: "Show vertical lines", value: true },
   showHeaderBorder: { group: "Layout", type: "checkbox", label: "Show header border", value: true },
@@ -2517,7 +2505,7 @@ const controls = {
     group: "Layout",
     type: "slider",
     label: "Table height",
-    value: 50,
+    value: 40,
     min: 20,
     max: 100,
     step: 5,
@@ -2584,7 +2572,7 @@ function TablePage(props: Partial<ControlValues>) {
         rowHighlightColor={values.rowHighlightColor as DataTableHoverTone}
         selectMark={values.selectMark as DataTableSelectMark}
         textAlign={values.textAlign as DataTableAlign}
-        rounded={values.rounded as DataTableRadius}
+        rounded="md"
         dragMode={values.dragMode ? "rows" : "none"}
       />
 
@@ -2617,7 +2605,7 @@ export interface AnimatedDataTableProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDataTable({ theme = "default", mode = "dark", className, ...props }: AnimatedDataTableProps) {
+export default function AnimatedDataTable({ theme = "ghibli", mode = "dark", className, ...props }: AnimatedDataTableProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

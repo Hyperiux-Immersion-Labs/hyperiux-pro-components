@@ -287,6 +287,9 @@ Config keys used for the polish (on top of those in "How to convert a component"
 | `defaultTheme` / `defaults` | Starting theme, and `{ propName: value }` overrides for the other props' defaults |
 | `options` | `{ propName: [{ label, value }] }`: the remixer dropdown's choices. The bundler reads them from the source, so patching the component's own schema is not enough |
 | `hideWhenReducedMotion` | `["propName", …]`: props hidden from the panel while reduced motion is on (see 6a) |
+| `omitProps` | `["propName", …]`: controls a patch removed from the demo, kept out of the remixer panel too |
+
+**DemoContent.tsx is hand-owned once it exists.** Re-running the bundler only refreshes its `props={[…]}` list; title, subtitle, `width`, `panelClass` and layout/padding edits made in the file are kept. `page.tsx` is only written when missing. Change those in the file itself, not the config.
 | `patches` | Exact `[from, to]` text replacements on the output (used for the viewport-unit fixes) |
 
 The bundler now translates the source's `disabled: (v) => …` rules into `disabledWhen` itself:
@@ -599,3 +602,7 @@ Motion version and corner radius are decided; see "Decisions already made".
 - `md/section-qc-checklist.md`: QC checklist used in Phase 1
 - `md/versioning.md`: version bumps and the CLI lock file
 - `md/remixer-panel.md`, `md/remixer-effect-props.md`: remixer prop format
+
+## Animated Form Fields: retired (2026-10-23)
+
+Its motion (error slide/fade, shake on error, success tick, character counter, staggered entrance) was ported into the sold `animated-form` component (v1.1.0). `animated-form-fields` is unlisted from `/demo/shadcn-animated`; its files and config are kept but it is not maintained.

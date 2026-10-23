@@ -12,18 +12,19 @@ export default function DemoContent() {
       name="animated-date-picker"
       category="components"
       render={(values) => (
-        <AnimatedDatePicker {...values} className="flex min-h-[70vh] items-start justify-center p-[3vw] max-md:p-[5vw]" />
+        <AnimatedDatePicker {...values} className="flex items-start justify-center max-md:p-[5vw]" />
       )}
       props={[
-        { name: "theme", label: "Theme", type: "string", default: "default", description: "Colour palette, calendar included. The selected day and range take its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
+        { name: "theme", label: "Theme", type: "string", default: "vscode", description: "Colour palette, calendar included. The selected day and range take its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
         { name: "mode", label: "Mode", type: "string", default: "dark", description: "Light or dark version of the palette. Starts dark.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } },
+        { name: "selectionMode", label: "Selection", type: "string", default: "range", description: "Pick one date, or a start and an end date. A range shows two months side by side from tablet up.", remixer: { control: "select", group: "trigger", groupTitle: "Trigger", options: [{ label: "Single date", value: "single" }, { label: "Date range", value: "range" }] } },
         { name: "showIcon", label: "Icon", type: "boolean", default: true, description: "Shows a calendar icon in the trigger button.", remixer: { control: "checkbox", group: "trigger", groupTitle: "Trigger" } },
         { name: "rollingText", label: "Rolling text", type: "boolean", default: true, description: "The button label rolls to a second copy on hover.", remixer: { control: "checkbox", group: "trigger", groupTitle: "Trigger", hideWhenReducedMotion: true } },
         { name: "dateFormat", label: "Format", type: "string", default: "PPP", description: "How the chosen date is written in the trigger.", remixer: { control: "select", group: "trigger", groupTitle: "Trigger", options: [{ label: "September 28th, 2026", value: "PPP" }, { label: "Sep 28, 2026", value: "MMM d, yyyy" }, { label: "28/09/2026", value: "dd/MM/yyyy" }, { label: "09/28/2026", value: "MM/dd/yyyy" }, { label: "2026-09-28", value: "yyyy-MM-dd" }, { label: "28 Sep 2026", value: "dd MMM yyyy" }, { label: "Monday, 28 Sep", value: "EEEE, d MMM" }, { label: "September 2026", value: "MMMM yyyy" }, { label: "2026", value: "yyyy" }] } },
         { name: "fromBehind", label: "From behind trigger", type: "boolean", default: true, description: "The calendar grows out from behind the trigger instead of appearing below it.", remixer: { control: "checkbox", group: "popup", groupTitle: "Popup", hideWhenReducedMotion: true } },
         { name: "contentAnimation", label: "Content animation", type: "string", default: "scale", description: "How the calendar appears: scales and fades, or only fades.", remixer: { control: "select", group: "popup", groupTitle: "Popup", options: [{ label: "Scale + fade", value: "scale" }, { label: "Fade", value: "fade" }], hideWhenReducedMotion: true } },
         { name: "startScale", label: "Start scale", type: "number", default: 0.9, description: "Size the calendar starts from when it opens, as a fraction of full size.", remixer: { control: "range", group: "popup", groupTitle: "Popup", min: 0.5, max: 1, step: 0.05, disabledWhen: { "prop": "contentAnimation", "equals": "fade" }, hideWhenReducedMotion: true } },
-        { name: "closeOnSelect", label: "Close on select", type: "boolean", default: true, description: "Closes the calendar as soon as a date is picked.", remixer: { control: "checkbox", group: "popup", groupTitle: "Popup" } },
+        { name: "closeOnSelect", label: "Close on select", type: "boolean", default: true, description: "Closes the calendar as soon as a date is picked. For a range, once both ends are picked.", remixer: { control: "checkbox", group: "popup", groupTitle: "Popup" } },
         { name: "captionLayout", label: "Header", type: "string", default: "dropdown", description: "What the calendar header shows: month and year dropdowns, one of them, or a plain label.", remixer: { control: "select", group: "month-change", groupTitle: "Month change", options: [{ label: "Month + year", value: "dropdown" }, { label: "Month only", value: "dropdown-months" }, { label: "Year only", value: "dropdown-years" }, { label: "Label", value: "label" }] } },
         { name: "yearsBefore", label: "Years before", type: "number", default: 10, description: "How many years before this one the year dropdown goes back. Needs a Header with a year dropdown.", remixer: { control: "range", group: "month-change", groupTitle: "Month change", min: 0, max: 100, step: 1, disabledWhen: [ { "prop": "captionLayout", "equals": "label" }, { "prop": "captionLayout", "equals": "dropdown-months" } ] } },
         { name: "yearsAfter", label: "Years after", type: "number", default: 10, description: "How many years after this one the year dropdown goes forward. Needs a Header with a year dropdown.", remixer: { control: "range", group: "month-change", groupTitle: "Month change", min: 0, max: 100, step: 1, disabledWhen: [ { "prop": "captionLayout", "equals": "label" }, { "prop": "captionLayout", "equals": "dropdown-months" } ] } },
@@ -46,14 +47,14 @@ export default function DemoContent() {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedDatePickerTheme, values.mode as AnimatedDatePickerMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] pt-[10%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:pt-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>
                 <h1 className="text-center text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">Animated Date Picker</h1>
               </HeadAnim>
               <SplitLine>
-                <p className="text-center max-md:w-[80vw]">A button that opens a calendar to pick a single date.</p>
+                <p className="text-center max-md:w-[80vw]">A button that opens a calendar to pick a date or a date range.</p>
               </SplitLine>
             </div>
             <div className="w-[60vw] max-lg:w-[85vw] max-md:w-full">{effect}</div>

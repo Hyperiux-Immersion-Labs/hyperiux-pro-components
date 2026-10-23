@@ -382,9 +382,9 @@ function fadeInContent(card: HTMLElement) {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
   for (const child of card.querySelectorAll<HTMLElement>(":scope > *")) {
     child.animate([{ opacity: 0 }, { opacity: 1 }], {
-      duration: 350,
-      delay: 80,
-      easing: "cubic-bezier(0.45, 0, 0.55, 1)",
+      duration: 300,
+      delay: 40,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
       fill: "backwards",
     })
   }
@@ -414,7 +414,7 @@ function HoverCard({
   followCursor = false,
   fadeContent = true,
   underline = true,
-  rounded = "lg",
+  rounded = "md",
   open: openProp,
   defaultOpen = false,
   onOpenChange,
@@ -537,15 +537,15 @@ function HoverCardContent({
         side={side}
         sideOffset={sideOffset}
         className="isolate z-50"
-        style={{ "--hc-travel": "0.75rem", "--hc-scale": scale } as React.CSSProperties}
+        style={{ "--hc-travel": "0px", "--hc-scale": scale } as React.CSSProperties}
       >
         <PreviewCardPrimitive.Popup
           ref={attach}
           data-slot="hover-card-content"
           render={<motion.div style={{ x: options.followCursor && !reduceMotion ? x : 0 }} />}
           className={cn(
-            "z-50 w-72 origin-(--transform-origin) bg-(--hx-muted) px-5 py-4 text-sm text-(--hx-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-hidden",
-            "transition-[opacity,scale,translate] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:duration-150 data-ending-style:ease-in motion-reduce:transition-opacity",
+            "z-50 w-72 max-w-[calc(100vw-2rem)] origin-(--transform-origin) bg-(--hx-muted) px-5 py-4 text-sm text-(--hx-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-hidden",
+            "transition-[opacity,scale,translate] duration-350 ease-[cubic-bezier(0.32,0.72,0,1)] data-ending-style:duration-200 data-ending-style:ease-[cubic-bezier(0.4,0,1,1)] motion-reduce:transition-opacity",
             "data-starting-style:scale-(--hc-scale) data-starting-style:opacity-0 data-ending-style:scale-(--hc-scale) data-ending-style:opacity-0",
             "data-[side=bottom]:data-starting-style:-translate-y-(--hc-travel) data-[side=top]:data-starting-style:translate-y-(--hc-travel) data-[side=left]:data-starting-style:translate-x-(--hc-travel) data-[side=right]:data-starting-style:-translate-x-(--hc-travel)",
             "data-[side=bottom]:data-ending-style:-translate-y-(--hc-travel) data-[side=top]:data-ending-style:translate-y-(--hc-travel) data-[side=left]:data-ending-style:translate-x-(--hc-travel) data-[side=right]:data-ending-style:-translate-x-(--hc-travel)",
@@ -606,7 +606,7 @@ const controls = {
     group: "Timing",
     type: "slider",
     label: "Open after",
-    value: 0.4,
+    value: 0.7,
     min: 0,
     max: 1,
     step: 0.05,
@@ -616,21 +616,21 @@ const controls = {
     group: "Timing",
     type: "slider",
     label: "Close after",
-    value: 0.2,
+    value: 0,
     min: 0,
     max: 1,
     step: 0.05,
     unit: "s",
   },
 
-  followCursor: { group: "Link", type: "checkbox", label: "Follow the pointer", value: false },
+  followCursor: { group: "Link", type: "checkbox", label: "Follow the pointer", value: true },
   underline: { group: "Link", type: "checkbox", label: "Underline draws in", value: true },
 
   rounded: {
     group: "Style",
     type: "select",
     label: "Roundness",
-    value: "lg",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -843,7 +843,9 @@ function HoverCardDemo(props: Partial<ControlValues>) {
     setSite(next)
   }
 
-  const linkClass = values.underline ? "font-medium" : "font-medium underline underline-offset-4"
+  const linkClass = values.underline
+    ? "font-medium text-(--hx-primary)"
+    : "font-medium text-(--hx-primary) underline underline-offset-4"
 
   const roastLink = (roast: (typeof roasts)[number]) => (
     <HoverCard {...options}>
@@ -851,7 +853,7 @@ function HoverCardDemo(props: Partial<ControlValues>) {
         {roast.name}
       </HoverCardTrigger>
       <HoverCardContent className="flex flex-col gap-2">
-        <div className={`h-16 rounded-md ${roast.color}`} />
+        <div className={`h-28 rounded-md ${roast.color}`} />
         <span className="font-medium">{roast.name}</span>
         <span className="text-xs text-(--hx-muted-foreground)">{roast.process}</span>
         <span className="text-(--hx-muted-foreground)">{roast.notes}</span>
@@ -886,27 +888,27 @@ function HoverCardDemo(props: Partial<ControlValues>) {
             onChange={(event) => panel.set("site", event.target.value)}
             placeholder="Site name or link"
             aria-label="Website"
-            className="h-9"
+            className="h-11.5 rounded-md"
           />
-          <Button type="button" variant="outline" size="lg" onClick={shuffle}>
+          <Button type="button" variant="outline" size="lg" onClick={shuffle} className="h-11.5 rounded-md px-4">
             <ShuffleIcon />
             Random
           </Button>
         </form>
       )}
-      <div className="flex min-h-80 items-center justify-center px-6 text-sm">
+      <div className="flex min-h-54 items-center justify-center px-6 text-sm max-md:min-h-64 max-md:px-0">
         {linkMode ? (
-          <p className="max-w-[60%] text-lg text-center leading-relaxed">
+          <p className=" text-lg text-center leading-relaxed max-md:text-base">
             Worth a read this week: {siteLink}. Hover the link to peek at it.
           </p>
         ) : (
-          <p className="max-w-[70%] text-lg text-center leading-relaxed">
+          <p className="max-w-[70%] text-lg text-center leading-relaxed max-lg:max-w-[85%] max-md:max-w-full max-md:text-base">
             This week&apos;s filter is {roastLink(roasts[0])}, and on espresso we&apos;re pulling{" "}
             {roastLink(roasts[1])} until Saturday.
           </p>
         )}
       </div>
-      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         {linkMode
           ? "Tip: type a site name or paste a link, then hover it. Some sites block previews."
           : "Tip: hover a coffee name and hold still, or tap it on a touch screen."}
@@ -941,7 +943,7 @@ export interface AnimatedHoverCardProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedHoverCard({ theme = "default", mode = "dark", className, ...props }: AnimatedHoverCardProps) {
+export default function AnimatedHoverCard({ theme = "valorant", mode = "dark", className, ...props }: AnimatedHoverCardProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

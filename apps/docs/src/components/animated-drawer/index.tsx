@@ -291,7 +291,7 @@ function ThemeScope({ children }: { children?: React.ReactNode }) {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -309,14 +309,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md in-data-[slot=button-group]:rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -811,7 +811,7 @@ function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="drawer-header"
       className={cn(
-        "flex shrink-0 flex-col gap-1 px-6 py-4 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-0.5 md:text-left",
+        "flex shrink-0 flex-col gap-1 px-6 py-4 max-sm:px-4 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-0.5 md:text-left",
         className
       )}
       {...props}
@@ -823,7 +823,7 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex shrink-0 flex-col gap-2 px-6 py-4", className)}
+      className={cn("mt-auto flex shrink-0 flex-col gap-2 px-6 py-4 max-sm:px-4", className)}
       {...props}
     />
   )
@@ -932,7 +932,7 @@ function DrawerDemo(props: Partial<ControlValues>) {
           <div className="flex flex-col gap-1">
           </div>
 
-          <div className="flex min-h-80 items-center justify-center">
+          <div className="flex min-h-54 items-center justify-center">
             <Drawer
               key={side}
               {...options}
@@ -951,7 +951,7 @@ function DrawerDemo(props: Partial<ControlValues>) {
                     <DrawerTitle>Next box</DrawerTitle>
                     <DrawerDescription>Pick the roast for Friday&apos;s delivery.</DrawerDescription>
                   </DrawerHeader>
-                  <div className="flex flex-col gap-3 px-6 py-2">
+                  <div className="flex flex-col gap-3 px-6 py-2 max-sm:px-4">
                     {roasts.map((roast) => (
                       <DrawerClose
                         key={roast.name}
@@ -960,14 +960,14 @@ function DrawerDemo(props: Partial<ControlValues>) {
                           <Button
                             variant="outline"
                             data-drawer-item
-                            className="group/roll h-auto justify-between py-3 transition-[color,background-color,border-color] hover:bg-(--hx-background) hover:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30"
+                            className="group/roll h-auto justify-between gap-3 py-3 whitespace-normal transition-[color,background-color,border-color] duration-300 hover:border-(--hx-primary) hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-primary) motion-reduce:transition-none max-sm:flex-col max-sm:items-start max-sm:gap-0.5"
                           />
                         }
                       >
                         <span className="font-medium">
                           <RollText>{roast.name}</RollText>
                         </span>
-                        <span className="text-(--hx-muted-foreground)">
+                        <span className="text-(--hx-muted-foreground) transition-colors duration-300 group-hover/roll:text-(--hx-primary-foreground)/80 motion-reduce:transition-none">
                           <RollText>{roast.notes}</RollText>
                         </span>
                       </DrawerClose>
@@ -1028,7 +1028,7 @@ export interface AnimatedDrawerProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDrawer({ theme = "default", mode = "dark", className, ...props }: AnimatedDrawerProps) {
+export default function AnimatedDrawer({ theme = "spotify", mode = "dark", className, ...props }: AnimatedDrawerProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

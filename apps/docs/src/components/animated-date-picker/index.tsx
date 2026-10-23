@@ -536,7 +536,7 @@ CalendarRangeIcon.displayName = "CalendarRangeIcon"
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -554,14 +554,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md in-data-[slot=button-group]:rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -624,7 +624,7 @@ function PopoverContent({
         <PopoverPrimitive.Popup
           data-slot="popover-content"
           className={cn(
-            "z-50 flex w-72 origin-(--transform-origin) flex-col gap-2.5 rounded-lg bg-(--hx-popover) p-2.5 text-sm text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-hidden duration-100 data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
+            "z-50 flex w-72 origin-(--transform-origin) flex-col gap-2.5 rounded-md bg-(--hx-popover) p-2.5 text-sm text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-hidden duration-100 data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
             className
           )}
           {...props}
@@ -661,7 +661,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-1.5 rounded-lg border border-(--hx-input) bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 data-placeholder:text-(--hx-muted-foreground) data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-(--hx-input) bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 data-placeholder:text-(--hx-muted-foreground) data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-md *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -703,7 +703,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
-          className={cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95", className )}
+          className={cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95", className )}
           {...props}
         >
           <SelectScrollUpButton />
@@ -1155,9 +1155,11 @@ function useHoverSquare(
 function HoverSquare({
   ref,
   variant,
+  className,
 }: {
   ref: React.Ref<HTMLDivElement>
   variant: HoverStyle["variant"]
+  className?: string
 }) {
   return (
     <div
@@ -1166,6 +1168,7 @@ function HoverSquare({
       style={{ opacity: 0 }}
       className={cn(
         "pointer-events-none absolute top-0 left-0 rounded-md",
+        className,
         variant === "filled"
           ? "bg-(--hx-primary)"
           : "border-2 border-(--hx-primary) bg-transparent"
@@ -1275,10 +1278,89 @@ function AnimatedDropdown({
 const SLIDING_ARROWS = { Chevron: SlidingChevron, Dropdown: AnimatedDropdown }
 const PLAIN_ARROWS = { Dropdown: AnimatedDropdown }
 
+type DateRange = { from: Date | undefined; to?: Date | undefined }
+
+// Two months sit side by side for a range from tablet up; phones get one.
+function useMinWidth(query: string) {
+  return React.useSyncExternalStore(
+    (onChange) => {
+      const list = window.matchMedia(query)
+      list.addEventListener("change", onChange)
+      return () => list.removeEventListener("change", onChange)
+    },
+    () => window.matchMedia(query).matches,
+    () => false
+  )
+}
+
+// One month view with its own month, arrows, dropdowns and slide. A range shows two side by side,
+// so each can be on any month or year (say 2027 on the left, 2029 on the right).
+function CalendarPanel({
+  initialMonth,
+  monthAnimation,
+  monthSlideDistance,
+  onChangeStart,
+  children,
+}: {
+  initialMonth: Date
+  monthAnimation: "slide" | "fade" | "none"
+  monthSlideDistance: number
+  onChangeStart: () => void
+  children: (month: Date, changeMonth: (next: Date) => void) => React.ReactNode
+}) {
+  const reduceMotion = usePrefersReducedMotion()
+  const box = React.useRef<HTMLDivElement>(null)
+  const [month, setMonth] = React.useState(initialMonth)
+  const pendingMonth = React.useRef<Date | null>(null)
+  const enterDirection = React.useRef<1 | -1 | null>(null)
+
+  const slideBy = (direction: number) =>
+    monthAnimation === "slide" ? `${direction * monthSlideDistance}%` : "0%"
+
+  const monthParts = () =>
+    box.current?.querySelectorAll(".rdp-month_caption, .rdp-month_grid") ?? []
+
+  const changeMonth = async (next: Date) => {
+    const step = differenceInCalendarMonths(next, month)
+    const alreadyAnimating = pendingMonth.current !== null
+    const target = addMonths(pendingMonth.current ?? month, step)
+
+    if (reduceMotion || monthAnimation === "none") {
+      setMonth(target)
+      return
+    }
+    pendingMonth.current = target
+    if (alreadyAnimating) return
+
+    onChangeStart()
+    const direction = step > 0 ? 1 : -1
+    await animate([...monthParts()], { x: slideBy(-direction), opacity: 0 }, { duration: 0.2, ease: "easeIn" })
+    const landing = pendingMonth.current
+    pendingMonth.current = null
+    enterDirection.current = differenceInCalendarMonths(landing, month) >= 0 ? 1 : -1
+    setMonth(landing)
+  }
+
+  React.useLayoutEffect(() => {
+    const direction = enterDirection.current
+    if (direction === null) return
+    enterDirection.current = null
+    animate([...monthParts()], { x: [slideBy(direction), "0%"], opacity: [0, 1] }, { duration: 0.3, ease: [0.16, 1, 0.3, 1] })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month])
+
+  return (
+    <div ref={box} className="min-w-0 flex-1">
+      {/* eslint-disable-next-line react-hooks/refs -- changeMonth reads refs only when a month changes */}
+      {children(month, changeMonth)}
+    </div>
+  )
+}
+
 function DatePicker({
   value,
   onChange,
-  placeholder = "Pick a date",
+  placeholder,
   dateFormat = "PPP",
   showIcon = true,
   rollingText = true,
@@ -1301,10 +1383,17 @@ function DatePicker({
   disablePast = false,
   highlightToday = false,
   closeOnSelect = true,
+  selectionMode = "range",
+  range,
+  onRangeChange,
   className,
 }: {
   value?: Date
   onChange?: (date: Date | undefined) => void
+  /** Pick one date, or a start and an end date. */
+  selectionMode?: "single" | "range"
+  range?: DateRange
+  onRangeChange?: (range: DateRange | undefined) => void
   placeholder?: string
   dateFormat?: string
   showIcon?: boolean
@@ -1349,57 +1438,57 @@ function DatePicker({
     { item: "button[data-day]", keepIn: ".rdp-weeks" },
     hoverStyle
   )
-  const label = value ? format(value, dateFormat) : placeholder
+  const isRange = selectionMode === "range"
+  const wide = useMinWidth("(min-width: 768px)")
+  const twoMonths = isRange && wide
+  const anchorDate = isRange ? range?.from : value
+  const label = isRange
+    ? range?.from
+      ? // While the end is still being picked (it equals the start), it reads as open.
+        `${format(range.from, dateFormat)} – ${range.to && range.to.toDateString() !== range.from.toDateString() ? format(range.to, dateFormat) : "…"}`
+      : (placeholder ?? "Pick a date range")
+    : value
+      ? format(value, dateFormat)
+      : (placeholder ?? "Pick a date")
+  const closeTimer = React.useRef<number>(undefined)
+  React.useEffect(() => () => window.clearTimeout(closeTimer.current), [])
 
-  const [month, setMonth] = React.useState(() => value ?? new Date())
-  const pendingMonth = React.useRef<Date | null>(null)
-  const enterDirection = React.useRef<1 | -1 | null>(null)
+  // Picking the end: the start is set and the end isn't yet (or still equals it).
+  const [hoverDay, setHoverDay] = React.useState<Date>()
+  const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()
+  const picking = !!range?.from && (!range.to || sameDay(range.from, range.to))
+  const preview =
+    picking && range?.from && hoverDay && !sameDay(hoverDay, range.from)
+      ? hoverDay < range.from
+        ? { from: hoverDay, to: range.from }
+        : { from: range.from, to: hoverDay }
+      : null
 
-  const slideBy = (direction: number) =>
-    monthAnimation === "slide" ? `${direction * monthSlideDistance}%` : "0%"
-
-  const monthParts = () =>
-    calendarBox.current?.querySelectorAll(
-      ".rdp-month_caption, .rdp-month_grid"
-    ) ?? []
-
-  const changeMonth = async (next: Date) => {
-    const step = differenceInCalendarMonths(next, month)
-    const alreadyAnimating = pendingMonth.current !== null
-    const target = addMonths(pendingMonth.current ?? month, step)
-
-    if (reduceMotion || monthAnimation === "none") {
-      setMonth(target)
-      return
-    }
-    pendingMonth.current = target
-    if (alreadyAnimating) return
-
-    dateHover.hide()
-    const direction = step > 0 ? 1 : -1
-    await animate(
-      [...monthParts()],
-      { x: slideBy(-direction), opacity: 0 },
-      { duration: 0.2, ease: "easeIn" }
-    )
-    const landing = pendingMonth.current
-    pendingMonth.current = null
-    enterDirection.current =
-      differenceInCalendarMonths(landing, month) >= 0 ? 1 : -1
-    setMonth(landing)
-  }
-
+  const labelFrame = React.useRef<HTMLSpanElement>(null)
+  const labelBox = React.useRef<HTMLSpanElement>(null)
   React.useLayoutEffect(() => {
-    const direction = enterDirection.current
-    if (direction === null) return
-    enterDirection.current = null
-    animate(
-      [...monthParts()],
-      { x: [slideBy(direction), "0%"], opacity: [0, 1] },
-      { duration: 0.3, ease: [0.16, 1, 0.3, 1] }
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [month])
+    const frame = labelFrame.current
+    const inner = labelBox.current
+    if (!frame || !inner) return
+    let first = true
+    const observer = new ResizeObserver(() => {
+      const width = inner.offsetWidth
+      if (first || reduceMotion) {
+        first = false
+        frame.style.width = `${width}px`
+        return
+      }
+      animate(frame, { width }, { type: "spring", visualDuration: 0.35, bounce: 0.15 })
+    })
+    observer.observe(inner)
+    return () => observer.disconnect()
+  }, [reduceMotion])
+
+  // The right-hand month starts on the range's end, or the month after the start.
+  const startMonth = anchorDate ?? new Date()
+  const endMonth =
+    range?.to && differenceInCalendarMonths(range.to, startMonth) > 0 ? range.to : addMonths(startMonth, 1)
+  const panels = twoMonths ? [startMonth, endMonth] : [startMonth]
 
   const animateTrigger = () => {
     if (reduceMotion) return
@@ -1414,7 +1503,6 @@ function DatePicker({
           setOpen(next)
           dateHover.reset()
           if (next) {
-            setMonth(value ?? new Date())
             animateTrigger()
           }
         }}
@@ -1423,10 +1511,10 @@ function DatePicker({
           render={
             <Button
               variant="outline"
-              data-empty={!value}
+              data-empty={!anchorDate}
               onPointerEnter={animateTrigger}
               className={cn(
-                "group/trigger h-11 w-[20rem] justify-start gap-2.5 px-3.5 text-left text-base font-normal data-[empty=true]:text-(--hx-muted-foreground) max-md:w-full",
+                "group/trigger h-11 w-fit max-w-full justify-start gap-2.5 px-3.5 text-left text-base font-normal data-[empty=true]:text-(--hx-muted-foreground)",
                 "hover:bg-(--hx-background)",
                 fromBehind && "relative z-45",
                 "in-data-[theme=dark]:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-background) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]",
@@ -1436,6 +1524,9 @@ function DatePicker({
           }
         >
           {showIcon && <CalendarRangeIcon ref={icon} size="1.25em" />}
+          {/* The label box springs to the width of the label inside it. */}
+          <span ref={labelFrame} className="relative block max-w-full overflow-hidden">
+          <span ref={labelBox} className="block w-max">
           {rollingText ? (
             <span className="relative block overflow-hidden">
               <span className="block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/trigger:-translate-y-full motion-reduce:transition-none">
@@ -1449,14 +1540,17 @@ function DatePicker({
               </span>
             </span>
           ) : (
-            <span>{label}</span>
+            <span className="block">{label}</span>
           )}
+          </span>
+          </span>
         </PopoverTrigger>
         <PopoverContent
-          align="start"
+          align="center"
           positionerClassName={fromBehind ? "z-40" : undefined}
           className={cn(
-            "w-(--anchor-width) p-0",
+            twoMonths ? "w-[36rem]" : "w-[20rem]",
+            "max-w-[calc(100vw-2rem)] p-0",
             "duration-300 ease-out data-open:data-starting-style:scale-100 data-closed:data-ending-style:scale-100 data-closed:delay-150 motion-reduce:animate-none!",
             fromBehind
               ? "data-[side=bottom]:data-starting-style:-translate-y-12 data-closed:data-[side=bottom]:data-ending-style:-translate-y-12"
@@ -1465,21 +1559,69 @@ function DatePicker({
         >
           <div
             ref={calendarBox}
-            className="relative overflow-hidden"
+            className="relative flex overflow-hidden"
             style={
               { "--hover-duration": `${hoverDuration}s` } as React.CSSProperties
             }
             onPointerOver={dateHover.onPointerOver}
-            onPointerLeave={dateHover.onPointerLeave}
+            onPointerLeave={() => {
+              dateHover.onPointerLeave()
+              setHoverDay(undefined)
+            }}
           >
-            <HoverSquare ref={dateHoverSquare} variant={hoverVariant} />
+            {/* Above the range band, below the day numbers. */}
+            <HoverSquare ref={dateHoverSquare} variant={hoverVariant} className="z-1" />
+            {panels.map((initial, index) => (
+            <CalendarPanel
+              key={index}
+              initialMonth={initial}
+              monthAnimation={monthAnimation}
+              monthSlideDistance={monthSlideDistance}
+              onChangeStart={dateHover.hide}
+            >
+            {(month, changeMonth) => (
             <Calendar
-              mode="single"
-              selected={value}
-              onSelect={(date) => {
-                onChange?.(date)
-                if (closeOnSelect) setOpen(false)
-              }}
+              {...(isRange
+                ? {
+                    mode: "range" as const,
+                    selected: range,
+                    onDayMouseEnter: (day: Date) => setHoverDay(day),
+                    modifiers: preview
+                      ? {
+                          preview_start: preview.from,
+                          preview_middle: { after: preview.from, before: preview.to },
+                          preview_end: preview.to,
+                        }
+                      : undefined,
+                    modifiersClassNames: {
+                      preview_start: "rounded-l-(--cell-radius) rounded-r-none! bg-(--hx-muted)!",
+                      preview_middle: "rounded-none! bg-(--hx-muted)!",
+                      preview_end: "rounded-r-(--cell-radius) rounded-l-none! bg-(--hx-muted)!",
+                    },
+                    onSelect: (_: DateRange | undefined, day: Date) => {
+                      const from = range?.from
+                      const next =
+                        picking && from
+                          ? day < from
+                            ? { from: day, to: from }
+                            : { from, to: day }
+                          : { from: day, to: day }
+                      onRangeChange?.(next)
+                      window.clearTimeout(closeTimer.current)
+                      // Closes once both ends are picked, after the band has filled in.
+                      if (closeOnSelect && !sameDay(next.from, next.to)) {
+                        closeTimer.current = window.setTimeout(() => setOpen(false), reduceMotion ? 0 : 350)
+                      }
+                    },
+                  }
+                : {
+                    mode: "single" as const,
+                    selected: value,
+                    onSelect: (date: Date | undefined) => {
+                      onChange?.(date)
+                      if (closeOnSelect) setOpen(false)
+                    },
+                  })}
               month={month}
               onMonthChange={changeMonth}
               captionLayout={captionLayout}
@@ -1504,7 +1646,15 @@ function DatePicker({
                 String.raw`[&_.rdp-nav]:pointer-events-none [&_.rdp-nav]:z-10 [&_.rdp-button\_previous]:pointer-events-auto [&_.rdp-button\_next]:pointer-events-auto`,
                 String.raw`[&_.rdp-button\_previous]:overflow-hidden [&_.rdp-button\_previous]:rounded-full [&_.rdp-button\_next]:overflow-hidden [&_.rdp-button\_next]:rounded-full`,
                 String.raw`[&_.rdp-button\_previous]:hover:bg-(--hx-background) [&_.rdp-button\_next]:hover:bg-(--hx-background) in-data-[theme=dark]:[&_.rdp-button\_previous]:hover:bg-(--hx-input)/30 in-data-[theme=dark]:[&_.rdp-button\_next]:hover:bg-(--hx-input)/30`,
-                "w-full! p-3 [&_.rdp-weekdays]:gap-1.5 [&_.rdp-week]:mt-1.5 [&_.rdp-week]:gap-1.5",
+                "w-full! p-3 [&_.rdp-week]:mt-1.5",
+                // A range reads as one band, so its days touch; single dates keep their gaps.
+                isRange
+                  ? cn(
+                      "[&_.rdp-months]:gap-6 [&_.rdp-day]:transition-colors [&_.rdp-day]:duration-(--hover-duration) motion-reduce:[&_.rdp-day]:transition-none",
+                      String.raw`[&_.rdp-range\_start]:z-auto [&_.rdp-range\_start]:isolation-auto [&_.rdp-range\_end]:z-auto [&_.rdp-range\_end]:isolation-auto`,
+                      String.raw`[&_.rdp-range\_middle]:rounded-none! [&_.rdp-range\_middle]:bg-(--hx-muted)! [&_.rdp-range\_start]:bg-(--hx-muted)! [&_.rdp-range\_end]:bg-(--hx-muted)! [&_button[data-range-middle=true]]:bg-transparent!`
+                    )
+                  : "[&_.rdp-weekdays]:gap-1.5 [&_.rdp-week]:gap-1.5",
                 !highlightToday && "[&_.rdp-today]:bg-transparent",
               highlightToday && "[&_.rdp-today]:hover:bg-transparent",
                 "[&_button[data-day]]:ring-0! [&_button[data-day]:focus-visible]:ring-[3px]!",
@@ -1516,6 +1666,9 @@ function DatePicker({
                   "[&_button[data-selected-single=true]]:bg-transparent! [&_button[data-selected-single=true]]:text-(--hx-primary)! [&_button[data-selected-single=true]]:shadow-[inset_0_0_0_2px_var(--hx-primary)]"
               )}
             />
+            )}
+            </CalendarPanel>
+            ))}
           </div>
         </PopoverContent>
       </Popover>
@@ -1540,6 +1693,16 @@ const DATE_FORMATS = [
 ]
 
 const controls = {
+  selectionMode: {
+    group: "Trigger",
+    type: "select",
+    label: "Selection",
+    value: "range",
+    options: [
+      { label: "Single date", value: "single" },
+      { label: "Date range", value: "range" },
+    ],
+  },
   showIcon: { group: "Trigger", type: "checkbox", label: "Icon", value: true },
   rollingText: { group: "Trigger", type: "checkbox", label: "Rolling text", value: true },
   dateFormat: {
@@ -1690,6 +1853,7 @@ type DatePickerProps = React.ComponentProps<typeof DatePicker>
 
 function DatePickerPage(props: Partial<ControlValues>) {
   const [date, setDate] = React.useState<Date>()
+  const [range, setRange] = React.useState<DateRange>()
   const panel = useDemoControls(props)
   const { values } = panel
 
@@ -1699,6 +1863,9 @@ function DatePickerPage(props: Partial<ControlValues>) {
         <DatePicker
           value={date}
           onChange={setDate}
+          selectionMode={values.selectionMode as DatePickerProps["selectionMode"]}
+          range={range}
+          onRangeChange={setRange}
           showIcon={values.showIcon}
           rollingText={values.rollingText}
           dateFormat={values.dateFormat}
@@ -1753,7 +1920,7 @@ export interface AnimatedDatePickerProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDatePicker({ theme = "default", mode = "dark", className, ...props }: AnimatedDatePickerProps) {
+export default function AnimatedDatePicker({ theme = "vscode", mode = "dark", className, ...props }: AnimatedDatePickerProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

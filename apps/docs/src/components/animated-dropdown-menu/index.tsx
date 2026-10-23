@@ -507,7 +507,11 @@ function DropdownMenu({
   )
 
   const close = React.useCallback(() => actionsRef.current?.close(), [])
-  const onExitComplete = React.useCallback(() => actionsRef.current?.unmount(), [])
+  const onExitComplete = React.useCallback(() => {
+    // The pill stays on its item while the panel fades, and clears once it has gone.
+    setActiveItem(null)
+    actionsRef.current?.unmount()
+  }, [setActiveItem])
 
   const context = React.useMemo<DropdownMenuContextValue>(
     () => ({
@@ -570,7 +574,6 @@ function DropdownMenu({
             // Keep the popup mounted so Motion can play the exit, then unmount in `onExitComplete`.
             if (!next) {
               details.preventUnmountOnClose()
-              setActiveItem(null)
             }
             setOpenState(next)
             onOpenChange?.(next, details)
@@ -824,7 +827,7 @@ function DropdownMenuValue({
 function panelVariants(context: DropdownMenuContextValue, side: string): Variants {
   const { animation, preset, exitFast } = context
   const vertical = side === "top" || side === "bottom"
-  const away = side === "top" || side === "left" ? "0.5em" : "-0.5em"
+  const away = side === "top" || side === "left" ? "1.25em" : "-1.25em"
   let open: TargetAndTransition
   let closed: TargetAndTransition
   let enter: Transition = preset.enter
@@ -1061,7 +1064,7 @@ function DropdownMenuContent({
       <MenuPrimitive.Positioner
         anchor={anchor}
         // Morph covers the trigger, so let clicks pass through to it (only the items catch them).
-        className={cn("isolate z-50 outline-none", morph && "pointer-events-none")}
+        className={cn("isolate outline-none", morph ? "pointer-events-none z-50" : "z-40")}
         align={align}
         alignOffset={alignOffset}
         side={side}
@@ -1071,7 +1074,7 @@ function DropdownMenuContent({
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-content"
           className={cn(
-            "z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 outline-none",
+            "z-50 max-h-(--available-height) w-(--anchor-width) min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-md ring-1 ring-(--hx-border) outline-none in-data-[theme=dark]:ring-(--hx-input) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]",
             clipsHeight && "overflow-hidden",
             // Morph: the trigger is the container, so the popup is a bare see-through overlay.
             morph
@@ -1335,7 +1338,7 @@ function DropdownMenuSubContent({
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-sub-content"
           className={cn(
-            "z-50 max-h-(--available-height) w-auto min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-(--hx-foreground)/10 duration-100 outline-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
+            "z-50 max-h-(--available-height) w-auto min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-(--hx-border) in-data-[theme=dark]:ring-(--hx-input) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))] duration-100 outline-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
             className
           )}
           {...props}
@@ -1728,7 +1731,7 @@ function DropdownMenuPage(props: Partial<ControlValues>) {
             render={
               <Button
                 variant="outline"
-                className="h-auto w-[60%] cursor-pointer justify-between gap-4 px-4 py-3 hover:bg-(--hx-background) aria-expanded:bg-(--hx-background) max-md:w-full in-data-[theme=dark]:hover:bg-(--hx-input)/30 in-data-[theme=dark]:aria-expanded:bg-(--hx-input)/30"
+                className="relative z-45 h-auto w-[60%] cursor-pointer justify-between gap-4 px-4 py-3 hover:bg-(--hx-background) aria-expanded:bg-(--hx-background) max-md:w-full in-data-[theme=dark]:bg-(--hx-background)! in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]"
               />
             }
           >
@@ -1798,7 +1801,7 @@ export interface AnimatedDropdownMenuProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDropdownMenu({ theme = "default", mode = "dark", className, ...props }: AnimatedDropdownMenuProps) {
+export default function AnimatedDropdownMenu({ theme = "ghibli", mode = "dark", className, ...props }: AnimatedDropdownMenuProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

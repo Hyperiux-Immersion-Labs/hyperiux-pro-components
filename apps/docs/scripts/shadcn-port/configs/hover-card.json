@@ -36,6 +36,74 @@
     [
       "<p className=\"text-sm text-(--hx-muted-foreground)\"",
       "<p className=\"text-sm text-(--hx-muted-foreground) max-lg:hidden\""
+    ],
+    [
+      "    label: \"Open after\",\n    value: 0.4,",
+      "    label: \"Open after\",\n    value: 0.7,"
+    ],
+    [
+      "    label: \"Close after\",\n    value: 0.2,",
+      "    label: \"Close after\",\n    value: 0,"
+    ],
+    [
+      "label: \"Follow the pointer\", value: false",
+      "label: \"Follow the pointer\", value: true"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"lg\",",
+      "    label: \"Roundness\",\n    value: \"md\","
+    ],
+    [
+      "  rounded = \"lg\",\n  open: openProp,",
+      "  rounded = \"md\",\n  open: openProp,"
+    ],
+    [
+      "            aria-label=\"Website\"\n            className=\"h-9\"",
+      "            aria-label=\"Website\"\n            className=\"h-11.5 rounded-md\""
+    ],
+    [
+      "<Button type=\"button\" variant=\"outline\" size=\"lg\" onClick={shuffle}>",
+      "<Button type=\"button\" variant=\"outline\" size=\"lg\" onClick={shuffle} className=\"h-11.5 rounded-md px-4\">"
+    ],
+    [
+      "const linkClass = values.underline ? \"font-medium\" : \"font-medium underline underline-offset-4\"",
+      "const linkClass = values.underline\n    ? \"font-medium text-(--hx-primary)\"\n    : \"font-medium text-(--hx-primary) underline underline-offset-4\""
+    ],
+    [
+      "<div className={`h-16 rounded-md ${roast.color}`} />",
+      "<div className={`h-28 rounded-md ${roast.color}`} />"
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground) max-lg:hidden\">",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\">"
+    ],
+    [
+      "<p className=\"max-w-[60%] text-lg text-center leading-relaxed\">",
+      "<p className=\"max-w-[60%] text-lg text-center leading-relaxed max-lg:max-w-[85%] max-md:max-w-full max-md:text-base\">"
+    ],
+    [
+      "<p className=\"max-w-[70%] text-lg text-center leading-relaxed\">",
+      "<p className=\"max-w-[70%] text-lg text-center leading-relaxed max-lg:max-w-[85%] max-md:max-w-full max-md:text-base\">"
+    ],
+    [
+      "\"flex min-h-80 items-center justify-center px-6 text-sm\"",
+      "\"flex min-h-80 items-center justify-center px-6 text-sm max-md:min-h-64 max-md:px-0\""
+    ],
+    [
+      "\"transition-[opacity,scale,translate] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:duration-150 data-ending-style:ease-in motion-reduce:transition-opacity\"",
+      "\"transition-[opacity,scale,translate] duration-350 ease-[cubic-bezier(0.32,0.72,0,1)] data-ending-style:duration-200 data-ending-style:ease-[cubic-bezier(0.4,0,1,1)] motion-reduce:transition-opacity\""
+    ],
+    [
+      "      duration: 350,\n      delay: 80,\n      easing: \"cubic-bezier(0.45, 0, 0.55, 1)\",",
+      "      duration: 300,\n      delay: 40,\n      easing: \"cubic-bezier(0.22, 1, 0.36, 1)\","
+    ],
+    [
+      "w-72 origin-(--transform-origin)",
+      "w-72 max-w-[calc(100vw-2rem)] origin-(--transform-origin)"
+    ],
+    [
+      "style={{ \"--hc-travel\": \"0.75rem\", \"--hc-scale\": scale } as React.CSSProperties}",
+      "style={{ \"--hc-travel\": \"0px\", \"--hc-scale\": scale } as React.CSSProperties}"
     ]
   ],
   "descriptions": {
@@ -58,5 +126,6 @@
     "fadeContent",
     "underline"
   ],
-  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaultTheme": "valorant"
 }

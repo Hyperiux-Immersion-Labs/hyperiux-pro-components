@@ -264,7 +264,7 @@ function ThemeScope({ children }: { children?: React.ReactNode }) {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -282,14 +282,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -343,7 +343,11 @@ const HOVER_FILL_CLASSES =
  * towards where it left. Put `circle` inside the button, wrap its content in `label`, and
  * call `place` on enter and leave.
  */
+// 30% quicker than the original 0.5s, so the fill keeps up with the pointer
+const HOVER_FILL_DURATION = 0.35
+
 function useHoverFill() {
+  const reduceMotion = usePrefersReducedMotion()
   const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })
   const place = (event: React.PointerEvent<HTMLElement>, on: boolean) => {
     const rect = event.currentTarget.getBoundingClientRect()
@@ -357,7 +361,7 @@ function useHoverFill() {
       style={{ left: fill.x, top: fill.y }}
       initial={false}
       animate={{ scale: fill.on ? 1 : 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: reduceMotion ? 0 : HOVER_FILL_DURATION, ease: "easeInOut" }}
     />
   )
   const label = (children: React.ReactNode) => <span className="relative">{children}</span>
@@ -873,7 +877,7 @@ function DialogDescription({
 
 const controls = {
   rollingText: { group: "Button", type: "checkbox", label: "Rolling text", value: true },
-  fillOnHover: { group: "Button", type: "checkbox", label: "Fill on hover", value: false },
+  fillOnHover: { group: "Button", type: "checkbox", label: "Fill on hover", value: true },
 
   originFromTrigger: { group: "Opening", type: "checkbox", label: "Origin from trigger", value: true },
   elastic: { group: "Opening", type: "checkbox", label: "Elastic", value: true },
@@ -881,7 +885,7 @@ const controls = {
     group: "Opening",
     type: "slider",
     label: "Duration",
-    value: 0.35,
+    value: 0.4,
     min: 0.1,
     max: 1,
     step: 0.05,
@@ -922,7 +926,7 @@ const controls = {
     group: "Style",
     type: "select",
     label: "Roundness",
-    value: "xl",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -941,7 +945,7 @@ function DialogDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-80 items-center justify-center">
+      <div className="flex min-h-58 items-center justify-center">
         <Dialog
           {...values}
           backdrop={values.backdrop as DialogBackdrop}
@@ -997,7 +1001,7 @@ export interface AnimatedDialogProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDialog({ theme = "default", mode = "dark", className, ...props }: AnimatedDialogProps) {
+export default function AnimatedDialog({ theme = "valorant", mode = "dark", className, ...props }: AnimatedDialogProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

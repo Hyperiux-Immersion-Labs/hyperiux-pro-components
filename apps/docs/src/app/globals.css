@@ -268,6 +268,17 @@ body {
   background: var(--scrollbar-thumb, linear-gradient(180deg, #e61216 0%, #f16b0d 100%));
 }
 
+/* Converted shadcn components (themed by data-theme + inline --hx-* colours, pop-ups included) get a
+   plain thin scrollbar in their own palette; only the page keeps the branded gradient one.
+   :where() keeps specificity at zero so a component's own scrollbar classes still win. */
+:where([data-theme][style*="--hx-"]) {
+  --scrollbar-thumb: color-mix(in oklab, var(--hx-muted-foreground) 45%, transparent);
+}
+:where([data-theme][style*="--hx-"]) :where(*) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
+}
+
 ::selection {
   background: #ff5f00;
   color: #ffffff;

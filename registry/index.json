@@ -101,7 +101,7 @@
   },
   {
     "name": "animated-form",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "type": "registry:component",
     "title": "Animated Form",
     "description": "Config-driven contact form with validation for text, phone, select, textarea, and checkbox fields",
@@ -121,37 +121,15 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-form/index.tsx"
-      },
-      {
-        "path": "Button.tsx",
-        "target": "src/components/effects/animated-form/Button.tsx"
-      },
-      {
-        "path": "Checkbox.tsx",
-        "target": "src/components/effects/animated-form/Checkbox.tsx"
-      },
-      {
-        "path": "ContactForm.tsx",
-        "target": "src/components/effects/animated-form/ContactForm.tsx"
-      },
-      {
-        "path": "Input.tsx",
-        "target": "src/components/effects/animated-form/Input.tsx"
-      },
-      {
-        "path": "PhoneInput.tsx",
-        "target": "src/components/effects/animated-form/PhoneInput.tsx"
-      },
-      {
-        "path": "Select.tsx",
-        "target": "src/components/effects/animated-form/Select.tsx"
-      },
-      {
-        "path": "Textarea.tsx",
-        "target": "src/components/effects/animated-form/Textarea.tsx"
       }
     ],
     "changelog": [
+      {
+        "version": "1.1.0",
+        "date": "2026-10-23",
+        "summary": "Added form motion: error messages slide or fade in, fields shake on error, success ticks draw in, live character counters on the name, email and message fields, and a staggered entrance. All respect reduced motion. Fields and dropdowns default to a 6px (rounded-md) radius.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-30",
@@ -165,6 +143,160 @@
         "breaking": false
       }
     ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Page background color around the form.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "textColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Text color for the form heading and field labels.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "inputBackgroundColor",
+        "type": "color",
+        "default": "#ffffff",
+        "description": "Background color for inputs, textarea, and select controls.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "fieldBorderColor",
+        "type": "color",
+        "default": "#e5e7eb",
+        "description": "Default border color for form controls.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "inputRoundedness",
+        "type": "number",
+        "default": 6,
+        "description": "Border radius for inputs, dropdowns and the submit button in pixels. Defaults to 6 (rounded-md).",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 48,
+          "step": 1
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.3,
+        "description": "Transition duration for control focus and button effects in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.05,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "errorAnimation",
+        "type": "string",
+        "default": "slide",
+        "description": "How an error message enters under its field: slides open, fades in, or appears at once.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "slide",
+              "label": "Slide open"
+            },
+            {
+              "value": "fade",
+              "label": "Fade"
+            },
+            {
+              "value": "none",
+              "label": "None"
+            }
+          ]
+        }
+      },
+      {
+        "name": "shakeOnError",
+        "type": "boolean",
+        "default": true,
+        "description": "Fields with an error give a short shake when Submit is pressed.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "showSuccessTick",
+        "type": "boolean",
+        "default": true,
+        "description": "A tick draws itself inside a field once its value is valid.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "showCounter",
+        "type": "boolean",
+        "default": true,
+        "description": "Name, email and message fields show a live character count that warms up near the limit.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      },
+      {
+        "name": "staggerEntrance",
+        "type": "boolean",
+        "default": true,
+        "description": "Fields fade up one after another when the form first appears.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "style",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "registryPath": "registry/effects/components/animated-form/registry.json"
   },
   {
