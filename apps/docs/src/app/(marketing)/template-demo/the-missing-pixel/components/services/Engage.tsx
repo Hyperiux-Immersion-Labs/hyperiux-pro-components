@@ -5,8 +5,8 @@ import UnderlineLink from "../Buttons/UnderlineLink";
 import { ROUTES } from "../../routes";
 
 const Engage = () => (
-  <div className="flex flex-col gap-9 rounded-lg border border-black/10 bg-white p-[1.5vw] max-lg:p-[1.5vw] max-md:p-[2vw]">
-    <ul className="grid grid-cols-3 gap-[1.5vw] max-lg:grid-cols-1">
+  <div className="flex flex-col gap-9 rounded-lg border border-black/10 bg-white p-[1.5vw] max-lg:p-[2vw] max-md:p-[3vw]">
+    <ul className="grid grid-cols-3 gap-[1.5vw] max-md:gap-[4vw] max-lg:gap-[2.5vw] max-lg:grid-cols-1">
       {PLANS.map((plan, index) => (
         <FadeUp
           as="li"

@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 import Link from "next/link";
 import { ROUTES, servicePath } from "../../routes";
-import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal, RuleDraw } from "../Animations/gsapAnim";
 import AnimatedFaq from "../effects/animated-faq";
 import PixelButton from "../Buttons/PixelButton";
 import UnderlineLink from "../Buttons/UnderlineLink";
@@ -102,11 +102,13 @@ const ServiceDetail = ({ service }: { service: Service }) => (
           >
             <h3 className="text-30">{group.title}</h3>
             <ul className="flex flex-col">
-              {group.items.map((item) => (
-                <li
-                  key={item}
-                  className="border-t border-black/10 py-3 text-24"
-                >
+              {group.items.map((item, itemIndex) => (
+                <li key={item} className="relative py-3 text-24">
+                  <RuleDraw
+                    syncWithFade
+                    delay={0.4 + itemIndex * 0.08}
+                    className="absolute inset-x-0 top-0 h-px bg-black/10"
+                  />
                   {item}
                 </li>
               ))}
@@ -116,7 +118,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
       </ul>
     </section>
 
-    <section id="approach" className="px-[1vw] py-[2vw] max-lg:py-[3vw]">
+    <section id="approach" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[2vw] max-lg:py-[3vw]">
       <div className="flex flex-col gap-14 rounded-lg bg-[#0a0a0a] px-[4vw] py-[5vw] text-[#f5f5f5] max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
         <div className="flex flex-col items-start gap-6">
           <MaskReveal as="h2" className="w-[35%] max-lg:w-[70%] max-md:w-full">
@@ -126,13 +128,14 @@ const ServiceDetail = ({ service }: { service: Service }) => (
             {DETAIL.approach}
           </LineReveal>
         </div>
-        <ol className="flex flex-col border-b border-white/15">
+        <ol className="flex flex-col">
           {DETAIL.phases.map((phase, index) => (
-            <FadeUp
-              as="li"
-              key={phase.title}
-              className="grid grid-cols-12 items-start gap-x-9 gap-y-4 max-lg:gap-x-0 border-t border-white/15 py-[2.4vw] max-lg:py-[4vw] max-md:py-[6vw]"
-            >
+            <li key={phase.title} className="relative">
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-white/15" />
+              {index === DETAIL.phases.length - 1 && (
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-white/15" />
+              )}
+              <FadeUp className="grid grid-cols-12 items-start gap-x-9 gap-y-4 max-lg:gap-x-0 py-[2.4vw] max-lg:py-[4vw] max-md:py-[6vw]">
               <div className="col-span-4 flex items-start gap-5 max-lg:col-span-12">
                 <span className="font-mpx-head flex aspect-square h-[5.6vh] shrink-0 items-center justify-center rounded-full border border-white/15 text-22 max-lg:h-[4vh] max-md:h-[6vh]">
                   {index + 1}
@@ -150,23 +153,28 @@ const ServiceDetail = ({ service }: { service: Service }) => (
                   <li key={item}>{item}</li>
                 ))}
               </ul>
-            </FadeUp>
+              </FadeUp>
+            </li>
           ))}
         </ol>
       </div>
     </section>
 
     <section className={SECTION}>
-      <FadeUp className="grid grid-cols-2 gap-9 max-lg:grid-cols-1 max-lg:gap-11">
+      <div className="grid grid-cols-2 gap-9 max-lg:grid-cols-1 max-lg:gap-11">
         <div className="flex flex-col gap-6">
-          <h3 className="text-30">What we need from you</h3>
+          <FadeUp>
+            <h3 className="text-30">What we need from you</h3>
+          </FadeUp>
           <CheckList items={DETAIL.need} ruled />
         </div>
         <div className="flex flex-col gap-6">
-          <h3 className="text-30">Included as standard</h3>
+          <FadeUp>
+            <h3 className="text-30">Included as standard</h3>
+          </FadeUp>
           <CheckList items={DETAIL.included} ruled />
         </div>
-      </FadeUp>
+      </div>
       <FadeUp className="flex flex-col gap-6">
         <h3 className="text-30">Tools we work in</h3>
         <ul className="flex flex-wrap gap-2">
@@ -272,13 +280,18 @@ const CheckList = ({
   ruled?: boolean;
 }) => (
   <ul className={`flex flex-col ${ruled ? "" : "gap-4"}`}>
-    {items.map((item) => (
-      <li
-        key={item}
-        className={`flex items-start gap-3 text-24 ${ruled ? "border-t border-black/10 py-4" : ""}`}
-      >
-        <Check className="size-[1.2vw] shrink-0 text-mpx-accent max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
-        {item}
+    {items.map((item, index) => (
+      <li key={item} className="relative">
+        {ruled && (
+          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+        )}
+        <FadeUp
+          delay={index * 0.08}
+          className={`flex items-start gap-3 text-24 ${ruled ? "py-4" : ""}`}
+        >
+          <Check className="size-[1.2vw] shrink-0 text-mpx-accent max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
+          {item}
+        </FadeUp>
       </li>
     ))}
   </ul>

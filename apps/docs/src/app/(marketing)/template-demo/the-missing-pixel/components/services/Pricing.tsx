@@ -5,7 +5,7 @@
 import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { FadeUp } from "../Animations/gsapAnim";
+import { FadeUp, RuleDraw } from "../Animations/gsapAnim";
 import SectionHead from "../shared/SectionHead";
 import Tilt from "../Animations/Tilt";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
@@ -36,19 +36,23 @@ const Pricing = () => {
         duration,
         ease: "power3.out",
       });
-      if (duration) {
+      const incoming = plan === "project" ? 0 : 1;
+      gsap.utils.toArray<HTMLElement>("[data-roll]").forEach((roll, index) => {
+        const [first, second] = Array.from(roll.children) as HTMLElement[];
+        const [next, previous] = incoming === 0 ? [first, second] : [second, first];
+        const delay = duration ? index * 0.05 : 0;
+        if (!duration) {
+          gsap.set(next, { yPercent: 0 });
+          gsap.set(previous, { yPercent: 110 });
+          return;
+        }
         gsap.fromTo(
-          "[data-price]",
-          { y: 14, opacity: 0 },
-          {
-            y: 0,
-            opacity: 1,
-            duration: 0.5,
-            ease: "power3.out",
-            stagger: 0.05,
-          },
+          next,
+          { yPercent: 110 },
+          { yPercent: 0, duration: 0.7, delay, ease: "power3.out" },
         );
-      }
+        gsap.to(previous, { yPercent: -110, duration: 0.7, delay, ease: "power3.out" });
+      });
       readyRef.current = true;
     },
     { dependencies: [plan], scope: rootRef },
@@ -114,25 +118,29 @@ const Pricing = () => {
                 >
                   {tier.text}
                 </p>
-                <p data-price className="flex flex-col gap-2">
-                  <span className="font-mpx-head text-64 leading-none tracking-tight">
-                    {tier[plan].price}
-                  </span>
-                  <span
+                <p className="flex flex-col gap-2">
+                  <RollText
+                    className="font-mpx-head text-64 leading-none tracking-tight"
+                    plan={plan}
+                    values={[tier.project.price, tier.retainer.price]}
+                  />
+                  <RollText
                     className={`text-14 ${tier.featured ? "text-white/60" : "text-mpx-muted"}`}
-                  >
-                    {tier[plan].unit}
-                  </span>
+                    plan={plan}
+                    values={[tier.project.unit, tier.retainer.unit]}
+                  />
                 </p>
                 <ul className="flex flex-col gap-3">
-                  {tier.features.map((feature) => (
-                    <li
+                  {tier.features.map((feature, featureIndex) => (
+                    <FadeUp
+                      as="li"
                       key={feature}
+                      delay={0.3 + featureIndex * 0.08}
                       className="flex items-start gap-3 text-24"
                     >
                       <Check className="size-[1.2vw] shrink-0 text-mpx-accent max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
                       {feature}
-                    </li>
+                    </FadeUp>
                   ))}
                 </ul>
               </div>
@@ -151,14 +159,18 @@ const Pricing = () => {
         ))}
       </ul>
 
-      <FadeUp className="flex flex-col gap-6">
-        <h3 className="text-30">Add-ons</h3>
-        <ul className="flex flex-col border-b border-black/10">
-          {ADDONS.map((addon) => (
-            <li
-              key={addon.name}
-              className="flex items-start justify-between gap-9 border-t border-black/10 py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-2 max-md:py-[5vw]"
-            >
+      <div className="flex flex-col gap-6">
+        <FadeUp>
+          <h3 className="text-30">Add-ons</h3>
+        </FadeUp>
+        <ul className="flex flex-col">
+          {ADDONS.map((addon, index) => (
+            <li key={addon.name} className="relative">
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+              {index === ADDONS.length - 1 && (
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+              )}
+              <FadeUp className="flex items-start justify-between gap-9 py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-2 max-md:py-[5vw]">
               <span className="font-mpx-head w-[22%] text-28 font-medium max-md:w-full">
                 {addon.name}
               </span>
@@ -168,17 +180,42 @@ const Pricing = () => {
               <span className="w-[16%] text-right text-28 max-md:w-full max-md:text-left">
                 {addon.price}
               </span>
+              </FadeUp>
             </li>
           ))}
         </ul>
-        <p className="text-14 text-mpx-muted">
-          Prices exclude VAT and local taxes. 40% to start, 30% at concept
-          approval, 30% on delivery.
-        </p>
-      </FadeUp>
+        <FadeUp>
+          <p className="text-14 text-mpx-muted">
+            Prices exclude VAT and local taxes. 40% to start, 30% at concept
+            approval, 30% on delivery.
+          </p>
+        </FadeUp>
+      </div>
     </div>
   );
 };
+
+const RollText = ({
+  values,
+  plan,
+  className,
+}: {
+  values: [string, string];
+  plan: Plan;
+  className: string;
+}) => (
+  <span data-roll className="grid overflow-hidden py-1">
+    {values.map((value, index) => (
+      <span
+        key={index}
+        aria-hidden={(plan === "project") !== (index === 0)}
+        className={`col-start-1 row-start-1 ${className}`}
+      >
+        {value}
+      </span>
+    ))}
+  </span>
+);
 
 export default Pricing;
 

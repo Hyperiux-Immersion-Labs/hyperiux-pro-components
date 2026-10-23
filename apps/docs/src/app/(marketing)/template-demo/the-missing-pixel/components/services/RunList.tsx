@@ -3,7 +3,7 @@
 "use client";
 
 import { useState } from "react";
-import { FadeUp } from "../Animations/gsapAnim";
+import { FadeUp, RuleDraw } from "../Animations/gsapAnim";
 import SquareTranslate from "../effects/square-translate";
 
 type Run = { title: string; text: string; time: string; on: number[] };
@@ -13,11 +13,15 @@ const RunList = ({ runs }: { runs: Run[] }) => {
 
   return (
     <SquareTranslate onActiveChange={setActive}>
-      <ol className="flex flex-col border-b border-black/10">
+      <ol className="flex flex-col">
         {runs.map((run, index) => {
           const lit = active === index;
           return (
-            <li key={run.title} data-row className="border-t border-black/10">
+            <li key={run.title} data-row className="relative">
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+              {index === runs.length - 1 && (
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+              )}
               <FadeUp className="group grid grid-cols-12 items-center gap-x-9 gap-y-3 max-lg:gap-x-0 py-[3vw] max-lg:items-start max-lg:py-[5vw] max-md:py-[8vw]">
                 <span
                   data-shift

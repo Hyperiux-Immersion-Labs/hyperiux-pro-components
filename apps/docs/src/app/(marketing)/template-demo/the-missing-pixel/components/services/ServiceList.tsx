@@ -1,19 +1,24 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import Image from "next/image";
-import { FadeUp } from "../Animations/gsapAnim";
+import { FadeUp, RuleDraw } from "../Animations/gsapAnim";
 import PixelReveal from "../effects/pixel-reveal";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import { servicePath } from "../../routes";
 import { SERVICES } from "./services";
 
 const ServiceList = () => (
-  <ul className="flex flex-col border-b border-black/10">
-    {SERVICES.map((service) => (
-      <FadeUp as="li" key={service.title}>
+  <ul className="flex flex-col">
+    {SERVICES.map((service, index) => (
+      <li key={service.title} className="relative">
+        <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+        {index === SERVICES.length - 1 && (
+          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+        )}
+        <FadeUp>
         <div
           data-cursor="Explore"
-          className="group grid grid-cols-12 gap-x-9 gap-y-5 max-lg:gap-x-0 border-t border-black/10 py-[3vw] max-lg:py-[5vw] max-md:py-[8vw]"
+          className="group grid grid-cols-12 gap-x-9 gap-y-5 max-lg:gap-x-0 py-[3vw] max-lg:py-[5vw] max-md:py-[8vw]"
         >
           <h3 className="col-span-4 text-40 text-[#0a0a0a] transition-colors duration-300 group-hover:text-(color:--mpx-accent) max-lg:col-span-12">
             {service.title}
@@ -59,7 +64,8 @@ const ServiceList = () => (
             </div>
           </div>
         </div>
-      </FadeUp>
+        </FadeUp>
+      </li>
     ))}
   </ul>
 );

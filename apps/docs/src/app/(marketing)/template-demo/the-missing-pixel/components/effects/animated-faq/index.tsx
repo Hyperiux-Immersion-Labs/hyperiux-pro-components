@@ -16,7 +16,7 @@ import React, {
   type KeyboardEvent,
   type ReactNode,
 } from "react";
-import { FadeUp } from "../../Animations/gsapAnim";
+import { FadeUp, RuleDraw } from "../../Animations/gsapAnim";
 
 import gsap from "gsap";
 import { ChevronDown, ChevronRight } from "lucide-react";
@@ -433,7 +433,8 @@ const AnimatedFaq = ({
   allowMultiple = false,
   defaultOpen = [0],
 }: AnimatedFaqProps) => (
-  <div className="border-t border-black/10">
+  <div className="relative">
+    <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
     <FAQGroup
       allowMultiple={allowMultiple}
       defaultOpenItems={defaultOpen.map((index) => `faq-${index}`)}
@@ -442,8 +443,8 @@ const AnimatedFaq = ({
         <FAQWrapper
           key={item.question}
           itemId={`faq-${index}`}
-          className="border-b border-black/10"
-          iconClassName="flex aspect-square h-[5.6vh] items-center justify-center rounded-full bg-[#ff5f00] text-[#ffffff] max-lg:h-[4vh] max-md:h-[6vh]"
+          className="relative"
+          iconClassName="flex aspect-square h-[4.4vh] items-center justify-center rounded-full bg-mpx-grad text-[#ffffff] max-lg:h-[3.2vh] max-md:h-[4.8vh]"
           duration={0.5}
         >
           <FAQTitle
@@ -455,6 +456,7 @@ const AnimatedFaq = ({
           <FAQContent className="w-[70%] pb-[1.8vw] text-28 text-mpx-muted max-lg:w-[90%] max-lg:pb-[3vw] max-md:w-full max-md:pb-[5vw]">
             <FadeUp>{item.answer}</FadeUp>
           </FAQContent>
+          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
         </FAQWrapper>
       ))}
     </FAQGroup>

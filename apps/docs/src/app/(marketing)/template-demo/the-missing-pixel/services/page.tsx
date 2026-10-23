@@ -24,8 +24,9 @@ const page = () => (
         <>
           Six disciplines.
           <br />
-          Zero hand-offs.
+          Zero hand offs.
         </>
+        
       }
       textClassName="w-[45%]"
       containerClassName="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]"
