@@ -31,6 +31,7 @@ declare module 'next/dist/lib/metadata/types/metadata-interface.js' {
 declare module 'next/dist/build/segment-config/app/app-segment-config.js' {
   export type InstantConfigForTypeCheckInternal = any;
   export type Prefetch = any;
+  export type EnsureStatic = any;
 }
 
 declare module 'next/dist/*' {
@@ -38,6 +39,7 @@ declare module 'next/dist/*' {
   export type ResolvingViewport = Promise<any>;
   export type InstantConfigForTypeCheckInternal = any;
   export type Prefetch = any;
+  export type EnsureStatic = any;
   export type AppRoutes = string;
   export type LayoutRoutes = string;
   export type ParamMap = Record<string, any>;
