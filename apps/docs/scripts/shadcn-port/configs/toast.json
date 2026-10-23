@@ -13,7 +13,7 @@
   "subtitle": "Brief messages that stack in the corner and can be swiped away.",
   "defaultMode": "dark",
   "descriptions": {
-    "variant": "Kind of message. Loading → success shows a spinner, then succeeds after a moment.",
+    "variant": "Kind of message. Loading \u2192 success shows a spinner, then succeeds after a moment.",
     "showDescription": "Adds a second line of detail under the title.",
     "collapsibleDescription": "Long descriptions fold to one line with a toggle to expand. Needs Description on.",
     "showAction": "Adds an Undo button to the toast.",
@@ -23,8 +23,8 @@
     "fadeContent": "The toast's text fades in just after the toast arrives.",
     "exitAnimation": "How a toast leaves when it closes.",
     "tiltOnSwipe": "Toasts tilt in the direction you swipe them away.",
-    "morphIcon": "The loading spinner morphs into a tick on success. Only for the Loading → success variant, or after Undo with Show action on.",
-    "showTimerBar": "A bar shrinks to show the time left. Not used with Stays for 0; with Loading → success it appears after the success.",
+    "morphIcon": "The loading spinner morphs into a tick on success. Only for the Loading \u2192 success variant, or after Undo with Show action on.",
+    "showTimerBar": "A bar shrinks to show the time left. Not used with Stays for 0; with Loading \u2192 success it appears after the success.",
     "glass": "Frosted, see-through background.",
     "showAccentEdge": "A coloured line on the edge for success, info, warning and error toasts. Not used by Default.",
     "rounded": "Corner radius of the toasts.",
@@ -35,6 +35,126 @@
     [
       "rounded-full bg-(--hx-foreground)/25 animate-[hx-toast-timer_",
       "rounded-full bg-(--hx-foreground)/25 in-data-accent:bg-(--hx-primary)/70 animate-[hx-toast-timer_"
+    ],
+    [
+      "import { AnimatePresence, motion } from \"motion/react\";",
+      "import { AnimatePresence, motion } from \"motion/react\";"
+    ],
+    [
+      "function toClass(value: unknown): string {",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\nfunction toClass(value: unknown): string {"
+    ],
+    [
+      "motion-reduce:[transition:opacity_200ms]",
+      "motion-reduce:[transition:opacity_200ms] in-data-pc-rm:[transition:opacity_200ms] in-data-toast-resizing:[transition:opacity_300ms]"
+    ],
+    [
+      "  const growFromOrigin = effects.originFromTrigger && origin !== undefined",
+      "  const reduceMotion = usePrefersReducedMotion()\n  const growFromOrigin = effects.originFromTrigger && origin !== undefined && !reduceMotion"
+    ],
+    [
+      "        EXIT[effects.exitAnimation][edge],",
+      "        EXIT[reduceMotion ? \"fade\" : effects.exitAnimation][edge],"
+    ],
+    [
+      "        effects.tiltOnSwipe ? SWIPE_EXIT_TILT : SWIPE_EXIT_PLAIN,",
+      "        effects.tiltOnSwipe && !reduceMotion ? SWIPE_EXIT_TILT : SWIPE_EXIT_PLAIN,"
+    ],
+    [
+      "  const { morphIcon } = React.useContext(ToastEffectsContext)\n  const [firstType]",
+      "  const { morphIcon: morphSetting } = React.useContext(ToastEffectsContext)\n  const reduceMotion = usePrefersReducedMotion()\n  const morphIcon = morphSetting && !reduceMotion\n  const [firstType]"
+    ],
+    [
+      "icon = <Loader2Icon className=\"animate-spin\" aria-hidden=\"true\" />",
+      "icon = <Loader2Icon className=\"animate-spin motion-reduce:animate-none in-data-pc-rm:animate-none\" aria-hidden=\"true\" />"
+    ],
+    [
+      "  const showTimer =\n    effects.showTimerBar && toastItem.type !== \"loading\" && duration > 0",
+      "  const reduceMotion = usePrefersReducedMotion()\n  // A bar that runs down is motion, so reduced motion leaves it out\n  const showTimer =\n    effects.showTimerBar && !reduceMotion && toastItem.type !== \"loading\" && duration > 0"
+    ],
+    [
+      "const TRANSITION = {\n  springMorph:\n    \"[transition:transform_600ms_cubic-bezier(0.34,1.56,0.64,1),opacity_400ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]\",\n  spring:\n    \"[transition:transform_600ms_cubic-bezier(0.34,1.56,0.64,1),opacity_400ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]\",\n  smoothMorph:\n    \"[transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]\",\n  smooth:\n    \"[transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]\",\n}\n",
+      "const SMOOTH = \"cubic-bezier(0.22,1,0.36,1)\"\n// Position, height, offset and scale all run for the same time, so the stack settles together\n// instead of the heights snapping first. Elastic only adds a gentle overshoot to the move.\nconst TRANSITION = {\n  springMorph:\n    \"[transition:transform_550ms_cubic-bezier(0.34,1.25,0.64,1),opacity_300ms,height_550ms_cubic-bezier(0.34,1.25,0.64,1),translate_550ms_cubic-bezier(0.22,1,0.36,1),scale_550ms_cubic-bezier(0.22,1,0.36,1)]\",\n  spring:\n    \"[transition:transform_550ms_cubic-bezier(0.34,1.25,0.64,1),opacity_300ms,height_550ms_cubic-bezier(0.34,1.25,0.64,1),translate_550ms_cubic-bezier(0.22,1,0.36,1),scale_550ms_cubic-bezier(0.22,1,0.36,1)]\",\n  smoothMorph:\n    \"[transition:transform_450ms_cubic-bezier(0.22,1,0.36,1),opacity_300ms,height_450ms_cubic-bezier(0.22,1,0.36,1),translate_450ms_cubic-bezier(0.22,1,0.36,1),scale_450ms_cubic-bezier(0.22,1,0.36,1)]\",\n  smooth:\n    \"[transition:transform_450ms_cubic-bezier(0.22,1,0.36,1),opacity_300ms,height_450ms_cubic-bezier(0.22,1,0.36,1),translate_450ms_cubic-bezier(0.22,1,0.36,1),scale_450ms_cubic-bezier(0.22,1,0.36,1)]\",\n}\n"
+    ],
+    [
+      "const OPEN_MS = 400\nconst OPEN_EASE = \"cubic-bezier(0.34, 1.56, 0.64, 1)\"",
+      "const OPEN_MS = 450\nconst OPEN_EASE = \"cubic-bezier(0.34, 1.25, 0.64, 1)\""
+    ],
+    [
+      "max-w-md outline-none transition-[translate] duration-300",
+      "max-w-md outline-none transition-[translate] duration-300 sm:max-w-[36rem]"
+    ],
+    [
+      "\"flex h-full items-start gap-3 overflow-hidden py-4 transition-opacity",
+      "\"flex h-full items-start gap-3 overflow-hidden py-4 sm:gap-4 sm:py-5 transition-opacity"
+    ],
+    [
+      "pill ? \"px-6\" : \"px-4\",",
+      "pill ? \"px-6 sm:px-8\" : \"px-4 sm:px-5\","
+    ],
+    [
+      "className={cn(\"text-sm font-medium\", className)}",
+      "className={cn(\"text-sm font-medium sm:text-lg\", className)}"
+    ],
+    [
+      "className={cn(\"text-sm text-(--hx-muted-foreground)\", className)}",
+      "className={cn(\"text-sm text-(--hx-muted-foreground) sm:text-lg\", className)}"
+    ],
+    [
+      "\"-my-1 shrink-0\",\n        \"transition-colors duration-200 hover:border-(--hx-foreground)",
+      "\"-my-1 shrink-0 sm:h-9 sm:px-4 sm:text-base\",\n        \"transition-colors duration-200 hover:border-(--hx-foreground)"
+    ],
+    [
+      "\"relative -my-1 shrink-0 text-(--hx-muted-foreground) after:absolute",
+      "\"relative -my-1 shrink-0 sm:size-9 sm:[&_svg]:size-5 text-(--hx-muted-foreground) after:absolute"
+    ],
+    [
+      "\"-my-1 shrink-0 text-(--hx-muted-foreground) hover:bg-transparent",
+      "\"-my-1 shrink-0 sm:size-9 sm:[&_svg]:size-5 text-(--hx-muted-foreground) hover:bg-transparent"
+    ],
+    [
+      "[&_svg:not([class*='size-'])]:size-4\"\n    >\n      {morphIcon",
+      "[&_svg:not([class*='size-'])]:size-4 sm:[&_svg:not([class*='size-'])]:size-[1.3rem]\"\n    >\n      {morphIcon"
+    ],
+    [
+      "before:absolute before:top-4 before:h-5 before:w-0.5 before:rounded-full",
+      "before:absolute before:top-4 before:h-5 before:w-0.5 sm:before:top-5 sm:before:h-6 sm:before:w-[3px] before:rounded-full"
+    ],
+    [
+      "            variant=\"outline\"\n            onClick={(event) => showToast(event.currentTarget)}\n            className='text-xl py-5 px-8'",
+      "            variant=\"default\"\n            onClick={(event) => showToast(event.currentTarget)}\n            className=\"h-auto px-[2.08rem] py-[1.3rem] text-[1.3rem] max-sm:px-6 max-sm:py-4 max-sm:text-lg\""
+    ],
+    [
+      "    label: \"Variant\",\n    value: \"default\",",
+      "    label: \"Variant\",\n    value: \"success\","
+    ],
+    [
+      "    label: \"Show action\",\n    value: false,",
+      "    label: \"Show action\",\n    value: true,"
+    ],
+    [
+      "    label: \"Loading \u2192 tick morph\",\n    value: true,",
+      "    label: \"Loading \u2192 tick morph\",\n    value: false,"
+    ],
+    [
+      "  morphIcon: true,",
+      "  morphIcon: false,"
+    ],
+    [
+      "      let toShift = 0\n      if (next === \"open\" && viewport && effects.position.startsWith(\"bottom\")) {\n        const restingBottom = viewport.getBoundingClientRect().bottom - fromShift\n        const room = window.innerHeight - SCREEN_MARGIN - restingBottom\n        toShift = Math.max(0, Math.min(to - from, room))\n      }",
+      "      // The stack stays put; the toast grows upward and the ones above move with it, so\n      // nothing travels in two directions at once\n      const toShift = 0"
+    ],
+    [
+      "      const timing =\n        next === \"open\"\n          ? { duration: OPEN_MS, easing: OPEN_EASE }\n          : { duration: EXPAND_MS, easing: EXPAND_EASE }",
+      "      // Same duration and easing as the stack's own move (both ways)\n      const timing = effects.elastic\n        ? { duration: 550, easing: \"cubic-bezier(0.34,1.25,0.64,1)\" }\n        : { duration: 450, easing: \"cubic-bezier(0.22,1,0.36,1)\" }"
+    ],
+    [
+      "      el.animate([{ height: `${from}px` }, { height: `${to}px` }], timing)",
+      "      // Base UI re-measures this toast every frame while it resizes, which moves the toasts\n      // above in small steps. Their own easing would restart on each step and stutter, so\n      // they follow those steps directly until the resize ends.\n      viewport?.setAttribute(\"data-toast-resizing\", \"\")\n      el.animate([{ height: `${from}px` }, { height: `${to}px` }], timing).finished.finally(() =>\n        viewport?.removeAttribute(\"data-toast-resizing\")\n      )"
+    ],
+    [
+      "  const resize = (next: \"open\" | \"closed\", reduceMotion: boolean) => {\n    const el = root.current\n    const from = el?.offsetHeight\n    flushSync(() => setPhase(next))\n    if (!el || from === undefined) return\n    queueMicrotask(() => {\n      const to = el.offsetHeight\n      if (to === from) return\n      const viewport = el.parentElement\n      const fromShift = shiftY.current\n      // The stack stays put; the toast grows upward and the ones above move with it, so\n      // nothing travels in two directions at once\n      const toShift = 0\n      shiftY.current = toShift\n      reportShift(toastItem.id, toShift)\n      if (reduceMotion) return\n\n      // Same duration and easing as the stack's own move (both ways)\n      const timing = effects.elastic\n        ? { duration: 550, easing: \"cubic-bezier(0.34,1.25,0.64,1)\" }\n        : { duration: 450, easing: \"cubic-bezier(0.22,1,0.36,1)\" }\n      // Base UI re-measures this toast every frame while it resizes, which moves the toasts\n      // above in small steps. Their own easing would restart on each step and stutter, so\n      // they follow those steps directly until the resize ends.\n      viewport?.setAttribute(\"data-toast-resizing\", \"\")\n      el.animate([{ height: `${from}px` }, { height: `${to}px` }], timing).finished.finally(() =>\n        viewport?.removeAttribute(\"data-toast-resizing\")\n      )\n      const isFront =\n        getComputedStyle(el).getPropertyValue(\"--toast-index\").trim() === \"0\"\n      if (viewport && isFront && toShift !== fromShift) {\n        viewport.animate(\n          [{ translate: `0 ${fromShift}px` }, { translate: `0 ${toShift}px` }],\n          timing\n        )\n      }\n    })\n  }\n",
+      "  const resize = (next: \"open\" | \"closed\", reduceMotion: boolean) => {\n    const el = root.current\n    const from = el?.offsetHeight\n    flushSync(() => setPhase(next))\n    if (!el || from === undefined) return\n    // The stack stays put: the toast grows or shrinks upward and the ones above move with it\n    shiftY.current = 0\n    reportShift(toastItem.id, 0)\n    if (reduceMotion) return\n    // Measure the new natural height now, the same way Base UI does\n    const inline = el.style.height\n    el.style.height = \"auto\"\n    const to = el.offsetHeight\n    el.style.height = inline\n    if (to === from) return\n    const viewport = el.parentElement\n    // Start the resize before Base UI measures, so it reads the animated height every frame.\n    // The toasts above then follow those per-frame steps directly (their own easing would\n    // restart on each step and stutter) until the resize ends.\n    viewport?.setAttribute(\"data-toast-resizing\", \"\")\n    el.animate(\n      [{ height: `${from}px` }, { height: `${to}px` }],\n      // Same duration and easing as the stack's own move\n      effects.elastic\n        ? { duration: 550, easing: \"cubic-bezier(0.34,1.25,0.64,1)\" }\n        : { duration: 450, easing: \"cubic-bezier(0.22,1,0.36,1)\" }\n    ).finished.finally(() => viewport?.removeAttribute(\"data-toast-resizing\"))\n  }\n"
     ]
   ],
   "ranges": {
@@ -47,5 +167,21 @@
       "prop": "timeout",
       "equals": 0
     }
-  }
+  },
+  "defaultTheme": "claude",
+  "defaults": {
+    "variant": "success",
+    "showAction": true,
+    "morphIcon": false
+  },
+  "hideWhenReducedMotion": [
+    "elastic",
+    "originFromTrigger",
+    "fadeContent",
+    "exitAnimation",
+    "tiltOnSwipe",
+    "morphIcon",
+    "showTimerBar"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
 }

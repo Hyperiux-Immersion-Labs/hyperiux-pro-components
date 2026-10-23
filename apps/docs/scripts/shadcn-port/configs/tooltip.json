@@ -28,11 +28,27 @@
   "patches": [
     [
       "\"flex min-h-[50vh] items-center justify-center rounded-lg border px-4 py-8\"",
-      "\"flex min-h-96 items-center justify-center rounded-lg border px-4 py-8\""
+      "\"flex min-h-96 items-center justify-center px-4 py-8\""
     ],
     [
       "outline: \"border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground)\",",
       "outline: \"border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground) in-data-accent:border-(--hx-primary) in-data-accent:text-(--hx-primary)\","
+    ],
+    [
+      "    label: \"Position\",\n    value: \"cursor\",",
+      "    label: \"Position\",\n    value: \"anchor\","
+    ],
+    [
+      "flex items-center gap-2 rounded-lg border bg-background px-5 py-3 text-base font-medium transition-colors hover:",
+      "flex items-center gap-2 rounded-md border bg-background px-5 py-3 text-base font-medium hover:"
+    ],
+    [
+      "<p className=\"text-sm text-muted-foreground\">\n        Tip: move",
+      "<p className=\"text-center text-sm text-muted-foreground\">\n        Tip: move"
+    ],
+    [
+      "Set &quot;When it changes&quot; to a Morph option",
+      "Set &quot;Change animation&quot; to a Morph option"
     ]
   ],
   "themeDescription": "Colour palette. The Filled style always uses its primary colour; any theme but Default also tints the Outline style's text and border.",
@@ -41,5 +57,16 @@
       "prop": "changeAnimation",
       "equals": "instant"
     }
-  }
+  },
+  "defaultTheme": "valorant",
+  "hideWhenReducedMotion": [
+    "changeAnimation",
+    "duration",
+    "elastic",
+    "bounce",
+    "stretchOnMove",
+    "tiltOnMove",
+    "stiffness",
+    "appearAnimation"
+  ]
 }

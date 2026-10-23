@@ -45,7 +45,41 @@
     [
       "max-md:w-[90vw]",
       "max-md:w-80"
+    ],
+    [
+      "        <div className=\"flex flex-col items-center gap-1 text-center text-sm text-muted-foreground\">\n          <span>\n            {roast[0].toUpperCase() + roast.slice(1)} roast \u00b7 {method.replace(\"-\", \" \")}\n          </span>\n          <span>\n            {[showRatio && \"1:16 ratio\", showTimer && \"3:00 timer\", showNotes && \"tasting notes\"]\n              .filter(Boolean)\n              .join(\" \u00b7 \") || \"Nothing shown\"}\n          </span>\n        </div>\n",
+      ""
+    ],
+    [
+      "<p className=\"text-sm text-muted-foreground\">\n        Tip: open a menu",
+      "<p className=\"text-center text-sm text-muted-foreground\">\n        Tip: open a menu"
+    ],
+    [
+      "    value: \"collapse\",\n",
+      "    value: \"slide\",\n"
+    ],
+    [
+      "label: \"Rolling text\", value: false }",
+      "label: \"Rolling text\", value: true }"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"lg\",",
+      "    label: \"Roundness\",\n    value: \"md\","
     ]
   ],
-  "themeDescription": "Colour palette, menus included. With a Primary fill, the bar and item highlights take its primary colour."
+  "themeDescription": "Colour palette, menus included. With a Primary fill, the bar and item highlights take its primary colour.",
+  "defaultTheme": "caffeine",
+  "hideWhenReducedMotion": [
+    "animation",
+    "exitFast",
+    "switchAnimation",
+    "contentAnimation",
+    "slideDistance",
+    "duration",
+    "delay",
+    "stagger",
+    "triggerRollingText",
+    "pressFeedback",
+    "rollingText"
+  ]
 }

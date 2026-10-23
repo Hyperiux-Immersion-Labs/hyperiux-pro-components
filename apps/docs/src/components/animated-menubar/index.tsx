@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 
-import { AnimatePresence, motion, MotionConfig, stagger, useReducedMotion, type HTMLMotionProps, type TargetAndTransition, type Variants, animate } from "motion/react";
+import { AnimatePresence, motion, MotionConfig, stagger, type HTMLMotionProps, type TargetAndTransition, type Variants, animate } from "motion/react";
 import { Menubar as MenubarPrimitive } from "@base-ui/react/menubar";
 import { CherryIcon, CitrusIcon, CopyIcon, FileIcon, FilePlusIcon, FileTextIcon, FlameIcon, FolderOpenIcon, HeartIcon, LeafIcon, MoonIcon, MountainIcon, PencilIcon, PrinterIcon, RedoIcon, ShareIcon, SparklesIcon, TableIcon, Trash2Icon, UndoIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
@@ -19,6 +19,19 @@ function toClass(value: unknown): string {
 
 function cn(...inputs: unknown[]) {
   return twMerge(toClass(inputs));
+}
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function useReduceMotion() {
+  const [reduceMotion, setReduceMotion] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduceMotion(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduceMotion;
 }
 
 export type AnimatedMenubarTheme = "default" | "caffeine" | "claude" | "ghibli" | "spotify" | "valorant" | "vscode";
@@ -274,12 +287,16 @@ type MotionPreset = {
 }
 
 function buildPreset({
-  duration,
+  duration: wanted,
   exitFast,
+  reduceMotion,
 }: {
   duration: number
   exitFast: boolean
+  reduceMotion: boolean
 }): MotionPreset {
+  // Reduced motion: every change lands at once
+  const duration = reduceMotion ? 0 : wanted
   const exitDuration = exitFast ? duration * 0.6 : duration
   return {
     enter: { duration, ease: smoothEase },
@@ -301,6 +318,8 @@ type DropdownMenuContextValue = {
   /** The morph panel while it is mounted; it shares the trigger's box, so presses scale it too. */
   morphPanelRef: React.RefObject<HTMLElement | null>
   preset: MotionPreset
+  /** Reduced motion: nothing slides, fades, rolls, draws or staggers. */
+  reduceMotion: boolean
   animation: DropdownMenuAnimation
   stagger: number
   delay: number
@@ -414,9 +433,10 @@ function DropdownMenu({
   const triggerRef = React.useRef<HTMLElement>(null)
   const morphPanelRef = React.useRef<HTMLElement>(null)
 
+  const reduceMotion = useReduceMotion()
   const preset = React.useMemo(
-    () => buildPreset({ duration, exitFast }),
-    [duration, exitFast]
+    () => buildPreset({ duration, exitFast, reduceMotion }),
+    [duration, exitFast, reduceMotion]
   )
 
   const close = React.useCallback(() => actionsRef.current?.close(), [])
@@ -431,6 +451,7 @@ function DropdownMenu({
       triggerRef,
       morphPanelRef,
       preset,
+      reduceMotion,
       animation,
       stagger,
       delay,
@@ -454,6 +475,7 @@ function DropdownMenu({
       close,
       onExitComplete,
       preset,
+      reduceMotion,
       animation,
       stagger,
       delay,
@@ -605,7 +627,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReduceMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -684,12 +706,15 @@ function panelVariants(context: DropdownMenuContextValue, side: string): Variant
     }
   }
 
+  const gap = context.reduceMotion ? 0 : context.stagger
+  const wait = context.reduceMotion ? 0 : context.delay
+
   return {
     open: {
       ...open,
       transition: {
         ...enter,
-        delayChildren: stagger(context.stagger, { startDelay: context.delay }),
+        delayChildren: stagger(gap, { startDelay: wait }),
       },
     },
     closed: {
@@ -697,16 +722,16 @@ function panelVariants(context: DropdownMenuContextValue, side: string): Variant
       // Items leave in reverse alongside the panel, so closing takes as long as opening.
       // Exit fast drops the stagger along with the shorter duration.
       transition:
-        exitFast || context.stagger === 0
+        exitFast || gap === 0
           ? exit
-          : { ...exit, delayChildren: stagger(context.stagger, { from: "last" }) },
+          : { ...exit, delayChildren: stagger(gap, { from: "last" }) },
     },
   }
 }
 
 function itemVariants(context: DropdownMenuContextValue): Variants {
   // Items only lift on their own when staggered; otherwise they would move against the panel.
-  const lift = context.stagger > 0 ? "0.3em" : "0em"
+  const lift = context.stagger > 0 && !context.reduceMotion ? "0.3em" : "0em"
   return {
     open: { opacity: 1, y: "0em", transition: context.preset.item },
     closed: {
@@ -765,10 +790,13 @@ function DropdownMenuLabel({
 function MotionItem({
   itemProps,
   highlighted,
+  anchorsSubmenu = false,
   children,
 }: {
   itemProps: React.HTMLAttributes<HTMLElement>
   highlighted: boolean
+  /** A submenu is placed against this item, so it must not scale on hover or the submenu shifts. */
+  anchorsSubmenu?: boolean
   children?: React.ReactNode
 }) {
   const context = useDropdownMenu()
@@ -776,7 +804,9 @@ function MotionItem({
   const itemId = React.useId()
   const { setActiveItem } = context
   // Highlighting an item (by pointer or keyboard) focuses it, so focus is where the pill moves.
-  const pillHere = context.itemHighlight === "slide" && context.activeItem === itemId
+  // Not once the menu is closing: closing hands focus back to the submenu's trigger, and the pill
+  // would glide onto it behind the fading menu.
+  const pillHere = context.itemHighlight === "slide" && context.open && context.activeItem === itemId
 
   return (
     <motion.div
@@ -788,8 +818,8 @@ function MotionItem({
       }}
       variants={itemVariants(context)}
       // Press feedback also plays on hover: the hovered item eases down to the press scale.
-      whileHover={context.pressFeedback ? { scale: ITEM_PRESS_SCALE } : undefined}
-      whileTap={context.pressFeedback ? { scale: ITEM_PRESS_SCALE } : undefined}
+      whileHover={context.pressFeedback && !context.reduceMotion && !anchorsSubmenu ? { scale: ITEM_PRESS_SCALE } : undefined}
+      whileTap={context.pressFeedback && !context.reduceMotion ? { scale: ITEM_PRESS_SCALE } : undefined}
     >
       {context.itemHighlight === "fill" && (
         <motion.span
@@ -801,7 +831,7 @@ function MotionItem({
           style={{ originY: 0 }}
           initial={false}
           animate={{ scaleY: highlighted ? 1 : 0 }}
-          transition={{ duration: 0.3, ease: easeOutCubic }}
+          transition={{ duration: context.reduceMotion ? 0 : 0.3, ease: easeOutCubic }}
         />
       )}
       {pillHere && (
@@ -912,14 +942,16 @@ function DropdownMenuSubTrigger({
       className={cn(
         itemBase,
         "group/dropdown-menu-item px-1.5 py-1 text-sm data-inset:pl-7",
-        // While its submenu is open and the pill has moved into it, keep a quiet mark here.
-        "data-popup-open:not-data-pill:bg-(--hx-muted)",
+        // While its submenu is open and the pill has moved into it, keep a quiet mark here. It goes
+        // with the menu, at once, so it can't flash behind a closing menu.
+        context.open && "data-popup-open:not-data-pill:bg-(--hx-muted)",
         highlightClasses(context.itemHighlight, context.itemHighlightColor),
+        !context.open && "transition-none",
         className
       )}
       // Drawn by the same item as the rest, so the sliding pill glides onto it too.
       render={(itemProps, state) => (
-        <MotionItem itemProps={itemProps} highlighted={state.highlighted}>
+        <MotionItem itemProps={itemProps} highlighted={state.highlighted} anchorsSubmenu>
           {/* The same chevron as the menu names, turned to point at the submenu. It stays
               put: the submenu opening beside it is signal enough. */}
           <span aria-hidden className="ml-auto flex -rotate-90">
@@ -958,7 +990,7 @@ function DropdownMenuSubContent({
         <MenuPrimitive.Popup
           data-slot="dropdown-menu-sub-content"
           className={cn(
-            "z-50 max-h-(--available-height) w-auto min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-(--hx-foreground)/10 duration-100 outline-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
+            "z-50 max-h-(--available-height) w-auto min-w-32 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-background) p-1 text-(--hx-foreground) shadow-lg ring-1 ring-[color-mix(in_oklch,var(--hx-foreground)_25%,transparent)] duration-100 outline-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95",
             className
           )}
           {...props}
@@ -970,6 +1002,7 @@ function DropdownMenuSubContent({
 
 /** A tick that draws itself in when checked and fades out when unchecked. */
 function DrawnCheck({ checked }: { checked: boolean }) {
+  const reduceMotion = useReduceMotion()
   return (
     <svg
       viewBox="0 0 24 24"
@@ -984,7 +1017,11 @@ function DrawnCheck({ checked }: { checked: boolean }) {
         initial={false}
         animate={{ pathLength: checked ? 1 : 0, opacity: checked ? 1 : 0 }}
         transition={
-          checked ? { duration: 0.3, ease: smoothEase } : { duration: 0.15, ease: "easeOut" }
+          reduceMotion
+            ? { duration: 0 }
+            : checked
+              ? { duration: 0.3, ease: smoothEase }
+              : { duration: 0.15, ease: "easeOut" }
         }
       />
     </svg>
@@ -1041,7 +1078,7 @@ function DropdownMenuRadioGroup({ ...props }: MenuPrimitive.RadioGroup.Props) {
 }
 
 function RadioIndicator({ checked }: { checked: boolean }) {
-  const { id, selectionIndicator, preset } = useDropdownMenu()
+  const { id, selectionIndicator, preset, reduceMotion } = useDropdownMenu()
 
   if (selectionIndicator === "bar") {
     return checked ? (
@@ -1066,9 +1103,11 @@ function RadioIndicator({ checked }: { checked: boolean }) {
           initial={false}
           animate={{ scale: checked ? 1 : 0 }}
           transition={
-            checked
-              ? { type: "spring", visualDuration: 0.3, bounce: 0.5 }
-              : { duration: 0.15, ease: "easeOut" }
+            reduceMotion
+              ? { duration: 0 }
+              : checked
+                ? { type: "spring", visualDuration: 0.3, bounce: 0.5 }
+                : { duration: 0.15, ease: "easeOut" }
           }
         />
       ) : (
@@ -1123,7 +1162,8 @@ function DropdownMenuRadioItem({
 /** Text that rolls up to a copy of itself while its item is highlighted. */
 function RollText({ className, children }: { className?: string; children: React.ReactNode }) {
   const highlighted = React.useContext(ItemHighlightContext)
-  const transition = { duration: 0.4, ease: easeOutCubic }
+  const reduceMotion = useReduceMotion()
+  const transition = { duration: reduceMotion ? 0 : 0.4, ease: easeOutCubic }
 
   return (
     <span className={cn("relative block overflow-hidden", className)}>
@@ -1294,18 +1334,25 @@ function useMenubar() {
 
 // Grace period for the pointer to cross the gap to the panel
 const HOVER_CLOSE_MS = 160
+// Leaving the panel towards an open submenu crosses a gap, so the menu waits longer before closing
+const SUBMENU_CROSS_MS = 700
 
 const MenubarMenuContext = React.createContext("")
 
 // Hover opening is done here: Base UI only hover-opens a menubar menu once another is open
 const MenubarHoverContext = React.createContext({
   enter: () => {},
-  leave: () => {},
+  leave: (_ms?: number) => {},
   stay: () => {},
 })
 
 // Close then open this fast = switching
 const SWITCH_WINDOW_MS = 100
+
+// When the pointer last moved. Closing a hover-opened menu hands focus back to its trigger, which the
+// browser calls keyboard focus; that must not light the trigger's highlight again.
+const pointer = { at: 0 }
+const POINTER_RECENT_MS = 500
 
 function Menubar({
   animation = "collapse",
@@ -1355,6 +1402,14 @@ function Menubar({
   const [open, setOpen] = React.useState({ active: null as string | null, direction: 0, switched: false })
   const [hovered, setHovered] = React.useState<string | null>(null)
 
+  React.useEffect(() => {
+    const note = () => {
+      pointer.at = performance.now()
+    }
+    document.addEventListener("pointermove", note, { passive: true })
+    return () => document.removeEventListener("pointermove", note)
+  }, [])
+
   const lit = open.active ?? hovered
   const [highlightOn, setHighlightOn] = React.useState<string | null>(null)
   // Highlight stays put while hidden
@@ -1369,6 +1424,9 @@ function Menubar({
       }
       return
     }
+
+    // Already the active menu: a hover open and Base UI's own report can both land
+    if (activeRef.current === menu) return
 
     const recent = lastClosed.current
     const from =
@@ -1461,7 +1519,7 @@ function Menubar({
         ref={root}
         data-slot="menubar"
         className={cn(
-          "flex items-center border bg-(--hx-background) max-[1025px]:hidden",
+          "flex items-center border border-[color-mix(in_oklch,var(--hx-foreground)_25%,transparent)] bg-(--hx-background) max-[1025px]:hidden",
           BAR_SIZE[size],
           BAR_ROUNDED[rounded],
           className
@@ -1488,13 +1546,22 @@ function DesktopMenubarMenu({ onOpenChange, ...props }: React.ComponentProps<typ
         stay()
         setHoverOpen(true)
       },
-      leave: () => {
+      leave: (ms = HOVER_CLOSE_MS) => {
         stay()
-        closeTimer.current = window.setTimeout(() => setHoverOpen(false), HOVER_CLOSE_MS)
+        closeTimer.current = window.setTimeout(() => setHoverOpen(false), ms)
       },
     }
   }, [])
   React.useEffect(() => hover.stay, [hover])
+
+  // Hovering opens and closes the menu without going through onOpenChange, so tell the bar here.
+  // Without it the bar's active menu goes stale and the trigger pill stays on, or drops off, the wrong trigger.
+  const reported = React.useRef(false)
+  React.useEffect(() => {
+    if (!hoverOpen && !reported.current) return
+    reported.current = hoverOpen
+    onMenuOpenChange(menu, hoverOpen)
+  }, [hoverOpen, menu, onMenuOpenChange])
 
   return (
     <MenubarMenuContext.Provider value={menu}>
@@ -1538,7 +1605,8 @@ const TRIGGER_FILL: Record<DropdownMenuHighlightColor, string> = {
 }
 
 function TriggerRollText({ lit, children }: { lit: boolean; children: React.ReactNode }) {
-  const transition = { duration: 0.4, ease: [0.33, 1, 0.68, 1] as const }
+  const reduceMotion = useReduceMotion()
+  const transition = { duration: reduceMotion ? 0 : 0.4, ease: [0.33, 1, 0.68, 1] as const }
 
   return (
     <span className="relative block overflow-hidden">
@@ -1578,6 +1646,7 @@ function DesktopMenubarTrigger({
   const { id, motion: options, active, highlightOn, highlightVisible, setHovered } = useMenubar()
   const menu = React.useContext(MenubarMenuContext)
   const hover = React.useContext(MenubarHoverContext)
+  const reduceMotion = useReduceMotion()
   const marker = options.triggerHighlight
   const leave = () => setHovered(null)
   const showChevron = chevron ?? options.showChevrons
@@ -1611,7 +1680,9 @@ function DesktopMenubarTrigger({
       }}
       onFocus={(event) => {
         onFocus?.(event)
-        if (event.currentTarget.matches(":focus-visible")) setHovered(menu)
+        if (event.currentTarget.matches(":focus-visible") && performance.now() - pointer.at > POINTER_RECENT_MS) {
+          setHovered(menu)
+        }
       }}
       onBlur={(event) => {
         onBlur?.(event)
@@ -1649,10 +1720,14 @@ function DesktopMenubarTrigger({
           )}
           initial={false}
           animate={{ opacity: highlightVisible ? 1 : 0 }}
-          transition={{
-            layout: { type: "spring", visualDuration: 0.3 * 0.6, bounce: 0.15 },
-            opacity: { duration: 0.2, ease: "easeOut" },
-          }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : {
+                  layout: { type: "spring", visualDuration: 0.3 * 0.6, bounce: 0.15 },
+                  opacity: { duration: 0.2, ease: "easeOut" },
+                }
+          }
         />
       )}
     </DropdownMenuTrigger>
@@ -1677,10 +1752,20 @@ function MenubarPanelBody({
 }) {
   const { motion: options, entryDirection } = useMenubar()
   const menu = React.useContext(MenubarMenuContext)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReduceMotion()
   const [from] = React.useState(() => entryDirection.current.get(menu) ?? 0)
 
-  if (reduceMotion) return <>{children}</>
+  // No gliding box or sliding contents, but the panel keeps its surface
+  if (reduceMotion) {
+    if (!surface) return <>{children}</>
+    return (
+      <div data-slot="menubar-surface" className={cn("relative max-h-(--available-height) overflow-hidden", surface)}>
+        <div data-slot="menubar-surface-content" className="w-max min-w-full">
+          {children}
+        </div>
+      </div>
+    )
+  }
 
   const entrance =
     from === 0 || options.switchAnimation !== "glide" || options.contentAnimation === "none"
@@ -1862,7 +1947,7 @@ function DesktopMenubarContent({
   const switchedOut =
     glide && menubar.switched && menubar.active !== null && menubar.active !== menu
   const surface = cn(
-    "bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10",
+    "bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-[color-mix(in_oklch,var(--hx-foreground)_25%,transparent)]",
     PANEL_SIZE[options.size],
     BAR_ROUNDED[options.rounded]
   )
@@ -1918,7 +2003,11 @@ function DesktopMenubarContent({
                 onPointerLeave={(event) => {
                   rest.onPointerLeave?.(event)
                   dropdown.releaseActiveItem()
-                  if (!options.openOnClick && event.pointerType === "mouse") hover.leave()
+                  if (!options.openOnClick && event.pointerType === "mouse") {
+                    // Heading for an open submenu: give the pointer time to cross the gap
+                    const toSubmenu = !!document.querySelector("[data-slot=menubar-sub-content]")
+                    hover.leave(toSubmenu ? SUBMENU_CROSS_MS : undefined)
+                  }
                 }}
                 onAnimationComplete={(definition) => {
                   if (definition === "closed" && !dropdown.open) dropdown.onExitComplete()
@@ -2098,14 +2187,28 @@ function DesktopMenubarSubTrigger({
 
 function DesktopMenubarSubContent({
   className,
+  onPointerEnter,
+  onPointerLeave,
   ...props
 }: React.ComponentProps<typeof DropdownMenuSubContent>) {
+  const { motion: options } = useMenubar()
+  const hover = React.useContext(MenubarHoverContext)
+
   return (
     <DropdownMenuSubContent
       data-slot="menubar-sub-content"
       // Keeps the submenu clear of the parent panel
       sideOffset={24}
       className={cn("min-w-40", className)}
+      // The submenu is a separate popup, so being in it keeps the whole menu open
+      onPointerEnter={(event) => {
+        onPointerEnter?.(event)
+        if (!options.openOnClick) hover.stay()
+      }}
+      onPointerLeave={(event) => {
+        onPointerLeave?.(event)
+        if (!options.openOnClick && event.pointerType === "mouse") hover.leave()
+      }}
       {...props}
     />
   )
@@ -2127,7 +2230,8 @@ const MobileRadioContext = React.createContext<{
 const MOBILE_EASE = [0.25, 0.46, 0.45, 0.94] as const
 
 function HamburgerIcon({ open }: { open: boolean }) {
-  const transition = { duration: 0.26, ease: MOBILE_EASE }
+  const reduceMotion = useReduceMotion()
+  const transition = { duration: reduceMotion ? 0 : 0.26, ease: MOBILE_EASE }
   return (
     <svg
       aria-hidden
@@ -2147,7 +2251,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
         d="M4 12 L20 12"
         initial={false}
         animate={{ opacity: open ? 0 : 1 }}
-        transition={{ duration: 0.12 }}
+        transition={{ duration: reduceMotion ? 0 : 0.12 }}
       />
       <motion.path
         initial={false}
@@ -2159,6 +2263,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
 }
 
 function MobileMenubar({ children }: { children: React.ReactNode }) {
+  const reduceMotion = useReduceMotion()
   const [open, setOpen] = React.useState(false)
   const id = React.useId()
   const root = React.useRef<HTMLDivElement>(null)
@@ -2190,7 +2295,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
           aria-expanded={open}
           aria-controls={id}
           onClick={() => setOpen((was) => !was)}
-          className="flex cursor-pointer items-center gap-2 rounded-lg border bg-(--hx-background) px-4 py-2.5 text-base font-medium transition-transform active:scale-95"
+          className="flex cursor-pointer items-center gap-2 rounded-md border border-[color-mix(in_oklch,var(--hx-foreground)_25%,transparent)] bg-(--hx-background) px-4 py-2.5 text-base font-medium transition-transform motion-reduce:transition-none active:scale-95 motion-reduce:active:scale-100"
         >
           <HamburgerIcon open={open} />
           Menu
@@ -2201,7 +2306,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
               id={id}
               aria-label="Menu"
               data-slot="menubar-mobile-panel"
-              className="absolute top-full left-1/2 z-50 my-2 flex h-96 w-xl -translate-x-1/2 flex-col gap-0.5 overflow-y-auto overscroll-contain rounded-xl bg-(--hx-popover) p-2 text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 max-md:w-80"
+              className="absolute top-full left-1/2 z-50 my-2 flex h-96 w-xl -translate-x-1/2 flex-col gap-0.5 overflow-y-auto overscroll-contain rounded-md bg-(--hx-popover) p-2 text-(--hx-popover-foreground) shadow-md ring-1 ring-[color-mix(in_oklch,var(--hx-foreground)_25%,transparent)] max-md:w-80"
               initial="closed"
               animate="open"
               exit="closed"
@@ -2209,9 +2314,15 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
                 open: {
                   opacity: 1,
                   y: 0,
-                  transition: { duration: 0.26, ease: MOBILE_EASE, staggerChildren: 0.04 },
+                  transition: reduceMotion
+                    ? { duration: 0 }
+                    : { duration: 0.26, ease: MOBILE_EASE, staggerChildren: 0.04 },
                 },
-                closed: { opacity: 0, y: -8, transition: { duration: 0.18, ease: MOBILE_EASE } },
+                closed: {
+                  opacity: 0,
+                  y: reduceMotion ? 0 : -8,
+                  transition: reduceMotion ? { duration: 0 } : { duration: 0.18, ease: MOBILE_EASE },
+                },
               }}
             >
               <MobileMenubarContext.Provider value={value}>{children}</MobileMenubarContext.Provider>
@@ -2224,6 +2335,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
 }
 
 function MobileSection({ nested, children }: { nested?: boolean; children?: React.ReactNode }) {
+  const reduceMotion = useReduceMotion()
   const [open, setOpen] = React.useState(false)
   const id = React.useId()
   const value = React.useMemo(
@@ -2235,7 +2347,12 @@ function MobileSection({ nested, children }: { nested?: boolean; children?: Reac
       <motion.div
         data-slot="menubar-mobile-section"
         className="flex flex-col"
-        variants={nested ? undefined : { open: { opacity: 1, y: 0 }, closed: { opacity: 0, y: 6 } }}
+        variants={
+          nested
+            ? undefined
+            : { open: { opacity: 1, y: 0 }, closed: { opacity: 0, y: reduceMotion ? 0 : 6 } }
+        }
+        transition={reduceMotion ? { duration: 0 } : undefined}
       >
         {children}
       </motion.div>
@@ -2253,7 +2370,7 @@ function MobileSectionTrigger({ nested, children }: { nested?: boolean; children
       aria-controls={section?.id}
       onClick={section?.toggle}
       className={cn(
-        "flex w-full cursor-pointer items-center justify-between gap-3 rounded-lg text-left transition-colors hover:bg-(--hx-muted) active:bg-(--hx-muted)",
+        "flex w-full cursor-pointer items-center justify-between gap-3 rounded-md text-left transition-colors hover:bg-(--hx-muted) active:bg-(--hx-muted)",
         nested ? "px-3 py-2 text-sm" : "px-3 py-3 text-base font-medium"
       )}
     >
@@ -2265,6 +2382,7 @@ function MobileSectionTrigger({ nested, children }: { nested?: boolean; children
 
 function MobileSectionBody({ nested, children }: { nested?: boolean; children?: React.ReactNode }) {
   const section = React.useContext(MobileSectionContext)
+  const reduceMotion = useReduceMotion()
   return (
     <AnimatePresence initial={false}>
       {section?.open && (
@@ -2275,7 +2393,7 @@ function MobileSectionBody({ nested, children }: { nested?: boolean; children?: 
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.26, ease: MOBILE_EASE }}
+          transition={{ duration: reduceMotion ? 0 : 0.26, ease: MOBILE_EASE }}
         >
           <div className={cn("flex flex-col gap-0.5 py-1", nested ? "px-3" : "px-1")}>{children}</div>
         </motion.div>
@@ -2503,7 +2621,7 @@ const controls = {
     group: "Panel",
     type: "select",
     label: "Opening",
-    value: "collapse",
+    value: "slide",
     options: [
       { label: "Scale", value: "scale" },
       { label: "Slide", value: "slide" },
@@ -2642,7 +2760,7 @@ const controls = {
   },
   showIcons: { group: "Items", type: "checkbox", label: "Icons", value: true },
   showDescriptions: { group: "Items", type: "checkbox", label: "Descriptions", value: true },
-  rollingText: { group: "Items", type: "checkbox", label: "Rolling text", value: false },
+  rollingText: { group: "Items", type: "checkbox", label: "Rolling text", value: true },
 
   size: {
     group: "Style",
@@ -2659,7 +2777,7 @@ const controls = {
     group: "Style",
     type: "select",
     label: "Roundness",
-    value: "lg",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -2859,18 +2977,8 @@ function MenubarDemo(props: Partial<ControlValues>) {
           </MenubarMenu>
         </Menubar>
 
-        <div className="flex flex-col items-center gap-1 text-center text-sm text-(--hx-muted-foreground)">
-          <span>
-            {roast[0].toUpperCase() + roast.slice(1)} roast · {method.replace("-", " ")}
-          </span>
-          <span>
-            {[showRatio && "1:16 ratio", showTimer && "3:00 timer", showNotes && "tasting notes"]
-              .filter(Boolean)
-              .join(" · ") || "Nothing shown"}
-          </span>
-        </div>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground)">
         Tip: open a menu, then slide the pointer along the bar or press the arrow keys.
       </p>
 
@@ -2903,11 +3011,11 @@ export interface AnimatedMenubarProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedMenubar({ theme = "default", mode = "dark", className, ...props }: AnimatedMenubarProps) {
+export default function AnimatedMenubar({ theme = "caffeine", mode = "dark", className, ...props }: AnimatedMenubarProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <MenubarDemo {...props} />
       </div>
     </ThemeContext.Provider>

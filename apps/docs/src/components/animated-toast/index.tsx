@@ -9,6 +9,19 @@ import { ChevronDownIcon, CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, 
 import { AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
 function toClass(value: unknown): string {
   if (!value) return "";
   if (typeof value === "string" || typeof value === "number") return String(value);
@@ -310,7 +323,7 @@ const COMPONENT_CSS = "@keyframes hx-toast-timer{from{transform:scaleX(1)}to{tra
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -416,7 +429,7 @@ const DEFAULT_EFFECTS: ToastEffects = {
   elastic: true,
   originFromTrigger: false,
   tiltOnSwipe: true,
-  morphIcon: true,
+  morphIcon: false,
   showTimerBar: true,
   fadeContent: true,
   collapsibleDescription: true,
@@ -517,16 +530,17 @@ const SWIPE_EXIT_PLAIN = [
   "data-expanded:data-ending-style:data-[swipe-direction=right]:[transform:translateX(calc(var(--toast-swipe-movement-x)+150%))_translateY(var(--offset-y))]",
   "data-expanded:data-ending-style:data-[swipe-direction=up]:[transform:translateY(calc(var(--toast-swipe-movement-y)-150%))]",
 ]
-
+// Position, height, offset and scale all run for the same time, so the stack settles together
+// instead of the heights snapping first. Elastic only adds a gentle overshoot to the move.
 const TRANSITION = {
   springMorph:
-    "[transition:transform_600ms_cubic-bezier(0.34,1.56,0.64,1),opacity_400ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]",
+    "[transition:transform_550ms_cubic-bezier(0.34,1.25,0.64,1),opacity_300ms,height_550ms_cubic-bezier(0.34,1.25,0.64,1),translate_550ms_cubic-bezier(0.22,1,0.36,1),scale_550ms_cubic-bezier(0.22,1,0.36,1)]",
   spring:
-    "[transition:transform_600ms_cubic-bezier(0.34,1.56,0.64,1),opacity_400ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]",
+    "[transition:transform_550ms_cubic-bezier(0.34,1.25,0.64,1),opacity_300ms,height_550ms_cubic-bezier(0.34,1.25,0.64,1),translate_550ms_cubic-bezier(0.22,1,0.36,1),scale_550ms_cubic-bezier(0.22,1,0.36,1)]",
   smoothMorph:
-    "[transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]",
+    "[transition:transform_450ms_cubic-bezier(0.22,1,0.36,1),opacity_300ms,height_450ms_cubic-bezier(0.22,1,0.36,1),translate_450ms_cubic-bezier(0.22,1,0.36,1),scale_450ms_cubic-bezier(0.22,1,0.36,1)]",
   smooth:
-    "[transition:transform_500ms_cubic-bezier(0.22,1,0.36,1),opacity_500ms,height_300ms_cubic-bezier(0.22,1,0.36,1),translate_300ms_cubic-bezier(0.22,1,0.36,1),scale_400ms]",
+    "[transition:transform_450ms_cubic-bezier(0.22,1,0.36,1),opacity_300ms,height_450ms_cubic-bezier(0.22,1,0.36,1),translate_450ms_cubic-bezier(0.22,1,0.36,1),scale_450ms_cubic-bezier(0.22,1,0.36,1)]",
 }
 
 // Coloured left line per type.
@@ -565,7 +579,7 @@ function ToastViewport({
         data-slot="toast-viewport"
         style={{ translate: `0 ${stackShift}px`, ...style }}
         className={cn(
-          "pointer-events-none fixed inset-x-4 z-50 mx-auto w-auto max-w-md outline-none transition-[translate] duration-300 ease-out motion-reduce:transition-none sm:w-full",
+          "pointer-events-none fixed inset-x-4 z-50 mx-auto w-auto max-w-md outline-none transition-[translate] duration-300 sm:max-w-[36rem] ease-out motion-reduce:transition-none sm:w-full",
           VIEWPORT_POSITION[position],
           className
         )}
@@ -584,7 +598,8 @@ function Toast({
   const effects = React.useContext(ToastEffectsContext)
   const root = React.useRef<HTMLDivElement>(null)
   const edge = effects.position.startsWith("top") ? "top" : "bottom"
-  const growFromOrigin = effects.originFromTrigger && origin !== undefined
+  const reduceMotion = usePrefersReducedMotion()
+  const growFromOrigin = effects.originFromTrigger && origin !== undefined && !reduceMotion
 
   React.useLayoutEffect(() => {
     const el = root.current
@@ -630,16 +645,16 @@ function Toast({
           : effects.morphIcon
             ? TRANSITION.smoothMorph
             : TRANSITION.smooth,
-        "motion-reduce:[transition:opacity_200ms]",
+        "motion-reduce:[transition:opacity_200ms] in-data-pc-rm:[transition:opacity_200ms] in-data-toast-resizing:[transition:opacity_300ms]",
         "after:absolute after:left-0 after:h-[calc(var(--gap)+1px)] after:w-full after:content-['']",
         "data-expanded:h-(--toast-height) data-expanded:[transform:translateX(var(--toast-swipe-movement-x))_translateY(var(--offset-y))]",
         "data-limited:opacity-0",
         growFromOrigin
           ? "data-starting-style:opacity-0 data-starting-style:[transform:translate(var(--from-x),var(--from-y))_scale(0.3)]"
           : ENTER_FROM_EDGE[edge],
-        EXIT[effects.exitAnimation][edge],
+        EXIT[reduceMotion ? "fade" : effects.exitAnimation][edge],
         "data-ending-style:ease-in",
-        effects.tiltOnSwipe ? SWIPE_EXIT_TILT : SWIPE_EXIT_PLAIN,
+        effects.tiltOnSwipe && !reduceMotion ? SWIPE_EXIT_TILT : SWIPE_EXIT_PLAIN,
         className
       )}
       {...props}
@@ -653,8 +668,8 @@ function ToastContent({ className, ...props }: ToastPrimitive.Content.Props) {
     <ToastPrimitive.Content
       data-slot="toast-content"
       className={cn(
-        "flex h-full items-start gap-3 overflow-hidden py-4 transition-opacity duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-behind:opacity-0 data-expanded:opacity-100",
-        pill ? "px-6" : "px-4",
+        "flex h-full items-start gap-3 overflow-hidden py-4 sm:gap-4 sm:py-5 transition-opacity duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-behind:opacity-0 data-expanded:opacity-100",
+        pill ? "px-6 sm:px-8" : "px-4 sm:px-5",
         fadeContent &&
           "transition-[opacity,scale,translate] duration-150 ease-out data-starting-style:opacity-0 animation-duration-300 [animation-delay:150ms] fill-mode-backwards motion-reduce:animate-none",
         className
@@ -668,7 +683,7 @@ function ToastTitle({ className, ...props }: ToastPrimitive.Title.Props) {
   return (
     <ToastPrimitive.Title
       data-slot="toast-title"
-      className={cn("text-sm font-medium", className)}
+      className={cn("text-sm font-medium sm:text-lg", className)}
       {...props}
     />
   )
@@ -681,7 +696,7 @@ function ToastDescription({
   return (
     <ToastPrimitive.Description
       data-slot="toast-description"
-      className={cn("text-sm text-(--hx-muted-foreground)", className)}
+      className={cn("text-sm text-(--hx-muted-foreground) sm:text-lg", className)}
       {...props}
     />
   )
@@ -698,7 +713,7 @@ function ToastAction({
       data-slot="toast-action"
       render={render}
       className={cn(
-        "-my-1 shrink-0",
+        "-my-1 shrink-0 sm:h-9 sm:px-4 sm:text-base",
         "transition-colors duration-200 hover:border-(--hx-foreground) hover:bg-(--hx-foreground) hover:text-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-foreground)",
         pill && "rounded-full",
         className
@@ -721,7 +736,7 @@ function ToastClose({
       aria-label="Close toast"
       render={render}
       className={cn(
-        "relative -my-1 shrink-0 text-(--hx-muted-foreground) after:absolute after:-inset-2 after:content-[''] hover:text-(--hx-foreground)",
+        "relative -my-1 shrink-0 sm:size-9 sm:[&_svg]:size-5 text-(--hx-muted-foreground) after:absolute after:-inset-2 after:content-[''] hover:text-(--hx-foreground)",
         "hover:bg-transparent in-data-[theme=dark]:hover:bg-transparent",
         "[&_svg]:transition-transform [&_svg]:duration-300 [&_svg]:ease-out hover:[&_svg]:rotate-90 motion-reduce:[&_svg]:transition-none",
         pill && "rounded-full",
@@ -757,7 +772,9 @@ function DrawnCheckIcon() {
 }
 
 function ToastIcon({ type }: { type: string | undefined }) {
-  const { morphIcon } = React.useContext(ToastEffectsContext)
+  const { morphIcon: morphSetting } = React.useContext(ToastEffectsContext)
+  const reduceMotion = usePrefersReducedMotion()
+  const morphIcon = morphSetting && !reduceMotion
   const [firstType] = React.useState(type)
   const changed = type !== firstType
 
@@ -785,7 +802,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   }
 
   if (type === "loading") {
-    icon = <Loader2Icon className="animate-spin" aria-hidden="true" />
+    icon = <Loader2Icon className="animate-spin motion-reduce:animate-none in-data-pc-rm:animate-none" aria-hidden="true" />
   }
 
   if (!icon) {
@@ -795,7 +812,7 @@ function ToastIcon({ type }: { type: string | undefined }) {
   return (
     <span
       data-slot="toast-icon"
-      className="relative mt-0.5 grid shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4"
+      className="relative mt-0.5 grid shrink-0 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 sm:[&_svg:not([class*='size-'])]:size-[1.3rem]"
     >
       {morphIcon ? (
         <AnimatePresence initial={false} mode="popLayout">
@@ -830,12 +847,6 @@ function ToastTimerBar({ duration }: { duration: number }) {
     />
   )
 }
-
-const EXPAND_MS = 250
-const EXPAND_EASE = "linear"
-const OPEN_MS = 400
-const OPEN_EASE = "cubic-bezier(0.34, 1.56, 0.64, 1)"
-const SCREEN_MARGIN = 16
 const FADE_OUT_MS = 150
 
 function ToastItem({ toastItem }: { toastItem: ToastPrimitive.Root.ToastObject<ToastData> }) {
@@ -854,35 +865,28 @@ function ToastItem({ toastItem }: { toastItem: ToastPrimitive.Root.ToastObject<T
     const from = el?.offsetHeight
     flushSync(() => setPhase(next))
     if (!el || from === undefined) return
-    queueMicrotask(() => {
-      const to = el.offsetHeight
-      if (to === from) return
-      const viewport = el.parentElement
-      const fromShift = shiftY.current
-      let toShift = 0
-      if (next === "open" && viewport && effects.position.startsWith("bottom")) {
-        const restingBottom = viewport.getBoundingClientRect().bottom - fromShift
-        const room = window.innerHeight - SCREEN_MARGIN - restingBottom
-        toShift = Math.max(0, Math.min(to - from, room))
-      }
-      shiftY.current = toShift
-      reportShift(toastItem.id, toShift)
-      if (reduceMotion) return
-
-      const timing =
-        next === "open"
-          ? { duration: OPEN_MS, easing: OPEN_EASE }
-          : { duration: EXPAND_MS, easing: EXPAND_EASE }
-      el.animate([{ height: `${from}px` }, { height: `${to}px` }], timing)
-      const isFront =
-        getComputedStyle(el).getPropertyValue("--toast-index").trim() === "0"
-      if (viewport && isFront && toShift !== fromShift) {
-        viewport.animate(
-          [{ translate: `0 ${fromShift}px` }, { translate: `0 ${toShift}px` }],
-          timing
-        )
-      }
-    })
+    // The stack stays put: the toast grows or shrinks upward and the ones above move with it
+    shiftY.current = 0
+    reportShift(toastItem.id, 0)
+    if (reduceMotion) return
+    // Measure the new natural height now, the same way Base UI does
+    const inline = el.style.height
+    el.style.height = "auto"
+    const to = el.offsetHeight
+    el.style.height = inline
+    if (to === from) return
+    const viewport = el.parentElement
+    // Start the resize before Base UI measures, so it reads the animated height every frame.
+    // The toasts above then follow those per-frame steps directly (their own easing would
+    // restart on each step and stutter) until the resize ends.
+    viewport?.setAttribute("data-toast-resizing", "")
+    el.animate(
+      [{ height: `${from}px` }, { height: `${to}px` }],
+      // Same duration and easing as the stack's own move
+      effects.elastic
+        ? { duration: 550, easing: "cubic-bezier(0.34,1.25,0.64,1)" }
+        : { duration: 450, easing: "cubic-bezier(0.22,1,0.36,1)" }
+    ).finished.finally(() => viewport?.removeAttribute("data-toast-resizing"))
   }
 
   const toggleDescription = () => {
@@ -906,8 +910,10 @@ function ToastItem({ toastItem }: { toastItem: ToastPrimitive.Root.ToastObject<T
   }
 
   const duration = toastItem.timeout ?? effects.timeout
+  const reduceMotion = usePrefersReducedMotion()
+  // A bar that runs down is motion, so reduced motion leaves it out
   const showTimer =
-    effects.showTimerBar && toastItem.type !== "loading" && duration > 0
+    effects.showTimerBar && !reduceMotion && toastItem.type !== "loading" && duration > 0
   const accent =
     effects.showAccentEdge && toastItem.type && ACCENT[toastItem.type]
   const collapsible =
@@ -921,7 +927,7 @@ function ToastItem({ toastItem }: { toastItem: ToastPrimitive.Root.ToastObject<T
       className={cn(
         accent &&
           cn(
-            "before:absolute before:top-4 before:h-5 before:w-0.5 before:rounded-full before:content-['']",
+            "before:absolute before:top-4 before:h-5 before:w-0.5 sm:before:top-5 sm:before:h-6 sm:before:w-[3px] before:rounded-full before:content-['']",
             effects.pill ? "before:left-3" : "before:left-2",
             accent
           )
@@ -952,7 +958,7 @@ function ToastItem({ toastItem }: { toastItem: ToastPrimitive.Root.ToastObject<T
             aria-label={phase === "open" ? "Hide details" : "Show details"}
             onClick={toggleDescription}
             className={cn(
-              "-my-1 shrink-0 text-(--hx-muted-foreground) hover:bg-transparent hover:text-(--hx-foreground) aria-expanded:bg-transparent aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-transparent in-data-[theme=dark]:aria-expanded:bg-transparent",
+              "-my-1 shrink-0 sm:size-9 sm:[&_svg]:size-5 text-(--hx-muted-foreground) hover:bg-transparent hover:text-(--hx-foreground) aria-expanded:bg-transparent aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-transparent in-data-[theme=dark]:aria-expanded:bg-transparent",
               "[&_svg]:transition-transform [&_svg]:duration-300 [&_svg]:ease-out aria-expanded:[&_svg]:rotate-180 motion-reduce:[&_svg]:transition-none",
               effects.pill && "rounded-full"
             )}
@@ -1085,7 +1091,7 @@ const controls = {
     group: "Toast",
     type: "select",
     label: "Variant",
-    value: "default",
+    value: "success",
     options: [
       { label: "Default", value: "default" },
       { label: "Success", value: "success" },
@@ -1112,7 +1118,7 @@ const controls = {
     group: "Toast",
     type: "checkbox",
     label: "Show action",
-    value: false,
+    value: true,
   },
   timeout: {
     group: "Behaviour",
@@ -1163,7 +1169,7 @@ const controls = {
     group: "Animation",
     type: "checkbox",
     label: "Loading → tick morph",
-    value: true,
+    value: false,
   },
   showTimerBar: {
     disabled: (v: Record<string, unknown>) => v.timeout === 0 || v.variant === "loading",
@@ -1297,9 +1303,9 @@ function ToastPage(props: Partial<ControlValues>) {
       <div className="mx-auto w-full max-w-2xl">
         <div className="mt-6 flex min-h-48 items-center justify-center">
           <Button
-            variant="outline"
+            variant="default"
             onClick={(event) => showToast(event.currentTarget)}
-            className='text-xl py-5 px-8'
+            className="h-auto px-[2.08rem] py-[1.3rem] text-[1.3rem] max-sm:px-6 max-sm:py-4 max-sm:text-lg"
           >
             Show toast
           </Button>
@@ -1335,7 +1341,7 @@ export interface AnimatedToastProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedToast({ theme = "default", mode = "dark", className, ...props }: AnimatedToastProps) {
+export default function AnimatedToast({ theme = "claude", mode = "dark", className, ...props }: AnimatedToastProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

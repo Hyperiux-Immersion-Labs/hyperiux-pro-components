@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, MotionConfig, animate, motion, useIsPresent, useMotionValue, useReducedMotion, useSpring, useTransform, useVelocity, type Transition, type Variants } from "motion/react";
+import { AnimatePresence, MotionConfig, animate, motion, useIsPresent, useMotionValue, useSpring, useTransform, useVelocity, type Transition, type Variants } from "motion/react";
 import { Archive, Copy, Pencil, Share2, Trash2 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
 
@@ -297,9 +297,22 @@ function useController() {
   return value
 }
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function useReduceMotion() {
+  const [reduceMotion, setReduceMotion] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduceMotion(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduceMotion
+}
+
 // With reduced motion on, every move lands instantly. Otherwise the transition is unchanged.
 function useMotionOk(transition: Transition): Transition {
-  return useReducedMotion() ? { duration: 0 } : transition
+  return useReduceMotion() ? { duration: 0 } : transition
 }
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
@@ -329,7 +342,7 @@ function FloatingTooltipProvider({
     [variant, rounded, follow, side, sideOffset, appearAnimation, changeAnimation, stretchOnMove, tiltOnMove, elastic, stiffness, closeDelay, duration, bounce]
   )
 
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReduceMotion()
   const tooltipId = React.useId()
   // The tooltip is portalled to <body>, which only exists on the client
   const mounted = React.useSyncExternalStore(
@@ -453,7 +466,7 @@ function FloatingTooltipProvider({
       if (from === "touch" && openRef.current && anchorEl.current !== anchor) {
         // Tapping another element: fade out where it is, then fade in on the new one. No sliding.
         setOpen(false)
-        switchTimer.current = setTimeout(reveal, TOUCH_SWITCH)
+        switchTimer.current = setTimeout(reveal, reduceRef.current ? 0 : TOUCH_SWITCH)
       } else reveal()
     },
     [place]
@@ -531,7 +544,7 @@ function FloatingTooltipProvider({
   const skewX = useTransform(() => clamp(vx.get() / 1000, -1.5, 1.5) * 3 * tiltOn.get())
 
   // On a touch screen it only fades in and out
-  const how = touch && appearAnimation === "scale" ? "fade" : appearAnimation
+  const how = reduceMotion ? "none" : touch && appearAnimation === "scale" ? "fade" : appearAnimation
   const appearIn = how === "scale" ? { opacity: 0, scale: 0.9 } : { opacity: 0 }
   const appearOut = how === "scale" ? { opacity: 0, scale: 0.8 } : { opacity: 0 }
   const enter: Transition =
@@ -639,7 +652,7 @@ function Morph({
   mode: FloatingTooltipChange
 }) {
   const { duration, bounce } = useOptions()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = useReduceMotion()
   const reshape = useMotionOk({ type: "spring", duration, bounce })
   const width = useMotionValue(0)
   const height = useMotionValue(0)
@@ -792,7 +805,7 @@ const actions = [
     label: "Duplicate",
     Icon: Copy,
     content: "Duplicate this document",
-    description: "Creates an exact copy in this folder, including every comment and revision.",
+    description: "Creates an exact copy in this folder.",
   },
   { label: "Archive", Icon: Archive, content: "Archive", description: "Move to archive. Reversible at any time." },
   { label: "Delete", Icon: Trash2, content: "Delete permanently", description: "This action cannot be undone." },
@@ -824,7 +837,7 @@ const controls = {
     group: "Position",
     type: "select",
     label: "Position",
-    value: "cursor",
+    value: "anchor",
     options: [
       { label: "Trails the cursor", value: "cursor" },
       { label: "Sits on the element", value: "anchor" },
@@ -932,7 +945,7 @@ function TooltipDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-96 items-center justify-center rounded-lg border px-4 py-8">
+      <div className="flex min-h-64 items-center justify-center px-4 py-8">
         <FloatingTooltipProvider
           variant={values.variant as FloatingTooltipVariant}
           rounded={values.rounded as FloatingTooltipRounded}
@@ -952,7 +965,7 @@ function TooltipDemo(props: Partial<ControlValues>) {
           <div className="flex flex-wrap items-center justify-center gap-3">
             {actions.map(({ label, Icon, content, description }) => (
               <FloatingTooltip key={label} content={content} description={description}>
-                <button className="flex items-center gap-2 rounded-lg border bg-(--hx-background) px-5 py-3 text-base font-medium transition-colors hover:bg-(--hx-accent) focus-visible:ring-2 focus-visible:ring-(--hx-ring) focus-visible:outline-none">
+                <button className="flex items-center gap-2 rounded-md border bg-(--hx-background) px-5 py-3 text-base font-medium hover:bg-(--hx-accent) focus-visible:ring-2 focus-visible:ring-(--hx-ring) focus-visible:outline-none">
                   <Icon className="size-4" />
                   <span>{label}</span>
                 </button>
@@ -961,8 +974,8 @@ function TooltipDemo(props: Partial<ControlValues>) {
           </div>
         </FloatingTooltipProvider>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
-        Tip: move the pointer across the buttons (on a touch screen, tap one). Set &quot;When it changes&quot; to a Morph option to see one tooltip
+      <p className="text-center text-sm text-(--hx-muted-foreground)">
+        Tip: move the pointer across the buttons (on a touch screen, tap one). Set &quot;Change animation&quot; to a Morph option to see one tooltip
         stay put while its box reshapes and the text slides, fades or rolls the way you moved.
       </p>
 
@@ -995,13 +1008,15 @@ export interface AnimatedTooltipProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedTooltip({ theme = "default", mode = "dark", className, ...props }: AnimatedTooltipProps) {
+export default function AnimatedTooltip({ theme = "valorant", mode = "dark", className, ...props }: AnimatedTooltipProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <TooltipDemo {...props} />
-      </div>
+      <MotionConfig reducedMotion="user">
+        <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+          <TooltipDemo {...props} />
+        </div>
+      </MotionConfig>
     </ThemeContext.Provider>
   );
 }
