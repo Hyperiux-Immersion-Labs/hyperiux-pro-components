@@ -11,16 +11,16 @@ const ServiceList = () => (
   <ul className="flex flex-col">
     {SERVICES.map((service, index) => (
       <li key={service.title} className="relative">
-        <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+        <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
         {index === SERVICES.length - 1 && (
-          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/10" />
         )}
         <FadeUp>
         <div
           data-cursor="Explore"
           className="group grid grid-cols-12 gap-x-9 gap-y-5 max-lg:gap-x-0 py-[3vw] max-lg:py-[5vw] max-md:py-[8vw]"
         >
-          <h3 className="col-span-4 text-40 text-[#0a0a0a] transition-colors duration-300 group-hover:text-(color:--mpx-accent) max-lg:col-span-12">
+          <h3 className="col-span-4 text-40 text-(color:--mpx-ink) transition-colors duration-300 group-hover:text-(color:--mpx-accent) max-lg:col-span-12">
             {service.title}
           </h3>
           <div className="col-span-5 flex flex-col items-start gap-5 max-lg:col-span-12">
@@ -39,7 +39,7 @@ const ServiceList = () => (
             </ul>
             <UnderlineLink
               href={servicePath(service.slug)}
-              className="font-mpx-head text-22 font-medium text-[#0a0a0a]"
+              className="font-mpx-head text-22 font-medium text-(color:--mpx-ink)"
             >
               Explore {service.title}
             </UnderlineLink>

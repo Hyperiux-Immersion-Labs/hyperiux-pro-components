@@ -12,7 +12,7 @@ const FACTS = [
 
 const Intro = () => (
   <section id="about" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
-    <div className="flex flex-col gap-[6vw] rounded-lg border border-black/10 bg-white p-[3.3vw] max-lg:gap-[8vw] max-lg:p-[4vw] max-md:gap-[12vw] max-md:p-[7vw]">
+    <div className="flex flex-col gap-[6vw] rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) p-[3.3vw] max-lg:gap-[8vw] max-lg:p-[4vw] max-md:gap-[12vw] max-md:p-[7vw]">
       <div className="flex flex-col items-start gap-5 max-md:gap-4">
        
         <MaskReveal

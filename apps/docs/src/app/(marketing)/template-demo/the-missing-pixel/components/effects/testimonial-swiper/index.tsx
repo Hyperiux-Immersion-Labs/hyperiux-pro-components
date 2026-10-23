@@ -194,18 +194,18 @@ const TestimonialSwiper = ({
               />
             ))}
           </div>
-          <span className="absolute bottom-0 left-1/2 z-10 flex w-max -translate-x-1/2 translate-y-1/2 max-md:hidden items-center gap-[0.8vw] rounded-full border border-black/10 bg-[#fafafa] py-[0.3vw] pl-[1.2vw] pr-[0.35vw] text-14 font-medium shadow-[0_10px_30px_rgb(0_0_0/0.18)] max-lg:gap-3 max-lg:py-1.5 max-lg:pl-4 max-lg:pr-1.5 ">
+          <span className="absolute bottom-0 left-1/2 z-10 flex w-max -translate-x-1/2 translate-y-1/2 max-md:hidden items-center gap-[0.8vw] rounded-full border border-(--mpx-ink)/10 bg-(--mpx-paper) py-[0.3vw] pl-[1.2vw] pr-[0.35vw] text-14 font-medium shadow-[0_10px_30px_rgb(10_10_10/0.18)] max-lg:gap-3 max-lg:py-1.5 max-lg:pl-4 max-lg:pr-1.5 ">
             Trusted clients
             <span className="flex items-center -space-x-[0.6vw] max-lg:-space-x-2">
               {faces.map((face) => (
                 <span
                   key={face.name}
-                  className="size-[2vw] overflow-hidden rounded-full border-2 border-[#fafafa] max-lg:size-[4.4vw] max-md:size-8"
+                  className="size-[2vw] overflow-hidden rounded-full border-2 border-(--mpx-paper) max-lg:size-[4.4vw] max-md:size-8"
                 >
                   <Image quality={95} src={face.image} alt="" sizes="4vw" className="h-full w-full object-cover" />
                 </span>
               ))}
-              <span className="grid size-[2vw] place-items-center rounded-full border-2 border-[#fafafa] bg-(--mpx-accent) text-14 font-semibold text-[#0a0a0a] max-lg:size-[4.4vw]  max-md:size-8 ">
+              <span className="grid size-[2vw] place-items-center rounded-full border-2 border-(--mpx-paper) bg-(--mpx-accent) text-14 font-semibold text-(color:--mpx-ink) max-lg:size-[4.4vw]  max-md:size-8 ">
                 +{Math.max(total - faces.length, 0)}
               </span>
             </span>
@@ -224,7 +224,7 @@ const TestimonialSwiper = ({
             <span
               role="img"
               aria-label="Rated 5 out of 5"
-              className="inline-flex gap-[0.2vw] rounded-full bg-white px-[0.7vw] py-[0.5vw] max-lg:gap-1 max-lg:px-3 max-lg:py-2"
+              className="inline-flex gap-[0.2vw] rounded-full bg-(--mpx-white) px-[0.7vw] py-[0.5vw] max-lg:gap-1 max-lg:px-3 max-lg:py-2"
             >
               {Array.from({ length: 5 }, (_, star) => (
                 <svg
@@ -289,7 +289,7 @@ const TestimonialSwiper = ({
             >
               <span
                 className={`h-[0.2vw] w-full rounded-full transition-colors duration-500 max-lg:h-0.5 ${
-                  isActive ? "bg-(--mpx-accent)" : "bg-black/30 hover:bg-mpx-muted"
+                  isActive ? "bg-(--mpx-accent)" : "bg-(--mpx-ink)/30 hover:bg-mpx-muted"
                 }`}
               />
             </button>

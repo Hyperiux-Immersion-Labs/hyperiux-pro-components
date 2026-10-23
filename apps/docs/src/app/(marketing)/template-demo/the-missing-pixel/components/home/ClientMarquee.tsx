@@ -64,7 +64,7 @@ const ClientMarquee = () => {
             {CLIENTS.map((client) => (
               <li
                 key={`${group}-${client.name}`}
-                className={`font-mpx-head whitespace-nowrap text-30 text-[#5e5e5e] transition-colors duration-300 hover:text-[#0a0a0a] ${client.style}`}
+                className={`font-mpx-head whitespace-nowrap text-30 text-(color:--mpx-muted) transition-colors duration-300 hover:text-(color:--mpx-ink) ${client.style}`}
               >
                 {client.name}
               </li>

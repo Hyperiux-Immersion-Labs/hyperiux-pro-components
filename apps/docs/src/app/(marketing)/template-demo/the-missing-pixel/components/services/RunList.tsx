@@ -18,9 +18,9 @@ const RunList = ({ runs }: { runs: Run[] }) => {
           const lit = active === index;
           return (
             <li key={run.title} data-row className="relative">
-              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
               {index === runs.length - 1 && (
-                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/10" />
               )}
               <FadeUp className="group grid grid-cols-12 items-center gap-x-9 gap-y-3 max-lg:gap-x-0 py-[3vw] max-lg:items-start max-lg:py-[5vw] max-md:py-[8vw]">
                 <span
@@ -34,7 +34,7 @@ const RunList = ({ runs }: { runs: Run[] }) => {
                   className={`col-span-4 text-40 transition-colors duration-700 ease-out group-hover:text-(color:--mpx-accent) max-lg:col-span-10 motion-reduce:transition-none ${
                     lit
                       ? "text-(color:--mpx-accent)"
-                      : "text-mpx-muted max-lg:text-[#0a0a0a]"
+                      : "text-mpx-muted max-lg:text-(color:--mpx-ink)"
                   }`}
                 >
                   {run.title}
@@ -43,7 +43,7 @@ const RunList = ({ runs }: { runs: Run[] }) => {
                   {run.text}
                 </p>
                 <div className="col-span-3 col-start-10 flex flex-col items-end gap-3 max-lg:col-span-10 max-lg:col-start-3 max-lg:items-start">
-                  <span className="whitespace-nowrap text-14 text-[#0a0a0a]">
+                  <span className="whitespace-nowrap text-14 text-(color:--mpx-ink)">
                     {run.time}
                   </span>
                   <span
@@ -56,8 +56,8 @@ const RunList = ({ runs }: { runs: Run[] }) => {
                         className={`aspect-square rounded-xs transition-colors duration-500 motion-reduce:transition-none ${
                           run.on.includes(cell)
                             ? lit
-                              ? "bg-[#0a0a0a]"
-                              : "bg-black/30 group-hover:bg-[#0a0a0a]"
+                              ? "bg-(--mpx-ink)"
+                              : "bg-(--mpx-ink)/30 group-hover:bg-(--mpx-ink)"
                             : "bg-mpx-surface"
                         }`}
                       />

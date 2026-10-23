@@ -75,7 +75,7 @@ const Pricing = () => {
             <span
               ref={thumbRef}
               aria-hidden
-              className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-[#0a0a0a]"
+              className="absolute inset-y-0 left-0 w-1/2 rounded-full bg-(--mpx-ink)"
             />
             {PLANS.map((option) => (
               <button
@@ -84,7 +84,7 @@ const Pricing = () => {
                 aria-pressed={plan === option.value}
                 onClick={() => setPlan(option.value)}
                 className={`relative h-[5.6vh] whitespace-nowrap px-[1.4vw] text-22 transition-colors duration-300 max-lg:h-[4.6vh] max-lg:px-[3vw] max-md:h-[6.4vh] max-md:px-[5vw] ${
-                  plan === option.value ? "text-[#fafafa]" : "text-[#0a0a0a]"
+                  plan === option.value ? "text-(color:--mpx-paper)" : "text-(color:--mpx-ink)"
                 }`}
               >
                 {option.label}
@@ -100,21 +100,21 @@ const Pricing = () => {
             <Tilt
               className={`flex w-full flex-col justify-between gap-9 rounded-lg border px-[2.2vw] py-[2.2vw] max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw] ${
                 tier.featured
-                  ? "border-transparent bg-[#0a0a0a] text-[#f5f5f5]"
-                  : "border-black/10 bg-white"
+                  ? "border-transparent bg-(--mpx-ink) text-(color:--mpx-paper)"
+                  : "border-(--mpx-ink)/10 bg-(--mpx-white)"
               }`}
             >
               <div className="flex flex-col gap-6">
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-30">{tier.name}</h3>
                   {tier.featured && (
-                    <span className="inline-flex h-[3.2vh] items-center rounded-full bg-(--mpx-accent) px-[0.9vw] text-14 text-[#0a0a0a] max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]">
+                    <span className="inline-flex h-[3.2vh] items-center rounded-full bg-(--mpx-accent) px-[0.9vw] text-14 text-(color:--mpx-ink) max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]">
                       Most chosen
                     </span>
                   )}
                 </div>
                 <p
-                  className={`text-24 ${tier.featured ? "text-white/60" : "text-mpx-muted"}`}
+                  className={`text-24 ${tier.featured ? "text-(color:--mpx-white)/60" : "text-mpx-muted"}`}
                 >
                   {tier.text}
                 </p>
@@ -125,7 +125,7 @@ const Pricing = () => {
                     values={[tier.project.price, tier.retainer.price]}
                   />
                   <RollText
-                    className={`text-14 ${tier.featured ? "text-white/60" : "text-mpx-muted"}`}
+                    className={`text-14 ${tier.featured ? "text-(color:--mpx-white)/60" : "text-mpx-muted"}`}
                     plan={plan}
                     values={[tier.project.unit, tier.retainer.unit]}
                   />
@@ -166,9 +166,9 @@ const Pricing = () => {
         <ul className="flex flex-col">
           {ADDONS.map((addon, index) => (
             <li key={addon.name} className="relative">
-              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
               {index === ADDONS.length - 1 && (
-                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/10" />
               )}
               <FadeUp className="flex items-start justify-between gap-9 py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-2 max-md:py-[5vw]">
               <span className="font-mpx-head w-[22%] text-28 font-medium max-md:w-full">

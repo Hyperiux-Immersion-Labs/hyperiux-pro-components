@@ -37,7 +37,7 @@ const NextProject = ({ title, image, alt, href }: NextProjectProps) => {
         onMouseLeave={() => hover(false)}
         onFocus={() => hover(true)}
         onBlur={() => hover(false)}
-        className="flex flex-col gap-9 border-t border-black/10 py-[4vw] max-lg:gap-6 max-lg:py-[7vw] max-md:py-[10vw]"
+        className="flex flex-col gap-9 border-t border-(--mpx-ink)/10 py-[4vw] max-lg:gap-6 max-lg:py-[7vw] max-md:py-[10vw]"
       >
         <span className="text-24 leading-[1.3] text-mpx-muted">Next project</span>
         <span className="flex items-center justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-6">

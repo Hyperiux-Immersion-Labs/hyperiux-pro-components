@@ -95,13 +95,13 @@ const PostBody = ({ post }: PostBodyProps) => {
             {TAGS.map((tag) => (
               <li
                 key={tag}
-                className="inline-flex h-[4vh] items-center rounded-full bg-[#eeeeee] px-[1vw] text-14 text-[#0a0a0a] max-lg:h-[3.4vh] max-lg:px-[2vw] max-md:h-[5vh] max-md:px-[4vw]"
+                className="inline-flex h-[4vh] items-center rounded-full bg-(--mpx-paper) px-[1vw] text-14 text-(color:--mpx-ink) max-lg:h-[3.4vh] max-lg:px-[2vw] max-md:h-[5vh] max-md:px-[4vw]"
               >
                 {tag}
               </li>
             ))}
           </FadeUp>
-          <FadeUp className="flex items-center gap-[2vw] rounded-lg border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:gap-[3vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:flex-col max-md:items-start max-md:gap-[5vw] max-md:px-[5vw] max-md:py-[6vw]">
+          <FadeUp className="flex items-center gap-[2vw] rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) px-[2.2vw] py-[2.2vw] max-lg:gap-[3vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:flex-col max-md:items-start max-md:gap-[5vw] max-md:px-[5vw] max-md:py-[6vw]">
             <div className="aspect-square h-[11vh] shrink-0 overflow-hidden rounded-full max-lg:h-[8vh] max-md:h-[10vh]">
               <Image quality={95} src={author} alt="" sizes="8vw" className="h-full w-full object-cover" />
             </div>

@@ -37,16 +37,16 @@ const SIZE_CLASSES: Record<Size, string> = {
 
 const BASE_CLASSES: Record<Tone, Record<Variant, string>> = {
   light: {
-    primary: "border-transparent bg-[#0a0a0a] text-[#fafafa]",
-    outline: "border-black/30 text-[#0a0a0a]",
+    primary: "border-transparent bg-(--mpx-ink) text-(color:--mpx-paper)",
+    outline: "border-(--mpx-ink)/30 text-(color:--mpx-ink)",
   },
   dark: {
-    primary: "border-transparent bg-[#f5f5f5] text-[#0a0a0a]",
-    outline: "border-white/15 text-[#f5f5f5]",
+    primary: "border-transparent bg-(--mpx-paper) text-(color:--mpx-ink)",
+    outline: "border-(--mpx-white)/15 text-(color:--mpx-paper)",
   },
   media: {
-    primary: "border-transparent bg-[#f5f5f5] text-[#0a0a0a]",
-    outline: "border-white/50 text-white",
+    primary: "border-transparent bg-(--mpx-paper) text-(color:--mpx-ink)",
+    outline: "border-(--mpx-white)/50 text-(color:--mpx-white)",
   },
 };
 
@@ -57,7 +57,7 @@ const HOVER_TEXT: Record<Tone, Record<Variant, string>> = {
 };
 
 const REST_TEXT: Record<Tone, Record<Variant, string>> = {
-  light: { primary: "#fafafa", outline: "#0a0a0a" },
+  light: { primary: "#f5f5f5", outline: "#0a0a0a" },
   dark: { primary: "#0a0a0a", outline: "#f5f5f5" },
   media: { primary: "#0a0a0a", outline: "#ffffff" },
 };

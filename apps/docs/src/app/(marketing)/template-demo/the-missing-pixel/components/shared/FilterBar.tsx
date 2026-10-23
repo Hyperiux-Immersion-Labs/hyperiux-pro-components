@@ -27,8 +27,8 @@ const FilterBar = ({ label, options, value, onChange, countText }: FilterBarProp
             onClick={() => onChange(option.value)}
             className={`font-mpx-head flex h-[5vh] items-center gap-1 rounded-full border px-[1.2vw] text-22 transition-colors duration-300 max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw] ${
               active
-                ? "border-[#0a0a0a] bg-[#0a0a0a] text-[#fafafa]"
-                : "border-black/30 text-[#0a0a0a] hover:border-[#0a0a0a]"
+                ? "border-(--mpx-ink) bg-(--mpx-ink) text-(color:--mpx-paper)"
+                : "border-(--mpx-ink)/30 text-(color:--mpx-ink) hover:border-(--mpx-ink)"
             }`}
           >
             {option.label}

@@ -7,17 +7,17 @@ const Beliefs = () => (
   <>
     <section className="flex flex-col gap-14  max-lg:gap-11 px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
       <SectionHead title="What we believe" />
-      <div className="flex flex-col gap-[2vw] max-md:gap-[5vw] rounded-lg border border-black/10 bg-white  p-[2vw] max-md:p-[3vw]">
+      <div className="flex flex-col gap-[2vw] max-md:gap-[5vw] rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white)  p-[2vw] max-md:p-[3vw]">
         <ul className="grid grid-cols-3 gap-[2vw] max-md:gap-[5vw] max-lg:grid-cols-1">
           {VALUES.map((value, index) => (
             <FadeUp
               as="li"
               key={value.title}
               delay={index * 0.1}
-              className="flex h-[40vh] flex-col rounded-lg bg-[#eeeeee] px-[2.2vw] py-[2.2vw] max-lg:h-auto max-lg:gap-8 max-lg:px-[3.5vw] max-lg:py-[3.5vw] max-md:px-[5vw] max-md:py-[5vw]"
+              className="flex h-[40vh] flex-col rounded-lg bg-(--mpx-paper) px-[2.2vw] py-[2.2vw] max-lg:h-auto max-lg:gap-8 max-lg:px-[3.5vw] max-lg:py-[3.5vw] max-md:px-[5vw] max-md:py-[5vw]"
             >
               <div className="h-[48%] max-lg:h-auto">
-                <span className="font-mpx-head text-64 leading-none text-black/30">
+                <span className="font-mpx-head text-64 leading-none text-(color:--mpx-ink)/30">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </div>
@@ -28,16 +28,16 @@ const Beliefs = () => (
             </FadeUp>
           ))}
         </ul>
-        <ul className="grid grid-cols-4 gap-x-9 gap-y-6 rounded-lg bg-[#0a0a0a] px-[2.6vw] py-[2.6vw] text-[#f5f5f5] max-lg:grid-cols-2 max-md:grid-cols-1 max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[6vw] max-md:py-[6vw]">
+        <ul className="grid grid-cols-4 gap-x-9 gap-y-6 rounded-lg bg-(--mpx-ink) px-[2.6vw] py-[2.6vw] text-(color:--mpx-paper) max-lg:grid-cols-2 max-md:grid-cols-1 max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[6vw] max-md:py-[6vw]">
           {STATS.map((item, index) => (
             <FadeUp
               as="li"
               key={item.label}
               delay={index * 0.1}
-              className={`flex flex-col gap-3 ${index > 0 ? "border-l border-white/15 px-[1.6vw]" : ""} max-lg:px-0 max-lg:border-l-0 ${index % 2 === 1 ? "max-lg:border-l max-lg:px-[3vw] max-md:border-l-0 max-md:px-0" : ""}`}
+              className={`flex flex-col gap-3 ${index > 0 ? "border-l border-(--mpx-white)/15 px-[1.6vw]" : ""} max-lg:px-0 max-lg:border-l-0 ${index % 2 === 1 ? "max-lg:border-l max-lg:px-[3vw] max-md:border-l-0 max-md:px-0" : ""}`}
             >
               <Odometer value={item.value} className="font-mpx-head text-64 leading-none" />
-              <span className="w-[80%] text-14 text-[#9a9a9a] max-md:w-full">{item.label}</span>
+              <span className="w-[80%] text-14 text-(color:--mpx-grey) max-md:w-full">{item.label}</span>
             </FadeUp>
           ))}
         </ul>

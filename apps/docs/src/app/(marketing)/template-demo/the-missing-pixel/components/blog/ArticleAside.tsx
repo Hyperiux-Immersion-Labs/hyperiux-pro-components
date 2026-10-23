@@ -14,7 +14,7 @@ type ArticleAsideProps = {
 };
 
 const ICON_BUTTON =
-  "inline-flex aspect-square h-[6vh] items-center justify-center rounded-full border border-black/30 transition-colors duration-300 hover:border-[#0a0a0a] max-lg:h-[5vh] max-md:h-[7vh]";
+  "inline-flex aspect-square h-[6vh] items-center justify-center rounded-full border border-(--mpx-ink)/30 transition-colors duration-300 hover:border-(--mpx-ink) max-lg:h-[5vh] max-md:h-[7vh]";
 
 const ICON = "size-[1.4vw] max-lg:size-[2.4vw] max-md:size-[4.6vw]";
 
@@ -91,7 +91,7 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
       <div className="sticky top-[14vh] flex flex-col gap-9 max-lg:static max-lg:gap-6">
         <nav aria-label="Contents" className="flex flex-col gap-4 max-lg:hidden">
           <h3 className="text-28">Contents</h3>
-          <ol ref={listRef} className="relative flex flex-col border-l border-black/10">
+          <ol ref={listRef} className="relative flex flex-col border-l border-(--mpx-ink)/10">
             <span ref={markerRef} aria-hidden className="absolute -left-px top-0 h-0 w-px bg-(--mpx-accent)" />
             {links.map((link) => (
               <li key={link.id} data-id={link.id}>
@@ -99,8 +99,8 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
                   href={`#${link.id}`}
                   onClick={(event) => go(event, link.id)}
                   aria-current={active === link.id ? "true" : undefined}
-                  className={`block px-[1vw] py-[0.8vh] text-22 transition-colors duration-500 hover:text-[#0a0a0a] max-lg:px-[2vw] ${
-                    active === link.id ? "text-[#0a0a0a]" : "text-[#5e5e5e]"
+                  className={`block px-[1vw] py-[0.8vh] text-22 transition-colors duration-500 hover:text-(color:--mpx-ink) max-lg:px-[2vw] ${
+                    active === link.id ? "text-(color:--mpx-ink)" : "text-(color:--mpx-muted)"
                   }`}
                 >
                   {link.label}

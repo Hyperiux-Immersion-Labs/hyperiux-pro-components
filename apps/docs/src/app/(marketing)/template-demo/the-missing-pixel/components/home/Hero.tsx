@@ -26,8 +26,9 @@ const Hero = () => {
       const drift = driftRef.current;
       if (!hero || !drift || prefersReducedMotion()) return;
 
-      const pixel = hero.querySelector<HTMLElement>("[data-hero-pixel]");
-      if (pixel) {
+      gsap.delayedCall(INTRO_DELAY + 0.8, () => {
+        const pixel = hero.querySelector<HTMLElement>("[data-hero-pixel]");
+        if (!pixel) return;
         const radius = getComputedStyle(pixel).borderTopLeftRadius;
         gsap.fromTo(
           pixel,
@@ -35,11 +36,10 @@ const Hero = () => {
           {
             clipPath: `inset(0% round ${radius})`,
             duration: 1.2,
-            delay: INTRO_DELAY + 0.8,
             ease: "power3.inOut",
           },
         );
-      }
+      });
 
       gsap.to(drift, {
         y: () => hero.offsetHeight * (window.innerWidth <= 1025 ? 0.1 : window.innerWidth <= 1025 ? 0.2 : 0.3),

@@ -154,8 +154,8 @@ const Header = () => {
       <header
         ref={headerRef}
         className={`fixed inset-x-0 top-0 z-80 border-b transition-[background-color,border-color,color] duration-300 delay-700 motion-reduce:transition-none [&_[data-sound-toggle]]:delay-700 motion-reduce:[&_[data-sound-toggle]]:transition-none ${
-          solid ? "border-black/10 bg-[#fafafa]" : "border-transparent bg-transparent"
-        } ${menuOpen ? "text-[#f5f5f5]" : "text-[#0a0a0a]"}`}
+          solid ? "border-(--mpx-ink)/10 bg-(--mpx-paper)" : "border-transparent bg-transparent"
+        } ${menuOpen ? "text-(color:--mpx-paper)" : "text-(color:--mpx-ink)"}`}
       >
         <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[7vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
           <Link
@@ -195,7 +195,7 @@ const Header = () => {
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
               className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
-                menuOpen ? "border-[#ff8a4d]/60" : "border-black/30"
+                menuOpen ? "border-(--mpx-accent)/60" : "border-(--mpx-ink)/30"
               }`}
             >
               <span className="grid min-w-[4.4vw] overflow-hidden px-[1vw] text-left max-lg:min-w-[10vw] max-lg:px-[2.4vw] max-md:hidden">
@@ -220,7 +220,7 @@ const Header = () => {
                 ref={iconRef}
                 aria-hidden
                 className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[4vh] max-md:h-full ${
-                  menuOpen ? "bg-[#ff8a4d] text-[#0e0e0e]" : "bg-[#0a0a0a] text-[#fafafa]"
+                  menuOpen ? "bg-(--mpx-accent) text-(color:--mpx-ink)" : "bg-(--mpx-ink) text-(color:--mpx-paper)"
                 }`}
               >
                 <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />

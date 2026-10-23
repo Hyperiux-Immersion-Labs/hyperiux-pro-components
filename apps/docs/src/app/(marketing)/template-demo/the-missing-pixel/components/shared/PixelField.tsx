@@ -139,7 +139,7 @@ const PixelField = () => {
       const widest = Math.max(...lines.map((line) => ctx.measureText(line).width));
       fontSize *= Math.min(1, (width * 0.84) / widest);
       ctx.font = `600 ${fontSize}px ${family}`;
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       const centreY = height * 0.42;
@@ -339,16 +339,16 @@ const PixelField = () => {
   return (
     <div
       ref={hostRef}
-      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-lg bg-[#0d0d0d] max-lg:h-[60vh] max-md:h-[46vh]"
+      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-lg bg-(--mpx-ink) max-lg:h-[60vh] max-md:h-[46vh]"
     >
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
       <span
         aria-hidden
-        className={`pointer-events-none absolute inset-0 bg-white transition-opacity ease-out ${
+        className={`pointer-events-none absolute inset-0 bg-(--mpx-white) transition-opacity ease-out ${
           flash ? "opacity-30 duration-0" : "opacity-0 duration-[1200ms]"
         }`}
       />
-      <div className="pointer-events-none absolute inset-x-[2.5vw] bottom-[1.6vw] flex items-end justify-between gap-4 text-[#f5f5f5] max-lg:inset-x-[4vw] max-lg:bottom-[3vw] max-md:inset-x-[5vw] max-md:bottom-[5vw] max-md:flex-col max-md:items-start max-md:gap-2">
+      <div className="pointer-events-none absolute inset-x-[2.5vw] bottom-[1.6vw] flex items-end justify-between gap-4 text-(color:--mpx-paper) max-lg:inset-x-[4vw] max-lg:bottom-[3vw] max-md:inset-x-[5vw] max-md:bottom-[5vw] max-md:flex-col max-md:items-start max-md:gap-2">
         <p
           className={`w-[40%] text-30 max-lg:w-[60%] max-md:w-full leading-[1.2] tracking-tight ${
             found ? "bg-mpx-grad bg-clip-text text-transparent" : ""
@@ -361,7 +361,7 @@ const PixelField = () => {
             Start a project
           </UnderlineLink>
         ) : (
-          <p className="font-mpx-body text-right text-14 text-white/60 max-md:text-left">{hint}</p>
+          <p className="font-mpx-body text-right text-14 text-(color:--mpx-white)/60 max-md:text-left">{hint}</p>
         )}
       </div>
     </div>

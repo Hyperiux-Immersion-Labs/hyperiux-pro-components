@@ -239,8 +239,8 @@ const WorkScroll = () => {
         </div>
 
         <div className="px-[5vw] max-lg:hidden">
-          <div className="h-0.5 w-full overflow-hidden rounded-full bg-black/10">
-            <span ref={barRef} className="block h-full w-full origin-left bg-[#0a0a0a] [transform:scaleX(0)]" />
+          <div className="h-0.5 w-full overflow-hidden rounded-full bg-(--mpx-ink)/10">
+            <span ref={barRef} className="block h-full w-full origin-left bg-(--mpx-ink) [transform:scaleX(0)]" />
           </div>
         </div>
       </div>

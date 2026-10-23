@@ -83,7 +83,7 @@ const WordmarkPixels = ({ innerRef, progressRef }: WordmarkPixelsProps) => {
       if (!mask) return;
 
       mask.font = `${style.fontWeight} ${fontSize}px ${style.fontFamily}`;
-      mask.fillStyle = "#fff";
+      mask.fillStyle = "#ffffff";
       mask.textBaseline = "alphabetic";
 
       const letters = Array.from(inner.children) as HTMLElement[];

@@ -434,7 +434,7 @@ const AnimatedFaq = ({
   defaultOpen = [0],
 }: AnimatedFaqProps) => (
   <div className="relative">
-    <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+    <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
     <FAQGroup
       allowMultiple={allowMultiple}
       defaultOpenItems={defaultOpen.map((index) => `faq-${index}`)}
@@ -444,7 +444,7 @@ const AnimatedFaq = ({
           key={item.question}
           itemId={`faq-${index}`}
           className="relative"
-          iconClassName="flex aspect-square h-[4.4vh] items-center justify-center rounded-full bg-mpx-grad text-[#ffffff] max-lg:h-[3.2vh] max-md:h-[4.8vh]"
+          iconClassName="flex aspect-square h-[4.4vh] items-center justify-center rounded-full bg-mpx-grad text-(color:--mpx-white) max-lg:h-[3.2vh] max-md:h-[4.8vh]"
           duration={0.5}
         >
           <FAQTitle
@@ -456,7 +456,7 @@ const AnimatedFaq = ({
           <FAQContent className="w-[70%] pb-[1.8vw] text-28 text-mpx-muted max-lg:w-[90%] max-lg:pb-[3vw] max-md:w-full max-md:pb-[5vw]">
             <FadeUp>{item.answer}</FadeUp>
           </FAQContent>
-          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-black/10" />
+          <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/10" />
         </FAQWrapper>
       ))}
     </FAQGroup>

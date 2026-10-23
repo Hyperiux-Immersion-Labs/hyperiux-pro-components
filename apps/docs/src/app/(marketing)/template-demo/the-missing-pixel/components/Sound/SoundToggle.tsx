@@ -58,8 +58,8 @@ const SoundToggle = ({ inverted = false }: SoundToggleProps) => {
       onClick={() => setSound(!on)}
       className={`flex aspect-square h-[5vh] shrink-0 items-center justify-center rounded-full border transition-colors duration-300 max-lg:h-[5.2vh] max-md:h-[5.8vh] ${
         inverted
-          ? "border-white/30 text-[#f5f5f5] hover:bg-[#f5f5f5] hover:text-[#0e0e0e]"
-          : "border-black/30 text-[#0a0a0a] hover:border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#fafafa]"
+          ? "border-(--mpx-white)/30 text-(color:--mpx-paper) hover:bg-(--mpx-paper) hover:text-(color:--mpx-ink)"
+          : "border-(--mpx-ink)/30 text-(color:--mpx-ink) hover:border-(--mpx-ink) hover:bg-(--mpx-ink) hover:text-(color:--mpx-paper)"
       }`}
     >
       <span aria-hidden className="flex h-[1.1vh] items-end gap-0.5 max-lg:h-[1.5vh] max-md:h-[1.7vh]">

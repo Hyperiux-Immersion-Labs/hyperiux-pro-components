@@ -291,8 +291,8 @@ const Services = () => {
                 }}
                 className="relative"
               >
-                <RuleDraw className="absolute inset-x-0 top-0 h-px bg-black/20" />
-                {index === SERVICES.length - 1 && <RuleDraw className="absolute inset-x-0 bottom-0 h-px bg-black/20" />}
+                <RuleDraw className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/20" />
+                {index === SERVICES.length - 1 && <RuleDraw className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/20" />}
                 <Link
                   href={ROUTES.service}
                   data-cursor="View"

@@ -109,7 +109,7 @@ const FilmCanvas = ({ sectionRef, label }: FilmCanvasProps) => {
     };
   }, [sectionRef]);
 
-  return <canvas ref={canvasRef} role="img" aria-label={label} className="h-full w-full bg-[#0a0a0a]" />;
+  return <canvas ref={canvasRef} role="img" aria-label={label} className="h-full w-full bg-(--mpx-ink)" />;
 };
 
 export default FilmCanvas;

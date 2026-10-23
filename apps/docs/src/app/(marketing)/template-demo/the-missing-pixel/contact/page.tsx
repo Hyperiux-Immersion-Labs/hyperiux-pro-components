@@ -26,7 +26,7 @@ const page = () => (
       text="A partner reads every message and replies within two working days. Usually sooner."
     />
     <section className={`${GUTTER} flex justify-between gap-[2vw] max-lg:flex-col max-lg:gap-8`}>
-      <FadeUp className="w-[58%] rounded-[2vw] border border-black/10 bg-white p-[3vw] max-lg:w-full max-lg:rounded-[3vw] max-lg:p-[5vw] max-md:rounded-[5vw] max-md:p-[6vw]">
+      <FadeUp className="w-[58%] rounded-[2vw] border border-(--mpx-ink)/10 bg-(--mpx-white) p-[3vw] max-lg:w-full max-lg:rounded-[3vw] max-lg:p-[5vw] max-md:rounded-[5vw] max-md:p-[6vw]">
         <ContactForm />
       </FadeUp>
       <FadeUp delay={0.1} className="w-[38%] max-lg:w-full">

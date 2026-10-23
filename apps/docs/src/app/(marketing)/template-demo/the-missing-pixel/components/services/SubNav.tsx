@@ -49,7 +49,7 @@ const SubNav = ({ links }: SubNavProps) => {
   return (
     <nav
       aria-label="On this page"
-      className="sticky top-0 z-40 border-y border-black/10 bg-[#fafafa]/90 backdrop-blur-lg"
+      className="sticky top-0 z-40 border-y border-(--mpx-ink)/10 bg-(--mpx-paper)/90 backdrop-blur-lg"
     >
       <ul ref={railRef} className="flex gap-2 overflow-x-auto px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[1.2vh] [scrollbar-width:none] max-lg:py-[1.4vh] max-md:py-[1.6vh]">
         {links.map((link) => (
@@ -60,8 +60,8 @@ const SubNav = ({ links }: SubNavProps) => {
               aria-current={active === link.id ? "true" : undefined}
               className={`font-mpx-head inline-flex h-[5vh] items-center rounded-full px-[1.2vw] text-22 font-medium transition-colors duration-300 max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw] ${
                 active === link.id
-                  ? "bg-[#0a0a0a] text-[#fafafa]"
-                  : "text-[#0a0a0a] hover:bg-[#eeeeee]"
+                  ? "bg-(--mpx-ink) text-(color:--mpx-paper)"
+                  : "text-(color:--mpx-ink) hover:bg-(--mpx-paper)"
               }`}
             >
               {link.label}

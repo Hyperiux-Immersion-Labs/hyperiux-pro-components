@@ -43,7 +43,7 @@ const AwardsList = () => {
       <span
         ref={pillRef}
         aria-hidden
-        className="pointer-events-none absolute left-0 top-0 w-full rounded-none bg-white opacity-0 max-md:hidden"
+        className="pointer-events-none absolute left-0 top-0 w-full rounded-none bg-(--mpx-white) opacity-0 max-md:hidden"
       />
       <li aria-hidden className="relative flex items-baseline justify-between gap-9 px-[1vw] py-[1vw] text-14 text-mpx-muted max-md:hidden">
         <span className="w-[14%]">Year</span>
@@ -56,7 +56,7 @@ const AwardsList = () => {
           onMouseEnter={(event) => moveTo(event.currentTarget)}
           className="relative"
         >
-          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
           <FadeUp className="flex items-baseline justify-between gap-9 px-[1vw] py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-1 max-md:px-0 max-md:py-[5vw]">
             <span className="w-[14%] text-24 text-mpx-muted max-md:w-full">{award.year}</span>
             <span className="font-mpx-head w-[46%] text-30 max-md:w-full">{award.name}</span>

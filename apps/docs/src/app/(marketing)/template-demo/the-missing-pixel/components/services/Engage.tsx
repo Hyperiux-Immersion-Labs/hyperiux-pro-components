@@ -5,7 +5,7 @@ import UnderlineLink from "../Buttons/UnderlineLink";
 import { ROUTES } from "../../routes";
 
 const Engage = () => (
-  <div className="flex flex-col gap-9 rounded-lg border border-black/10 bg-white p-[1.5vw] max-lg:p-[2vw] max-md:p-[3vw]">
+  <div className="flex flex-col gap-9 rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) p-[1.5vw] max-lg:p-[2vw] max-md:p-[3vw]">
     <ul className="grid grid-cols-3 gap-[1.5vw] max-md:gap-[4vw] max-lg:gap-[2.5vw] max-lg:grid-cols-1">
       {PLANS.map((plan, index) => (
         <FadeUp
@@ -13,7 +13,7 @@ const Engage = () => (
           key={plan.name}
           delay={index * 0.08}
           className={`flex min-h-[50vh] flex-col justify-between gap-[1.5vw] rounded-lg p-[2vw] max-lg:min-h-0 max-lg:p-[4vw] max-md:p-[6vw] ${
-            plan.dark ? "bg-[#0a0a0a] text-[#f5f5f5]" : "bg-mpx-surface"
+            plan.dark ? "bg-(--mpx-ink) text-(color:--mpx-paper)" : "bg-mpx-surface"
           }`}
         >
           <div className="flex items-center justify-between gap-4">
@@ -21,8 +21,8 @@ const Engage = () => (
             <span
               className={`inline-flex h-[3.2vh] items-center whitespace-nowrap rounded-full border px-[0.9vw] text-14 max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw] ${
                 plan.dark
-                  ? "border-white/15 text-[#9a9a9a]"
-                  : "border-black/30 text-mpx-muted"
+                  ? "border-(--mpx-white)/15 text-(color:--mpx-grey)"
+                  : "border-(--mpx-ink)/30 text-mpx-muted"
               }`}
             >
               {plan.tag}
@@ -32,7 +32,7 @@ const Engage = () => (
             <p className="flex flex-wrap items-baseline gap-2">
               {plan.before && (
                 <span
-                  className={`text-14 ${plan.dark ? "text-[#9a9a9a]" : "text-mpx-muted"}`}
+                  className={`text-14 ${plan.dark ? "text-(color:--mpx-grey)" : "text-mpx-muted"}`}
                 >
                   {plan.before}
                 </span>
@@ -41,22 +41,22 @@ const Engage = () => (
                 {plan.price}
               </span>
               <span
-                className={`text-14 ${plan.dark ? "text-[#9a9a9a]" : "text-mpx-muted"}`}
+                className={`text-14 ${plan.dark ? "text-(color:--mpx-grey)" : "text-mpx-muted"}`}
               >
                 {plan.after}
               </span>
             </p>
             <p
-              className={`w-[90%] text-24 max-lg:w-full leading-[1.3] ${plan.dark ? "text-[#9a9a9a]" : "text-mpx-muted"}`}
+              className={`w-[90%] text-24 max-lg:w-full leading-[1.3] ${plan.dark ? "text-(color:--mpx-grey)" : "text-mpx-muted"}`}
             >
               {plan.text}
             </p>
             <div
-              className={`h-px w-full ${plan.dark ? "bg-white/15" : "bg-black/30"}`}
+              className={`h-px w-full ${plan.dark ? "bg-(--mpx-white)/15" : "bg-(--mpx-ink)/30"}`}
             />
             <p className="flex flex-col gap-1 text-24 leading-[1.3]">
               <span
-                className={`text-14 ${plan.dark ? "text-[#9a9a9a]" : "text-mpx-muted"}`}
+                className={`text-14 ${plan.dark ? "text-(color:--mpx-grey)" : "text-mpx-muted"}`}
               >
                 Best for
               </span>

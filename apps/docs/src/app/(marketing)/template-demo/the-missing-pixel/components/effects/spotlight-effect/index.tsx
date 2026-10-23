@@ -35,7 +35,7 @@ const SpotlightEffect = ({ image, litImage, alt, sizes, className = "", children
       onPointerMove={handleMove}
       className={`group flex flex-col rounded-lg bg-mpx-ink p-2 text-mpx-paper ${className}`.trim()}
     >
-      <div ref={mediaRef} className="relative isolate aspect-[6/7] overflow-hidden rounded-md bg-[#3a1200]">
+      <div ref={mediaRef} className="relative isolate aspect-[6/7] overflow-hidden rounded-md bg-(--mpx-accent)">
         <Image src={image} alt={alt} sizes={sizes} quality={95} className={imageClasses} />
         <Image
           src={litImage}
@@ -47,7 +47,7 @@ const SpotlightEffect = ({ image, litImage, alt, sizes, className = "", children
         />
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_var(--gx,50%)_var(--gy,35%),rgb(255_220_190/0.75),transparent_48%)] opacity-0 mix-blend-soft-light transition-opacity duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100"
+          className="pointer-events-none absolute inset-0 z-1 bg-[radial-gradient(circle_at_var(--gx,50%)_var(--gy,35%),rgb(255_95_0/0.75),transparent_48%)] opacity-0 mix-blend-soft-light transition-opacity duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:opacity-100"
         />
         <span
           aria-hidden

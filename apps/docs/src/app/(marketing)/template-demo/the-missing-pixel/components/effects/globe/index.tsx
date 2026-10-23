@@ -36,7 +36,7 @@ const GROUPS = [
   { col: "#FFFFFF", k: 0.7, a: (v: number) => 0.04 + 0.09 * v },
   { col: "#FFFFFF", k: 0.9, a: (v: number) => 0.05 + 0.42 * v ** 2.5 },
   { col: "land", k: 1.2, a: (v: number) => 0.42 + 0.58 * v },
-  { col: "#FFE7D1", k: 1.5, a: (v: number) => v },
+  { col: "#ff5f00", k: 1.5, a: (v: number) => v },
 ];
 
 const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeProps) => {
@@ -133,8 +133,8 @@ const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeP
       ctx.fillStyle = g;
       ctx.fillRect(0, 0, w, h);
       const body = ctx.createRadialGradient(cx - R * 0.3, cy - R * 0.35, 0, cx, cy, R);
-      body.addColorStop(0, "#121110");
-      body.addColorStop(1, "#070707");
+      body.addColorStop(0, "#0a0a0a");
+      body.addColorStop(1, "#0a0a0a");
       ctx.fillStyle = body;
       ctx.beginPath();
       ctx.arc(cx, cy, R, 0, Math.PI * 2);
@@ -219,7 +219,7 @@ const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeP
               if (!vis) continue;
               const ps = d * (1.9 - k * 0.3);
               ctx.globalAlpha = 1 - k * 0.24;
-              ctx.fillStyle = k ? mapColor : "#FFE7D1";
+              ctx.fillStyle = k ? mapColor : "#ff5f00";
               ctx.fillRect(px - ps / 2, py - ps / 2, ps, ps);
             }
             ctx.fillStyle = mapColor;
@@ -372,7 +372,7 @@ const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeP
   const studio = STUDIOS[active];
 
   return (
-    <div ref={rootRef} className={`relative h-full w-full overflow-hidden bg-[#070707] text-white ${className}`.trim()}>
+    <div ref={rootRef} className={`relative h-full w-full overflow-hidden bg-(--mpx-ink) text-(color:--mpx-white) ${className}`.trim()}>
       <canvas
         ref={canvasRef}
         role="img"
@@ -393,16 +393,16 @@ const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeP
               <span
                 className={`absolute bottom-3.5 left-0 inline-flex -translate-x-1/2 items-center gap-2 rounded-full border px-3 py-1.5 text-14 leading-none whitespace-nowrap backdrop-blur-md transition-[background-color,color,border-color,opacity] duration-400 ease-[cubic-bezier(0.25,1,0.5,1)] ${
                   isActive
-                    ? "border-white bg-white text-[#0a0a0a]"
-                    : "border-white/15 bg-[rgb(18_18_18/0.72)] text-white/70 max-md:opacity-0"
+                    ? "border-(--mpx-white) bg-(--mpx-white) text-(color:--mpx-ink)"
+                    : "border-(--mpx-white)/15 bg-[rgb(10_10_10/0.72)] text-(color:--mpx-white)/70 max-md:opacity-0"
                 }`}
               >
                 <span>{item.city}</span>
                 <span className="tabular-nums opacity-70">{times[index]}</span>
               </span>
-              <span className="absolute top-0 left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-[0.1vw] bg-white shadow-[0_0_0_0.2vw_rgb(7_7_7/0.8)]">
+              <span className="absolute top-0 left-0 size-2 -translate-x-1/2 -translate-y-1/2 rounded-[0.1vw] bg-(--mpx-white) shadow-[0_0_0_0.2vw_rgb(10_10_10/0.8)]">
                 <span
-                  className={`absolute -inset-1 rounded-[0.2vw] border border-[#ff5f00] opacity-0 ${
+                  className={`absolute -inset-1 rounded-[0.2vw] border border-(--mpx-accent) opacity-0 ${
                     isActive ? "animate-[mpx-globe-ping_2.4s_cubic-bezier(0.25,1,0.5,1)_infinite] motion-reduce:scale-150 motion-reduce:animate-none motion-reduce:opacity-80" : ""
                   }`}
                 />
@@ -411,8 +411,8 @@ const Globe = ({ mapColor = "#ff5f00", activeIndex = 0, className = "" }: GlobeP
           );
         })}
       </div>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-between gap-4 px-5 py-4 text-14 whitespace-pre text-white/50 tabular-nums">
-        <span className="text-white/80">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex justify-between gap-4 px-5 py-4 text-14 whitespace-pre text-(color:--mpx-white)/50 tabular-nums">
+        <span className="text-(color:--mpx-white)/80">
           {`${studio.city}  ${formatCoord(studio.lat, "N", "S")}  ${formatCoord(studio.lon, "E", "W")}`}
         </span>
         <span>Drag to turn</span>

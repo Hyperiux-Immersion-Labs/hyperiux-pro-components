@@ -9,7 +9,7 @@ import { ROUTES, workPath } from "../../routes";
 import { PROJECTS } from "./projects";
 
 const NineBlock = () => (
-  <FadeUp className="grid grid-cols-12 items-center gap-x-9 gap-y-10 rounded-lg border border-black/10 bg-white p-[3.5vw] max-lg:gap-x-6 max-lg:p-[5vw] max-md:p-[6vw]">
+  <FadeUp className="grid grid-cols-12 items-center gap-x-9 gap-y-10 rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) p-[3.5vw] max-lg:gap-x-6 max-lg:p-[5vw] max-md:p-[6vw]">
     <div className="col-span-6 flex flex-col items-start gap-8 max-lg:col-span-12">
       <h2 className="w-[70%] text-balance max-lg:w-full">Your project could be number nine.</h2>
       <p className="w-[80%] text-28 leading-[1.3] text-mpx-muted max-lg:w-full">
@@ -44,9 +44,9 @@ const NineBlock = () => (
         <Link
           href={ROUTES.contact}
           aria-label="Start a project"
-          className="group flex aspect-square w-full items-center justify-center rounded-lg border border-dashed border-black/30 transition-colors duration-500 hover:border-black"
+          className="group flex aspect-square w-full items-center justify-center rounded-lg border border-dashed border-(--mpx-ink)/30 transition-colors duration-500 hover:border-(--mpx-ink)"
         >
-          <span className="font-mpx-head text-40 text-mpx-muted transition-colors duration-500 group-hover:text-black">
+          <span className="font-mpx-head text-40 text-mpx-muted transition-colors duration-500 group-hover:text-(color:--mpx-ink)">
             09
           </span>
         </Link>

@@ -20,11 +20,11 @@ const Breadcrumb = ({ crumbs }: { crumbs: Crumb[] }) => (
             </span>
           )}
           {crumb.href ? (
-            <Link href={crumb.href} title={crumb.label} className="transition-colors duration-300 hover:text-[#0a0a0a]">
+            <Link href={crumb.href} title={crumb.label} className="transition-colors duration-300 hover:text-(color:--mpx-ink)">
               {shorten(crumb.label)}
             </Link>
           ) : (
-            <span aria-current="page" title={crumb.label} className="text-[#0a0a0a]">
+            <span aria-current="page" title={crumb.label} className="text-(color:--mpx-ink)">
               {shorten(crumb.label)}
             </span>
           )}

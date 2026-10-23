@@ -219,13 +219,13 @@ const PixelTransition = () => {
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div
           ref={labelRef}
-          className="font-mpx-head absolute inset-0 flex items-center justify-center text-128 font-medium text-[#0a0a0a]"
+          className="font-mpx-head absolute inset-0 flex items-center justify-center text-128 font-medium text-(color:--mpx-ink)"
         >
           <span ref={labelTextRef}>Missing Pixel</span>
         </div>
         <span
           ref={countRef}
-          className="font-mpx-head mpx-container absolute bottom-[2.5vw] right-0 text-64 tabular-nums text-[#0a0a0a] max-lg:bottom-[4vw] max-md:bottom-[6vw]"
+          className="font-mpx-head mpx-container absolute bottom-[2.5vw] right-0 text-64 tabular-nums text-(color:--mpx-ink) max-lg:bottom-[4vw] max-md:bottom-[6vw]"
         >
           <NumberCounter />
         </span>

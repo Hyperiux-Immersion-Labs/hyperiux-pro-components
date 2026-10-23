@@ -54,9 +54,9 @@ export const Steps = ({ items }: { items: string[] }) => (
 );
 
 export const Callout = ({ title, children }: { title: string; children: ReactNode }) => (
-  <FadeUp className="flex flex-col gap-3 rounded-lg border border-black/10 bg-white px-[2vw] py-[2vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]">
+  <FadeUp className="flex flex-col gap-3 rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) px-[2vw] py-[2vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]">
     <strong className="font-mpx-head text-28 font-medium">{title}</strong>
-    <p className="text-24 text-[#0a0a0a]">{children}</p>
+    <p className="text-24 text-(color:--mpx-ink)">{children}</p>
   </FadeUp>
 );
 

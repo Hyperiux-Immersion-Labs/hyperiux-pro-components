@@ -75,7 +75,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
             {DETAIL.fit.map((item) => (
               <li
                 key={item.title}
-                className="flex flex-col gap-3 border-t border-black/30 py-5"
+                className="flex flex-col gap-3 border-t border-(--mpx-ink)/30 py-5"
               >
                 <h3 className="text-30">{item.title}</h3>
                 <p className="text-24 text-mpx-muted">{item.text}</p>
@@ -98,7 +98,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
             as="li"
             key={group.title}
             delay={index * 0.1}
-            className="flex flex-col gap-6 rounded-lg border border-black/10 bg-white px-[2.2vw] py-[2.2vw] max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw]"
+            className="flex flex-col gap-6 rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) px-[2.2vw] py-[2.2vw] max-lg:px-[5vw] max-lg:py-[5vw] max-md:px-[6vw] max-md:py-[7vw]"
           >
             <h3 className="text-30">{group.title}</h3>
             <ul className="flex flex-col">
@@ -107,7 +107,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
                   <RuleDraw
                     syncWithFade
                     delay={0.4 + itemIndex * 0.08}
-                    className="absolute inset-x-0 top-0 h-px bg-black/10"
+                    className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10"
                   />
                   {item}
                 </li>
@@ -119,33 +119,33 @@ const ServiceDetail = ({ service }: { service: Service }) => (
     </section>
 
     <section id="approach" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
-      <div className="flex flex-col gap-14 rounded-lg bg-[#0a0a0a] px-[4vw] py-[5vw] text-[#f5f5f5] max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
+      <div className="flex flex-col gap-14 rounded-lg bg-(--mpx-ink) px-[4vw] py-[5vw] text-(color:--mpx-paper) max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
         <div className="flex flex-col items-start gap-6">
           <MaskReveal as="h2" className="w-[35%] max-lg:w-[70%] max-md:w-full">
             Our approach
           </MaskReveal>
-          <LineReveal className="w-[32%] text-28 text-[#9a9a9a] max-lg:w-[70%] max-md:w-full">
+          <LineReveal className="w-[32%] text-28 text-(color:--mpx-grey) max-lg:w-[70%] max-md:w-full">
             {DETAIL.approach}
           </LineReveal>
         </div>
         <ol className="flex flex-col">
           {DETAIL.phases.map((phase, index) => (
             <li key={phase.title} className="relative">
-              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-white/15" />
+              <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-white)/15" />
               {index === DETAIL.phases.length - 1 && (
-                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-white/15" />
+                <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-white)/15" />
               )}
               <FadeUp className="grid grid-cols-12 items-start gap-x-9 gap-y-4 max-lg:gap-x-0 py-[2.4vw] max-lg:py-[4vw] max-md:py-[6vw]">
               <div className="col-span-4 flex items-start gap-5 max-lg:col-span-12">
-                <span className="font-mpx-head flex aspect-square h-[5.6vh] shrink-0 items-center justify-center rounded-full border border-white/15 text-22 max-lg:h-[4vh] max-md:h-[6vh]">
+                <span className="font-mpx-head flex aspect-square h-[5.6vh] shrink-0 items-center justify-center rounded-full border border-(--mpx-white)/15 text-22 max-lg:h-[4vh] max-md:h-[6vh]">
                   {index + 1}
                 </span>
                 <div className="flex flex-col gap-2">
                   <h3 className="text-30">{phase.title}</h3>
-                  <span className="text-14 text-[#9a9a9a]">{phase.time}</span>
+                  <span className="text-14 text-(color:--mpx-grey)">{phase.time}</span>
                 </div>
               </div>
-              <p className="col-span-4 col-start-6 text-24 leading-[1.3] text-[#9a9a9a] max-lg:col-span-12 max-lg:col-start-1">
+              <p className="col-span-4 col-start-6 text-24 leading-[1.3] text-(color:--mpx-grey) max-lg:col-span-12 max-lg:col-start-1">
                 {phase.text}
               </p>
               <ul className="col-span-3 col-start-10 flex flex-col gap-1 text-24 max-lg:col-span-12 max-lg:col-start-1">
@@ -181,7 +181,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
           {DETAIL.tools.map((tool) => (
             <li
               key={tool}
-              className="inline-flex h-[5vh] items-center rounded-full border border-black/30 px-[1.2vw] text-22 max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]"
+              className="inline-flex h-[5vh] items-center rounded-full border border-(--mpx-ink)/30 px-[1.2vw] text-22 max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]"
             >
               {tool}
             </li>
@@ -236,7 +236,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
           <UnderlineLink
             href={ROUTES.contact}
             
-            className="text-[#0a0a0a]"
+            className="text-(color:--mpx-ink)"
           >
             Ask us directly.
           </UnderlineLink>
@@ -255,7 +255,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
             <FadeUp as="li" key={item.slug} delay={index * 0.1}>
               <Link
                 href={servicePath(item.slug)}
-                className="group flex items-center justify-between gap-6 rounded-lg border border-black/10 px-[1.5vw] py-[1.5vw] transition-colors duration-500 hover:border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#fafafa] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]"
+                className="group flex items-center justify-between gap-6 rounded-lg border border-(--mpx-ink)/10 px-[1.5vw] py-[1.5vw] transition-colors duration-500 hover:border-(--mpx-ink) hover:bg-(--mpx-ink) hover:text-(color:--mpx-paper) max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw]"
               >
                 <span className="font-mpx-head text-30 font-medium">
                   {item.title}
@@ -283,7 +283,7 @@ const CheckList = ({
     {items.map((item, index) => (
       <li key={item} className="relative">
         {ruled && (
-          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-(--mpx-ink)/10" />
         )}
         <FadeUp
           delay={index * 0.08}

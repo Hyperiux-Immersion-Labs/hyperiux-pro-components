@@ -124,7 +124,7 @@ const PixelProcess = () => {
         let scatterStrength = 1;
         const hoverPixels = cells.map((cell) => cell.querySelector<HTMLElement>("[data-px-hover]"));
         gsap.set(hoverPixels, {
-          backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#bdbdbd",
+          backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#9a9a9a",
         });
         const scatterOffsets = cells.map(() => ({
           x: gsap.utils.random(-32, 32),
@@ -210,7 +210,7 @@ const PixelProcess = () => {
           })
           .to(cells, { scale: (i) => (nearCentre(CELL_INDICES[i]) ? 1 : 0.55), opacity: 1, duration: 0.8, stagger: { each: 0.004, from: "center" } }, 1.3)
           .to(hoverPixels, {
-            backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#bdbdbd",
+            backgroundColor: (i) => nearCentre(CELL_INDICES[i]) ? ((CELL_INDICES[i] + 1) % 17 === 0 ? "#ff5f00" : "#0a0a0a") : "#9a9a9a",
             duration: 0.8,
             stagger: { each: 0.004, from: "center" },
           }, 1.3)
@@ -280,7 +280,7 @@ const PixelProcess = () => {
                 <p className="text-28 leading-[1.5] max-md:leading-[1.3] text-mpx-muted">{step.text}</p>
                 <span className="text-14 max-md:pt-2 max-md:text-[4vw]! text-mpx-ink">{step.time}</span>
                 <div className="absolute inset-x-0 bottom-0 hidden max-lg:block">
-                  <RuleDraw className="h-px w-full bg-black/20" />
+                  <RuleDraw className="h-px w-full bg-(--mpx-ink)/20" />
                 </div>
               </div>
             ))}
@@ -308,7 +308,7 @@ const PixelProcess = () => {
                   <span
                     data-px-hover
                     className={`block h-full w-full rounded-xs will-change-transform ${
-                      (index + 1) % 17 === 0 ? "bg-(--mpx-accent)" : "bg-[#0a0a0a]"
+                      (index + 1) % 17 === 0 ? "bg-(--mpx-accent)" : "bg-(--mpx-ink)"
                     }`}
                   />
                 </span>

@@ -1,14 +1,20 @@
 /* Built using Hyperiux Vault: https://vault.hyperiux.com */
 
-.mpx-page {
-  --mpx-accent: #ff5f00;
-  --mpx-accent-deep: #cc4a00;
+.mpx-page,
+html:has(.mpx-page) {
   --mpx-ink: #0a0a0a;
-  --mpx-paper: #fafafa;
+  --mpx-white: #ffffff;
+  --mpx-paper: #f5f5f5;
+  --mpx-grey: #9a9a9a;
   --mpx-muted: #5e5e5e;
-  --mpx-surface: #eeeeee;
-  --mpx-grad: linear-gradient(120deg, #ffa033 0%, #ff5f00 50%, #e83a00 100%);
+  --mpx-accent: #ff5f00;
+  --mpx-accent-light: #ffa033;
+  --mpx-accent-deep: #e83a00;
+  --mpx-surface: var(--mpx-paper);
+  --mpx-grad: linear-gradient(120deg, var(--mpx-accent-light) 0%, var(--mpx-accent) 50%, var(--mpx-accent-deep) 100%);
+}
 
+.mpx-page {
   background-color: var(--mpx-paper);
   color: var(--mpx-ink);
   line-height: 1.6;
@@ -152,8 +158,8 @@
   display: block;
   padding-block: 0.5vw;
   margin-block: -0.5vw;
-  -webkit-mask-image: linear-gradient(150deg, #000 33.3%, transparent 66.6%);
-  mask-image: linear-gradient(150deg, #000 33.3%, transparent 66.6%);
+  -webkit-mask-image: linear-gradient(150deg, var(--mpx-ink) 33.3%, transparent 66.6%);
+  mask-image: linear-gradient(150deg, var(--mpx-ink) 33.3%, transparent 66.6%);
   -webkit-mask-size: 500% 100%;
   mask-size: 500% 100%;
   -webkit-mask-position: 100% 100%;
@@ -177,7 +183,7 @@
 
 html:has(.mpx-page),
 html:has(.mpx-page) body {
-  background-color: #fafafa;
+  background-color: var(--mpx-paper);
   scrollbar-color: var(--mpx-accent) transparent;
   scrollbar-width: thin;
 }

@@ -200,7 +200,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
       open={open}
       id="mpx-menu"
       rootRef={rootRef}
-      className="fixed inset-0 z-70 overflow-y-auto overscroll-contain bg-[#0e0e0e] text-[#f5f5f5]"
+      className="fixed inset-0 z-70 overflow-y-auto overscroll-contain bg-(--mpx-ink) text-(color:--mpx-paper)"
       innerClassName="mpx-container flex min-h-full origin-top flex-col justify-between gap-7 py-[1.3vw] max-lg:gap-16 max-lg:py-[4vw] max-md:py-[6vw]"
     >
         <div className="h-[6.4vh] max-lg:h-[7vh] max-md:h-[6.4vh]" />
@@ -227,14 +227,14 @@ const Menu = ({ open, onClose }: MenuProps) => {
                     className="font-mpx-head relative flex items-start gap-3 font-medium max-lg:gap-2 max-md:gap-1 leading-[1.1]"
                   >
                     <span className="relative block overflow-hidden px-[0.4vw] max-md:px-[0.6vw]">
-                      <span data-roll className={`block ${pathname === link.target ? "text-[#ff8a4d]" : ""}`}>
+                      <span data-roll className={`block ${pathname === link.target ? "text-(color:--mpx-accent)" : ""}`}>
                         {link.label}
                       </span>
                       <span
                         data-roll
                         data-roll-alt
                         aria-hidden
-                        className="absolute left-0 top-0 block font-normal italic text-[#ff8a4d]"
+                        className="absolute left-0 top-0 block font-normal italic text-(color:--mpx-accent)"
                       >
                         {link.label}
                       </span>
@@ -246,7 +246,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
           </nav>
 
           <div className="flex w-[30%] flex-col gap-6 max-lg:w-full max-lg:gap-8 max-md:gap-7">
-            <div data-menu-fade className="relative isolate h-[min(38vh,19vw)] w-[15vw] overflow-hidden rounded-lg [transform:translateZ(0)] bg-[#0a0a0a] max-lg:hidden">
+            <div data-menu-fade className="relative isolate h-[min(38vh,19vw)] w-[15vw] overflow-hidden rounded-lg [transform:translateZ(0)] bg-(--mpx-ink) max-lg:hidden">
               <video
                 ref={videoRef}
                 muted
@@ -273,7 +273,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h2 data-menu-fade className="mpx-eyebrow text-14 font-semibold text-[#9a9a9a]">Also worth a look</h2>
+              <h2 data-menu-fade className="mpx-eyebrow text-14 font-semibold text-(color:--mpx-grey)">Also worth a look</h2>
               <ul className="flex flex-wrap gap-2">
                 {WORTH_A_LOOK.map((link) => (
                   <li key={link.label} data-menu-fade>
@@ -281,7 +281,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
                       href={link.target}
                       tabIndex={open ? 0 : -1}
                       onClick={onClose}
-                      className="inline-flex h-[3.2vh] items-center rounded-full border border-white/20 px-[0.9vw] text-22 font-medium transition-colors duration-300 hover:border-[#f5f5f5] hover:bg-[#f5f5f5] hover:text-[#0e0e0e] max-lg:h-[4.4vh] max-lg:px-[2.6vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
+                      className="inline-flex h-[3.2vh] items-center rounded-full border border-(--mpx-white)/20 px-[0.9vw] text-22 font-medium transition-colors duration-300 hover:border-(--mpx-paper) hover:bg-(--mpx-paper) hover:text-(color:--mpx-ink) max-lg:h-[4.4vh] max-lg:px-[2.6vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
                     >
                       {link.label}
                     </Link>
@@ -291,7 +291,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
             </div>
 
             <div className="flex flex-col gap-3">
-              <h2 data-menu-fade className="mpx-eyebrow text-14 font-semibold text-[#9a9a9a]">New business</h2>
+              <h2 data-menu-fade className="mpx-eyebrow text-14 font-semibold text-(color:--mpx-grey)">New business</h2>
               <div data-menu-fade>
                 <UnderlineLink
                   href="mailto:hello@themissingpixel.studio"
@@ -306,11 +306,11 @@ const Menu = ({ open, onClose }: MenuProps) => {
         </div>
 
         <div className="flex flex-col gap-5 max-lg:gap-6 max-md:gap-5">
-          <div data-menu-fade className="h-px w-full bg-white/15" />
+          <div data-menu-fade className="h-px w-full bg-(--mpx-white)/15" />
           <div className="grid grid-cols-4 gap-9 text-22 font-medium max-lg:gap-8 max-md:grid-cols-2 max-md:gap-6">
             {STUDIOS.map((item, index) => (
               <div key={item.city} data-menu-fade className="flex flex-col gap-3 max-lg:gap-2">
-                <h2 className="mpx-eyebrow text-14 font-semibold text-[#9a9a9a]">
+                <h2 className="mpx-eyebrow text-14 font-semibold text-(color:--mpx-grey)">
                   {item.city} <span className="tabular-nums">{times[index]}</span>
                 </h2>
                 <p>{item.address}</p>

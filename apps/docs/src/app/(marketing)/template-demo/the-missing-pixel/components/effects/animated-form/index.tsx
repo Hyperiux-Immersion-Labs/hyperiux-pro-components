@@ -4,8 +4,8 @@
 import { useEffect, useRef, useState, type ChangeEvent, type ReactNode } from "react";
 
 const FIELD_BASE =
-  "w-full border bg-[#fafafa] px-[1.2vw] text-22 text-[#0a0a0a] outline-none transition-colors duration-300 max-lg:px-[2.4vw] max-md:px-[4vw]";
-const FIELD_STATE = "border-black/30 hover:border-[#0a0a0a] focus:border-[#0a0a0a]";
+  "w-full border bg-(--mpx-paper) px-[1.2vw] text-22 text-(color:--mpx-ink) outline-none transition-colors duration-300 max-lg:px-[2.4vw] max-md:px-[4vw]";
+const FIELD_STATE = "border-(--mpx-ink)/30 hover:border-(--mpx-ink) focus:border-(--mpx-ink)";
 const FIELD_ERROR = "border-(--mpx-accent-deep) hover:border-(--mpx-accent-deep) focus:border-(--mpx-accent-deep)";
 const FIELD_HEIGHT = "h-[6.4vh] max-lg:h-[4.8vh] max-md:h-[6.8vh]";
 
@@ -143,7 +143,7 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
           aria-haspopup="listbox"
           aria-expanded={open}
           onClick={() => setOpen((current) => !current)}
-          className={`flex items-center ${FIELD_RADIUS} pr-[3vw] text-left ${FIELD_BASE} ${FIELD_HEIGHT} ${open ? "border-[#0a0a0a]" : "border-black/30 hover:border-[#0a0a0a]"}`}
+          className={`flex items-center ${FIELD_RADIUS} pr-[3vw] text-left ${FIELD_BASE} ${FIELD_HEIGHT} ${open ? "border-(--mpx-ink)" : "border-(--mpx-ink)/30 hover:border-(--mpx-ink)"}`}
         >
           {value || options[0]}
         </button>
@@ -154,7 +154,7 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
         <ul
           role="listbox"
           aria-labelledby={`${id}-label`}
-          className={`absolute inset-x-0 top-full z-30 flex origin-top flex-col gap-1 rounded-lg border border-black/10 bg-white px-[0.4vw] py-[0.4vw] transition-all duration-200 max-lg:px-[1vw] max-lg:py-[1vw] max-md:px-[2vw] max-md:py-[2vw] ${
+          className={`absolute inset-x-0 top-full z-30 flex origin-top flex-col gap-1 rounded-lg border border-(--mpx-ink)/10 bg-(--mpx-white) px-[0.4vw] py-[0.4vw] transition-all duration-200 max-lg:px-[1vw] max-lg:py-[1vw] max-md:px-[2vw] max-md:py-[2vw] ${
             open ? "visible translate-y-2 scale-100 opacity-100" : "invisible translate-y-0 scale-95 opacity-0"
           }`}
         >
@@ -167,8 +167,8 @@ export const FloatSelect = ({ id, label, options, value, onChange }: FloatSelect
                   onChange(option);
                   setOpen(false);
                 }}
-                className={`w-full rounded-lg px-[1vw] py-[1.2vh] text-left text-22 transition-colors duration-200 hover:bg-[#eeeeee] max-lg:px-[2vw] max-md:px-[3vw] ${
-                  value === option ? "bg-[#eeeeee]" : ""
+                className={`w-full rounded-lg px-[1vw] py-[1.2vh] text-left text-22 transition-colors duration-200 hover:bg-(--mpx-paper) max-lg:px-[2vw] max-md:px-[3vw] ${
+                  value === option ? "bg-(--mpx-paper)" : ""
                 }`}
               >
                 {option}
@@ -202,8 +202,8 @@ export const FloatCheckbox = ({ id, label, checked, error, onChange }: FloatChec
         onClick={() => onChange(!checked)}
         className={`flex aspect-square h-[3vh] shrink-0 items-center justify-center rounded-md border transition-colors duration-300 max-lg:h-[2.4vh] max-md:h-[3.2vh] ${
           checked
-            ? "border-[#0a0a0a] bg-[#0a0a0a] text-[#fafafa]"
-            : `${error ? "border-(--mpx-accent-deep)" : "border-black/30 hover:border-[#0a0a0a]"}`
+            ? "border-(--mpx-ink) bg-(--mpx-ink) text-(color:--mpx-paper)"
+            : `${error ? "border-(--mpx-accent-deep)" : "border-(--mpx-ink)/30 hover:border-(--mpx-ink)"}`
         }`}
       >
         <svg
@@ -255,7 +255,7 @@ export const ChoiceGroup = ({ legend, name, options, values, multiple = false, o
               onChange={() => toggle(option)}
               className="peer absolute inset-0 cursor-pointer opacity-0"
             />
-            <span className="inline-flex h-[5vh] items-center rounded-full border border-black/30 px-[1.2vw] text-22 transition-colors duration-300 peer-checked:border-[#0a0a0a] peer-checked:bg-[#0a0a0a] peer-checked:text-[#fafafa] peer-hover:border-[#0a0a0a] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-(--mpx-accent) max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]">
+            <span className="inline-flex h-[5vh] items-center rounded-full border border-(--mpx-ink)/30 px-[1.2vw] text-22 transition-colors duration-300 peer-checked:border-(--mpx-ink) peer-checked:bg-(--mpx-ink) peer-checked:text-(color:--mpx-paper) peer-hover:border-(--mpx-ink) peer-focus-visible:outline-2 peer-focus-visible:outline-offset-4 peer-focus-visible:outline-(--mpx-accent) max-lg:h-[3.6vh] max-lg:px-[2.4vw] max-md:h-[5.8vh] max-md:px-[4vw]">
               {option}
             </span>
           </label>

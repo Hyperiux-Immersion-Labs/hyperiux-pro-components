@@ -72,7 +72,7 @@ const Cursor = () => {
         scale.dotTarget = 1;
       }
 
-      ring.classList.toggle("bg-white", fill);
+      ring.classList.toggle("bg-(--mpx-white)", fill);
       ring.classList.toggle("border-0", fill);
     };
 
@@ -146,11 +146,11 @@ const Cursor = () => {
       >
         <div
           ref={ringRef}
-          className="absolute left-0 top-0 size-[2.1vw] rounded-full border-[0.1vw] border-white transition-[background-color,border-width] duration-300 will-change-transform"
+          className="absolute left-0 top-0 size-[2.1vw] rounded-full border-[0.1vw] border-(--mpx-white) transition-[background-color,border-width] duration-300 will-change-transform"
         />
         <div
           ref={dotRef}
-          className="absolute left-0 top-0 size-[0.4vw] rounded-full bg-white will-change-transform"
+          className="absolute left-0 top-0 size-[0.4vw] rounded-full bg-(--mpx-white) will-change-transform"
         />
       </div>
       <div
