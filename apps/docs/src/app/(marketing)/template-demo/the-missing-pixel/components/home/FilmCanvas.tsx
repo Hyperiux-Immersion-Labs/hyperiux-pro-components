@@ -5,9 +5,9 @@
 import { useEffect, useRef, type RefObject } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
+import { DESKTOP_FRAMES, MOBILE_FRAMES } from "../../assets/film/frames";
 
 const FRAME_COUNT = 120;
-const BASE = "/templates/the-missing-pixel/film";
 
 type FilmCanvasProps = {
   sectionRef: RefObject<HTMLElement | null>;
@@ -24,7 +24,7 @@ const FilmCanvas = ({ sectionRef, label }: FilmCanvasProps) => {
     if (!canvas || !section || !ctx) return;
 
     const frames: Array<HTMLImageElement | null> = new Array(FRAME_COUNT).fill(null);
-    const folder = window.matchMedia("(max-width: 900px)").matches ? "m" : "d";
+    const sources = window.matchMedia("(max-width: 900px)").matches ? MOBILE_FRAMES : DESKTOP_FRAMES;
     let progress = 0;
     let cancelled = false;
 
@@ -73,7 +73,7 @@ const FilmCanvas = ({ sectionRef, label }: FilmCanvasProps) => {
       while (!cancelled && next < order.length) {
         const index = order[next++];
         const img = new Image();
-        img.src = `${BASE}/${folder}/f-${String(index + 1).padStart(3, "0")}.webp`;
+        img.src = sources[index];
         try {
           await img.decode();
           frames[index] = img;
