@@ -11,6 +11,7 @@ export const metadata = createPageMetadata({
   description:
     "A complete, machine-readable catalogue of Hyperiux Vault for people and AI assistants: every React and Next.js interaction effect with use cases, dependencies, accessibility notes and live demos, with usage code and props in the JSON and text versions.",
   path: "/ai-components",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/ai-components.jpg",
 });
 
 export default async function Page() {

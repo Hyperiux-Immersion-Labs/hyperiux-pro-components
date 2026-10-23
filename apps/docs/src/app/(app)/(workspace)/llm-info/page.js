@@ -8,6 +8,7 @@ export const metadata = createPageMetadata({
   description:
     "Structured, first-party facts about Hyperiux Vault and Hyperiux Immersion Labs for AI assistants: what Vault is, the effect library, install, pricing, licensing and contacts.",
   path: "/llm-info",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/llm-info.jpg",
 });
 
 // Library counts from the AI catalogue - the same numbers and category filing

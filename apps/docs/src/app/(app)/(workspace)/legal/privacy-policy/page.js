@@ -8,7 +8,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux Vault Privacy Policy",
   description: "Learn how Hyperiux Vault collects, uses, stores, and protects personal data, including cookies, analytics, billing, and user rights.",
   path: "/legal/privacy-policy",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/privacy-policy.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/legal-privacy-policy.jpg",
 });
 
 export default function Page() {

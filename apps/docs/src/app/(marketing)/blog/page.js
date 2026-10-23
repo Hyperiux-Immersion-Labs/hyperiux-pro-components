@@ -23,6 +23,7 @@ const metadata = createPageMetadata({
   title: "Blog | Hyperiux Vault",
   description: "Notes on building React and Next.js interaction effects, from the Hyperiux Vault team.",
   path: "/blog",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/blog.jpg",
 });
 
 // Filtered / paged views (?category, ?page) keep /blog as canonical but drop hreflang,

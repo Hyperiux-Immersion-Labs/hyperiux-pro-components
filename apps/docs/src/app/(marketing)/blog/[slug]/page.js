@@ -50,8 +50,14 @@ export async function generateMetadata({ params }) {
     title: post.seo?.title || post.title,
     description: post.seo?.description || post.summary,
     path: `/blog/${slug}`,
-    image: post.coverImage?.url,
+    image: getOgImageUrl(post.coverImage?.url),
   });
+}
+
+// Covers are 1920x990 but the share card is declared 1200x630, so have Sanity's CDN
+// crop to that size (as JPEG - not every network reads WebP)
+function getOgImageUrl(url) {
+  return url ? `${url}?w=1200&h=630&fit=crop&fm=jpg` : undefined;
 }
 
 // Every effectFaqAccordion block in the body feeds one FAQPage JSON-LD -

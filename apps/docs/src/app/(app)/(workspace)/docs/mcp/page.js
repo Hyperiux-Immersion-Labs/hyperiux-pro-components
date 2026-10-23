@@ -7,7 +7,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux MCP Server for AI Coding Assistants",
   description: "Connect Claude Code, Claude Desktop, Cursor, Codex CLI, or any MCP-compatible client to live, accurate Hyperiux Vault effect data.",
   path: "/docs/mcp",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/cli.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/docs-mcp.jpg",
 });
 
 export default function Page() {

@@ -94,7 +94,7 @@ export const freeEffectsContent = {
   id: "free",
   name: "Free Effects",
   slug: "free",
-  ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/free.jpg",
+  ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-free.jpg",
   metadata: {
     title: "Free React & Next.js Effects | Hyperiux Vault",
     description: `Browse ${FREE_LABEL} free Hyperiux Vault effects for React and Next.js - real scroll, button, and text animations you can install, remix, and ship today.`,
@@ -126,7 +126,7 @@ export const proEffectsContent = {
   id: "pro",
   name: "Pro Effects",
   slug: "pro",
-  ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pro.jpg",
+  ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-pro.jpg",
   metadata: {
     title: "Pro Effects | Hyperiux Vault",
     description: "Browse all Pro effects in Hyperiux Vault - premium-tier components built for teams who need more. Upgrade to unlock instant CLI access.",
@@ -160,7 +160,7 @@ export const effectCategories = [
     id: "featured",
     name: "Featured Components",
     slug: "featured",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/featured.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-featured.jpg",
     metadata: {
       title: "Featured Components | Hyperiux Vault",
       description: "Browse curated featured Hyperiux Vault components selected for strong craft, practical use, and brand impact.",
@@ -213,7 +213,7 @@ export const effectCategories = [
     id: "text",
     name: "Text Animations",
     slug: "text-animations",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/text-animations.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-text-animations.jpg",
     aliases: ["text-effects"],
     metadata: {
       title: "Text Animations for React & Next.js | Hyperiux Vault",
@@ -265,7 +265,7 @@ export const effectCategories = [
     id: "backgrounds",
     name: "Animated Backgrounds",
     slug: "backgrounds",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/animated-backgrounds.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-backgrounds.jpg",
     metadata: {
       title: "Animated Backgrounds for React & Next.js | Hyperiux Vault",
       description: "React animated backgrounds for SaaS and AI heroes: dotted grids, particle fields, and dithered canvas textures, with guidance on contrast, density, and cost.",
@@ -317,7 +317,7 @@ export const effectCategories = [
     id: "buttons",
     name: "Animated Buttons",
     slug: "buttons",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/animated-buttons.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-buttons.jpg",
     metadata: {
       title: "Animated Buttons for React & Next.js | Hyperiux Vault",
       description: "Accessible animated buttons for React and Next.js: CTA microinteractions, staggered labels, arrow fills, and scramble links that preserve semantics and focus.",
@@ -364,7 +364,7 @@ export const effectCategories = [
     id: "carousels",
     name: "Carousel Effects",
     slug: "carousels",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/carousel-effects.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-carousels.jpg",
     metadata: {
       title: "Carousel Effects for React & Next.js | Hyperiux Vault",
       description: "React carousel effects for visual showcases: clip-path reveals and zoom sliders with visible controls, swipe, and keyboard support.",
@@ -421,7 +421,7 @@ export const effectCategories = [
     id: "scroll",
     name: "Scroll Effects",
     slug: "scroll-effects",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/scroll-effects.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-scroll.jpg",
     metadata: {
       title: "Scroll Animations for React & Next.js | Hyperiux Vault",
       description: "React scroll animations for product stories, feature tours, and portfolio chapters. Compare behavior, mobile fallbacks, and GSAP/Lenis needs before production.",
@@ -476,7 +476,7 @@ export const effectCategories = [
     id: "components",
     name: "Creative Components",
     slug: "components",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/components.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-components.jpg",
     metadata: {
       title: "Creative Components for React & Next.js | Hyperiux Vault",
       description: "Creative React components for conversion pages: animated FAQ, forms, tabs, modals, video, and testimonial components, built with ARIA-first, crawlable markup.",
@@ -523,7 +523,7 @@ export const effectCategories = [
     id: "navigation",
     name: "Navigations",
     slug: "navigation",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/navigation.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-navigation.jpg",
     metadata: {
       title: "Navigations for React & Next.js | Hyperiux Vault",
       description: "React navigations for menus and navbars: directional menus, immersive overlays, elevated headers, and expanding navbars.",
@@ -570,7 +570,7 @@ export const effectCategories = [
     id: "cursor",
     name: "Cursor Effects",
     slug: "cursor-effects",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/cursor.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-cursor.jpg",
     metadata: {
       title: "Cursor Effects for React & Next.js | Hyperiux Vault",
       description: "Custom cursor effects for React and Next.js: glass lenses, image trails, pixel blooms, and aura cursors, each with touch-device and reduced-motion fallbacks.",
@@ -617,7 +617,7 @@ export const effectCategories = [
     id: "transitions",
     name: "Page Transitions",
     slug: "page-transitions",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/page-transition.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-page-transitions.jpg",
     metadata: {
       title: "Page Transitions for React & Next.js | Hyperiux Vault",
       description: "Next.js page transitions for branded route changes: pixel wipes, block reveals, SVG draws, and flips, with App Router, focus, and reduced-motion guidance.",
@@ -668,7 +668,7 @@ export const effectCategories = [
     id: "loaders",
     name: "Loaders",
     slug: "loaders",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/loaders.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-loaders.jpg",
     aliases: ["website-loaders"],
     metadata: {
       title: "Loaders & Preloaders for React & Next.js | Hyperiux Vault",
@@ -717,7 +717,7 @@ export const effectCategories = [
     id: "webgl",
     name: "WebGL & 3D Effects",
     slug: "webgl-effects",
-    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/webgl-effects.jpg",
+    ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-webgl.jpg",
     aliases: ["webgl"],
     metadata: {
       title: "WebGL and 3D Effects for React & Next.js | Hyperiux Vault",

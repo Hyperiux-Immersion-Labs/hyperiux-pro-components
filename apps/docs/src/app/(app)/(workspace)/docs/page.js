@@ -7,7 +7,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux Vault Docs: Creative Effects Guide",
   description: "Learn how Vault works, when to use it, what’s inside, and how to add source-first interaction patterns to React and Next.js projects.",
   path: "/docs",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/introduction.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/docs.jpg",
 });
 
 export default function Page() {

@@ -44,6 +44,7 @@ export const metadata = createPageMetadata({
   description:
     "A home for developers who treat motion as craft. Live teardowns, first access to new effects, honest critique. Join the waitlist.",
   path: "/community",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/community.jpg",
 });
 
 export default async function CommunityPage() {

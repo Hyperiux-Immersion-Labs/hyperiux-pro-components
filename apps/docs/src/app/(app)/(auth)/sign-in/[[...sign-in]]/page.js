@@ -8,7 +8,7 @@ export const metadata = createPageMetadata({
   description:
     "Sign in to Hyperiux Vault to access saved effects, dashboards, and pro resources.",
   path: "/sign-in",
-  image: "/seo/homepage.png",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/sign-in.jpg",
   robots: {
     index: false,
     follow: false,

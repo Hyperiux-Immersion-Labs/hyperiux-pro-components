@@ -7,7 +7,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux Vault Refund Policy",
   description: "Review the Hyperiux Vault Refund Policy for Vault Pro purchases, cancellations, billing issues, chargebacks, and refund exceptions.",
   path: "/legal/refund-policy",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/Refund-policy.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/legal-refund-policy.jpg",
 });
 
 export default function Page() {

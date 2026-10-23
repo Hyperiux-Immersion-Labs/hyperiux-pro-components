@@ -7,7 +7,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux Vault CLI Commands & Workflow",
   description: "Use the Hyperiux CLI to initialize Vault, add effects, check installed effects for updates and upstream changes, manage your account, and keep creative code in your workspace.",
   path: "/docs/cli",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/cli.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/docs-cli.jpg",
 });
 
 export default function Page() {

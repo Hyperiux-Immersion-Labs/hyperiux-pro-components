@@ -8,7 +8,7 @@ export const metadata = createPageMetadata({
   title: "Hyperiux Vault Terms of Service",
   description: "Read the Hyperiux Vault Terms of Service covering accounts, subscriptions, billing, acceptable use, support, disputes, and service rules.",
   path: "/legal/terms-of-service",
-  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/terms-of-service.jpg",
+  image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/legal-terms-of-service.jpg",
 });
 
 export default function Page() {
