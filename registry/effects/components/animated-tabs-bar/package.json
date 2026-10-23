@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/animated-tabs-bar",
+  "version": "1.0.0",
+  "description": "Switch between views; the highlight glides to the active tab.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

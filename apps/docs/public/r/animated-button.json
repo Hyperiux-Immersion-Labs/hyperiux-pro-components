@@ -1,0 +1,423 @@
+{
+  "name": "animated-button",
+  "type": "registry:component",
+  "title": "Animated Button",
+  "description": "Buttons with hover, press and loading animations.",
+  "dependencies": [
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedButtonSet",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "spotify",
+      "description": "Colour palette. The Primary colour option takes the theme's primary colour.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the chosen palette.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "variant",
+      "label": "Hover effect",
+      "type": "string",
+      "default": "dot-fill",
+      "description": "What happens on hover: a dot that fills, letters that stagger or scramble, a drawn underline, or a drawn border.",
+      "remixer": {
+        "control": "select",
+        "group": "effect",
+        "groupTitle": "Effect",
+        "options": [
+          {
+            "label": "Dot fill",
+            "value": "dot-fill"
+          },
+          {
+            "label": "Char stagger",
+            "value": "char-stagger"
+          },
+          {
+            "label": "Scramble",
+            "value": "scramble"
+          },
+          {
+            "label": "Link (line draw)",
+            "value": "link"
+          },
+          {
+            "label": "Border draw",
+            "value": "border-draw"
+          }
+        ]
+      }
+    },
+    {
+      "name": "surface",
+      "label": "Background",
+      "type": "string",
+      "default": "filled",
+      "description": "Filled or outlined background. Not used by Link; with Border draw both look the same.",
+      "remixer": {
+        "disabledWhen": {
+          "prop": "variant",
+          "equals": "link"
+        },
+        "control": "select",
+        "group": "effect",
+        "groupTitle": "Effect",
+        "options": [
+          {
+            "label": "Filled",
+            "value": "filled"
+          },
+          {
+            "label": "Outline",
+            "value": "outline"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tone",
+      "label": "Colour",
+      "type": "string",
+      "default": "primary",
+      "description": "Colour of the button: the theme's primary, a status colour, or a gradient.",
+      "remixer": {
+        "control": "select",
+        "group": "effect",
+        "groupTitle": "Effect",
+        "options": [
+          {
+            "label": "Primary",
+            "value": "primary"
+          },
+          {
+            "label": "Muted",
+            "value": "muted"
+          },
+          {
+            "label": "Destructive",
+            "value": "destructive"
+          },
+          {
+            "label": "Success",
+            "value": "success"
+          },
+          {
+            "label": "Warning",
+            "value": "warning"
+          },
+          {
+            "label": "Info",
+            "value": "info"
+          },
+          {
+            "label": "Gradient",
+            "value": "gradient"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rollingText",
+      "label": "Rolling text",
+      "type": "boolean",
+      "default": true,
+      "description": "The label rolls up to a copy of itself on hover. Not used by Char stagger or Scramble.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "disabledWhen": {
+          "prop": "variant",
+          "in": [
+            "char-stagger",
+            "scramble"
+          ]
+        },
+        "control": "checkbox",
+        "group": "effect",
+        "groupTitle": "Effect"
+      }
+    },
+    {
+      "name": "shimmerText",
+      "label": "Shimmer text",
+      "type": "boolean",
+      "default": false,
+      "description": "A light sweeps across the label. Not used by Char stagger or Scramble.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "disabledWhen": {
+          "prop": "variant",
+          "in": [
+            "char-stagger",
+            "scramble"
+          ]
+        },
+        "control": "checkbox",
+        "group": "effect",
+        "groupTitle": "Effect"
+      }
+    },
+    {
+      "name": "pressFeedback",
+      "label": "Press feedback",
+      "type": "boolean",
+      "default": true,
+      "description": "The button presses in slightly when clicked.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "effect",
+        "groupTitle": "Effect"
+      }
+    },
+    {
+      "name": "magnetic",
+      "label": "Magnetic",
+      "type": "boolean",
+      "default": false,
+      "description": "The button leans towards the mouse as it gets close. Off on touch screens.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "effect",
+        "groupTitle": "Effect"
+      }
+    },
+    {
+      "name": "showLoadingState",
+      "label": "Show loading state",
+      "type": "boolean",
+      "default": true,
+      "description": "Clicking shows a loading spinner, then a check, then resets.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "state",
+        "groupTitle": "State"
+      }
+    },
+    {
+      "name": "icon",
+      "label": "Icon",
+      "type": "string",
+      "default": "arrow",
+      "description": "Icon shown beside the label, or none.",
+      "remixer": {
+        "control": "select",
+        "group": "icon",
+        "groupTitle": "Icon",
+        "options": [
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "Arrow",
+            "value": "arrow"
+          },
+          {
+            "label": "Search",
+            "value": "search"
+          },
+          {
+            "label": "Settings",
+            "value": "settings"
+          }
+        ]
+      }
+    },
+    {
+      "name": "iconPosition",
+      "label": "Icon position",
+      "type": "string",
+      "default": "end",
+      "description": "Puts the icon before or after the label. Needs an icon.",
+      "remixer": {
+        "disabledWhen": {
+          "prop": "icon",
+          "equals": "none"
+        },
+        "control": "select",
+        "group": "icon",
+        "groupTitle": "Icon",
+        "options": [
+          {
+            "label": "End",
+            "value": "end"
+          },
+          {
+            "label": "Start",
+            "value": "start"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rounded",
+      "label": "Roundness",
+      "type": "string",
+      "default": "full",
+      "description": "Corner radius of the button. Not used by Link.",
+      "remixer": {
+        "disabledWhen": {
+          "prop": "variant",
+          "equals": "link"
+        },
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "sm",
+            "value": "sm"
+          },
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          },
+          {
+            "label": "2xl",
+            "value": "2xl"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 0.4,
+      "description": "How long the hover effect takes, in seconds.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.2,
+        "max": 1.2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "stagger",
+      "label": "Stagger",
+      "type": "number",
+      "default": 0.02,
+      "description": "Gap between each letter's move, in seconds. Needs the Char stagger effect.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "disabledWhen": {
+          "prop": "variant",
+          "notEquals": "char-stagger"
+        },
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.08,
+        "step": 0.005
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-button/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { MotionConfig, type Variants, LazyMotion, domMin, m, useAnimation, AnimatePresence, motion, useMotionValue, useAnimationFrame } from \"motion/react\";\n\n/** Share of the remaining distance the magnetic button covers each frame. Lower is lazier. */\nconst MAGNET_LERP = 0.12\nimport * as React from \"react\";\nimport { forwardRef, useCallback, useImperativeHandle, useRef, type HTMLAttributes } from \"react\";\nimport { ArrowRightIcon, LoaderCircleIcon } from \"lucide-react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const read = () => setReduce(mq.matches);\n    read();\n    mq.addEventListener?.(\"change\", read);\n    return () => mq.removeEventListener?.(\"change\", read);\n  }, []);\n  return reduce;\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion();\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>;\n}\n\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedButtonSetTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedButtonSetMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedButtonSetTheme}:${AnimatedButtonSetMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#202020\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#eeeeee\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#3d3929\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#c3c0b6\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#4a4436\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#e6e0cc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#191414\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#ffffff\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#0f1923\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#ece8e1\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#3b3b3b\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"destructive-foreground\": \"oklch(0.985 0 0)\",\n    \"foreground\": \"#cccccc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"info-foreground\": \"oklch(0.985 0 0)\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"success-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\",\n    \"warning-foreground\": \"oklch(0.279 0.077 45.635)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedButtonSetTheme = \"default\", mode: AnimatedButtonSetMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  return { \"data-theme\": mode, style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\n// ---- search-icon.tsx ----\n\ninterface SearchIconHandle {\n  startAnimation: () => void\n  stopAnimation: () => void\n}\n\ninterface SearchIconProps extends Omit<\n  HTMLAttributes<HTMLDivElement>,\n  | \"color\"\n  | \"onDrag\"\n  | \"onDragStart\"\n  | \"onDragEnd\"\n  | \"onAnimationStart\"\n  | \"onAnimationEnd\"\n  | \"onAnimationIteration\"\n> {\n  size?: number | string\n  duration?: number\n  isAnimated?: boolean\n  color?: string\n}\n\nconst SearchIcon = forwardRef<SearchIconHandle, SearchIconProps>(\n  (\n    {\n      onMouseEnter,\n      onMouseLeave,\n      className,\n      size = 24,\n      duration = 1,\n      isAnimated = true,\n      color,\n      ...props\n    },\n    ref,\n  ) => {\n    const controls = useAnimation()\n    const reduced = usePrefersReducedMotion()\n    const isControlled = useRef(false)\n\n    useImperativeHandle(ref, () => {\n      isControlled.current = true\n      return {\n        startAnimation: () =>\n          reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n        stopAnimation: () => controls.start(\"normal\"),\n      }\n    })\n\n    const handleEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) return\n        if (!isControlled.current) controls.start(\"animate\")\n        else onMouseEnter?.(e)\n      },\n      [controls, reduced, isAnimated, onMouseEnter],\n    )\n\n    const handleLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isControlled.current) controls.start(\"normal\")\n        else onMouseLeave?.(e)\n      },\n      [controls, onMouseLeave],\n    )\n\n    const lensVariants: Variants = {\n      normal: { x: 0, y: 0, rotate: 0, opacity: 1 },\n      animate: {\n        x: [0, 2, -2, 1, 0],\n        y: [0, -1, 2, -1, 0],\n        rotate: [0, 6, -6, 4, 0],\n        transition: {\n          duration: 1.2 * duration,\n          ease: \"easeInOut\" as const,\n        },\n      },\n    }\n\n    return (\n      <LazyMotion features={domMin} strict>\n        <m.div\n          className={cn(\"inline-flex items-center justify-center\", className)}\n          onMouseEnter={handleEnter}\n          onMouseLeave={handleLeave}\n          {...props}\n          style={{ color, ...props.style }}\n        >\n          <m.svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            width={size}\n            height={size}\n            style={{ width: size, height: size }}\n            viewBox=\"0 0 24 24\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n            animate={controls}\n            initial=\"normal\"\n          >\n            <m.g variants={lensVariants}>\n              <m.circle cx=\"11\" cy=\"11\" r=\"8\" />\n              <path d=\"m21 21-4.34-4.34\" />\n            </m.g>\n          </m.svg>\n        </m.div>\n      </LazyMotion>\n    )\n  },\n)\n\nSearchIcon.displayName = \"SearchIcon\"\n\n// ---- settings-icon.tsx ----\n\ninterface SettingsIconHandle {\n  startAnimation: () => void\n  stopAnimation: () => void\n}\n\ninterface SettingsIconProps extends Omit<\n  HTMLAttributes<HTMLDivElement>,\n  | \"color\"\n  | \"onDrag\"\n  | \"onDragStart\"\n  | \"onDragEnd\"\n  | \"onAnimationStart\"\n  | \"onAnimationEnd\"\n  | \"onAnimationIteration\"\n> {\n  size?: number | string\n  duration?: number\n  isAnimated?: boolean\n  color?: string\n}\n\nconst SettingsIcon = forwardRef<SettingsIconHandle, SettingsIconProps>(\n  (\n    {\n      onMouseEnter,\n      onMouseLeave,\n      className,\n      size = 24,\n      duration = 1,\n      isAnimated = true,\n      color,\n      ...props\n    },\n    ref,\n  ) => {\n    const controls = useAnimation()\n    const reduced = usePrefersReducedMotion()\n    const isControlled = useRef(false)\n\n    useImperativeHandle(ref, () => {\n      isControlled.current = true\n      return {\n        startAnimation: () =>\n          reduced ? controls.start(\"normal\") : controls.start(\"animate\"),\n        stopAnimation: () => controls.start(\"normal\"),\n      }\n    })\n\n    const handleEnter = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isAnimated || reduced) return\n        if (!isControlled.current) controls.start(\"animate\")\n        else onMouseEnter?.(e)\n      },\n      [controls, reduced, isAnimated, onMouseEnter],\n    )\n\n    const handleLeave = useCallback(\n      (e: React.MouseEvent<HTMLDivElement>) => {\n        if (!isControlled.current) controls.start(\"normal\")\n        else onMouseLeave?.(e)\n      },\n      [controls, onMouseLeave],\n    )\n\n    const groupSpin: Variants = {\n      normal: { rotate: 0, scale: 1, y: 0 },\n      animate: {\n        rotate: [0, 16, 0],\n        scale: [1, 1.06, 1],\n        y: [0, -0.8, 0],\n        transition: { duration: 0.9 * duration, ease: \"easeInOut\" },\n      },\n    }\n\n    const gearDraw: Variants = {\n      normal: { pathLength: 0, opacity: 1 },\n      animate: {\n        pathLength: 1,\n        opacity: 1,\n        transition: {\n          duration: 0.7 * duration,\n          ease: \"easeInOut\",\n          delay: 0.06,\n        },\n      },\n    }\n\n    const coreDraw: Variants = {\n      normal: { pathLength: 0, scale: 1, opacity: 1 },\n      animate: {\n        pathLength: 1,\n        scale: [1, 1.08, 1],\n        opacity: [1, 1, 1],\n        transition: {\n          duration: 0.6 * duration,\n          ease: \"easeInOut\",\n          delay: 0.26,\n        },\n      },\n    }\n\n    const tickSpark = (delay: number): Variants => ({\n      normal: { opacity: 0, scale: 0.6 },\n      animate: {\n        opacity: [0, 1, 0],\n        scale: [0.6, 1.25, 1],\n        transition: { duration: 0.35 * duration, ease: \"easeOut\", delay },\n      },\n    })\n\n    return (\n      <LazyMotion features={domMin} strict>\n        <m.div\n          className={cn(\"inline-flex items-center justify-center\", className)}\n          onMouseEnter={handleEnter}\n          onMouseLeave={handleLeave}\n          {...props}\n          style={{ color, ...props.style }}\n        >\n          <m.svg\n            xmlns=\"http://www.w3.org/2000/svg\"\n            width={size}\n            height={size}\n            style={{ width: size, height: size }}\n            viewBox=\"0 0 24 24\"\n            fill=\"none\"\n            stroke=\"currentColor\"\n            strokeWidth=\"2\"\n            strokeLinecap=\"round\"\n            strokeLinejoin=\"round\"\n           \n          >\n            <m.g variants={groupSpin} initial=\"normal\" animate={controls}>\n              <g>\n                <path d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\" />\n                <circle cx=\"12\" cy=\"12\" r=\"3\" />\n              </g>\n\n              <m.path\n                d=\"M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915\"\n                pathLength={1}\n                variants={gearDraw}\n                initial=\"normal\"\n                animate={controls}\n              />\n              <m.circle\n                cx=\"12\"\n                cy=\"12\"\n                r=\"3\"\n                pathLength={1}\n                variants={coreDraw}\n                initial=\"normal\"\n                animate={controls}\n              />\n\n              <m.circle\n                cx=\"12\"\n                cy=\"4.6\"\n                r=\"0.8\"\n                fill=\"currentColor\"\n                variants={tickSpark(0.18)}\n                initial=\"normal\"\n                animate={controls}\n              />\n              <m.circle\n                cx=\"19\"\n                cy=\"8\"\n                r=\"0.7\"\n                fill=\"currentColor\"\n                variants={tickSpark(0.26)}\n                initial=\"normal\"\n                animate={controls}\n              />\n              <m.circle\n                cx=\"18.5\"\n                cy=\"16.5\"\n                r=\"0.7\"\n                fill=\"currentColor\"\n                variants={tickSpark(0.34)}\n                initial=\"normal\"\n                animate={controls}\n              />\n              <m.circle\n                cx=\"8\"\n                cy=\"18\"\n                r=\"0.7\"\n                fill=\"currentColor\"\n                variants={tickSpark(0.42)}\n                initial=\"normal\"\n                animate={controls}\n              />\n              <m.circle\n                cx=\"5.5\"\n                cy=\"9\"\n                r=\"0.7\"\n                fill=\"currentColor\"\n                variants={tickSpark(0.5)}\n                initial=\"normal\"\n                animate={controls}\n              />\n            </m.g>\n          </m.svg>\n        </m.div>\n      </LazyMotion>\n    )\n  },\n)\n\nSettingsIcon.displayName = \"SettingsIcon\"\n\n// ---- animated-button.tsx ----\n\n/** dot-fill: a dot grows from the pointer to fill. char-stagger: letters roll one by one. scramble: letters shuffle into place. link: a line draws under the text. border-draw: the border draws around the button. */\ntype AnimatedButtonVariant = \"dot-fill\" | \"char-stagger\" | \"scramble\" | \"link\" | \"border-draw\"\n/** filled: solid background. outline: border only. */\ntype AnimatedButtonSurface = \"filled\" | \"outline\"\ntype AnimatedButtonTone =\n  | \"primary\"\n  | \"muted\"\n  | \"destructive\"\n  | \"success\"\n  | \"warning\"\n  | \"info\"\n  | \"gradient\"\ntype AnimatedButtonIcon = \"none\" | \"arrow\" | \"search\" | \"settings\"\ntype AnimatedButtonIconPosition = \"start\" | \"end\"\ntype AnimatedButtonStatus = \"idle\" | \"loading\" | \"success\"\ntype AnimatedButtonRounded = \"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"full\"\n\ntype AnimatedButtonMotion = {\n  variant: AnimatedButtonVariant\n  surface: AnimatedButtonSurface\n  tone: AnimatedButtonTone\n  icon: AnimatedButtonIcon\n  iconPosition: AnimatedButtonIconPosition\n  /** A bright band sweeps across the label, over and over. */\n  shimmerText: boolean\n  /** The label rolls up to a copy of itself on hover. */\n  rollingText: boolean\n  /** The button leans toward the pointer. */\n  magnetic: boolean\n  /** On click the button scales down, then springs back. */\n  pressFeedback: boolean\n  /** Shows a spinner, then a check, rolling in beside the label. */\n  status: AnimatedButtonStatus\n  /** Label shown while loading. With this or successText, the label rolls between states. */\n  loadingText: string\n  /** Label shown once done. */\n  successText: string\n  rounded: AnimatedButtonRounded\n  /** Seconds. */\n  duration: number\n  /** Seconds between letters, for char-stagger. */\n  stagger: number\n}\n\nconst ROUNDED: Record<AnimatedButtonRounded, string> = {\n  none: \"rounded-none\",\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  \"2xl\": \"rounded-2xl\",\n  full: \"rounded-full\",\n}\n\n// Matches the theme radius scale; full is capped at half the height\nconst RADIUS: Record<AnimatedButtonRounded, number> = {\n  none: 0,\n  sm: 6,\n  md: 8,\n  lg: 10,\n  xl: 14,\n  \"2xl\": 18,\n  full: 9999,\n}\n\nconst GLYPHS = \"abcdefghijklmnopqrstuvwxyz0123456789\"\nconst ease = \"ease-[cubic-bezier(0.625,0.05,0,1)]\"\n\n// Seconds for one sweep of the shimmer\nconst SHIMMER_SECONDS = 1.6\n\n// Springy settle for the press squeeze\nconst PRESS_TRANSITION = \"transition-[scale] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]\"\n\nconst GRADIENT = \"bg-linear-to-r from-(--hx-info) via-(--hx-success) to-(--hx-warning)\"\n\n// Colours for each tone, filled or plain, and the dot that fills over it\nconst TONES: Record<\n  AnimatedButtonTone,\n  { border: string; filled: string; filledFlip: string; dot: string; plain: string; plainFlip: string; plainDot: string }\n> = {\n  primary: {\n    border: \"border-(--hx-primary)\",\n    filled: \"border-(--hx-primary) bg-(--hx-primary) text-(--hx-primary-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-foreground)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-foreground)\",\n    plainFlip: \"data-[active=true]:text-(--hx-primary-foreground)\",\n    plainDot: \"bg-(--hx-primary)\",\n  },\n  muted: {\n    border: \"border-(--hx-border)\",\n    filled: \"border-(--hx-muted) bg-(--hx-muted) text-(--hx-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-foreground)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-muted-foreground)\",\n    plainFlip: \"data-[active=true]:text-(--hx-foreground)\",\n    plainDot: \"bg-(--hx-muted)\",\n  },\n  destructive: {\n    border: \"border-(--hx-destructive)\",\n    filled: \"border-(--hx-destructive) bg-(--hx-destructive) text-(--hx-destructive-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-destructive)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-destructive)\",\n    plainFlip: \"data-[active=true]:text-(--hx-destructive-foreground)\",\n    plainDot: \"bg-(--hx-destructive)\",\n  },\n  success: {\n    border: \"border-(--hx-success)\",\n    filled: \"border-(--hx-success) bg-(--hx-success) text-(--hx-success-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-success)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-success)\",\n    plainFlip: \"data-[active=true]:text-(--hx-success-foreground)\",\n    plainDot: \"bg-(--hx-success)\",\n  },\n  warning: {\n    border: \"border-(--hx-warning)\",\n    filled: \"border-(--hx-warning) bg-(--hx-warning) text-(--hx-warning-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-warning)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-warning)\",\n    plainFlip: \"data-[active=true]:text-(--hx-warning-foreground)\",\n    plainDot: \"bg-(--hx-warning)\",\n  },\n  info: {\n    border: \"border-(--hx-info)\",\n    filled: \"border-(--hx-info) bg-(--hx-info) text-(--hx-info-foreground)\",\n    filledFlip: \"data-[active=true]:text-(--hx-info)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-info)\",\n    plainFlip: \"data-[active=true]:text-(--hx-info-foreground)\",\n    plainDot: \"bg-(--hx-info)\",\n  },\n  gradient: {\n    border: \"border-(--hx-info)\",\n    filled: `border-transparent text-(--hx-info-foreground) ${GRADIENT}`,\n    filledFlip: \"data-[active=true]:text-(--hx-info)\",\n    dot: \"bg-(--hx-background)\",\n    plain: \"text-(--hx-info)\",\n    plainFlip: \"data-[active=true]:text-(--hx-info-foreground)\",\n    plainDot: GRADIENT,\n  },\n}\n\n// Shows the icon at rest, and plays it while the button is hovered\nfunction ButtonIcon({ icon, hovered }: { icon: AnimatedButtonIcon; hovered: boolean }) {\n  const search = React.useRef<SearchIconHandle>(null)\n  const settings = React.useRef<SettingsIconHandle>(null)\n  const reduceMotion = usePrefersReducedMotion()\n\n  React.useEffect(() => {\n    const handle = icon === \"search\" ? search.current : settings.current\n    if (hovered) handle?.startAnimation()\n    else handle?.stopAnimation()\n  }, [hovered, icon])\n\n  if (icon === \"search\") return <SearchIcon ref={search} size={20} isAnimated={false} />\n  if (icon === \"settings\") return <SettingsIcon ref={settings} size={20} isAnimated={false} />\n  if (icon !== \"arrow\") return null\n  // Reduced motion: a plain arrow that stays put\n  if (reduceMotion) return <ArrowRightIcon aria-hidden className=\"size-5\" />\n\n  return (\n    <span aria-hidden className=\"relative flex size-5 overflow-hidden\">\n      <ArrowRightIcon className=\"absolute inset-0 size-5 transition-transform duration-(--dur) group-data-[active=true]/animated-button:translate-x-full\" />\n      <ArrowRightIcon className=\"absolute inset-0 size-5 -translate-x-full transition-transform duration-(--dur) group-data-[active=true]/animated-button:translate-x-0\" />\n    </span>\n  )\n}\n\n// Letters roll up one by one, each a little after the last\nfunction CharStagger({ text, stagger }: { text: string; stagger: number }) {\n  const reduceMotion = usePrefersReducedMotion()\n\n  return (\n    <span aria-hidden className=\"flex\">\n      {[...text].map((char, index) => (\n        <span key={index} className=\"relative flex overflow-hidden\">\n          {[0, 1].map((row) => (\n            <span\n              key={row}\n              className={cn(\n                // Reduced motion: the two rows are the same text, so swapping at once shows no movement\n                \"inline-block transition-transform duration-(--dur) motion-reduce:transition-none\",\n                ease,\n                row === 1\n                  ? \"absolute inset-0 translate-y-full group-data-[active=true]/animated-button:translate-y-0\"\n                  : \"group-data-[active=true]/animated-button:-translate-y-full\"\n              )}\n              // Reduced motion: every letter moves at once\n              style={{ transitionDelay: reduceMotion ? \"0s\" : `${index * stagger}s` }}\n            >\n              {char === \" \" ? \" \" : char}\n            </span>\n          ))}\n        </span>\n      ))}\n    </span>\n  )\n}\n\n// Shuffles random glyphs and settles them left to right while active\nfunction ScrambleText({ text, duration, active }: { text: string; duration: number; active: boolean }) {\n  const ref = React.useRef<HTMLSpanElement>(null)\n  const reduceMotion = usePrefersReducedMotion()\n\n  React.useEffect(() => {\n    const el = ref.current\n    if (!el || !active || reduceMotion) return\n    const start = performance.now()\n    let frame = 0\n    const tick = (now: number) => {\n      const progress = Math.min((now - start) / (duration * 1000), 1)\n      const settled = Math.floor(progress * text.length)\n      el.textContent = [...text]\n        .map((char, index) =>\n          char === \" \" || index < settled ? char : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]\n        )\n        .join(\"\")\n      if (progress < 1) frame = requestAnimationFrame(tick)\n    }\n    frame = requestAnimationFrame(tick)\n    return () => {\n      cancelAnimationFrame(frame)\n      el.textContent = text\n    }\n  }, [active, text, duration, reduceMotion])\n\n  return (\n    // Invisible copy holds the width, so shuffling never shifts the text\n    <span aria-hidden className=\"relative inline-block text-left\">\n      <span className=\"invisible\">{text}</span>\n      <span ref={ref} className=\"absolute top-0 left-0 whitespace-nowrap\">\n        {text}\n      </span>\n    </span>\n  )\n}\n\n// Beside the label: the icon at rest, then a spinner and a check that roll in\nfunction StatusSlot({\n  status,\n  icon,\n  hovered,\n}: {\n  status: AnimatedButtonStatus\n  icon: AnimatedButtonIcon\n  hovered: boolean\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  const roll = {\n    initial: reduceMotion ? { opacity: 0 } : { opacity: 0, x: -20, rotate: -180 },\n    animate: { opacity: 1, x: 0, rotate: 0 },\n    exit: reduceMotion ? { opacity: 0 } : { opacity: 0, x: 20, rotate: 180 },\n    transition: { type: \"spring\" as const, duration: 0.5, bounce: 0.2 },\n  }\n\n  if (status === \"idle\") return <ButtonIcon icon={icon} hovered={hovered} />\n\n  return (\n    <span className=\"relative flex size-5 shrink-0\">\n      <AnimatePresence initial>\n        {status === \"loading\" ? (\n          <motion.span key=\"loading\" role=\"status\" aria-label=\"Loading\" className=\"absolute inset-0\" {...roll}>\n            <LoaderCircleIcon className=\"size-5 animate-spin motion-reduce:animate-none\" />\n          </motion.span>\n        ) : (\n          <motion.span key=\"success\" role=\"status\" aria-label=\"Done\" className=\"absolute inset-0\" {...roll}>\n            <svg\n              viewBox=\"0 0 24 24\"\n              className=\"size-5\"\n              fill=\"none\"\n              stroke=\"currentColor\"\n              strokeWidth={2.5}\n              strokeLinecap=\"round\"\n              strokeLinejoin=\"round\"\n            >\n              <motion.path\n                d=\"M5 12.5l4.5 4.5L19 7.5\"\n                initial={{ pathLength: 0 }}\n                animate={{ pathLength: 1 }}\n                transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.2, ease: \"easeOut\" }}\n              />\n            </svg>\n          </motion.span>\n        )}\n      </AnimatePresence>\n    </span>\n  )\n}\n\n// The label rolls between states and sizes to the current text.\nfunction StatusLabel({\n  status,\n  idle,\n  idleText,\n  loadingText,\n  successText,\n}: {\n  status: AnimatedButtonStatus\n  idle: React.ReactNode\n  idleText: string\n  loadingText: string\n  successText: string\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  const text = { idle: idleText, loading: loadingText, success: successText }\n\n  return (\n    <span className=\"relative inline-grid overflow-hidden\">\n      <AnimatePresence initial={false} mode=\"popLayout\">\n        <motion.span\n          key={status}\n          className=\"col-start-1 row-start-1 justify-self-center whitespace-nowrap\"\n          initial={reduceMotion ? { opacity: 0 } : { y: \"100%\", opacity: 0 }}\n          animate={{ y: \"0%\", opacity: 1 }}\n          exit={reduceMotion ? { opacity: 0 } : { y: \"-100%\", opacity: 0 }}\n          transition={{ type: \"spring\", duration: 0.5, bounce: 0.1 }}\n        >\n          {status === \"idle\" ? idle : text[status]}\n        </motion.span>\n      </AnimatePresence>\n    </span>\n  )\n}\n\n// The label slides up out of view as a copy rolls in from below\nfunction TextRoll({ children }: { children: React.ReactNode }) {\n  const roll = cn(\"block transition-transform duration-(--dur) motion-reduce:transition-none\", ease)\n  return (\n    <span className=\"relative block overflow-hidden\">\n      <span\n        className={cn(\n          roll,\n          \"group-data-[active=true]/animated-button:-translate-y-full\"\n        )}\n      >\n        {children}\n      </span>\n      <span\n        aria-hidden\n        className={cn(\n          roll,\n          \"absolute inset-x-0 top-0 translate-y-full group-data-[active=true]/animated-button:translate-y-0\"\n        )}\n      >\n        {children}\n      </span>\n    </span>\n  )\n}\n\n// The label dims while a bright copy of it, clipped to a band, sweeps across on a loop\nfunction TextShimmer({ text }: { text: string }) {\n  const reduceMotion = usePrefersReducedMotion()\n\n  return (\n    <span className=\"relative inline-block\">\n      <motion.span\n        initial={false}\n        animate={{ opacity: reduceMotion ? 1 : 0.55 }}\n        transition={{ duration: 0.25 }}\n      >\n        {text}\n      </motion.span>\n      <motion.span\n        aria-hidden\n        initial={false}\n        className=\"pointer-events-none absolute inset-0 bg-clip-text [-webkit-text-fill-color:transparent]\"\n        style={{\n          backgroundImage: \"linear-gradient(105deg, transparent 35%, currentColor 50%, transparent 65%)\",\n          backgroundSize: \"200% 100%\",\n          backgroundRepeat: \"no-repeat\",\n        }}\n        animate={{ backgroundPosition: reduceMotion ? \"130% 0\" : [\"130% 0\", \"-30% 0\"] }}\n        transition={{\n          duration: SHIMMER_SECONDS,\n          // Steady pace, so the band crosses the text for the whole duration\n          ease: \"linear\",\n          repeat: Infinity,\n          repeatDelay: 0.6,\n        }}\n      >\n        {text}\n      </motion.span>\n    </span>\n  )\n}\n\nfunction AnimatedButton({\n  variant = \"dot-fill\",\n  surface = \"filled\",\n  tone = \"primary\",\n  icon = \"arrow\",\n  iconPosition = \"end\",\n  shimmerText = false,\n  rollingText = false,\n  magnetic = false,\n  pressFeedback = false,\n  status = \"idle\",\n  loadingText,\n  successText,\n  rounded = \"full\",\n  duration = 0.8,\n  stagger = 0.02,\n  className,\n  children,\n  onPointerEnter,\n  onPointerLeave,\n  onPointerDown,\n  onPointerUp,\n  onKeyDown,\n  onKeyUp,\n  onFocus,\n  onBlur,\n  style,\n  ref,\n  ...props\n}: Omit<React.ComponentProps<\"button\">, \"children\" | \"color\"> &\n  Partial<AnimatedButtonMotion> & { children: string }) {\n  const [hovered, setHovered] = React.useState(false)\n  const [pressed, setPressed] = React.useState(false)\n  const [height, setHeight] = React.useState(56)\n  const buttonRef = React.useRef<HTMLButtonElement | null>(null)\n\n  // The drawn border needs the real height, which changes per screen size\n  React.useEffect(() => {\n    const el = buttonRef.current\n    if (!el) return\n    const observer = new ResizeObserver(([entry]) => setHeight(entry.borderBoxSize[0].blockSize))\n    observer.observe(el)\n    return () => observer.disconnect()\n  }, [])\n  const [dot, setDot] = React.useState({ left: \"50%\", top: \"50%\", on: false })\n  const reduceMotion = usePrefersReducedMotion()\n\n  const borderDraw = variant === \"border-draw\"\n  // Link is the only bare (no background, no border) look\n  const plain = variant === \"link\"\n  const outlined = surface === \"outline\" && variant !== \"link\" && !borderDraw\n  // Plain, outlined and border-draw share text and dot colours; only filled differs\n  const bare = plain || outlined || borderDraw\n  const line = variant === \"link\"\n  const timing = { duration: reduceMotion ? 0 : duration, ease: \"easeInOut\" as const }\n\n  const dotTiming = {\n    duration: reduceMotion ? 0 : duration * 0.95,\n    ease: [0.65, 0, 0.35, 1] as [number, number, number, number],\n  }\n\n  // A started fill always completes before the dot leaves\n  const growing = React.useRef(false)\n  const shrinking = React.useRef(false)\n  const pendingOut = React.useRef<{ left: string; top: string } | null>(null)\n\n  // The dot grows from where the pointer came in, and sweeps out toward where it left\n  const fill = (\n    event: React.PointerEvent<HTMLButtonElement> | React.FocusEvent<HTMLButtonElement>,\n    on: boolean\n  ) => {\n    if (variant !== \"dot-fill\") return\n    const box = event.currentTarget.getBoundingClientRect()\n    const pointer = \"clientX\" in event\n    const spot = {\n      left: pointer ? `${((event.clientX - box.left) / box.width) * 100}%` : \"50%\",\n      top: pointer ? `${((event.clientY - box.top) / box.height) * 100}%` : \"50%\",\n    }\n    if (on) {\n      pendingOut.current = null\n      // Re-entering mid-shrink keeps the dot where it is\n      growing.current = true\n      if (shrinking.current) {\n        shrinking.current = false\n        return setDot((d) => ({ ...d, on: true }))\n      }\n      return setDot({ ...spot, on: true })\n    }\n    if (growing.current) {\n      pendingOut.current = spot\n      return\n    }\n    shrinking.current = true\n    setDot({ ...spot, on: false })\n  }\n\n  const settleDot = () => {\n    if (dot.on) {\n      growing.current = false\n      const out = pendingOut.current\n      if (out) {\n        pendingOut.current = null\n        shrinking.current = true\n        setDot({ ...out, on: false })\n      }\n    } else {\n      shrinking.current = false\n    }\n  }\n\n  // Magnetic: the button eases after the pointer (a lerp each frame), then glides home\n  const x = useMotionValue(0)\n  const y = useMotionValue(0)\n  const pullX = useMotionValue(0)\n  const pullY = useMotionValue(0)\n  useAnimationFrame((_, delta) => {\n    const dx = x.get() - pullX.get()\n    const dy = y.get() - pullY.get()\n    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) return\n    // Covers MAGNET_LERP of the gap per 60fps frame, the same at any frame rate\n    const k = 1 - Math.pow(1 - MAGNET_LERP, delta / (1000 / 60))\n    pullX.set(pullX.get() + dx * k)\n    pullY.set(pullY.get() + dy * k)\n  })\n\n  const labelNode = (\n    <>\n      {variant === \"char-stagger\" ? (\n        <>\n          <span className=\"sr-only\">{children}</span>\n          <CharStagger text={children} stagger={stagger} />\n        </>\n      ) : variant === \"scramble\" ? (\n        <>\n          <span className=\"sr-only\">{children}</span>\n          <ScrambleText text={children} duration={duration} active={hovered} />\n        </>\n      ) : rollingText ? (\n        <TextRoll>{shimmerText ? <TextShimmer text={children} /> : <span>{children}</span>}</TextRoll>\n      ) : shimmerText ? (\n        <TextShimmer text={children} />\n      ) : (\n        <span>{children}</span>\n      )}\n    </>\n  )\n\n  return (\n    <span\n      className={cn(\"inline-flex\", magnetic && \"-m-4 p-4\")}\n      onPointerMove={(event) => {\n        // Touch screens have no hover to pull towards, and a finger drag would drag the button\n        if (!magnetic || reduceMotion || event.pointerType === \"touch\") return\n        const box = event.currentTarget.getBoundingClientRect()\n        x.set((event.clientX - (box.left + box.width / 2)) * 0.3)\n        y.set((event.clientY - (box.top + box.height / 2)) * 0.3)\n      }}\n      onPointerLeave={() => {\n        x.set(0)\n        y.set(0)\n      }}\n    >\n      <motion.span\n        className={cn(\n          \"inline-flex\",\n          pressFeedback && PRESS_TRANSITION,\n          pressFeedback && pressed && !reduceMotion && \"scale-[0.97]\"\n        )}\n        style={{ x: pullX, y: pullY }}\n      >\n        <button\n          ref={(node) => {\n            buttonRef.current = node\n            if (typeof ref === \"function\") ref(node)\n            else if (ref) ref.current = node\n          }}\n          data-slot=\"animated-button\"\n          // Text flip follows the fill\n          data-active={(variant === \"dot-fill\" ? dot.on : hovered) ? \"true\" : \"false\"}\n          aria-busy={status === \"loading\" || undefined}\n          onPointerEnter={(event) => {\n            onPointerEnter?.(event)\n            fill(event, true)\n            setHovered(true)\n          }}\n          onPointerLeave={(event) => {\n            onPointerLeave?.(event)\n            fill(event, false)\n            setHovered(false)\n            setPressed(false)\n          }}\n          onPointerDown={(event) => {\n            onPointerDown?.(event)\n            setPressed(true)\n          }}\n          onPointerUp={(event) => {\n            onPointerUp?.(event)\n            setPressed(false)\n          }}\n          onKeyDown={(event) => {\n            onKeyDown?.(event)\n            if (event.key === \" \" || event.key === \"Enter\") setPressed(true)\n          }}\n          onKeyUp={(event) => {\n            onKeyUp?.(event)\n            setPressed(false)\n          }}\n          onFocus={(event) => {\n            onFocus?.(event)\n            if (!event.currentTarget.matches(\":focus-visible\")) return\n            fill(event, true)\n            setHovered(true)\n          }}\n          onBlur={(event) => {\n            onBlur?.(event)\n            fill(event, false)\n            setHovered(false)\n            setPressed(false)\n          }}\n          style={\n            {\n              \"--dur\": `${duration}s`,\n              \"--flip\": `${duration * 0.4}s`,\n              \"--flip-delay\": `${duration * 0.3}s`,\n              ...style,\n            } as React.CSSProperties\n          }\n          className={cn(\n            \"group/animated-button relative isolate inline-flex h-14 w-fit cursor-pointer items-center justify-center overflow-hidden px-8 text-lg font-medium whitespace-nowrap outline-none max-[1025px]:h-12 max-[1025px]:text-base max-md:h-11\",\n            \"focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:pointer-events-none disabled:opacity-50\",\n            status === \"loading\" && \"pointer-events-none\",\n            plain\n              ? cn(\"bg-transparent px-2\", TONES[tone].plain)\n              : borderDraw\n                ? cn(\"border border-transparent bg-transparent\", TONES[tone].plain)\n                : outlined\n                  ? cn(\"border bg-transparent\", TONES[tone].plain, TONES[tone].border)\n                  : cn(\"border\", TONES[tone].filled),\n            !plain && ROUNDED[rounded],\n            !plain && \"max-[1025px]:px-6 max-md:px-5\",\n            // Text swaps colour as the dot passes under it\n            variant === \"dot-fill\" &&\n              cn(\n                // Reduced motion: the dot is there at once, so the text must flip at once too\n                \"transition-colors duration-(--flip) delay-(--flip-delay) motion-reduce:transition-none motion-reduce:delay-0\",\n                bare ? TONES[tone].plainFlip : TONES[tone].filledFlip\n              ),\n            className\n          )}\n          {...props}\n        >\n          {variant === \"dot-fill\" && (\n            <motion.span\n              aria-hidden\n              initial={false}\n              style={{ x: \"-50%\", y: \"-50%\" }}\n              animate={{ scale: dot.on ? 1 : 0, left: dot.left, top: dot.top }}\n              onAnimationComplete={settleDot}\n              // Snap to the entry point, then grow; slide out with the shrink\n              transition={{\n                scale: dotTiming,\n                left: dot.on ? { duration: 0 } : dotTiming,\n                top: dot.on ? { duration: 0 } : dotTiming,\n              }}\n              className={cn(\n                \"pointer-events-none absolute -z-10 aspect-square w-[220%] rounded-full\",\n                bare ? TONES[tone].plainDot : TONES[tone].dot\n              )}\n            />\n          )}\n\n          {borderDraw && (\n            <svg aria-hidden className=\"pointer-events-none absolute inset-0 size-full overflow-visible\">\n              {/* Both borders share one shape, so the drawn line sits exactly on the resting one */}\n              {[0, 1].map((layer) => (\n                <motion.rect\n                  key={layer}\n                  x={0.75}\n                  y={0.75}\n                  rx={Math.max(Math.min(RADIUS[rounded], height / 2) - 0.75, 0)}\n                  style={{ width: \"calc(100% - 1.5px)\", height: \"calc(100% - 1.5px)\" }}\n                  fill=\"none\"\n                  strokeWidth={1.5}\n                  // Round ends close the seam where the drawn line meets its own start\n                  strokeLinecap=\"round\"\n                  className={layer === 0 ? \"stroke-(--hx-border)\" : \"stroke-current\"}\n                  initial={false}\n                  animate={layer === 0 ? undefined : { pathLength: hovered ? 1 : 0, opacity: hovered ? 1 : 0 }}\n                  transition={{\n                    pathLength: timing,\n                    opacity: { duration: reduceMotion ? 0 : 0.15, delay: hovered || reduceMotion ? 0 : duration },\n                  }}\n                />\n              ))}\n            </svg>\n          )}\n\n          <span\n            className={cn(\n              \"relative z-10 inline-flex w-fit items-center gap-1.5\",\n              iconPosition === \"start\" && \"flex-row-reverse\"\n            )}\n          >\n            {/* Link: the line sits under the label only, not under the icon */}\n            <span\n              className={cn(\n                \"relative inline-flex\",\n                line &&\n                  (reduceMotion\n                    ? // The whole line appears at once instead of drawing\n                      \"after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:bg-current after:opacity-0 after:transition-opacity after:duration-150 group-data-[active=true]/animated-button:after:opacity-100\"\n                    : \"after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-(--dur) group-data-[active=true]/animated-button:after:origin-left group-data-[active=true]/animated-button:after:scale-x-100\")\n              )}\n            >\n              {loadingText || successText ? (\n                <StatusLabel\n                  status={status}\n                  idle={labelNode}\n                  idleText={children}\n                  loadingText={loadingText ?? children}\n                  successText={successText ?? children}\n                />\n              ) : (\n                labelNode\n              )}\n            </span>\n\n            <StatusSlot status={status} icon={icon} hovered={hovered} />\n          </span>\n\n        </button>\n      </motion.span>\n    </span>\n  )\n}\n\n// ---- demo: button-demo.tsx ----\n\nconst controls = {\n  variant: {\n    group: \"Effect\",\n    type: \"select\",\n    label: \"Hover effect\",\n    value: \"dot-fill\",\n    options: [\n      { label: \"Dot fill\", value: \"dot-fill\" },\n      { label: \"Char stagger\", value: \"char-stagger\" },\n      { label: \"Scramble\", value: \"scramble\" },\n      { label: \"Link (line draw)\", value: \"link\" },\n      { label: \"Border draw\", value: \"border-draw\" },\n    ],\n  },\n  surface: {\n    disabled: (v: Record<string, unknown>) => v.variant === \"link\",\n    group: \"Effect\",\n    type: \"select\",\n    label: \"Background\",\n    value: \"filled\",\n    options: [\n      { label: \"Filled\", value: \"filled\" },\n      { label: \"Outline\", value: \"outline\" },\n    ],\n  },\n  tone: {\n    group: \"Effect\",\n    type: \"select\",\n    label: \"Colour\",\n    value: \"primary\",\n    options: [\n      { label: \"Primary\", value: \"primary\" },\n      { label: \"Muted\", value: \"muted\" },\n      { label: \"Destructive\", value: \"destructive\" },\n      { label: \"Success\", value: \"success\" },\n      { label: \"Warning\", value: \"warning\" },\n      { label: \"Info\", value: \"info\" },\n      { label: \"Gradient\", value: \"gradient\" },\n    ],\n  },\n  rollingText: { disabled: (v: Record<string, unknown>) => v.variant === \"char-stagger\" || v.variant === \"scramble\", group: \"Effect\", type: \"checkbox\", label: \"Rolling text\", value: true },\n  shimmerText: { disabled: (v: Record<string, unknown>) => v.variant === \"char-stagger\" || v.variant === \"scramble\", group: \"Effect\", type: \"checkbox\", label: \"Shimmer text\", value: false },\n  pressFeedback: { group: \"Effect\", type: \"checkbox\", label: \"Press feedback\", value: true },\n  magnetic: { group: \"Effect\", type: \"checkbox\", label: \"Magnetic\", value: false },\n  showLoadingState: { group: \"State\", type: \"checkbox\", label: \"Show loading state\", value: true },\n  icon: {\n    group: \"Icon\",\n    type: \"select\",\n    label: \"Icon\",\n    value: \"arrow\",\n    options: [\n      { label: \"None\", value: \"none\" },\n      { label: \"Arrow\", value: \"arrow\" },\n      { label: \"Search\", value: \"search\" },\n      { label: \"Settings\", value: \"settings\" },\n    ],\n  },\n  iconPosition: {\n    disabled: (v: Record<string, unknown>) => v.icon === \"none\",\n    group: \"Icon\",\n    type: \"select\",\n    label: \"Icon position\",\n    value: \"end\",\n    options: [\n      { label: \"End\", value: \"end\" },\n      { label: \"Start\", value: \"start\" },\n    ],\n  },\n  rounded: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Roundness\",\n    value: \"full\",\n    options: [\n      { label: \"None\", value: \"none\" },\n      { label: \"sm\", value: \"sm\" },\n      { label: \"md\", value: \"md\" },\n      { label: \"lg\", value: \"lg\" },\n      { label: \"xl\", value: \"xl\" },\n      { label: \"2xl\", value: \"2xl\" },\n      { label: \"Full\", value: \"full\" },\n    ],\n  },\n  duration: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 0.4,\n    min: 0.2,\n    max: 1.2,\n    step: 0.05,\n    unit: \"s\",\n  },\n  stagger: {\n    disabled: (v: Record<string, unknown>) => v.variant !== \"char-stagger\",\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Stagger\",\n    value: 0.02,\n    min: 0,\n    max: 0.08,\n    step: 0.005,\n    unit: \"s\",\n  },\n}\n\nconst HOVER_TIPS: Record<AnimatedButtonVariant, string> = {\n  \"dot-fill\": \"hover in from different sides to see where the dot fill starts.\",\n  \"char-stagger\": \"hover over it to see the letters roll one after another.\",\n  scramble: \"hover over it to see the letters scramble into place.\",\n  link: \"hover over it to see the line draw under the text.\",\n  \"border-draw\": \"hover over it to see the border draw itself around the button.\",\n}\n\nfunction ButtonDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const [simulated, setSimulated] = React.useState<AnimatedButtonStatus>(\"idle\")\n  const timers = React.useRef<number[]>([])\n  const status = values.showLoadingState ? simulated : \"idle\"\n\n  React.useEffect(() => {\n    const pending = timers.current\n    return () => pending.forEach(window.clearTimeout)\n  }, [])\n\n  // Click: loads for a moment, shows the check, then resets\n  const simulate = () => {\n    if (!values.showLoadingState || simulated !== \"idle\") return\n    setSimulated(\"loading\")\n    timers.current.push(\n      window.setTimeout(() => setSimulated(\"success\"), 1500),\n      window.setTimeout(() => setSimulated(\"idle\"), 3200)\n    )\n  }\n\n  return (\n    <div className=\"flex flex-col gap-3\">\n      {/* 30% larger on phones, where the button reads small */}\n      <div className=\"flex min-h-64 items-center justify-center px-8 py-8 max-md:px-4 max-md:*:scale-130\">\n        <AnimatedButton\n          variant={values.variant as AnimatedButtonVariant}\n          surface={values.surface as AnimatedButtonSurface}\n          tone={values.tone as AnimatedButtonTone}\n          shimmerText={values.shimmerText}\n          rollingText={values.rollingText}\n          magnetic={values.magnetic}\n          pressFeedback={values.pressFeedback}\n          status={status}\n          loadingText={values.showLoadingState ? \"Loading\" : undefined}\n          successText={values.showLoadingState ? \"Success\" : undefined}\n          onClick={simulate}\n          iconPosition={values.iconPosition as AnimatedButtonIconPosition}\n          icon={values.icon as AnimatedButtonIcon}\n          rounded={values.rounded as AnimatedButtonRounded}\n          duration={values.duration}\n          stagger={values.stagger}\n        >\n          Hover me\n        </AnimatedButton>\n      </div>\n      {/* The tip follows the chosen effect and whether clicking shows the loading state */}\n      <p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\">\n        Tip: {HOVER_TIPS[values.variant as AnimatedButtonVariant] ?? HOVER_TIPS[\"dot-fill\"]}{\" \"}\n        {values.showLoadingState\n          ? \"Click it to see the loading and success state.\"\n          : \"Turn on Show loading state to see it load when clicked.\"}\n      </p>\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedButtonSetProps extends Partial<ControlValues> {\n  theme?: AnimatedButtonSetTheme;\n  mode?: AnimatedButtonSetMode;\n  className?: string;\n}\n\nexport default function AnimatedButtonSet({ theme = \"spotify\", mode = \"dark\", className, ...props }: AnimatedButtonSetProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <ReducedMotionConfig>\n          <ButtonDemo {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  AnimatedButton,\n  type AnimatedButtonVariant,\n  type AnimatedButtonSurface,\n  type AnimatedButtonTone,\n  type AnimatedButtonIcon,\n  type AnimatedButtonIconPosition,\n  type AnimatedButtonStatus,\n  type AnimatedButtonRounded,\n};\n"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/animated-accordion",
+  "version": "1.0.0",
+  "description": "Expandable sections that reveal their answers with a staggered fade.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/animated-switch",
+  "version": "1.0.0",
+  "description": "A toggle between on and off.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

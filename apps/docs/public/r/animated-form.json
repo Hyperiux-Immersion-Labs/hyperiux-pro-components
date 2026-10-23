@@ -9,10 +9,15 @@
   "registryDependencies": [],
   "exportName": "AnimatedForm",
   "exportKind": "default",
-  "importPath": "@/components/effects/animated-form",
   "tier": "pro",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "changelog": [
+    {
+      "version": "1.1.0",
+      "date": "2026-10-23",
+      "summary": "Added form motion: error messages slide or fade in, fields shake on error, success ticks draw in, live character counters on the name, email and message fields, and a staggered entrance. All respect reduced motion. Fields and dropdowns default to a 6px (rounded-md) radius.",
+      "breaking": false
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-30",
@@ -74,8 +79,8 @@
     {
       "name": "inputRoundedness",
       "type": "number",
-      "default": 28,
-      "description": "Border radius for inputs and the submit button in pixels.",
+      "default": 6,
+      "description": "Border radius for inputs, dropdowns and the submit button in pixels. Defaults to 6 (rounded-md).",
       "remixer": {
         "control": "range",
         "group": "style",
@@ -97,6 +102,75 @@
         "min": 0.05,
         "max": 2,
         "step": 0.05
+      }
+    },
+    {
+      "name": "errorAnimation",
+      "type": "string",
+      "default": "slide",
+      "description": "How an error message enters under its field: slides open, fades in, or appears at once.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "value": "slide",
+            "label": "Slide open"
+          },
+          {
+            "value": "fade",
+            "label": "Fade"
+          },
+          {
+            "value": "none",
+            "label": "None"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shakeOnError",
+      "type": "boolean",
+      "default": true,
+      "description": "Fields with an error give a short shake when Submit is pressed.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "showSuccessTick",
+      "type": "boolean",
+      "default": true,
+      "description": "A tick draws itself inside a field once its value is valid.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "showCounter",
+      "type": "boolean",
+      "default": true,
+      "description": "Name, email and message fields show a live character count that warms up near the limit.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
+      }
+    },
+    {
+      "name": "staggerEntrance",
+      "type": "boolean",
+      "default": true,
+      "description": "Fields fade up one after another when the form first appears.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion"
       }
     }
   ],

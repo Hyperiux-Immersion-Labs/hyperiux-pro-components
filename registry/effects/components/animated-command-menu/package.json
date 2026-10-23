@@ -1,0 +1,22 @@
+{
+  "name": "@hyperiux/animated-command-menu",
+  "version": "1.0.0",
+  "description": "A searchable list of commands, opened with a shortcut.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "cmdk": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

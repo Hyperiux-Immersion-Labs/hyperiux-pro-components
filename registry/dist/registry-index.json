@@ -135,11 +135,6 @@
     "tarball": "registry/dist/hyperiux-animated-faq-1.0.1.tgz"
   },
   {
-    "name": "@hyperiux/animated-form",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-animated-form-1.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/animated-modal",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-animated-modal-1.0.1.tgz"
@@ -753,5 +748,130 @@
     "name": "@hyperiux/strip-slider",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-strip-slider-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-form",
+    "version": "1.1.0",
+    "tarball": "registry/dist/hyperiux-animated-form-1.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-accordion",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-accordion-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-attachment",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-attachment-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-button",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-button-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-chat-bubble",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-chat-bubble-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-checkbox-group",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-checkbox-group-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-command-menu",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-command-menu-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-data-table",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-data-table-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-date-picker",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-date-picker-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-dialog",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-dialog-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-drawer",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-drawer-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-dropdown-menu",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-dropdown-menu-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-hover-card",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-hover-card-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-input-otp",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-input-otp-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-menubar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-menubar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-questionnaire",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-questionnaire-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-radio-group",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-radio-group-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-sidebar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-sidebar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-skeleton",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-skeleton-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-slider",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-slider-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-switch",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-switch-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-tabs-bar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-tabs-bar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-theme-switch",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-theme-switch-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-toast",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-toast-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-tooltip",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-tooltip-1.0.0.tgz"
   }
 ]

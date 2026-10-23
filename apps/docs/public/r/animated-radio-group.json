@@ -1,0 +1,286 @@
+{
+  "name": "animated-radio-group",
+  "type": "registry:component",
+  "title": "Animated Radio Group",
+  "description": "Pick one option. Arrow keys, Home and End move the choice.",
+  "dependencies": [
+    "motion"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedRadioGroup",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "valorant",
+      "description": "Colour palette. The selected radio and its dot take its primary colour; the selected card too when Card fill color is Accent.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "variant",
+      "label": "Style",
+      "type": "string",
+      "default": "card",
+      "description": "Inline radios or bordered cards.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "Inline",
+            "value": "default"
+          },
+          {
+            "label": "Cards",
+            "value": "card"
+          }
+        ]
+      }
+    },
+    {
+      "name": "cardFillColor",
+      "label": "Card fill color",
+      "type": "string",
+      "default": "accent",
+      "description": "Fill of the selected card: a muted tint or the solid accent. Needs Style set to Cards.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "Muted",
+            "value": "muted"
+          },
+          {
+            "label": "Accent",
+            "value": "accent"
+          }
+        ],
+        "disabledWhen": {
+          "prop": "variant",
+          "equals": "default"
+        }
+      }
+    },
+    {
+      "name": "showIcon",
+      "label": "Icon",
+      "type": "boolean",
+      "default": true,
+      "description": "Show the radio circle next to each label.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "showDescription",
+      "label": "Description",
+      "type": "boolean",
+      "default": true,
+      "description": "Show each option's description line.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "slideDot",
+      "label": "Slide dot",
+      "type": "boolean",
+      "default": false,
+      "description": "The dot glides from the old choice to the new one. Needs Icon on, and not used by the Full look.",
+      "remixer": {
+        "control": "checkbox",
+        "hideWhenReducedMotion": true,
+        "group": "choosing",
+        "groupTitle": "Choosing",
+        "disabledWhen": [
+          {
+            "prop": "appearance",
+            "equals": "full"
+          },
+          {
+            "prop": "showIcon",
+            "equals": false
+          }
+        ]
+      }
+    },
+    {
+      "name": "slideCard",
+      "label": "Slide card",
+      "type": "boolean",
+      "default": true,
+      "description": "The card highlight glides between cards. Needs Style set to Cards.",
+      "remixer": {
+        "control": "checkbox",
+        "hideWhenReducedMotion": true,
+        "group": "choosing",
+        "groupTitle": "Choosing",
+        "disabledWhen": {
+          "prop": "variant",
+          "equals": "default"
+        }
+      }
+    },
+    {
+      "name": "elastic",
+      "label": "Elastic",
+      "type": "boolean",
+      "default": true,
+      "description": "The radio squashes and springs back when picked. Needs Icon on.",
+      "remixer": {
+        "control": "checkbox",
+        "hideWhenReducedMotion": true,
+        "group": "choosing",
+        "groupTitle": "Choosing",
+        "disabledWhen": {
+          "prop": "showIcon",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "appearance",
+      "label": "Look",
+      "type": "string",
+      "default": "outline",
+      "description": "Radio look: an outline ring, a filled ring or one solid circle. Needs Icon on.",
+      "remixer": {
+        "control": "select",
+        "group": "radio",
+        "groupTitle": "Radio",
+        "options": [
+          {
+            "label": "Outline",
+            "value": "outline"
+          },
+          {
+            "label": "Filled",
+            "value": "filled"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ],
+        "disabledWhen": {
+          "prop": "showIcon",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "reorder",
+      "label": "Drag to reorder",
+      "type": "boolean",
+      "default": true,
+      "description": "Drag options up and down to reorder them.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "group",
+        "groupTitle": "Group"
+      }
+    },
+    {
+      "name": "colorful",
+      "label": "Colour per option",
+      "type": "boolean",
+      "default": false,
+      "description": "Use each option's own accent colour.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "group",
+        "groupTitle": "Group"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-radio-group/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport * as React from \"react\";\nimport { animate, AnimatePresence, motion, MotionConfig, Reorder } from \"motion/react\";\n\nexport type RadioVariant = \"default\" | \"card\";\nexport type RadioAppearance = \"outline\" | \"filled\" | \"full\";\nexport type RadioCardFill = \"muted\" | \"accent\";\n\nexport interface RadioOption {\n  value: string;\n  label?: React.ReactNode;\n  description?: React.ReactNode;\n  accent?: string;\n  disabled?: boolean;\n}\n\nconst spring = { type: \"spring\", visualDuration: 0.35, bounce: 0.3 } as const;\nconst glide = { type: \"spring\", visualDuration: 0.24, bounce: 0.15 } as const;\nconst snappy = { type: \"spring\", visualDuration: 0.25, bounce: 0 } as const;\nconst instant = { duration: 0 } as const;\nconst springyEase = \"ease-[cubic-bezier(0.34,1.56,0.64,1)]\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const read = () => setReduce(mq.matches);\n    read();\n    mq.addEventListener?.(\"change\", read);\n    return () => mq.removeEventListener?.(\"change\", read);\n  }, []);\n  return reduce;\n}\n\nconst cx = (...classes: Array<string | false | null | undefined>) => classes.filter(Boolean).join(\" \");\n\ntype RadioOptions = {\n  slideDot: boolean;\n  slideCard: boolean;\n  elastic: boolean;\n  showIcon: boolean;\n  appearance: RadioAppearance;\n};\n\nconst defaultOptions: RadioOptions = {\n  slideDot: false,\n  slideCard: true,\n  elastic: true,\n  showIcon: true,\n  appearance: \"outline\",\n};\n\ntype RadioGroupContextValue = RadioOptions & {\n  id: string;\n  variant: RadioVariant;\n  cardFillColor: RadioCardFill;\n  selected: string;\n  select: (value: string) => void;\n  reorder: boolean;\n  /** Reduced motion: everything lands in its final state at once. */\n  reduceMotion: boolean;\n};\n\nconst RadioGroupContext = React.createContext<RadioGroupContextValue | null>(null);\nconst RadioIndexContext = React.createContext(0);\n\nexport type RadioTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type RadioMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${RadioTheme}:${RadioMode}`, Required<RadioColors>> = {\n  \"default:light\": {\n    accentColor: \"oklch(0.205 0 0)\",\n    onAccentColor: \"oklch(0.985 0 0)\",\n    textColor: \"oklch(0.145 0 0)\",\n    mutedTextColor: \"oklch(0.556 0 0)\",\n    borderColor: \"oklch(0.922 0 0)\",\n    mutedColor: \"oklch(0.92 0 0)\"\n  },\n  \"default:dark\": {\n    accentColor: \"oklch(0.922 0 0)\",\n    onAccentColor: \"oklch(0.205 0 0)\",\n    textColor: \"oklch(0.985 0 0)\",\n    mutedTextColor: \"oklch(0.708 0 0)\",\n    borderColor: \"oklch(1 0 0 / 15%)\",\n    mutedColor: \"oklch(0.269 0 0)\"\n  },\n  \"caffeine:light\": {\n    accentColor: \"#644a40\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#202020\",\n    mutedTextColor: \"#646464\",\n    borderColor: \"#d8d8d8\",\n    mutedColor: \"#efefef\"\n  },\n  \"caffeine:dark\": {\n    accentColor: \"#ffe0c2\",\n    onAccentColor: \"#081a1b\",\n    textColor: \"#eeeeee\",\n    mutedTextColor: \"#b4b4b4\",\n    borderColor: \"#484848\",\n    mutedColor: \"#222222\"\n  },\n  \"claude:light\": {\n    accentColor: \"#c96442\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#3d3929\",\n    mutedTextColor: \"#83827d\",\n    borderColor: \"#b4b2a7\",\n    mutedColor: \"#ede9de\"\n  },\n  \"claude:dark\": {\n    accentColor: \"#d97757\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#c3c0b6\",\n    mutedTextColor: \"#b7b5a9\",\n    borderColor: \"#52514a\",\n    mutedColor: \"#1b1b19\"\n  },\n  \"ghibli:light\": {\n    accentColor: \"#6f9a5b\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#4a4436\",\n    mutedTextColor: \"#7a705a\",\n    borderColor: \"#cfc59f\",\n    mutedColor: \"#e6dec4\"\n  },\n  \"ghibli:dark\": {\n    accentColor: \"#8fbf7a\",\n    onAccentColor: \"#15201a\",\n    textColor: \"#e6e0cc\",\n    mutedTextColor: \"#a8b39f\",\n    borderColor: \"#46584f\",\n    mutedColor: \"#2c3a34\"\n  },\n  \"spotify:light\": {\n    accentColor: \"#1db954\",\n    onAccentColor: \"#000000\",\n    textColor: \"#191414\",\n    mutedTextColor: \"#6a6a6a\",\n    borderColor: \"#d4d4d4\",\n    mutedColor: \"#ececec\"\n  },\n  \"spotify:dark\": {\n    accentColor: \"#1db954\",\n    onAccentColor: \"#000000\",\n    textColor: \"#ffffff\",\n    mutedTextColor: \"#b3b3b3\",\n    borderColor: \"#3a3a3a\",\n    mutedColor: \"#1f1f1f\"\n  },\n  \"valorant:light\": {\n    accentColor: \"#ff4655\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#0f1923\",\n    mutedTextColor: \"#5c6670\",\n    borderColor: \"#c4beb0\",\n    mutedColor: \"#e2ddd2\"\n  },\n  \"valorant:dark\": {\n    accentColor: \"#ff4655\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#ece8e1\",\n    mutedTextColor: \"#8b978f\",\n    borderColor: \"#344454\",\n    mutedColor: \"#1a2733\"\n  },\n  \"vscode:light\": {\n    accentColor: \"#007acc\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#3b3b3b\",\n    mutedTextColor: \"#717171\",\n    borderColor: \"#cecece\",\n    mutedColor: \"#f3f3f3\"\n  },\n  \"vscode:dark\": {\n    accentColor: \"#0e639c\",\n    onAccentColor: \"#ffffff\",\n    textColor: \"#cccccc\",\n    mutedTextColor: \"#9d9d9d\",\n    borderColor: \"#3c3c3c\",\n    mutedColor: \"#2a2d2e\"\n  }\n};\n\nconst PAGE_COLORS: Record<`${RadioTheme}:${RadioMode}`, { background: string; foreground: string }> = {\n  \"default:light\": {\n    background: \"oklch(1 0 0)\",\n    foreground: \"oklch(0.145 0 0)\"\n  },\n  \"default:dark\": {\n    background: \"oklch(0.145 0 0)\",\n    foreground: \"oklch(0.985 0 0)\"\n  },\n  \"caffeine:light\": {\n    background: \"#f9f9f9\",\n    foreground: \"#202020\"\n  },\n  \"caffeine:dark\": {\n    background: \"#111111\",\n    foreground: \"#eeeeee\"\n  },\n  \"claude:light\": {\n    background: \"#faf9f5\",\n    foreground: \"#3d3929\"\n  },\n  \"claude:dark\": {\n    background: \"#262624\",\n    foreground: \"#c3c0b6\"\n  },\n  \"ghibli:light\": {\n    background: \"#f3ecd9\",\n    foreground: \"#4a4436\"\n  },\n  \"ghibli:dark\": {\n    background: \"#1f2a26\",\n    foreground: \"#e6e0cc\"\n  },\n  \"spotify:light\": {\n    background: \"#ffffff\",\n    foreground: \"#191414\"\n  },\n  \"spotify:dark\": {\n    background: \"#121212\",\n    foreground: \"#ffffff\"\n  },\n  \"valorant:light\": {\n    background: \"#ece8e1\",\n    foreground: \"#0f1923\"\n  },\n  \"valorant:dark\": {\n    background: \"#0f1923\",\n    foreground: \"#ece8e1\"\n  },\n  \"vscode:light\": {\n    background: \"#ffffff\",\n    foreground: \"#3b3b3b\"\n  },\n  \"vscode:dark\": {\n    background: \"#1f1f1f\",\n    foreground: \"#cccccc\"\n  }\n};\n\n// Lets a page match the palette behind the group\nexport function getThemeProps(theme: RadioTheme = \"default\", mode: RadioMode = \"dark\") {\n  const colors = PAGE_COLORS[`${theme}:${mode}`] ?? PAGE_COLORS[\"default:light\"];\n  return {\n    \"data-theme\": mode,\n    style: { \"--hx-background\": colors.background, \"--hx-foreground\": colors.foreground } as React.CSSProperties,\n  };\n}\n\nexport interface RadioColors {\n  accentColor?: string;\n  onAccentColor?: string;\n  textColor?: string;\n  mutedTextColor?: string;\n  borderColor?: string;\n  mutedColor?: string;\n}\n\nexport type RadioGroupProps = Partial<RadioOptions> &\n  RadioColors & {\n    theme?: RadioTheme;\n    mode?: RadioMode;\n    className?: string;\n    style?: React.CSSProperties;\n    children?: React.ReactNode;\n    \"aria-label\"?: string;\n    value?: string;\n    defaultValue?: string;\n    onValueChange?: (value: string) => void;\n    variant?: RadioVariant;\n    cardFillColor?: RadioCardFill;\n    reorder?: boolean;\n    onReorder?: (order: string[]) => void;\n  };\n\nexport function RadioGroup({\n  value,\n  defaultValue,\n  onValueChange,\n  className,\n  style,\n  children,\n  reorder = false,\n  onReorder,\n  variant = \"default\",\n  cardFillColor = \"muted\",\n  theme = \"default\",\n  mode = \"dark\",\n  accentColor,\n  onAccentColor,\n  textColor,\n  mutedTextColor,\n  borderColor,\n  mutedColor,\n  \"aria-label\": ariaLabel,\n  ...optionProps\n}: RadioGroupProps) {\n  const id = React.useId();\n  const reduceMotion = usePrefersReducedMotion();\n  const groupRef = React.useRef<HTMLDivElement>(null);\n  const [internal, setInternal] = React.useState(defaultValue ?? \"\");\n  const selected = value !== undefined ? value : internal;\n\n  const valueOf = (child: React.ReactElement) => (child.props as { value?: string }).value;\n  const [order, setOrder] = React.useState<string[]>([]);\n  const childElements = React.Children.toArray(children).filter(React.isValidElement);\n  const childValues = childElements.flatMap((child) => valueOf(child) ?? []);\n  const known = order.filter((v) => childValues.includes(v));\n  const currentOrder = [...known, ...childValues.filter((v) => !known.includes(v))];\n  const rank = (child: React.ReactElement) => {\n    const v = valueOf(child);\n    return v === undefined ? Infinity : currentOrder.indexOf(v);\n  };\n  const items = [...childElements].sort((a, b) => rank(a) - rank(b));\n\n  const select = (next: string) => {\n    if (next === selected) return;\n    if (value === undefined) setInternal(next);\n    onValueChange?.(next);\n  };\n\n  const onKeyDown = (event: React.KeyboardEvent) => {\n    if (!groupRef.current) return;\n    const radios = Array.from(\n      groupRef.current.querySelectorAll<HTMLButtonElement>(\"[data-slot=radio-control]:not(:disabled)\")\n    );\n    const index = radios.indexOf(document.activeElement as HTMLButtonElement);\n    if (index === -1) return;\n    const steps: Record<string, number> = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 };\n    let target: number;\n    if (event.key === \"Home\") target = 0;\n    else if (event.key === \"End\") target = radios.length - 1;\n    else if (event.key in steps) target = (index + steps[event.key] + radios.length) % radios.length;\n    else return;\n    event.preventDefault();\n    radios[target].focus();\n    radios[target].click();\n  };\n\n  const context: RadioGroupContextValue = {\n    ...defaultOptions,\n    ...optionProps,\n    id,\n    variant,\n    cardFillColor,\n    selected,\n    select,\n    reorder,\n    reduceMotion,\n  };\n\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const colorVars = {\n    \"--radio-accent\": accentColor || palette.accentColor,\n    \"--radio-on-accent\": onAccentColor || palette.onAccentColor,\n    \"--radio-text\": textColor || palette.textColor,\n    \"--radio-muted-text\": mutedTextColor || palette.mutedTextColor,\n    \"--radio-border\": borderColor || palette.borderColor,\n    \"--radio-muted\": mutedColor || palette.mutedColor,\n  } as React.CSSProperties;\n\n  return (\n    <MotionConfig reducedMotion=\"never\">\n      <RadioGroupContext.Provider value={context}>\n        <Reorder.Group\n          as=\"div\"\n          axis=\"y\"\n          values={currentOrder}\n          onReorder={(next: string[]) => {\n            setOrder(next);\n            onReorder?.(next);\n          }}\n          ref={groupRef}\n          role=\"radiogroup\"\n          aria-label={ariaLabel}\n          data-slot=\"radio-group\"\n          onKeyDown={onKeyDown}\n          style={{ ...colorVars, ...style }}\n          data-reduced={reduceMotion || undefined}\n          className={cx(\"isolate grid w-full gap-3 motion-reduce:**:transition-none data-reduced:**:transition-none\", className)}\n        >\n          {items.map((child, index) => (\n            <RadioIndexContext.Provider key={child.key ?? index} value={index}>\n              {child}\n            </RadioIndexContext.Provider>\n          ))}\n        </Reorder.Group>\n      </RadioGroupContext.Provider>\n    </MotionConfig>\n  );\n}\n\nexport interface RadioGroupItemProps {\n  className?: string;\n  value: string;\n  label?: React.ReactNode;\n  description?: React.ReactNode;\n  disabled?: boolean;\n  accent?: string;\n}\n\nexport function RadioGroupItem({\n  className,\n  value,\n  label,\n  description,\n  disabled = false,\n  accent,\n}: RadioGroupItemProps) {\n  const group = React.useContext(RadioGroupContext);\n  if (!group) throw new Error(\"RadioGroupItem must be used inside a RadioGroup.\");\n\n  const index = React.useContext(RadioIndexContext);\n  const reduceMotion = group.reduceMotion;\n  const visual = React.useRef<HTMLSpanElement>(null);\n  const dragged = React.useRef(false);\n  const [entered, setEntered] = React.useState(false);\n\n  const checked = group.selected === value;\n  const card = group.variant === \"card\";\n  const draggable = group.reorder && !disabled;\n\n  const [wasChecked, setWasChecked] = React.useState(checked);\n  const [pulse, setPulse] = React.useState(0);\n  if (checked !== wasChecked) {\n    setWasChecked(checked);\n    if (checked) setPulse((p) => p + 1);\n  }\n\n  React.useEffect(() => {\n    if (pulse === 0 || !group.elastic || reduceMotion || !visual.current) return;\n    animate(\n      visual.current,\n      { scale: [1, 0.7, 1.25, 0.94, 1] },\n      { duration: 0.55, times: [0, 0.2, 0.5, 0.75, 1], ease: \"easeOut\" }\n    );\n  }, [pulse, group.elastic, reduceMotion]);\n\n  const hasText = label !== undefined || description !== undefined;\n  const solid = card && group.cardFillColor === \"accent\";\n  const onFill = solid && checked;\n  const showControl = group.showIcon;\n  const filled = group.appearance === \"filled\";\n  const full = group.appearance === \"full\";\n  const dotOnAccent = filled !== onFill;\n  const dotClass = cx(\n    \"pointer-events-none absolute z-10 size-3 rounded-full\",\n    dotOnAccent ? \"bg-(--radio-on-accent)\" : \"bg-(--radio-accent)\"\n  );\n\n  const cardHighlight = cx(\n    \"pointer-events-none absolute -inset-px -z-10 rounded-md\",\n    solid ? \"bg-(--radio-accent)\" : accent ? \"bg-(--radio-accent)/15\" : \"bg-(--radio-muted)\"\n  );\n\n  return (\n    <Reorder.Item\n      as=\"label\"\n      value={value}\n      drag={draggable}\n      whileDrag={{ scale: reduceMotion ? 1 : 1.03, zIndex: 10 }}\n      onDragStart={() => (dragged.current = true)}\n      onPointerDown={() => (dragged.current = false)}\n      onClickCapture={(event) => {\n        if (!dragged.current) return;\n        event.preventDefault();\n        event.stopPropagation();\n      }}\n      data-slot=\"radio-item\"\n      data-value={value}\n      data-checked={checked || undefined}\n      data-disabled={disabled || undefined}\n      className={cx(\n        \"group/radio relative flex cursor-pointer gap-3 text-lg select-none data-disabled:cursor-not-allowed\",\n        description !== undefined ? \"items-start\" : \"items-center\",\n        // Plain rows only react (hover, cursor) over their own content, not the full row\n        !card && \"w-fit self-start\",\n        !showControl &&\n          \"rounded-md has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-(--radio-accent)/50\",\n        card &&\n          cx(\n            \"rounded-md border px-4 py-3 transition-colors duration-300\",\n            checked\n              ? solid\n                ? \"border-(--radio-accent)\"\n                : accent\n                  ? \"border-(--radio-accent)/40\"\n                  : \"border-(--radio-text)/15\"\n              : cx(\"border-(--radio-border)\", !disabled && \"hover:border-(--radio-text)/30\")\n          ),\n        draggable && \"cursor-grab active:cursor-grabbing\",\n        className\n      )}\n      style={accent ? ({ \"--radio-accent\": accent } as React.CSSProperties) : undefined}\n      initial={reduceMotion ? false : { opacity: 0, y: 6 }}\n      animate={{ opacity: disabled ? 0.5 : 1, y: 0 }}\n      onAnimationComplete={() => setEntered(true)}\n      transition={reduceMotion ? { ...instant, layout: instant } : { ...spring, delay: entered ? 0 : index * 0.05, layout: spring }}\n    >\n      {card &&\n        (group.slideCard ? (\n          checked && (\n            <motion.span\n              layoutId={`${group.id}-card`}\n              aria-hidden\n              className={cardHighlight}\n              style={{ borderRadius: \"var(--radius-md, 0.375rem)\" }}\n              transition={reduceMotion ? instant : glide}\n            />\n          )\n        ) : (\n          <motion.span\n            aria-hidden\n            className={cardHighlight}\n            initial={false}\n            animate={{ opacity: checked ? 1 : 0, scale: checked || reduceMotion ? 1 : 0.96 }}\n            transition={reduceMotion ? instant : snappy}\n          />\n        ))}\n\n      <motion.span\n        className={showControl ? \"relative grid size-6 shrink-0 place-items-center\" : \"sr-only\"}\n        whileTap={disabled || !group.elastic || reduceMotion ? undefined : { scale: 0.85 }}\n      >\n        <span\n          aria-hidden\n          className={cx(\n            \"pointer-events-none absolute -inset-1 scale-75 rounded-full border-2 border-(--radio-accent)/40 opacity-0 transition-[opacity,scale] duration-300 group-has-focus-visible/radio:scale-100 group-has-focus-visible/radio:opacity-100\",\n            springyEase\n          )}\n        />\n\n        <span\n          ref={visual}\n          aria-hidden\n          className={cx(\n            \"absolute inset-0 overflow-hidden rounded-full border transition-colors duration-200\",\n            onFill\n              ? \"border-(--radio-on-accent)\"\n              : checked\n                ? \"border-(--radio-accent)\"\n                : \"border-(--radio-border) group-hover/radio:border-(--radio-text)/40\"\n          )}\n        >\n          {(filled || full) && (\n            <motion.span\n              className={cx(\"absolute inset-0 rounded-full\", onFill ? \"bg-(--radio-on-accent)\" : \"bg-(--radio-accent)\")}\n              initial={false}\n              animate={{ scale: checked ? 1 : 0 }}\n              transition={reduceMotion ? instant : snappy}\n            />\n          )}\n        </span>\n\n        {showControl &&\n          !full &&\n          (group.slideDot ? (\n            checked && <motion.span layoutId={`${group.id}-dot`} aria-hidden className={dotClass} transition={reduceMotion ? instant : glide} />\n          ) : (\n            <AnimatePresence initial={false}>\n              {checked && (\n                <motion.span\n                  key=\"dot\"\n                  aria-hidden\n                  className={dotClass}\n                  initial={{ scale: 0 }}\n                  animate={{ scale: 1 }}\n                  exit={{ scale: 0, opacity: 0, transition: reduceMotion ? instant : snappy }}\n                  transition={reduceMotion ? instant : spring}\n                />\n              )}\n            </AnimatePresence>\n          ))}\n\n        <button\n          type=\"button\"\n          data-slot=\"radio-control\"\n          role=\"radio\"\n          aria-checked={checked}\n          disabled={disabled}\n          tabIndex={checked || group.selected === \"\" ? 0 : -1}\n          onClick={() => !disabled && group.select(value)}\n          className=\"absolute -inset-1 z-20 cursor-[inherit] rounded-full outline-none\"\n        />\n      </motion.span>\n\n      {hasText && (\n        <span className=\"flex flex-col gap-1\">\n          {label !== undefined && (\n            <span\n              className={cx(\n                \"w-fit leading-none transition-colors duration-300\",\n                onFill\n                  ? \"text-(--radio-on-accent)\"\n                  : checked\n                    ? \"text-(--radio-text)\"\n                    : \"text-(--radio-muted-text) group-hover/radio:text-(--radio-text)\"\n              )}\n            >\n              {label}\n            </span>\n          )}\n          {description !== undefined && (\n            <span\n              className={cx(\n                \"text-sm transition-colors duration-300\",\n                onFill ? \"text-(--radio-on-accent)/80\" : \"text-(--radio-muted-text)\"\n              )}\n            >\n              {description}\n            </span>\n          )}\n        </span>\n      )}\n    </Reorder.Item>\n  );\n}\n\nconst SAMPLE_OPTIONS: RadioOption[] = [\n  { value: \"Standard\", description: \"3–5 working days. Free.\", accent: \"#3b82f6\" },\n  { value: \"Express\", description: \"Next working day. £4.99.\", accent: \"#f59e0b\" },\n  { value: \"Same day\", description: \"Order before noon. £9.99.\", accent: \"#ef4444\" },\n  { value: \"Collect\", description: \"Pick up in store tomorrow.\", accent: \"#22c55e\" },\n];\n\nexport interface AnimatedRadioGroupProps extends Omit<RadioGroupProps, \"children\"> {\n  options?: RadioOption[];\n  showDescription?: boolean;\n  colorful?: boolean;\n}\n\nexport default function AnimatedRadioGroup({\n  options = SAMPLE_OPTIONS,\n  defaultValue,\n  value,\n  variant = \"card\",\n  cardFillColor = \"accent\",\n  theme = \"valorant\",\n  mode = \"dark\",\n  reorder = true,\n  showDescription = true,\n  colorful = false,\n  className,\n  \"aria-label\": ariaLabel = \"Options\",\n  ...groupProps\n}: AnimatedRadioGroupProps) {\n  const cards = variant === \"card\";\n\n  return (\n    <RadioGroup\n      {...groupProps}\n      variant={variant}\n      cardFillColor={cardFillColor}\n      theme={theme}\n      mode={mode}\n      reorder={reorder}\n      value={value}\n      defaultValue={value === undefined ? (defaultValue ?? options[1]?.value ?? options[0]?.value) : undefined}\n      aria-label={ariaLabel}\n      className={cx(cards ? \"grid grid-cols-2 gap-3 max-md:grid-cols-1\" : \"flex flex-col gap-4\", className)}\n    >\n      {options.map((option) => (\n        <RadioGroupItem\n          key={option.value}\n          value={option.value}\n          label={option.label ?? option.value}\n          description={showDescription ? option.description : undefined}\n          disabled={option.disabled}\n          accent={colorful ? option.accent : undefined}\n        />\n      ))}\n    </RadioGroup>\n  );\n}\n"
+    }
+  ]
+}

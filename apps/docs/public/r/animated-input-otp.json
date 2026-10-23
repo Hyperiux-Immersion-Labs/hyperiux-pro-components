@@ -1,0 +1,331 @@
+{
+  "name": "animated-input-otp",
+  "type": "registry:component",
+  "title": "Animated Input OTP",
+  "description": "One-time code boxes that fill, shake and confirm.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "input-otp",
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedInputOtp",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "ghibli",
+      "description": "Colour palette. Any theme but Default also tints the active box, the gliding ring and the caret.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "allowedCharacters",
+      "label": "Allowed characters",
+      "type": "string",
+      "default": "mixed",
+      "description": "Which characters the boxes accept; anything else is ignored as you type or paste.",
+      "remixer": {
+        "control": "select",
+        "group": "input",
+        "groupTitle": "Input",
+        "options": [
+          {
+            "label": "Mixed",
+            "value": "mixed"
+          },
+          {
+            "label": "Numbers",
+            "value": "numbers"
+          },
+          {
+            "label": "Letters",
+            "value": "letters"
+          },
+          {
+            "label": "Special characters",
+            "value": "symbols"
+          }
+        ]
+      }
+    },
+    {
+      "name": "glideRing",
+      "label": "Glide ring",
+      "type": "boolean",
+      "default": false,
+      "description": "One ring that slides from box to box as you type or move with the arrow keys. When off, each box just lights up on its own.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "typing",
+        "groupTitle": "Typing"
+      }
+    },
+    {
+      "name": "charAnimation",
+      "label": "Character in",
+      "type": "string",
+      "default": "pop",
+      "description": "How each character appears in its box.",
+      "remixer": {
+        "control": "select",
+        "group": "typing",
+        "groupTitle": "Typing",
+        "options": [
+          {
+            "label": "Pop",
+            "value": "pop"
+          },
+          {
+            "label": "Roll",
+            "value": "roll"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "pasteStagger",
+      "label": "Paste stagger",
+      "type": "number",
+      "default": 0.05,
+      "description": "Delay between characters when a whole code is pasted, in seconds. Needs Character in set to anything but None.",
+      "remixer": {
+        "control": "range",
+        "group": "typing",
+        "groupTitle": "Typing",
+        "min": 0,
+        "max": 0.15,
+        "step": 0.01,
+        "disabledWhen": {
+          "prop": "charAnimation",
+          "equals": "none"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "shakeOnError",
+      "label": "Shake on error",
+      "type": "boolean",
+      "default": true,
+      "description": "Shakes the boxes when the code is wrong or a blocked character is entered.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "result",
+        "groupTitle": "Result",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "successWave",
+      "label": "Success wave",
+      "type": "boolean",
+      "default": true,
+      "description": "A wave of the theme's success colour runs across the boxes when the code is right.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "result",
+        "groupTitle": "Result",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "boxSize",
+      "label": "Box size",
+      "type": "string",
+      "default": "16",
+      "description": "Size of each box, on Tailwind's spacing scale.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "8",
+            "value": "8"
+          },
+          {
+            "label": "9",
+            "value": "9"
+          },
+          {
+            "label": "10",
+            "value": "10"
+          },
+          {
+            "label": "11",
+            "value": "11"
+          },
+          {
+            "label": "12",
+            "value": "12"
+          },
+          {
+            "label": "14",
+            "value": "14"
+          },
+          {
+            "label": "16",
+            "value": "16"
+          },
+          {
+            "label": "18",
+            "value": "18"
+          },
+          {
+            "label": "20",
+            "value": "20"
+          },
+          {
+            "label": "24",
+            "value": "24"
+          }
+        ]
+      }
+    },
+    {
+      "name": "joined",
+      "label": "Joined boxes",
+      "type": "boolean",
+      "default": false,
+      "description": "Joins the boxes into one bar with shared borders.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "rounded",
+      "label": "Roundness",
+      "type": "string",
+      "default": "md",
+      "description": "Corner radius of the boxes. With Joined boxes on, only the outer corners round.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "sm",
+            "value": "sm"
+          },
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-input-otp/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\nimport { OTPInput, OTPInputContext } from \"input-otp\";\nimport { MinusIcon } from \"lucide-react\";\nimport { AnimatePresence, MotionConfig, animate, motion, type TargetAndTransition } from \"motion/react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedInputOtpTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedInputOtpMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedInputOtpTheme}:${AnimatedInputOtpMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\",\n    \"success\": \"oklch(0.596 0.145 163.225)\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedInputOtpTheme = \"default\", mode: AnimatedInputOtpMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\n// Keyframes and classes the component needs; no global CSS required\nconst COMPONENT_CSS = \"@keyframes hx-caret-blink{0%,70%,100%{opacity:1}20%,50%{opacity:0}}\";\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\n// ---- input-otp.tsx ----\n\ntype InputOTPRounded = \"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\"\n/** Tailwind size step, e.g. \"10\". */\ntype InputOTPSize = \"8\" | \"9\" | \"10\" | \"11\" | \"12\" | \"14\" | \"16\" | \"18\" | \"20\" | \"24\"\ntype InputOTPCharAnimation = \"pop\" | \"roll\" | \"fade\" | \"none\"\ntype InputOTPAllow = \"numbers\" | \"letters\" | \"symbols\" | \"mixed\"\n\ntype InputOTPMotion = {\n  /** One ring glides between boxes. */\n  glideRing: boolean\n  charAnimation: InputOTPCharAnimation\n  /** Paste fill gap, in seconds. */\n  pasteStagger: number\n  /** Shake when turning invalid. */\n  shakeOnError: boolean\n  /** Green wave and tick on success. */\n  successWave: boolean\n  boxSize: InputOTPSize\n  rounded: InputOTPRounded\n  /** Boxes share borders as a strip. */\n  joined: boolean\n}\n\n/** Corners of each separate box. */\nconst BOX_ROUNDED: Record<InputOTPRounded, string> = {\n  none: \"rounded-none\",\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  full: \"rounded-full\",\n}\n\n/** Outer corners of a joined strip: left end, right end. */\nconst ROUNDED_START: Record<InputOTPRounded, string> = {\n  none: \"rounded-l-none\",\n  sm: \"rounded-l-sm\",\n  md: \"rounded-l-md\",\n  lg: \"rounded-l-lg\",\n  xl: \"rounded-l-xl\",\n  full: \"rounded-l-full\",\n}\n\nconst ROUNDED_END: Record<InputOTPRounded, string> = {\n  none: \"rounded-r-none\",\n  sm: \"rounded-r-sm\",\n  md: \"rounded-r-md\",\n  lg: \"rounded-r-lg\",\n  xl: \"rounded-r-xl\",\n  full: \"rounded-r-full\",\n}\n\nconst SIZE: Record<InputOTPSize, string> = {\n  \"8\": \"size-8 text-sm\",\n  \"9\": \"size-9 text-sm\",\n  // Phones: step down to size-9.\n  \"10\": \"size-10 text-base max-[360px]:size-9\",\n  \"11\": \"size-11 text-base max-sm:size-10 max-[360px]:size-9\",\n  \"12\": \"size-12 text-lg max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"14\": \"size-14 text-xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"16\": \"size-16 text-2xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"18\": \"size-18 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"20\": \"size-20 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"24\": \"size-24 text-4xl max-md:size-16 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n}\n\n/** One character each; spaces are never allowed. */\nconst ALLOWED: Record<InputOTPAllow, RegExp> = {\n  numbers: /^[0-9]$/u,\n  letters: /^[A-Za-z]$/u,\n  symbols: /^[^A-Za-z0-9\\s]$/u,\n  mixed: /^\\S$/u,\n}\n\nconst RULE: Record<InputOTPAllow, string> = {\n  numbers: \"Use numbers only (0–9).\",\n  letters: \"Use letters only (A–Z).\",\n  symbols: \"Use special characters only, like ! @ # $.\",\n  mixed: \"Use letters, numbers or special characters.\",\n}\n\n/** Why a character was turned away, in words people can act on. */\nfunction rejectMessage(char: string, allowedCharacters: InputOTPAllow, pasted: boolean) {\n  if (/\\s/u.test(char)) return pasted ? \"The pasted code has a space in it. Spaces aren't allowed.\" : \"Spaces aren't allowed.\"\n  const what = pasted ? `The pasted code has \"${char}\", which isn't allowed here.` : `\"${char}\" isn't allowed here.`\n  return `${what} ${RULE[allowedCharacters]}`\n}\n\n/** How long rejected boxes stay red, ms. */\nconst REJECT_FLASH = 600\n\n/** Success wave delay per box, seconds. */\nconst WAVE_GAP = 0.06\n\nconst CHAR_IN: Record<Exclude<InputOTPCharAnimation, \"none\">, { from: TargetAndTransition; to: TargetAndTransition }> = {\n  pop: { from: { opacity: 0, scale: 0.4 }, to: { opacity: 1, scale: 1 } },\n  roll: { from: { opacity: 0, y: \"100%\" }, to: { opacity: 1, y: \"0%\" } },\n  fade: { from: { opacity: 0 }, to: { opacity: 1 } },\n}\n\nconst InputOTPMotionContext = React.createContext<\n  InputOTPMotion & {\n    ringId: string\n    invalid: boolean\n    success: boolean\n    /** Where the latest paste starts. */\n    pasteFrom: number | null\n    /** Reduced motion: characters and the success colour just appear. */\n    reduceMotion: boolean\n  }\n>({\n  glideRing: true,\n  charAnimation: \"pop\",\n  pasteStagger: 0.05,\n  shakeOnError: true,\n  successWave: true,\n  boxSize: \"8\",\n  rounded: \"lg\",\n  joined: false,\n  ringId: \"otp-ring\",\n  invalid: false,\n  success: false,\n  pasteFrom: null,\n  reduceMotion: false,\n})\n\nfunction InputOTP({\n  className,\n  containerClassName,\n  value: valueProp,\n  onChange,\n  maxLength,\n  invalid = false,\n  success = false,\n  glideRing = true,\n  charAnimation = \"pop\",\n  pasteStagger = 0.05,\n  shakeOnError = true,\n  successWave = true,\n  boxSize = \"8\",\n  rounded = \"lg\",\n  joined = false,\n  allowedCharacters = \"mixed\",\n  onReject,\n  ...props\n}: React.ComponentProps<typeof OTPInput> &\n  Partial<InputOTPMotion> & {\n    containerClassName?: string\n    /** Which characters the code accepts. Anything else is blocked and reported. */\n    allowedCharacters?: InputOTPAllow\n    /** Called with a ready-to-show message when a typed or pasted character is blocked. */\n    onReject?: (message: string, char: string) => void\n    /** Wrong code: red boxes, shake. */\n    invalid?: boolean\n    /** Right code: green wave, tick. */\n    success?: boolean\n  }) {\n  const ringId = React.useId()\n  // Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\n  const [reduceMotion, setReduceMotion] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduceMotion(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  const box = React.useRef<HTMLDivElement>(null)\n  const [uncontrolled, setUncontrolled] = React.useState(\"\")\n  const value = valueProp ?? uncontrolled\n  // Multi-character change means a paste.\n  const [pasteFrom, setPasteFrom] = React.useState<number | null>(null)\n  const [seen, setSeen] = React.useState(value)\n  if (seen !== value) {\n    setSeen(value)\n    setPasteFrom(value.length - seen.length > 1 ? seen.length : null)\n  }\n\n  const shake = React.useCallback(() => {\n    if (!shakeOnError || reduceMotion || !box.current) return\n    animate(box.current, { x: [0, -8, 8, -5, 5, -2, 0] }, { duration: 0.45, ease: \"easeOut\" })\n  }, [shakeOnError, reduceMotion])\n\n  // Shake once on turning invalid.\n  const wasInvalid = React.useRef(invalid)\n  React.useEffect(() => {\n    const was = wasInvalid.current\n    wasInvalid.current = invalid\n    if (invalid && !was) shake()\n  }, [invalid, shake])\n\n  // A blocked character turns the boxes red briefly and shakes them, every time.\n  const [rejecting, setRejecting] = React.useState(false)\n  const flashTimer = React.useRef<ReturnType<typeof setTimeout>>(undefined)\n  React.useEffect(() => () => clearTimeout(flashTimer.current), [])\n  const reject = (char: string, pasted: boolean) => {\n    onReject?.(rejectMessage(char, allowedCharacters, pasted), char)\n    shake()\n    setRejecting(true)\n    clearTimeout(flashTimer.current)\n    flashTimer.current = setTimeout(() => setRejecting(false), REJECT_FLASH)\n  }\n\n  const context = React.useMemo(\n    () => ({\n      glideRing,\n      charAnimation,\n      pasteStagger,\n      shakeOnError,\n      successWave,\n      boxSize,\n      rounded,\n      joined,\n      ringId,\n      invalid: invalid || rejecting,\n      success,\n      pasteFrom,\n      reduceMotion,\n    }),\n    [\n      glideRing,\n      charAnimation,\n      pasteStagger,\n      shakeOnError,\n      successWave,\n      boxSize,\n      rounded,\n      joined,\n      ringId,\n      invalid,\n      rejecting,\n      success,\n      pasteFrom,\n      reduceMotion,\n    ]\n  )\n\n  return (\n    <InputOTPMotionContext.Provider value={context}>\n      <MotionConfig reducedMotion=\"never\">\n        <div ref={box} className=\"relative w-fit\">\n          <OTPInput\n            data-slot=\"input-otp\"\n            value={value}\n            maxLength={maxLength}\n            // Phones show the number pad only when numbers are all that's allowed\n            inputMode={allowedCharacters === \"numbers\" ? \"numeric\" : \"text\"}\n            onChange={(next: string) => {\n              // Keep the old value and say why, instead of silently dropping the key\n              const bad = [...next].find((c) => !ALLOWED[allowedCharacters].test(c))\n              if (bad !== undefined) {\n                reject(bad, next.length - value.length > 1)\n                return\n              }\n              setUncontrolled(next)\n              onChange?.(next)\n            }}\n            containerClassName={cn(\n              \"flex items-center has-disabled:opacity-50\",\n              !joined && \"gap-2 max-md:gap-1.5\",\n              containerClassName\n            )}\n            spellCheck={false}\n            className={cn(\"disabled:cursor-not-allowed\", className)}\n            {...props}\n          />\n          <AnimatePresence>\n            {successWave && success && (\n              <motion.svg\n                key=\"tick\"\n                aria-label=\"Code accepted\"\n                viewBox=\"0 0 24 24\"\n                fill=\"none\"\n                stroke=\"currentColor\"\n                strokeWidth={2.5}\n                strokeLinecap=\"round\"\n                strokeLinejoin=\"round\"\n                // Outside the row, so no shift.\n                className=\"absolute top-1/2 left-[calc(100%+0.75rem)] size-5 -translate-y-1/2 text-(--hx-success) max-md:top-0 max-md:left-full max-md:size-5 max-md:-translate-x-3/4 max-md:rounded-full max-md:bg-(--hx-background) max-md:p-0.5 max-md:ring-1 max-md:ring-(--hx-success)\"\n                initial={{ opacity: 0, scale: 0.6 }}\n                animate={{ opacity: 1, scale: 1 }}\n                exit={{ opacity: 0, scale: 0.6, transition: { duration: 0.15 } }}\n                transition={\n                  reduceMotion\n                    ? { duration: 0 }\n                    : { type: \"spring\", visualDuration: 0.3, bounce: 0.4, delay: maxLength * WAVE_GAP }\n                }\n              >\n                <motion.path\n                  d=\"M5 12.5l4.5 4.5L19 7\"\n                  initial={{ pathLength: 0 }}\n                  animate={{ pathLength: 1 }}\n                  transition={reduceMotion ? { duration: 0 } : { duration: 0.35, ease: \"easeOut\", delay: maxLength * WAVE_GAP + 0.05 }}\n                />\n              </motion.svg>\n            )}\n          </AnimatePresence>\n        </div>\n      </MotionConfig>\n    </InputOTPMotionContext.Provider>\n  )\n}\n\nfunction InputOTPGroup({ className, ...props }: React.ComponentProps<\"div\">) {\n  const { joined } = React.useContext(InputOTPMotionContext)\n  return (\n    <div\n      data-slot=\"input-otp-group\"\n      className={cn(\"flex items-center\", !joined && \"gap-2 max-md:gap-1.5\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction InputOTPSlot({\n  index,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  index: number\n}) {\n  const inputOTPContext = React.useContext(OTPInputContext)\n  const options = React.useContext(InputOTPMotionContext)\n  const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}\n  // Once every box is filled the last one stays \"active\"; the ring has nowhere left to go, so it leaves\n  const complete = !!inputOTPContext?.slots.length && inputOTPContext.slots.every((slot) => slot.char)\n  const total = inputOTPContext?.slots.length ?? 0\n  const waved = options.successWave && options.success\n  const pasteDelay =\n    options.pasteFrom !== null && index >= options.pasteFrom\n      ? (index - options.pasteFrom) * options.pasteStagger\n      : 0\n\n  // Reduced motion: the character appears at once, with no pop, roll, fade or paste delay\n  const animation = options.reduceMotion || options.charAnimation === \"none\" ? null : options.charAnimation\n\n  return (\n    <motion.div\n      data-slot=\"input-otp-slot\"\n      data-active={isActive}\n      aria-invalid={options.invalid || undefined}\n      animate={waved && !options.reduceMotion ? { scale: [1, 1.1, 1] } : { scale: 1 }}\n      transition={{ duration: 0.3, delay: waved && !options.reduceMotion ? index * WAVE_GAP : 0 }}\n      style={{ transitionDelay: waved && !options.reduceMotion ? `${index * WAVE_GAP}s` : \"0s\" }}\n      className={cn(\n        \"relative flex items-center justify-center border-(--hx-input) transition-[color,background-color,border-color,box-shadow] duration-300 outline-none aria-invalid:border-(--hx-destructive) in-data-[theme=dark]:bg-(--hx-input)/30\",\n        options.joined ? cn(\"border-y border-r rounded-none\", index === 0 && \"border-l\") : \"border\",\n        // the active border marks where you type; a finished or verified code has no such box\n        !options.glideRing &&\n          !complete &&\n          !waved &&\n          \"data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) in-data-accent:data-[active=true]:border-(--hx-primary) data-[active=true]:aria-invalid:border-(--hx-destructive)\",\n        waved &&\n          \"border-(--hx-success) bg-(--hx-success)/10 text-(--hx-success)\",\n        SIZE[options.boxSize],\n        options.joined\n          ? cn(\n              index === 0 && ROUNDED_START[options.rounded],\n              index === total - 1 && ROUNDED_END[options.rounded]\n            )\n          : BOX_ROUNDED[options.rounded],\n        className\n      )}\n      {...(props as React.ComponentProps<typeof motion.div>)}\n    >\n      {options.glideRing && isActive && !complete && (\n        <motion.div\n          layoutId={options.ringId}\n          aria-hidden\n          className={cn(\n            // Crisp border, no halo.\n            \"pointer-events-none absolute -inset-px z-10 rounded-[inherit] border border-(--hx-foreground) in-data-accent:border-(--hx-primary)\",\n            options.invalid && \"border-(--hx-destructive)\"\n          )}\n          transition={{ type: \"spring\", visualDuration: 0.25 * 0.6, bounce: 0.2 }}\n        />\n      )}\n      <span className={cn(\"relative grid place-items-center\", animation === \"roll\" && \"overflow-hidden\")}>\n        {animation ? (\n          // Old digit fades before new appears.\n          <AnimatePresence initial={false} mode=\"wait\">\n            {char && (\n              <motion.span\n                key={char}\n                className=\"col-start-1 row-start-1 block\"\n                initial={CHAR_IN[animation].from}\n                animate={CHAR_IN[animation].to}\n                exit={{ opacity: 0, transition: { duration: 0.15, ease: \"easeOut\" } }}\n                transition={\n                  animation === \"pop\"\n                    ? { type: \"spring\", visualDuration: 0.25, bounce: 0.45, delay: pasteDelay }\n                    : { duration: 0.2, ease: \"easeOut\", delay: pasteDelay }\n                }\n              >\n                {char}\n              </motion.span>\n            )}\n          </AnimatePresence>\n        ) : (\n          char\n        )}\n      </span>\n      {hasFakeCaret && (\n        <div className=\"pointer-events-none absolute inset-0 flex items-center justify-center\">\n          <div className=\"h-[45%] w-px animate-[hx-caret-blink_1.25s_ease-out_infinite] motion-reduce:animate-none bg-(--hx-foreground) in-data-accent:bg-(--hx-primary) duration-1000\" />\n        </div>\n      )}\n    </motion.div>\n  )\n}\n\nfunction InputOTPSeparator({ ...props }: React.ComponentProps<\"div\">) {\n  const { joined } = React.useContext(InputOTPMotionContext)\n  // A joined strip runs unbroken, so the dash goes\n  if (joined) return null\n  return (\n    <div\n      data-slot=\"input-otp-separator\"\n      className=\"flex items-center [&_svg:not([class*='size-'])]:size-4\"\n      role=\"separator\"\n      {...props}\n    >\n      <MinusIcon />\n    </div>\n  )\n}\n\n// ---- demo: input-otp-demo.tsx ----\n\n/** The right code for each kind of input. */\nconst CODES: Record<InputOTPAllow, string> = {\n  numbers: \"427193\",\n  letters: \"KQWMZT\",\n  symbols: \"!@#$%&\",\n  mixed: \"A7#k2$\",\n}\n\n/** Hover leaves the button's background alone; an underline draws in under its text instead. */\nconst LINE_BUTTON = \"group/line\"\n/** Draws in from the left on hover and leaves to the right, like the drawer's Cancel. */\nconst LINE_TEXT =\n  \"relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out group-hover/line:after:origin-left group-hover/line:after:scale-x-100 group-focus-visible/line:after:origin-left group-focus-visible/line:after:scale-x-100 motion-reduce:after:transition-none\"\n\nconst controls = {\n  allowedCharacters: {\n    group: \"Input\",\n    type: \"select\",\n    label: \"Allowed characters\",\n    value: \"mixed\",\n    options: [\n      { label: \"Mixed\", value: \"mixed\" },\n      { label: \"Numbers\", value: \"numbers\" },\n      { label: \"Letters\", value: \"letters\" },\n      { label: \"Special characters\", value: \"symbols\" },\n    ],\n  },\n\n  glideRing: { group: \"Typing\", type: \"checkbox\", label: \"Glide ring\", value: false },\n  charAnimation: {\n    group: \"Typing\",\n    type: \"select\",\n    label: \"Character in\",\n    value: \"pop\",\n    options: [\n      { label: \"Pop\", value: \"pop\" },\n      { label: \"Roll\", value: \"roll\" },\n      { label: \"Fade\", value: \"fade\" },\n      { label: \"None\", value: \"none\" },\n    ],\n  },\n  pasteStagger: {\n    disabled: (v: Record<string, unknown>) => v.charAnimation === \"none\",\n    group: \"Typing\",\n    type: \"slider\",\n    label: \"Paste stagger\",\n    value: 0.05,\n    min: 0,\n    max: 0.15,\n    step: 0.01,\n    unit: \"s\",\n  },\n\n  shakeOnError: { group: \"Result\", type: \"checkbox\", label: \"Shake on error\", value: true },\n  successWave: { group: \"Result\", type: \"checkbox\", label: \"Green wave when right\", value: true },\n\n  boxSize: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Box size\",\n    value: \"16\",\n    options: [\n      { label: \"8\", value: \"8\" },\n      { label: \"9\", value: \"9\" },\n      { label: \"10\", value: \"10\" },\n      { label: \"11\", value: \"11\" },\n      { label: \"12\", value: \"12\" },\n      { label: \"14\", value: \"14\" },\n      { label: \"16\", value: \"16\" },\n      { label: \"18\", value: \"18\" },\n      { label: \"20\", value: \"20\" },\n      { label: \"24\", value: \"24\" },\n    ],\n  },\n  joined: { group: \"Style\", type: \"checkbox\", label: \"Joined boxes\", value: false },\n  rounded: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Roundness\",\n    value: \"md\",\n    options: [\n      { label: \"None\", value: \"none\" },\n      { label: \"sm\", value: \"sm\" },\n      { label: \"md\", value: \"md\" },\n      { label: \"lg\", value: \"lg\" },\n      { label: \"xl\", value: \"xl\" },\n      { label: \"Full\", value: \"full\" },\n    ],\n  },\n}\n\nfunction InputOTPDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const allowedCharacters = values.allowedCharacters as InputOTPAllow\n  const CODE = CODES[allowedCharacters]\n  const [code, setCode] = React.useState(\"\")\n  const [error, setError] = React.useState<string | null>(null)\n\n  // A new kind of input starts over\n  const [lastAllow, setLastAllow] = React.useState(allowedCharacters)\n  if (lastAllow !== allowedCharacters) {\n    setLastAllow(allowedCharacters)\n    setCode(\"\")\n    setError(null)\n  }\n\n  const change = (next: string) => {\n    setCode(next)\n    setError(null)\n  }\n\n  const complete = code.length === CODE.length\n  const success = complete && code === CODE\n  const invalid = complete && code !== CODE\n\n  return (\n    <div className=\"flex flex-col gap-3\">\n      <div className=\"flex min-h-72 max-sm:min-h-56 flex-col items-center justify-center gap-4 px-4\">\n        <InputOTP\n          maxLength={CODE.length}\n          value={code}\n          onChange={change}\n          allowedCharacters={allowedCharacters}\n          onReject={setError}\n          invalid={invalid}\n          success={success}\n          aria-label=\"Verification code\"\n          glideRing={values.glideRing}\n          charAnimation={values.charAnimation as InputOTPCharAnimation}\n          pasteStagger={values.pasteStagger}\n          shakeOnError={values.shakeOnError}\n          successWave={values.successWave}\n          boxSize={values.boxSize as InputOTPSize}\n          rounded={values.rounded as InputOTPRounded}\n          joined={values.joined}\n        >\n          <InputOTPGroup>\n            <InputOTPSlot index={0} />\n            <InputOTPSlot index={1} />\n            <InputOTPSlot index={2} />\n          </InputOTPGroup>\n          <InputOTPSeparator />\n          <InputOTPGroup>\n            <InputOTPSlot index={3} />\n            <InputOTPSlot index={4} />\n            <InputOTPSlot index={5} />\n          </InputOTPGroup>\n        </InputOTP>\n        <p\n          className={cn(\n            \"text-center text-sm text-(--hx-muted-foreground)\",\n            (error || invalid) && \"text-(--hx-destructive)\"\n          )}\n          aria-live=\"assertive\"\n        >\n          {error\n            ? error\n            : success\n              ? \"Verified. Your delivery is confirmed.\"\n              : invalid\n                ? \"That code isn't right. Check the email and try again.\"\n                : \"Enter the code we emailed you.\"}\n        </p>\n        <div className=\"flex gap-2\">\n          <Button\n            variant=\"ghost\"\n            size=\"sm\"\n            className={cn(LINE_BUTTON, \"hover:bg-transparent in-data-[theme=dark]:hover:bg-transparent\")}\n            onClick={() => change(CODE)}\n          >\n            <span className={LINE_TEXT}>Paste the right code</span>\n          </Button>\n          <Button\n            variant=\"ghost\"\n            size=\"sm\"\n            className={cn(LINE_BUTTON, \"hover:bg-transparent in-data-[theme=dark]:hover:bg-transparent\")}\n            onClick={() => change(\"\")}\n          >\n            <span className={LINE_TEXT}>Clear</span>\n          </Button>\n        </div>\n      </div>\n      <p className=\"text-center text-sm text-(--hx-muted-foreground) w-[70%] max-sm:w-full mx-auto\">\n        Tip: the right code is {CODE}. Any other six characters shows the error, and a character\n        that isn&apos;t allowed is blocked with a message.\n      </p>\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedInputOtpProps extends Partial<ControlValues> {\n  theme?: AnimatedInputOtpTheme;\n  mode?: AnimatedInputOtpMode;\n  className?: string;\n}\n\nexport default function AnimatedInputOtp({ theme = \"ghibli\", mode = \"dark\", className, ...props }: AnimatedInputOtpProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <style>{COMPONENT_CSS}</style>\n        <ReducedMotionConfig>\n          <InputOTPDemo {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  InputOTP,\n  InputOTPGroup,\n  InputOTPSlot,\n  InputOTPSeparator,\n  type InputOTPAllow,\n  type InputOTPCharAnimation,\n  type InputOTPRounded,\n  type InputOTPSize,\n};\n"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@hyperiux/animated-data-table",
+  "version": "1.0.0",
+  "description": "Sort, filter, select and reorder rows that glide into place.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "gsap": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

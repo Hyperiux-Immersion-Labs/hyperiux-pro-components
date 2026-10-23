@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/animated-slider",
+  "version": "1.0.0",
+  "description": "Drag a thumb to pick a value or a range.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

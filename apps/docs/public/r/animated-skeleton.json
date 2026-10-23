@@ -1,0 +1,302 @@
+{
+  "name": "animated-skeleton",
+  "type": "registry:component",
+  "title": "Animated Skeleton",
+  "description": "Placeholders that shimmer while content loads.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedSkeleton",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "spotify",
+      "description": "Colour palette for the placeholders, their shimmer and the loaded content.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "animation",
+      "label": "Animation",
+      "type": "string",
+      "default": "shimmer",
+      "description": "Loading effect drawn across the placeholders.",
+      "remixer": {
+        "control": "select",
+        "group": "skeleton-appearance",
+        "groupTitle": "Skeleton appearance",
+        "options": [
+          {
+            "label": "Shimmer",
+            "value": "shimmer"
+          },
+          {
+            "label": "Wave",
+            "value": "wave"
+          },
+          {
+            "label": "Pulse",
+            "value": "pulse"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 1.6,
+      "description": "Length of one loading cycle, in seconds. Not used when Animation is None.",
+      "remixer": {
+        "control": "range",
+        "group": "skeleton-appearance",
+        "groupTitle": "Skeleton appearance",
+        "min": 0.6,
+        "max": 3,
+        "step": 0.1,
+        "disabledWhen": {
+          "prop": "animation",
+          "equals": "none"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "stagger",
+      "label": "Stagger",
+      "type": "number",
+      "default": 0.12,
+      "description": "Offset between placeholders so they don't pulse in sync, in seconds. Not used when Animation is None.",
+      "remixer": {
+        "control": "range",
+        "group": "skeleton-appearance",
+        "groupTitle": "Skeleton appearance",
+        "min": 0,
+        "max": 0.4,
+        "step": 0.02,
+        "disabledWhen": {
+          "prop": "animation",
+          "equals": "none"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "rounded",
+      "label": "Roundness",
+      "type": "string",
+      "default": "md",
+      "description": "Corner radius of the placeholders.",
+      "remixer": {
+        "control": "select",
+        "group": "skeleton-appearance",
+        "groupTitle": "Skeleton appearance",
+        "options": [
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "sm",
+            "value": "sm"
+          },
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "swapAnimation",
+      "label": "Swap animation",
+      "type": "string",
+      "default": "scale",
+      "description": "How the real content appears when loading finishes.",
+      "remixer": {
+        "control": "select",
+        "group": "content-transition",
+        "groupTitle": "Content transition",
+        "options": [
+          {
+            "label": "Rise",
+            "value": "rise"
+          },
+          {
+            "label": "Scale",
+            "value": "scale"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "swapDuration",
+      "label": "Content entrance duration",
+      "type": "number",
+      "default": 0.5,
+      "description": "How long the real content takes to appear, in seconds. Not used when Swap animation is None.",
+      "remixer": {
+        "control": "range",
+        "group": "content-transition",
+        "groupTitle": "Content transition",
+        "min": 0.1,
+        "max": 1,
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "swapAnimation",
+          "equals": "none"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "swapStagger",
+      "label": "Delay between content items",
+      "type": "number",
+      "default": 0.06,
+      "description": "Delay between content items appearing, in seconds. Not used when Swap animation is None.",
+      "remixer": {
+        "control": "range",
+        "group": "content-transition",
+        "groupTitle": "Content transition",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.01,
+        "disabledWhen": {
+          "prop": "swapAnimation",
+          "equals": "none"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "loadTime",
+      "label": "Skeleton loading time",
+      "type": "number",
+      "default": 3,
+      "description": "How long the Replay button pretends to load before showing the content, in seconds. The first load always takes 3 s.",
+      "remixer": {
+        "control": "range",
+        "group": "loading-preview",
+        "groupTitle": "Loading preview",
+        "min": 0.5,
+        "max": 5,
+        "step": 0.5
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-skeleton/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { MotionConfig, animate, stagger, AnimatePresence, motion } from \"motion/react\";\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\nimport { RotateCcwIcon } from \"lucide-react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const read = () => setReduce(mq.matches);\n    read();\n    mq.addEventListener?.(\"change\", read);\n    return () => mq.removeEventListener?.(\"change\", read);\n  }, []);\n  return reduce;\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedSkeletonTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedSkeletonMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedSkeletonTheme}:${AnimatedSkeletonMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedSkeletonTheme = \"default\", mode: AnimatedSkeletonMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\n// Keyframes and classes the component needs; no global CSS required\nconst COMPONENT_CSS = \"@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}\\n@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}\\n.hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}\\n[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}\\n.hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}\\n@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}\";\n\n// ---- stagger-in.ts ----\n\n/**\n * Fades the elements matching `selector` inside `root` up into place one after another.\n * Call it as the container mounts (from a callback ref): the items are hidden first, so\n * they never show for a frame before their turn.\n */\nfunction staggerIn(\n  root: Element,\n  selector: string,\n  { gap, delay = 0.08, distance = 8 }: { gap: number; delay?: number; distance?: number }\n) {\n  if (gap <= 0 || window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return\n  const items = Array.from(root.querySelectorAll<HTMLElement>(selector))\n  if (items.length === 0) return\n  for (const item of items) item.style.opacity = \"0\"\n  return animate(\n    items,\n    { opacity: [0, 1], y: [distance, 0] },\n    { delay: stagger(gap, { startDelay: delay }), duration: 0.35, ease: [0.22, 1, 0.36, 1] }\n  )\n}\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\n// ---- skeleton.tsx ----\n\nconst smoothEase = [0.22, 1, 0.36, 1] as const\n\ntype SkeletonAnimation = \"shimmer\" | \"pulse\" | \"wave\" | \"none\"\ntype SkeletonRounded = \"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\"\ntype SkeletonSwap = \"fade\" | \"rise\" | \"scale\" | \"none\"\n\ntype SkeletonMotion = {\n  animation: SkeletonAnimation\n  duration: number\n  stagger: number\n  rounded: SkeletonRounded\n}\n\nconst ROUNDED: Record<SkeletonRounded, string> = {\n  none: \"rounded-none\",\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  full: \"rounded-full\",\n}\n\nconst SkeletonContext = React.createContext<SkeletonMotion | null>(null)\n\nfunction SkeletonGroup({\n  animation = \"shimmer\",\n  duration = 1.6,\n  stagger = 0.12,\n  rounded = \"md\",\n  children,\n}: Partial<SkeletonMotion> & { children: React.ReactNode }) {\n  const value = React.useMemo(\n    () => ({ animation, duration, stagger, rounded }),\n    [animation, duration, stagger, rounded]\n  )\n  return <SkeletonContext.Provider value={value}>{children}</SkeletonContext.Provider>\n}\n\nconst SkeletonIndexContext = React.createContext(0)\n\nfunction Skeleton({\n  className,\n  animation,\n  duration,\n  rounded,\n  index,\n  style,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  Partial<Pick<SkeletonMotion, \"animation\" | \"duration\" | \"rounded\">> & {\n    index?: number\n  }) {\n  const group = React.useContext(SkeletonContext)\n  const fallbackIndex = React.useContext(SkeletonIndexContext)\n  const reduced = usePrefersReducedMotion()\n\n  const kind = animation ?? group?.animation ?? \"shimmer\"\n  const seconds = duration ?? group?.duration ?? 1.6\n  const radius = rounded ?? group?.rounded ?? \"md\"\n  // Negative delay: offset, but moving immediately\n  const lag = ((index ?? fallbackIndex) * (group?.stagger ?? 0)) % seconds\n  const delay = lag === 0 ? 0 : lag - seconds\n\n  const active = !reduced && kind !== \"none\"\n\n  return (\n    <div\n      data-slot=\"skeleton\"\n      data-animation={kind}\n      className={cn(\n        \"relative overflow-hidden bg-(--hx-muted)\",\n        ROUNDED[radius],\n        active && kind === \"pulse\" && \"animate-pulse\",\n        // Shared viewport band; see globals.css\n        active && (kind === \"shimmer\" || kind === \"wave\") && \"hx-skeleton-sweep\",\n        // CSS catches reduced motion during hydration\n        \"motion-reduce:animate-none\",\n        className\n      )}\n      style={{\n        ...style,\n        ...(active\n          ? ({\n              \"--skeleton-duration\": `${seconds}s`,\n              \"--skeleton-delay\": `${delay}s`,\n              animationDuration: kind === \"pulse\" ? `${seconds}s` : undefined,\n              animationDelay: kind === \"pulse\" ? `${delay}s` : undefined,\n            } as React.CSSProperties)\n          : null),\n      }}\n      {...props}\n    />\n  )\n}\n\nfunction SkeletonSwap({\n  loading,\n  swapAnimation = \"scale\",\n  duration = 0.4,\n  stagger = 0.06,\n  skeleton,\n  children,\n  className,\n}: {\n  loading: boolean\n  swapAnimation?: SkeletonSwap\n  duration?: number\n  stagger?: number\n  skeleton: React.ReactNode\n  children: React.ReactNode\n  className?: string\n}) {\n  const reduced = usePrefersReducedMotion()\n\n  const enter = React.useCallback(\n    (node: HTMLDivElement | null) => {\n      if (!node || reduced || swapAnimation === \"none\" || stagger <= 0) return\n      // Wrapper divs with one child would stagger as a single item\n      let row: Element = node\n      while (row.children.length === 1) row = row.children[0]\n      row.setAttribute(\"data-skeleton-row\", \"\")\n      const stop = staggerIn(node, \"[data-skeleton-row] > *\", {\n        gap: stagger,\n        delay: 0,\n        distance: swapAnimation === \"rise\" ? 8 : 0,\n      })?.stop\n      return () => {\n        row.removeAttribute(\"data-skeleton-row\")\n        stop?.()\n      }\n    },\n    [reduced, swapAnimation, stagger]\n  )\n\n  const kind = reduced && swapAnimation !== \"none\" ? \"fade\" : swapAnimation\n  const initial = {\n    fade: { opacity: 0 },\n    rise: { opacity: 0, y: 8 },\n    scale: { opacity: 0, scale: 0.97 },\n    none: {},\n  }[kind]\n  const length = reduced ? Math.min(duration, 0.2) : duration\n\n  // The placeholders and the real content differ in height (more so on narrow screens, where\n  // text wraps), so the box eases to the new height instead of jumping when they swap.\n  const box = React.useRef<HTMLDivElement>(null)\n  const lastHeight = React.useRef(0)\n  React.useLayoutEffect(() => {\n    const el = box.current\n    if (!el) return\n    const next = el.offsetHeight\n    const prev = lastHeight.current\n    lastHeight.current = next\n    if (!prev || prev === next || reduced) return\n    el.style.transition = \"none\"\n    el.style.height = `${prev}px`\n    el.style.overflow = \"hidden\"\n    void el.offsetHeight\n    el.style.transition = `height ${length}s cubic-bezier(0.22, 1, 0.36, 1)`\n    el.style.height = `${next}px`\n    const done = () => {\n      el.style.transition = \"\"\n      el.style.height = \"\"\n      el.style.overflow = \"\"\n      lastHeight.current = el.offsetHeight\n    }\n    el.addEventListener(\"transitionend\", done, { once: true })\n    return () => el.removeEventListener(\"transitionend\", done)\n  }, [loading, reduced, length])\n\n  return (\n    <div ref={box} className={cn(\"relative\", className)}>\n      {/* Crossfade: placeholders fade over content */}\n      <AnimatePresence mode=\"popLayout\" initial={false}>\n        {loading ? (\n          <motion.div\n            key=\"skeleton\"\n            aria-hidden\n            className=\"z-10\"\n            exit={kind === \"none\" ? undefined : { opacity: 0 }}\n            transition={{ duration: length, ease: \"easeInOut\" }}\n          >\n            {skeleton}\n          </motion.div>\n        ) : (\n          <motion.div\n            key=\"content\"\n            ref={enter}\n            initial={initial}\n            animate={{ opacity: 1, y: 0, scale: 1 }}\n            transition={{ duration: length, ease: smoothEase }}\n          >\n            {children}\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  )\n}\n\nfunction SkeletonText({\n  lines = 3,\n  start = 0,\n  className,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  lines?: number\n  start?: number\n}) {\n  return (\n    <div className={cn(\"flex w-full flex-col gap-2\", className)} {...props}>\n      {Array.from({ length: lines }, (_, i) => (\n        <SkeletonIndexContext.Provider key={i} value={start + i}>\n          <Skeleton className={cn(\"h-3.5\", i === lines - 1 && \"w-[60%]\")} />\n        </SkeletonIndexContext.Provider>\n      ))}\n    </div>\n  )\n}\n\n// ---- demo: skeleton-demo.tsx ----\n\nconst controls = {\n  animation: {\n    group: \"Skeleton appearance\",\n    type: \"select\",\n    label: \"Animation\",\n    value: \"shimmer\",\n    options: [\n      { label: \"Shimmer\", value: \"shimmer\" },\n      { label: \"Wave\", value: \"wave\" },\n      { label: \"Pulse\", value: \"pulse\" },\n      { label: \"None\", value: \"none\" },\n    ],\n  },\n  duration: {\n    disabled: (v: Record<string, unknown>) => v.animation === \"none\",\n    group: \"Skeleton appearance\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 1.6,\n    min: 0.6,\n    max: 3,\n    step: 0.1,\n    unit: \"s\",\n  },\n  stagger: {\n    disabled: (v: Record<string, unknown>) => v.animation === \"none\",\n    group: \"Skeleton appearance\",\n    type: \"slider\",\n    label: \"Stagger\",\n    value: 0.12,\n    min: 0,\n    max: 0.4,\n    step: 0.02,\n    unit: \"s\",\n  },\n  rounded: {\n    group: \"Skeleton appearance\",\n    type: \"select\",\n    label: \"Roundness\",\n    value: \"md\",\n    options: [\n      { label: \"None\", value: \"none\" },\n      { label: \"sm\", value: \"sm\" },\n      { label: \"md\", value: \"md\" },\n      { label: \"lg\", value: \"lg\" },\n      { label: \"xl\", value: \"xl\" },\n      { label: \"Full\", value: \"full\" },\n    ],\n  },\n\n  swapAnimation: {\n    group: \"Content transition\",\n    type: \"select\",\n    label: \"Swap animation\",\n    value: \"scale\",\n    options: [\n      { label: \"Rise\", value: \"rise\" },\n      { label: \"Scale\", value: \"scale\" },\n      { label: \"Fade\", value: \"fade\" },\n      { label: \"None\", value: \"none\" },\n    ],\n  },\n  swapDuration: {\n    disabled: (v: Record<string, unknown>) => v.swapAnimation === \"none\",\n    group: \"Content transition\",\n    type: \"slider\",\n    label: \"Content entrance duration\",\n    value: 0.5,\n    min: 0.1,\n    max: 1,\n    step: 0.05,\n    unit: \"s\",\n  },\n  swapStagger: {\n    disabled: (v: Record<string, unknown>) => v.swapAnimation === \"none\",\n    group: \"Content transition\",\n    type: \"slider\",\n    label: \"Delay between content items\",\n    value: 0.06,\n    min: 0,\n    max: 0.2,\n    step: 0.01,\n    unit: \"s\",\n  },\n  loadTime: {\n    group: \"Loading preview\",\n    type: \"slider\",\n    label: \"Skeleton loading time\",\n    value: 3,\n    min: 0.5,\n    max: 5,\n    step: 0.5,\n    unit: \"s\",\n  },\n}\n\n/** The status label, rolling up to its new text when it changes. */\nfunction StatusRoll({ children }: { children: string }) {\n  const reduceMotion = usePrefersReducedMotion()\n\n  return (\n    <span className=\"relative inline-grid overflow-hidden text-sm text-(--hx-muted-foreground)\">\n      <AnimatePresence initial={false} mode=\"popLayout\">\n        <motion.span\n          key={children}\n          className=\"block\"\n          initial={reduceMotion ? { opacity: 0 } : { y: \"100%\", opacity: 0 }}\n          animate={{ y: \"0%\", opacity: 1 }}\n          exit={reduceMotion ? { opacity: 0 } : { y: \"-100%\", opacity: 0 }}\n          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}\n        >\n          {children}\n        </motion.span>\n      </AnimatePresence>\n    </span>\n  )\n}\n\nfunction SkeletonDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const [loading, setLoading] = React.useState(true)\n  const timer = React.useRef(0)\n\n  // Loads once on arrival, at the control's default; the Replay button uses the current value.\n  React.useEffect(() => {\n    timer.current = window.setTimeout(\n      () => setLoading(false),\n      controls.loadTime.value * 1000\n    )\n    return () => window.clearTimeout(timer.current)\n  }, [])\n\n  const replay = () => {\n    window.clearTimeout(timer.current)\n    setLoading(true)\n    timer.current = window.setTimeout(() => setLoading(false), values.loadTime * 1000)\n  }\n\n  const placeholder = (\n    <SkeletonGroup\n      animation={values.animation as SkeletonAnimation}\n      duration={values.duration}\n      stagger={values.stagger}\n      rounded={values.rounded as SkeletonRounded}\n    >\n      <div className=\"flex flex-col gap-4\">\n        <Skeleton className=\"h-36 w-full\" index={0} />\n        <div className=\"flex items-center gap-3\">\n          <Skeleton className=\"size-10 shrink-0 rounded-full\" index={1} />\n          <div className=\"flex min-w-0 flex-1 flex-col gap-2\">\n            <Skeleton className=\"h-3.5 w-[40%]\" index={2} />\n            <Skeleton className=\"h-3 w-[25%]\" index={3} />\n          </div>\n        </div>\n        <SkeletonText lines={3} start={4} />\n      </div>\n    </SkeletonGroup>\n  )\n\n  const content = (\n    <div className=\"flex flex-col gap-4\">\n      <div className={cn(\"h-36 w-full bg-linear-to-br from-(--hx-warning)/40 to-(--hx-destructive)/40\", ROUNDED[values.rounded as SkeletonRounded])} />\n      <div className=\"flex items-center gap-3\">\n        <div className=\"flex size-10 shrink-0 items-center justify-center rounded-full bg-(--hx-muted) text-sm font-medium\">\n          LK\n        </div>\n        <div className=\"flex min-w-0 flex-col\">\n          <span className=\"text-sm font-medium\">Little Kiln Roasters</span>\n          <span className=\"text-xs text-(--hx-muted-foreground)\">Posted 2 hours ago</span>\n        </div>\n      </div>\n      <p className=\"text-sm leading-relaxed text-(--hx-muted-foreground)\">\n        This week we&apos;re pouring an Ethiopia Guji — jasmine, peach and black tea, washed and\n        roasted light. It&apos;s bright without ever turning sharp, which makes it a forgiving\n        first pour-over. Bags are roasted on Tuesdays and ship the same afternoon.\n      </p>\n    </div>\n  )\n\n  return (\n    <div className=\"flex flex-col gap-3\">\n      <div className=\"flex min-h-96 flex-col gap-4 rounded-lg border px-6 py-6\">\n        <div className=\"flex items-center justify-between gap-4\">\n          <StatusRoll>{loading ? \"Loading…\" : \"Loaded\"}</StatusRoll>\n          <Button variant=\"outline\" size=\"sm\" onClick={replay} disabled={loading}>\n            <RotateCcwIcon />\n            Replay\n          </Button>\n        </div>\n\n        <SkeletonSwap\n          loading={loading}\n          swapAnimation={values.swapAnimation as SkeletonSwap}\n          duration={values.swapDuration}\n          stagger={values.swapStagger}\n          skeleton={placeholder}\n        >\n          {content}\n        </SkeletonSwap>\n      </div>\n      <p className=\"text-center text-sm text-(--hx-muted-foreground)\">\n        Tip: the placeholders leave before the content arrives, so the card never shows both.\n      </p>\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedSkeletonProps extends Partial<ControlValues> {\n  theme?: AnimatedSkeletonTheme;\n  mode?: AnimatedSkeletonMode;\n  className?: string;\n}\n\nexport default function AnimatedSkeleton({ theme = \"spotify\", mode = \"dark\", className, ...props }: AnimatedSkeletonProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <style>{COMPONENT_CSS}</style>\n        <ReducedMotionConfig>\n          <SkeletonDemo {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  ROUNDED as SKELETON_ROUNDED,\n  Skeleton,\n  SkeletonGroup,\n  SkeletonSwap,\n  SkeletonText,\n  type SkeletonAnimation,\n  type SkeletonRounded,\n  type SkeletonSwap as SkeletonSwapKind,\n};\n"
+    }
+  ]
+}

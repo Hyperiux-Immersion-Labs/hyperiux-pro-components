@@ -150,21 +150,61 @@ function CheckTick() {
   );
 }
 
+// True while reduced motion is on: the OS setting, or the demo header's simulated switch
+// (it sets data-pc-rm on <html>).
+function useReducedMotionMode() {
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setOn(document.documentElement.hasAttribute("data-pc-rm") || mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    const observer = new MutationObserver(read);
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ["data-pc-rm"] });
+    return () => {
+      mq.removeEventListener?.("change", read);
+      observer.disconnect();
+    };
+  }, []);
+  return on;
+}
+
+// disabledWhen: one rule or a list (any match disables)
+function isDisabledByRule(rules: RemixerControl["disabledWhen"], values: Record<string, unknown>) {
+  if (!rules) return false;
+  return (Array.isArray(rules) ? rules : [rules]).some((rule) => {
+    const value = values[rule.prop];
+    if ("equals" in rule) return Object.is(value, rule.equals);
+    if ("notEquals" in rule) return !Object.is(value, rule.notEquals);
+    if (rule.in) return rule.in.some((option) => Object.is(value, option));
+    return false;
+  });
+}
+
 function ControlField({
   control,
   value,
   onChange,
+  inactive = false,
 }: {
   control: RemixerControl;
   value: unknown;
   onChange: (value: unknown) => void;
+  /** Its disabledWhen rule matches: greyed out and not interactive */
+  inactive?: boolean;
 }) {
   const displayValue = formatValue(value, control);
+  // The class goes on the field itself (no wrapper), so the panel's .field child
+  // selectors (last-child divider, staggered entry) keep working
+  const fieldClass = inactive ? `${styles.field} ${styles.fieldInactive}` : styles.field;
 
   if (control.type === "checkbox" || control.type === "toggle") {
     return (
-      <button id={buttonId("remixer-panel-toggle", control.id)} type="button" onClick={() => onChange(!value)} className={`${styles.field} ${styles.toggleRow}`}>
-        <span className={styles.fieldLabel}>{control.label}</span>
+      <button id={buttonId("remixer-panel-toggle", control.id)} type="button" onClick={() => onChange(!value)} className={`${fieldClass} ${styles.toggleRow}`} disabled={inactive}>
+        <span className={styles.toggleText}>
+          <span className={styles.fieldLabel}>{control.label}</span>
+          {control.description ? <span className={styles.toggleDescription}>{control.description}</span> : null}
+        </span>
         <span className={`${styles.checkboxOuter} ${value ? styles.checkboxSelected : ""}`}>
           <CheckTick />
         </span>
@@ -175,7 +215,7 @@ function ControlField({
   if (control.type === "color") {
     const colorValue = normalizeColorInputValue(value);
     return (
-      <div className={styles.field}>
+      <div className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           {/* Small swatch (opens the native picker) right beside the hex value. */}
@@ -215,7 +255,7 @@ function ControlField({
 
   if (control.type === "radio") {
     return (
-      <div className={styles.field}>
+      <div className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           <span className={styles.fieldValue}>{displayValue}</span>
@@ -249,13 +289,22 @@ function ControlField({
 
   if (control.type === "select") {
     return (
-      <label className={styles.field}>
+      <label className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           <span className={styles.fieldValue}>{displayValue}</span>
         </div>
         {control.description ? <p className={styles.fieldDescription}>{control.description}</p> : null}
-        <select value={typeof value === "string" || typeof value === "number" ? value : ""} onChange={(event) => onChange(event.target.value)} className={styles.select}>
+        <select
+          value={typeof value === "string" || typeof value === "number" ? value : ""}
+          // <select> only gives back strings: hand on the option's own value, so number
+          // (and boolean) options stay numbers in the effect and in the copied code
+          onChange={(event) => {
+            const picked = (control.options ?? []).map(getOptionValue).find((option) => String(option) === event.target.value);
+            onChange(picked ?? event.target.value);
+          }}
+          className={styles.select}
+        >
           {control.options?.map((option) => {
             const optionValue = getOptionValue(option);
             return (
@@ -271,7 +320,7 @@ function ControlField({
 
   if (control.type === "text" || control.type === "string") {
     return (
-      <label className={styles.field}>
+      <label className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           <span className={styles.fieldValue}>{displayValue}</span>
@@ -285,7 +334,7 @@ function ControlField({
   if (control.type === "textarea" || control.type === "json/list" || control.type === "json") {
     const textValue = typeof value === "string" ? value : JSON.stringify(value ?? "", null, 2);
     return (
-      <label className={styles.field}>
+      <label className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           <span className={styles.fieldValue}>{control.type}</span>
@@ -309,7 +358,7 @@ function ControlField({
 
   if (control.type === "number") {
     return (
-      <label className={styles.field}>
+      <label className={fieldClass}>
         <div className={styles.fieldRow}>
           <span className={styles.fieldLabel}>{control.label}</span>
           <span className={styles.fieldValue}>{displayValue}</span>
@@ -323,7 +372,7 @@ function ControlField({
   const numberValue = typeof value === "number" ? value : 0;
 
   return (
-    <label className={styles.field}>
+    <label className={fieldClass}>
       <div className={styles.fieldRow}>
         <span className={styles.fieldLabel}>{control.label}</span>
         <input
@@ -360,7 +409,17 @@ export default function RemixerPanel({
   defaultOpenGroupId,
   compact = false,
 }: RemixerPanelProps & { compact?: boolean }) {
-  const availableGroups = useMemo(() => groups.filter((group) => group.controls?.length), [groups]);
+  const reducedMotion = useReducedMotionMode();
+  // Motion-only props (flagged hideWhenReducedMotion) leave the panel while reduced motion is on.
+  const availableGroups = useMemo(
+    () =>
+      groups
+        .map((group) =>
+          reducedMotion ? { ...group, controls: group.controls?.filter((c) => !c.hideWhenReducedMotion) } : group,
+        )
+        .filter((group) => group.controls?.length),
+    [groups, reducedMotion],
+  );
   const [openGroupId, setOpenGroupId] = useState<string | null>(
     defaultOpenGroupId ?? availableGroups[0]?.id ?? null,
   );
@@ -387,6 +446,15 @@ export default function RemixerPanel({
     }
   };
 
+  // A control whose disabledWhen rule matches is shown greyed out and can't be used
+  // (e.g. Roundness until Fill is on), so dependent props stay visible but read as inactive.
+  const renderField = (control: RemixerControl) => {
+    const inactive = isDisabledByRule(control.disabledWhen, values);
+    return (
+      <ControlField key={control.id} control={control} value={values[control.id ?? ""]} onChange={(nextValue) => onChange(control.id ?? "", nextValue)} inactive={inactive} />
+    );
+  };
+
   return (
     // compact: tighter spacing / tracking and wrapped code, for narrow columns
     // (the effect page's Playground).
@@ -403,9 +471,7 @@ export default function RemixerPanel({
                 ) : null}
                 <div className={styles.groupBodyStatic}>
                   <div className={styles.groupBodyInner}>
-                    {group.controls?.map((control) => (
-                      <ControlField key={control.id} control={control} value={values[control.id ?? ""]} onChange={(nextValue) => onChange(control.id ?? "", nextValue)} />
-                    ))}
+                    {group.controls?.map((control) => renderField(control))}
                   </div>
                 </div>
               </section>
@@ -421,9 +487,7 @@ export default function RemixerPanel({
               </button>
               <div className={styles.groupBody}>
                 <div className={styles.groupBodyInner}>
-                  {group.controls?.map((control) => (
-                    <ControlField key={control.id} control={control} value={values[control.id ?? ""]} onChange={(nextValue) => onChange(control.id ?? "", nextValue)} />
-                  ))}
+                  {group.controls?.map((control) => renderField(control))}
                 </div>
               </div>
             </section>

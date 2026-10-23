@@ -1,0 +1,22 @@
+{
+  "name": "@hyperiux/animated-theme-switch",
+  "version": "1.0.0",
+  "description": "Switch between light and dark with a transition.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "gsap": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

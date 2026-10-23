@@ -1,0 +1,19 @@
+{
+  "name": "@hyperiux/animated-button",
+  "version": "1.0.0",
+  "description": "Buttons with hover, press and loading animations.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

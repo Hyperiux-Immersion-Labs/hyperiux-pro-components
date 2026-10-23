@@ -1,0 +1,23 @@
+{
+  "name": "@hyperiux/animated-attachment",
+  "version": "1.0.0",
+  "description": "File chips that show upload progress, errors and previews.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "@gsap/react": "*",
+    "class-variance-authority": "*",
+    "gsap": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

@@ -6,7 +6,7 @@
 // Plain constants rather than a registry read, so client components can import them
 // without pulling the whole effect index into the browser bundle.
 
-export const FREE_EFFECTS = 56;
+export const FREE_EFFECTS = 80;
 export const PRO_EFFECTS = 95;
 export const TOTAL_EFFECTS = FREE_EFFECTS + PRO_EFFECTS;
 

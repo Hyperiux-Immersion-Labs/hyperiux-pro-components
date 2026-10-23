@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/animated-hover-card",
+  "version": "1.0.0",
+  "description": "A preview that appears when you hover a link.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

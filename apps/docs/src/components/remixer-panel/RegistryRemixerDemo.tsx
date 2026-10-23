@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, cloneElement, isValidElement, useCallback, useEffect, useState } from "react";
+import { Fragment, cloneElement, isValidElement, useCallback, useEffect, useRef, useState } from "react";
 import { buildRemixerJsx } from "./build-remixer-code";
 import { useRemixerControls } from "./useRemixerControls";
 import { DemoHeaderProvider } from "@/components/preview-chrome/DemoHeader";
@@ -77,6 +77,36 @@ export default function RegistryRemixerDemo({
       setValues((current) => ({ ...current, ...incoming })),
     );
   }, [embed, setValues]);
+
+  // Keep edited props for this tab, so a reload (or dev recompile) doesn't wipe them. Only the
+  // props that differ from their defaults are kept, so a changed default still shows up; the old
+  // whole-snapshot format (no `v`) is dropped, since it pinned every default as it was then.
+  const storeKey = `vault-remixer:${typeof window === "undefined" ? "" : location.pathname}`;
+  // The first save is skipped: it runs in the same commit as the restore, before the restored
+  // values land, and would overwrite the saved props with the defaults.
+  const skipFirstSave = useRef(true);
+  useEffect(() => {
+    if (embed) return;
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(storeKey) ?? "null");
+      if (saved?.v === 2) setValues((current) => ({ ...current, ...saved.changed }));
+    } catch {}
+  }, [embed, storeKey, setValues]);
+  useEffect(() => {
+    if (embed) return;
+    if (skipFirstSave.current) {
+      skipFirstSave.current = false;
+      return;
+    }
+    try {
+      const changed = Object.fromEntries(
+        Object.entries(values).filter(
+          ([key, value]) => JSON.stringify(value) !== JSON.stringify(initialValues?.[key]),
+        ),
+      );
+      sessionStorage.setItem(storeKey, JSON.stringify({ v: 2, changed }));
+    } catch {}
+  }, [embed, storeKey, values, initialValues]);
 
   const replay = useCallback(() => setReplayKey((k) => k + 1), []);
 

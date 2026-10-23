@@ -1,0 +1,73 @@
+{
+  "slug": "animated-switch",
+  "exportName": "AnimatedSwitch",
+  "main": "components/ui/switch.tsx",
+  "demos": [
+    "app/components/(default)/switch/switch-demo.tsx"
+  ],
+  "demoFn": "HpxSwitchDemo",
+  "title": "Animated Switch",
+  "subtitle": "A toggle between on and off.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "variant": "Elastic stretches the thumb as it moves; Apple copies the iOS switch.",
+    "size": "Size of the switch.",
+    "color": "Track colour when the switch is on.",
+    "appleGreen": "Uses iOS green for the on track. Only for the Apple type with On colour set to Foreground.",
+    "rounded": "Corner radius of the track and thumb.",
+    "showMarks": "Shows on and off marks inside the track.",
+    "labelPosition": "Where the label sits relative to the switch.",
+    "pressSqueeze": "How much the thumb squashes when pressed (Elastic) or widens (Apple, which stops changing above about 0.27).",
+    "duration": "How long the thumb takes to move, in seconds.",
+    "bounce": "Springiness of the thumb when it lands. 0 means no overshoot."
+  },
+  "patches": [
+    [
+      "\"flex min-h-[50vh] items-center justify-center rounded-lg border px-4 py-8\"",
+      "\"flex min-h-96 max-md:min-h-72 items-center justify-center px-4 py-8\""
+    ],
+    [
+      "        Tip: press and hold",
+      "        Tip: press and hold"
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\">\n        Tip: press",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\">\n        Tip: press"
+    ],
+    [
+      "useReducedMotion()",
+      "usePrefersReducedMotion()"
+    ],
+    [
+      " useReducedMotion,",
+      " "
+    ],
+    [
+      "const SIZE",
+      "// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\nconst SIZE"
+    ],
+    [
+      "<MotionConfig reducedMotion=\"user\">",
+      "<MotionConfig reducedMotion={reduceMotion ? \"always\" : \"never\"}>"
+    ],
+    [
+      "    value: 0.18,",
+      "    value: 0.24,"
+    ],
+    [
+      "Tip: press and hold to see the handle squeeze before you let go. On Apple, drag the handle across.",
+      "{values.variant === \"apple\" ? \"Tip: press and hold to see the glass handle swell, then drag it across and let go past the middle to flip it.\" : \"Tip: press and hold to see the handle squeeze before you let go.\"}"
+    ]
+  ],
+  "themeDescription": "Colour palette for the track, thumb, marks and focus ring. Primary uses its primary colour; Green, Blue, Orange and Rose use its success, info, warning and destructive colours.",
+  "defaultTheme": "valorant",
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaults": {
+    "pressSqueeze": 0.24
+  },
+  "hideWhenReducedMotion": [
+    "pressSqueeze",
+    "duration",
+    "bounce"
+  ]
+}

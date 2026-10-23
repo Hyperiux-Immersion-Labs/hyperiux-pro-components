@@ -1,0 +1,72 @@
+{
+  "slug": "animated-tooltip",
+  "exportName": "AnimatedTooltip",
+  "main": "components/ui/floating-tooltip.tsx",
+  "demos": [
+    "app/components/(default)/tooltip/tooltip-demo.tsx"
+  ],
+  "demoFn": "HpxTooltipDemo",
+  "title": "Animated Tooltip",
+  "subtitle": "A label that follows the pointer or appears on hover.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "variant": "Filled background or an outline.",
+    "rounded": "Corner radius of the tooltip.",
+    "follow": "The tooltip trails the cursor, or stays put next to the element.",
+    "side": "Which side of the element or cursor the tooltip sits on.",
+    "sideOffset": "Gap between the tooltip and what it points at, in Tailwind spacing units.",
+    "changeAnimation": "What happens when you move straight to another element: the text swaps, or the tooltip morphs to the new size.",
+    "duration": "How long the change between elements takes, in seconds. Not used by Swap text.",
+    "elastic": "The tooltip moves on a spring that can overshoot.",
+    "bounce": "Springiness of the movement. Does nothing with Elastic off and Change animation set to Swap text.",
+    "stretchOnMove": "The tooltip stretches in the direction it moves. Needs Elastic on.",
+    "tiltOnMove": "The tooltip leans into the direction it moves. Needs Elastic on.",
+    "stiffness": "How tightly the tooltip follows the cursor or glides between elements. Higher is snappier.",
+    "appearAnimation": "How the tooltip appears and disappears.",
+    "closeDelay": "How long the tooltip stays after the pointer leaves, in seconds."
+  },
+  "patches": [
+    [
+      "\"flex min-h-[50vh] items-center justify-center rounded-lg border px-4 py-8\"",
+      "\"flex min-h-96 items-center justify-center px-4 py-8\""
+    ],
+    [
+      "outline: \"border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground)\",",
+      "outline: \"border border-(--hx-border) bg-(--hx-background) text-(--hx-foreground) in-data-accent:border-(--hx-primary) in-data-accent:text-(--hx-primary)\","
+    ],
+    [
+      "    label: \"Position\",\n    value: \"cursor\",",
+      "    label: \"Position\",\n    value: \"anchor\","
+    ],
+    [
+      "flex items-center gap-2 rounded-lg border bg-background px-5 py-3 text-base font-medium transition-colors hover:",
+      "flex items-center gap-2 rounded-md border bg-background px-5 py-3 text-base font-medium hover:"
+    ],
+    [
+      "<p className=\"text-sm text-muted-foreground\">\n        Tip: move",
+      "<p className=\"text-center text-sm text-muted-foreground\">\n        Tip: move"
+    ],
+    [
+      "Set &quot;When it changes&quot; to a Morph option",
+      "Set &quot;Change animation&quot; to a Morph option"
+    ]
+  ],
+  "themeDescription": "Colour palette. The Filled style always uses its primary colour; any theme but Default also tints the Outline style's text and border.",
+  "disabledWhen": {
+    "duration": {
+      "prop": "changeAnimation",
+      "equals": "instant"
+    }
+  },
+  "defaultTheme": "valorant",
+  "hideWhenReducedMotion": [
+    "changeAnimation",
+    "duration",
+    "elastic",
+    "bounce",
+    "stretchOnMove",
+    "tiltOnMove",
+    "stiffness",
+    "appearAnimation"
+  ]
+}
