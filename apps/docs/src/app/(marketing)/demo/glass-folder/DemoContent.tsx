@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import GlassFolder, {
   GLASS_FOLDER_SIZES,
   type GlassFolderFile,
@@ -123,13 +123,11 @@ function FolderRow({ values }: { values: Record<string, unknown> }) {
   const width = useMobileWidth(size);
   const [assetsDeleted, setAssetsDeleted] = useState(false);
   const [launchDeleted, setLaunchDeleted] = useState(false);
-  const [shareUrl, setShareUrl] = useState<string>();
+  const shareUrl = useSyncExternalStore(subscribeNever, () => window.location.href, () => undefined);
   const [created, setCreated] = useState<NewFolder[]>([]);
   const [nudge, setNudge] = useState<Nudge | null>(null);
   const nudgeId = useRef(0);
   const clearNudge = useCallback(() => setNudge(null), []);
-
-  useEffect(() => setShareUrl(window.location.href), []);
 
   const offerRestore = (label: string, restore: () => void) =>
     setNudge({ id: nudgeId.current++, label, restore });
@@ -236,6 +234,8 @@ function FolderRow({ values }: { values: Record<string, unknown> }) {
     </div>
   );
 }
+
+const subscribeNever = () => () => {};
 
 export default function DemoContent() {
   return (

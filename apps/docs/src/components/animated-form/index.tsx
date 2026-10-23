@@ -287,7 +287,8 @@ const Select = forwardRef<HTMLButtonElement, SelectProps>(
  type="button"
  id={id}
  ref={ref}
- aria-invalid={error ? true : undefined}
+ aria-expanded={open}
+ // A button can't carry aria-invalid; the error is announced through aria-describedby
  aria-describedby={error ? `${id}-error` : undefined}
  onClick={() => setOpen((prev) => !prev)}
  className={`

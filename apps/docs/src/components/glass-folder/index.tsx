@@ -1,5 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
+/* eslint-disable @next/next/no-img-element -- shipped outside Next.js too, so next/image isn't available */
 
 import React, {
   useCallback,
@@ -519,26 +520,28 @@ function ArtCanvas({
   className?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
   const key = JSON.stringify(recipeOf(art));
   const pw = Math.round(w * density);
   const ph = Math.round(h * density);
+  // Ready only for the artwork last painted, so a new recipe or size fades in again
+  const job = `${key}|${seed}|${pw}|${ph}`;
+  const [paintedJob, setPaintedJob] = useState<string | null>(null);
+  const ready = paintedJob === job;
 
   useEffect(() => {
     let live = true;
-    setReady(false);
     paint(JSON.parse(key) as GlassFolderArtRecipe, seed, pw, ph, priority).then((src) => {
       const c = ref.current;
       if (!live || !c) return;
       c.width = src.width;
       c.height = src.height;
       c.getContext("2d")?.drawImage(src, 0, 0);
-      setReady(true);
+      setPaintedJob(job);
     });
     return () => {
       live = false;
     };
-  }, [key, seed, pw, ph, priority]);
+  }, [key, seed, pw, ph, priority, job]);
 
   return (
     <canvas
@@ -551,6 +554,9 @@ function ArtCanvas({
   );
 }
 
+
+const subscribeNever = () => () => {};
+const readDpr = () => Math.min(1.5, Math.max(1, window.devicePixelRatio || 1));
 
 const W = 340;
 const H = 272;
@@ -1160,8 +1166,7 @@ export default function GlassFolder({
 
   const width = widthProp ?? GLASS_FOLDER_SIZES[size];
   const k = width / W;
-  const [dpr, setDpr] = useState(1);
-  useEffect(() => setDpr(Math.min(1.5, Math.max(1, window.devicePixelRatio || 1))), []);
+  const dpr = useSyncExternalStore(subscribeNever, readDpr, () => 1);
   const density = dpr * k;
 
   // ---- entrance: assemble the first time the folder is on screen ----------
