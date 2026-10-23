@@ -4,6 +4,11 @@ import Link from "next/link";
 
 export type Crumb = { label: string; href?: string };
 
+const MAX_LABEL = 20;
+
+const shorten = (label: string) =>
+  label.length > MAX_LABEL ? `${label.slice(0, MAX_LABEL).trimEnd()}…` : label;
+
 const Breadcrumb = ({ crumbs }: { crumbs: Crumb[] }) => (
   <nav aria-label="Breadcrumb">
     <ol className="flex flex-wrap items-center gap-2 text-14 text-mpx-muted">
@@ -15,12 +20,12 @@ const Breadcrumb = ({ crumbs }: { crumbs: Crumb[] }) => (
             </span>
           )}
           {crumb.href ? (
-            <Link href={crumb.href} className="transition-colors duration-300 hover:text-[#0a0a0a]">
-              {crumb.label}
+            <Link href={crumb.href} title={crumb.label} className="transition-colors duration-300 hover:text-[#0a0a0a]">
+              {shorten(crumb.label)}
             </Link>
           ) : (
-            <span aria-current="page" className="text-[#0a0a0a]">
-              {crumb.label}
+            <span aria-current="page" title={crumb.label} className="text-[#0a0a0a]">
+              {shorten(crumb.label)}
             </span>
           )}
         </li>

@@ -89,7 +89,7 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
   return (
     <aside className="w-[24%] max-lg:w-full">
       <div className="sticky top-[14vh] flex flex-col gap-9 max-lg:static max-lg:gap-6">
-        <nav aria-label="Contents" className="flex flex-col gap-4 max-md:hidden">
+        <nav aria-label="Contents" className="flex flex-col gap-4 max-lg:hidden">
           <h3 className="text-28">Contents</h3>
           <ol ref={listRef} className="relative flex flex-col border-l border-black/10">
             <span ref={markerRef} aria-hidden className="absolute -left-px top-0 h-0 w-px bg-(--mpx-accent)" />

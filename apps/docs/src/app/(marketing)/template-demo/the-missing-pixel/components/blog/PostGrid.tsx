@@ -23,17 +23,16 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
   };
 
   return (
-    <FadeUp delay={(index % 3) * 0.1}>
-      <Link
-        href={postPath(post.slug)}
-        data-cursor="Read"
-        onMouseEnter={() => hover(true)}
-        onMouseLeave={() => hover(false)}
-        onFocus={() => hover(true)}
-        onBlur={() => hover(false)}
-        className="group flex flex-col gap-4"
-      >
-        <div className="aspect-[7/5] w-full overflow-hidden rounded-lg">
+    <Link
+      href={postPath(post.slug)}
+      data-cursor="Read"
+      onMouseEnter={() => hover(true)}
+      onMouseLeave={() => hover(false)}
+      onFocus={() => hover(true)}
+      onBlur={() => hover(false)}
+      className="group flex flex-col gap-4"
+    >
+        <FadeUp delay={(index % 3) * 0.1} className="aspect-[7/5] w-full overflow-hidden rounded-lg">
           <div ref={zoomRef} className="h-full w-full">
             <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
               <Image
@@ -45,15 +44,16 @@ export const PostCard = ({ post, index = 0 }: { post: Post; index?: number }) =>
               />
             </PixelReveal>
           </div>
-        </div>
-        <div className="flex gap-4 text-14 text-mpx-muted">
-          <span>{post.category}</span>
-          <time dateTime={post.dateTime}>{post.date}</time>
-        </div>
-        <h3 className="text-28">{post.title}</h3>
-        <p className="text-14 text-mpx-muted">{post.excerpt}</p>
-      </Link>
-    </FadeUp>
+        </FadeUp>
+        <FadeUp delay={(index % 3) * 0.1} className="flex flex-col gap-4">
+          <div className="flex gap-4 text-14 text-mpx-muted">
+            <span>{post.category}</span>
+            <time dateTime={post.dateTime}>{post.date}</time>
+          </div>
+          <h3 className="text-28">{post.title}</h3>
+          <p className="text-14 text-mpx-muted">{post.excerpt}</p>
+        </FadeUp>
+    </Link>
   );
 };
 

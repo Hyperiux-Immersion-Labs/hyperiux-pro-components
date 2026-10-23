@@ -26,10 +26,10 @@ const PageHero = ({
   children,
   titleClassName = "w-full",
   textClassName = "w-[48%]",
-  containerClassName = "mpx-container",
+  containerClassName = "",
 }: PageHeroProps) => (
   <section
-    className={`${containerClassName} flex h-[83vh] flex-col justify-center gap-11 py-[3vw] max-lg:gap-8 max-lg:py-[6vw] max-md:h-auto max-md:min-h-[60vh] max-md:gap-9 max-md:py-[10vw]`}
+    className={`${containerClassName} flex h-[83vh]  px-[5vw] max-md:px-[7vw] max-lg:px-[6vw] flex-col justify-center gap-11 py-[3vw] max-lg:gap-8 max-lg:py-[10vh] max-lg:h-auto max-md:min-h-[60vh] max-md:gap-9 max-md:py-[10vw]`}
   >
     <Breadcrumb crumbs={crumbs} />
     <div className="flex flex-col gap-8">
