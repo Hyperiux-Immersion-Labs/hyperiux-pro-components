@@ -25,8 +25,13 @@ const SIDEBAR_WAIT_MS = 3000;
  */
 export function PageLoadOverlay() {
   const ref = useRef(null);
-  // The homepage has its own loader, so the cover there stays plain (no grid)
-  const isHome = usePathname() === "/";
+  // The homepage has its own loader, so the cover there stays plain (no grid).
+  // "/index" too: Vercel regenerates the cached homepage (ISR) with that path, so
+  // the server renders "/index" where the browser has "/" - treating only "/" as
+  // home made the two disagree, failing hydration and re-rendering the whole page
+  // (which also duplicated every JSON-LD script in <body>).
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname === "/index";
 
   useLayoutEffect(() => {
     const hide = () => gsap.set(ref.current, { opacity: 0 });
