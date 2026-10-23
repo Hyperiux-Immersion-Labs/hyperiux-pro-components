@@ -56,20 +56,20 @@ const SoundToggle = ({ inverted = false }: SoundToggleProps) => {
       aria-pressed={on}
       aria-label={on ? "Turn sound off" : "Turn sound on"}
       onClick={() => setSound(!on)}
-      className={`flex aspect-square h-[5vh] shrink-0 items-center justify-center rounded-full border transition-colors duration-300 max-lg:h-[3.6vh] max-md:h-[5.8vh] ${
+      className={`flex aspect-square h-[5vh] shrink-0 items-center justify-center rounded-full border transition-colors duration-300 max-lg:h-[5.2vh] max-md:h-[5.8vh] ${
         inverted
           ? "border-white/30 text-[#f5f5f5] hover:bg-[#f5f5f5] hover:text-[#0e0e0e]"
           : "border-black/30 text-[#0a0a0a] hover:border-[#0a0a0a] hover:bg-[#0a0a0a] hover:text-[#fafafa]"
       }`}
     >
-      <span aria-hidden className="flex h-[1.1vh] items-end gap-0.5 max-lg:h-[1vh] max-md:h-[1.7vh]">
+      <span aria-hidden className="flex h-[1.1vh] items-end gap-0.5 max-lg:h-[1.5vh] max-md:h-[1.7vh]">
         {BAR_DELAYS.map((_, index) => (
           <i
             key={index}
             ref={(el) => {
               barRefs.current[index] = el;
             }}
-            className="block h-[28%] w-[0.1vw] rounded-full bg-current max-lg:w-[0.2vw] max-md:w-[0.5vw]"
+            className="block h-[28%] w-[0.1vw] rounded-full bg-current max-lg:w-[0.3vw] max-md:w-[0.5vw]"
           />
         ))}
       </span>

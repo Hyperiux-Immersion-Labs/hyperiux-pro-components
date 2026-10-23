@@ -32,7 +32,7 @@ const StatusDot = ({ label, className = "" }: StatusDotProps) => {
     <span
       className={`inline-flex items-center gap-2 text-14 text-mpx-muted ${className}`.trim()}
     >
-      <span aria-hidden className="relative size-[0.4vw] rounded-full bg-(--mpx-accent) max-lg:size-[0.8vw] max-md:size-[2vw]">
+      <span aria-hidden className="relative size-[0.4vw] rounded-full bg-(--mpx-accent) max-lg:size-[1.2vw] max-md:size-[2vw]">
         <span ref={pulseRef} className="absolute inset-0 rounded-full bg-(--mpx-accent)" />
       </span>
       {label}

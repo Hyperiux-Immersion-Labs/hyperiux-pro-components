@@ -300,13 +300,13 @@ const Services = () => {
                   }`}
                 >
                   <span
-                    className={`font-mpx-head col-span-5 max-md:pt-3 text-40 font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-8 max-lg:row-start-1 max-lg:translate-x-0 max-md:col-span-12 max-md:row-start-2 ${
+                    className={`font-mpx-head col-span-5 max-md:pt-3 text-40 font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-7 max-lg:row-start-1 max-lg:translate-x-0 max-md:col-span-12 max-md:row-start-2 ${
                       isActive ? "translate-x-[0.8vw]" : "translate-x-0"
                     }`}
                   >
                     <LineReveal as="div">{service.title}</LineReveal>
                   </span>
-                  <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-22 max-lg:col-span-8 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-mpx-muted max-md:col-span-12 max-md:row-start-3">
+                  <span className="col-span-3 col-start-9 inline-flex items-center gap-[0.6vw] text-22 max-lg:col-span-7 max-lg:col-start-1 max-lg:row-start-2 max-lg:gap-2 max-lg:text-mpx-muted max-md:col-span-12 max-md:row-start-3">
                     <span
                       aria-hidden
                       className={`size-1.5 max-md:hidden shrink-0 rounded-full transition-colors duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none ${
@@ -324,7 +324,7 @@ const Services = () => {
                   <FadeUp
                     as="span"
                     aria-hidden
-                    className="hidden aspect-4/3 overflow-hidden rounded-lg max-lg:col-span-4 max-lg:col-start-9 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1"
+                    className="hidden aspect-4/3 overflow-hidden rounded-lg max-lg:col-span-5 max-lg:col-start-8 max-lg:row-span-2 max-lg:row-start-1 max-lg:block max-md:col-span-12 max-md:col-start-1 max-md:row-span-1"
                   >
                     <Image
                       quality={95}

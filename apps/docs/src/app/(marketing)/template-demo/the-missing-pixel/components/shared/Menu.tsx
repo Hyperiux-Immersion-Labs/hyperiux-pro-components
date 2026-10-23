@@ -191,7 +191,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
       className="fixed inset-0 z-70 overflow-y-auto overscroll-contain bg-[#0e0e0e] text-[#f5f5f5]"
       innerClassName="mpx-container flex min-h-full origin-top flex-col justify-between gap-7 py-[1.3vw] max-lg:gap-16 max-lg:py-[4vw] max-md:py-[6vw]"
     >
-        <div className="h-[6.4vh] max-lg:h-[4.6vh] max-md:h-[6.4vh]" />
+        <div className="h-[6.4vh] max-lg:h-[7vh] max-md:h-[6.4vh]" />
 
         <div className="flex flex-1 items-center justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-16">
           <nav aria-label="Main" className="w-[62%] max-lg:w-full">
@@ -258,7 +258,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
                       href={link.target}
                       tabIndex={open ? 0 : -1}
                       onClick={onClose}
-                      className="inline-flex h-[3.2vh] items-center rounded-full border border-white/20 px-[0.9vw] text-22 font-medium transition-colors duration-300 hover:border-[#f5f5f5] hover:bg-[#f5f5f5] hover:text-[#0e0e0e] max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
+                      className="inline-flex h-[3.2vh] items-center rounded-full border border-white/20 px-[0.9vw] text-22 font-medium transition-colors duration-300 hover:border-[#f5f5f5] hover:bg-[#f5f5f5] hover:text-[#0e0e0e] max-lg:h-[4.4vh] max-lg:px-[2.6vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
                     >
                       {link.label}
                     </Link>

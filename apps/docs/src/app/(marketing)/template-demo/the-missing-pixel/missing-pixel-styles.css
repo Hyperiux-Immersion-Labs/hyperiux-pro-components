@@ -209,41 +209,48 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
 @media (max-width: 1025px) {
   .mpx-page h1,
   .mpx-page .text-128 {
-    font-size: 7.6vw;
+    font-size: 9vw;
     letter-spacing: -0.4vw;
   }
 
   .mpx-page h2,
   .mpx-page .text-64 {
-    font-size: 4.6vw;
+    font-size: 6vw;
     letter-spacing: -0.2vw;
   }
 
   .mpx-page .text-40 {
-    font-size: 3.6vw;
+    font-size: 4.6vw;
     letter-spacing: -0.1vw;
   }
 
+  .mpx-page h3.text-30 {
+    font-size: 3.8vw;
+  }
+
+  .mpx-page h3.text-28 {
+    font-size: 3.4vw;
+  }
+
   .mpx-page .text-30 {
-    font-size: 3.2vw;
+    font-size: 3.6vw;
   }
 
   .mpx-page .text-28 {
-    font-size: 2.5vw;
+    font-size: 3.2vw;
   }
 
   .mpx-page .text-24 {
-    font-size: 2.2vw;
+    font-size: 2.8vw;
   }
 
   .mpx-page .text-22 {
-    font-size: 2vw;
+    font-size: 2.5vw;
   }
 
   .mpx-page .text-14 {
-    font-size: 1.4vw;
+    font-size: 1.9vw;
   }
-
 
   .mpx-page .mpx-container {
     padding-inline: 4%;
@@ -259,7 +266,7 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .mpx-page h1,
   .mpx-page .text-128 {
     font-size: 11.5vw;

@@ -42,7 +42,7 @@ const Hero = () => {
       }
 
       gsap.to(drift, {
-        y: () => hero.offsetHeight * (window.innerWidth <= 767 ? 0.1 : window.innerWidth <= 1025 ? 0.2 : 0.3),
+        y: () => hero.offsetHeight * (window.innerWidth <= 1025 ? 0.1 : window.innerWidth <= 1025 ? 0.2 : 0.3),
         ease: "none",
         scrollTrigger: {
           trigger: hero,
@@ -60,7 +60,7 @@ const Hero = () => {
     <section
       ref={heroRef}
       id="top"
-      className="relative flex max-md:h-screen flex-col max-md:justify-center gap-[3.8vw] px-[5vw] pb-[4.4vw] pt-[calc(5.2vw+12vh)] max-lg:gap-[7vw] max-lg:px-[6vw] max-lg:pb-[8vw] max-lg:pt-[calc(10vw+10vh)] max-md:gap-20 max-md:px-[7vw] max-md:pb-[12vw] max-md:pt-[calc(20vw+8vh)]"
+      className="relative flex max-lg:h-screen flex-col max-lg:justify-center gap-[3.8vw] px-[5vw] pb-[4.4vw] pt-[calc(5.2vw+12vh)]  max-lg:px-[6vw] max-lg:pb-[8vw] max-lg:pt-[calc(10vw+10vh)] max-md:gap-20 max-md:px-[7vw] max-md:pb-[12vw] max-md:pt-[calc(20vw+8vh)] max-lg:gap-18"
     >
       
       <div ref={driftRef} className="w-full will-change-transform">

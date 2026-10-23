@@ -90,9 +90,9 @@ const ReelReveal = () => {
 
         <div
           ref={captionRef}
-          className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] pb-8 invisible absolute inset-x-0 bottom-[2vw] z-2 flex items-center justify-between gap-4  text-white opacity-0 max-lg:bottom-[4vw] max-md:bottom-[6vw] max-md:flex-col max-md:items-start max-md:gap-10"
+          className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] pb-8 invisible absolute inset-x-0 bottom-[2vw] z-2 flex items-center justify-between gap-4  text-white opacity-0 max-lg:bottom-[4vw] max-md:bottom-[6vw] max-lg:flex-col max-lg:items-start max-lg:gap-10 max-md:gap-10"
         >
-          <p className="font-mpx-head w-[30%] text-40 max-lg:w-[50%] max-md:w-full  leading-[1.2] tracking-tight">
+          <p className="font-mpx-head w-[30%] text-40  max-lg:w-[80%] max-md:w-full  leading-[1.2] tracking-tight">
             Twelve years of noticing what everyone else scrolled past.
           </p>
           <PixelButton className="py-auto" label="Watch The Work" href={ROUTES.work} variant="outline" tone="media" size="sm" icon />

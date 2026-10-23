@@ -144,10 +144,10 @@ const Footer = () => {
           <PixelField />
         </div>
 
-        <div className="grid grid-cols-12 gap-x-9 gap-y-9 py-[4vw] max-lg:grid-cols-4 max-lg:gap-x-8 max-lg:gap-y-12 max-lg:py-[7vw] max-md:grid-cols-2 max-md:gap-y-10 max-md:py-[14vw]">
-          <div className="col-span-4 flex flex-col gap-5 max-md:col-span-2">
+        <div className="grid grid-cols-12 gap-x-9 gap-y-9 py-[4vw] max-lg:grid-cols-6 max-lg:gap-x-8 max-lg:gap-y-12 max-lg:py-[7vw] max-md:grid-cols-2 max-md:gap-y-10 max-md:py-[14vw]">
+          <div className="col-span-4 flex flex-col gap-5 max-lg:col-span-6 max-md:col-span-2">
             <span className="flex items-center gap-2 text-22 font-medium leading-none tracking-tight">
-              <LogoMark className="size-[1.4vw] max-lg:size-[2.8vw] max-md:size-[6.5vw]" />
+              <LogoMark className="size-[1.4vw] max-lg:size-[4vw] max-md:size-[6.5vw]" />
               <span className="font-mpx-head">
                 the missing <b className="font-bold">pixel</b>
               </span>
@@ -166,7 +166,7 @@ const Footer = () => {
                 placeholder="Your email"
                 autoComplete="email"
                 required
-                className="h-[5vh] min-w-0 flex-1 rounded-full border border-white/15 bg-transparent px-[1.1vw] text-22 text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-white/60 focus:border-[#f5f5f5] max-lg:h-[3.6vh] max-lg:px-[2vw] max-md:h-[5.8vh] max-md:flex-none max-md:px-[5vw]"
+                className="h-[5vh] min-w-0 flex-1 rounded-full border border-white/15 bg-transparent px-[1.1vw] text-22 text-[#f5f5f5] outline-none transition-colors duration-300 placeholder:text-white/60 focus:border-[#f5f5f5] max-lg:h-[5.2vh] max-lg:px-[3vw] max-md:h-[5.8vh] max-md:flex-none max-md:px-[5vw]"
               />
               <PixelButton label="Subscribe" type="submit" size="sm" tone="dark" magnetic={0} />
             </form>
@@ -176,7 +176,7 @@ const Footer = () => {
           </div>
 
           {COLUMNS.map((column, columnIndex) => (
-            <div key={column.title} className="col-span-2 flex flex-col gap-3 max-lg:col-span-1 max-lg:gap-4">
+            <div key={column.title} className="col-span-2 flex flex-col gap-3 max-lg:col-span-2 max-lg:gap-4 max-md:col-span-1">
               <h3 className="mpx-eyebrow text-14 text-white/60">{column.title}</h3>
               <ul className="flex flex-col gap-2 text-22">
                 {column.links.map((link, linkIndex) => (
@@ -188,9 +188,9 @@ const Footer = () => {
             </div>
           ))}
 
-          <div className="col-span-2 flex flex-col gap-3 max-lg:col-span-1 max-lg:gap-4 max-md:col-span-2">
+          <div className="col-span-2 flex flex-col gap-3 max-lg:col-span-6 max-lg:gap-4 max-md:col-span-2">
             <h3 className="mpx-eyebrow text-14 text-white/60">Studios</h3>
-            <ul className="flex flex-col gap-3 text-14 max-md:gap-4">
+            <ul className="flex flex-col gap-3 text-14 max-lg:grid max-lg:grid-cols-4 max-lg:gap-x-8 max-md:flex max-md:gap-4">
               {STUDIOS.map((studio, studioIndex) => (
                 <FadeUp as="li" key={studio.city} delay={COLUMNS.length * 0.02 + studioIndex * 0.03} className="flex flex-col">
                   <strong className="font-medium text-[#f5f5f5]">{studio.city}</strong>
@@ -233,7 +233,7 @@ const Footer = () => {
             className="group flex items-center gap-2 transition-colors duration-300 hover:text-[#f5f5f5]"
           >
             Back to top
-            <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[1.4vw] max-md:size-[3.3vw]" />
+            <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[3.3vw]" />
           </button>
         </div>
       </div>

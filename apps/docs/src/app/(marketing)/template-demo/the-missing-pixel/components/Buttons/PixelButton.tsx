@@ -31,8 +31,8 @@ type PixelButtonProps = {
 };
 
 const SIZE_CLASSES: Record<Size, string> = {
-  md: "h-[5.8vh] px-[2vw] text-22 max-lg:h-[4.2vh] max-lg:px-[3.6vw] max-md:h-[6.4vh] max-md:px-[4.6vw]",
-  sm: "h-[5vh] px-[1.7vw] text-22 max-lg:h-[3.6vh] max-lg:px-[3vw] max-md:h-[5.8vh] max-md:px-[6.3vw]",
+  md: "h-[5.8vh] px-[2vw] text-22 max-lg:h-[5.6vh] max-lg:px-[4vw] max-md:h-[6.4vh] max-md:px-[4.6vw]",
+  sm: "h-[5vh] px-[1.7vw] text-22 max-lg:h-[5.2vh] max-lg:px-[3.6vw] max-md:h-[5.8vh] max-md:px-[6.3vw]",
 };
 
 const BASE_CLASSES: Record<Tone, Record<Variant, string>> = {
@@ -192,7 +192,7 @@ const PixelButton = ({
         ))}
       </span>
       {icon && (
-        <span aria-hidden className="relative inline-flex size-[1.2vw] shrink-0 overflow-hidden max-lg:size-[2.2vw] max-md:size-[4.6vw]">
+        <span aria-hidden className="relative inline-flex size-[1.2vw] shrink-0 overflow-hidden max-lg:size-[3vw] max-md:size-[4.6vw]">
           <span ref={trackRef} className="relative block size-full">
             <ArrowUpRight data-arrow className="absolute inset-0 size-full" />
             <ArrowUpRight data-arrow className="absolute inset-0 size-full" />

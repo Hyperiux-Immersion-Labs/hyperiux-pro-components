@@ -157,7 +157,7 @@ const Header = () => {
           solid ? "border-black/10 bg-[#fafafa]" : "border-transparent bg-transparent"
         } ${menuOpen ? "text-[#f5f5f5]" : "text-[#0a0a0a]"}`}
       >
-        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[4.6vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
+        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[7vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
           <Link
             href={ROUTES.home}
             onClick={handleLogo}
@@ -167,7 +167,7 @@ const Header = () => {
             className="flex items-center gap-2 text-22 font-medium leading-none tracking-tight"
           >
             <LogoMark
-              className="size-[1.4vw] max-lg:size-[2.8vw] max-md:size-[6.5vw]"
+              className="size-[1.4vw] max-lg:size-[4vw] max-md:size-[6.5vw]"
               pixelRef={(el) => {
                 pixelRef.current = el;
               }}
@@ -194,11 +194,11 @@ const Header = () => {
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
-              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[3.6vh] max-lg:px-[0.6vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
+              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
                 menuOpen ? "border-[#ff8a4d]/60" : "border-black/30"
               }`}
             >
-              <span className="grid min-w-[4.4vw] overflow-hidden px-[1vw] text-left max-lg:min-w-[8vw] max-lg:px-[1.8vw] max-md:hidden">
+              <span className="grid min-w-[4.4vw] overflow-hidden px-[1vw] text-left max-lg:min-w-[10vw] max-lg:px-[2.4vw] max-md:hidden">
                 <span
                   aria-hidden={menuOpen}
                   className={`col-start-1 row-start-1 transition-transform duration-1150 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
@@ -219,12 +219,12 @@ const Header = () => {
               <span
                 ref={iconRef}
                 aria-hidden
-                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[2.7vh] max-md:h-full ${
+                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[4vh] max-md:h-full ${
                   menuOpen ? "bg-[#ff8a4d] text-[#0e0e0e]" : "bg-[#0a0a0a] text-[#fafafa]"
                 }`}
               >
-                <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.2vw] max-md:h-0.5 max-md:w-[3vw]" />
-                <span ref={barBottomRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.2vw] max-md:h-0.5 max-md:w-[3vw]" />
+                <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
+                <span ref={barBottomRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
               </span>
             </button>
           </div>
