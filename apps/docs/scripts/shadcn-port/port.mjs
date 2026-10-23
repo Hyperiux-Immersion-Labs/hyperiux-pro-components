@@ -315,7 +315,7 @@ export type ${cfg.exportName}Mode = "light" | "dark";
 const THEMES: Record<\`\${${cfg.exportName}Theme}:\${${cfg.exportName}Mode}\`, Record<string, string>> = ${JSON.stringify(themeObj, null, 2)};
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: ${cfg.exportName}Theme = "default", mode: ${cfg.exportName}Mode = "light") {
+function themeProps(theme: ${cfg.exportName}Theme = "default", mode: ${cfg.exportName}Mode = "${cfg.defaultMode || "light"}") {
   const palette = THEMES[\`\${theme}:\${mode}\`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [\`--hx-\${token}\`, value]));
   // Any theme but Default tints key parts with its primary colour

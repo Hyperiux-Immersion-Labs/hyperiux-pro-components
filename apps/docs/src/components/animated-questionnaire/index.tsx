@@ -241,7 +241,7 @@ const THEMES: Record<`${AnimatedQuestionnaireTheme}:${AnimatedQuestionnaireMode}
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedQuestionnaireTheme = "default", mode: AnimatedQuestionnaireMode = "light") {
+function themeProps(theme: AnimatedQuestionnaireTheme = "default", mode: AnimatedQuestionnaireMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

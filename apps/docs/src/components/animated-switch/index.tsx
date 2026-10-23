@@ -227,7 +227,7 @@ const THEMES: Record<`${AnimatedSwitchTheme}:${AnimatedSwitchMode}`, Record<stri
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedSwitchTheme = "default", mode: AnimatedSwitchMode = "light") {
+function themeProps(theme: AnimatedSwitchTheme = "default", mode: AnimatedSwitchMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

@@ -1,44 +1,23 @@
 "use client";
 
-import AnimatedCommand, { getThemeProps, type AnimatedCommandTheme, type AnimatedCommandMode } from "@/components/animated-command-menu";
+import AnimatedCommandMenu, { getThemeProps, type AnimatedCommandMenuTheme, type AnimatedCommandMenuMode } from "@/components/animated-command-menu";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import SplitLine from "@/components/WebsiteComps/SplitLine";
-import LocalRemixerDemo from "@/components/local-remixer/LocalRemixerDemo";
+import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
 
-export default function DemoContent() {
+export default function DemoContent({ registry }: { registry: any }) {
   return (
-    <LocalRemixerDemo
-      name="animated-command-menu"
-      category="components"
+    <RegistryRemixerDemo registry={registry}
       render={(values) => (
-        <AnimatedCommand {...values} className=" max-md:p-[5vw]" />
+        <AnimatedCommandMenu {...values} className=" max-md:p-[5vw]" />
       )}
-      props={[
-        { name: "theme", label: "Theme", type: "string", default: "claude", description: "Colour palette, popup included. With Item highlight color set to Primary, the highlighted result takes its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
-        { name: "mode", label: "Mode", type: "string", default: "dark", description: "Light or dark version of the palette. Starts dark.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } },
-        { name: "dropdownAnimation", label: "Dropdown animation", type: "string", default: "morph", description: "How the results list opens: morphs out of the input, slides down, or fades in.", remixer: { control: "select", group: "dropdown", groupTitle: "Dropdown", options: [{ label: "Morph", value: "morph" }, { label: "Slide", value: "slide" }, { label: "Fade", value: "fade" }], hideWhenReducedMotion: true } },
-        { name: "morphWidth", label: "Morph width", type: "number", default: 1.25, description: "How wide the list is while it morphs, as a multiple of the input width. Needs Dropdown animation set to Morph.", remixer: { control: "range", group: "dropdown", groupTitle: "Dropdown", min: 1, max: 1.6, step: 0.05, disabledWhen: { "prop": "dropdownAnimation", "notEquals": "morph" }, hideWhenReducedMotion: true } },
-        { name: "delay", label: "Delay", type: "number", default: 0.1, description: "Wait before the results list starts opening, in seconds.", remixer: { control: "range", group: "palette", groupTitle: "Palette", min: 0, max: 1, step: 0.05, disabledWhen: { "prop": "staggerItems", "equals": false }, hideWhenReducedMotion: true } },
-        { name: "fadeContent", label: "Fade content", type: "boolean", default: true, description: "Fades the list contents in as it opens instead of showing them at once.", remixer: { control: "checkbox", group: "palette", groupTitle: "Palette", hideWhenReducedMotion: true } },
-        { name: "startScale", label: "Start scale", type: "number", default: 0.75, description: "Size the list starts from when it opens, as a fraction of full size.", remixer: { control: "range", group: "palette", groupTitle: "Palette", min: 0.5, max: 1, step: 0.05, hideWhenReducedMotion: true } },
-        { name: "backdrop", label: "Backdrop", type: "string", default: "blur", description: "What sits behind the open menu: nothing, a dim layer, or a blur.", remixer: { control: "select", group: "palette", groupTitle: "Palette", options: [{ label: "None", value: "none" }, { label: "Dim", value: "dim" }, { label: "Blur", value: "blur" }] } },
-        { name: "rounded", label: "Roundness", type: "string", default: "md", description: "Corner radius of the input and results list.", remixer: { control: "select", group: "both", groupTitle: "Both", options: [{ label: "None", value: "none" }, { label: "sm", value: "sm" }, { label: "md", value: "md" }, { label: "lg", value: "lg" }, { label: "xl", value: "xl" }, { label: "2xl", value: "2xl" }, { label: "3xl", value: "3xl" }] } },
-        { name: "itemHighlight", label: "Item highlight", type: "string", default: "slide", description: "How the highlight moves between results: slides, fills from the top, or none.", remixer: { control: "select", group: "both", groupTitle: "Both", options: [{ label: "Slide", value: "slide" }, { label: "Fill from top", value: "fill" }, { label: "None", value: "none" }], hideWhenReducedMotion: true } },
-        { name: "itemHighlightColor", label: "Item highlight color", type: "string", default: "primary", description: "Colour of the result highlight: soft grey or the theme's primary colour.", remixer: { control: "select", group: "both", groupTitle: "Both", options: [{ label: "Muted", value: "muted" }, { label: "Primary", value: "primary" }], disabledWhen: { "prop": "itemHighlight", "equals": "none" } } },
-        { name: "animateIcon", label: "Animate icon", type: "boolean", default: true, description: "Animates each result's icon when its row is highlighted.", remixer: { control: "checkbox", group: "both", groupTitle: "Both", hideWhenReducedMotion: true } },
-        { name: "duration", label: "Duration", type: "number", default: 0.35, description: "How long the open and close animation takes, in seconds.", remixer: { control: "range", group: "both", groupTitle: "Both", min: 0.1, max: 1, step: 0.05, hideWhenReducedMotion: true } },
-        { name: "bounce", label: "Bounce", type: "number", default: 0.15, description: "How much the list overshoots and settles when it opens. 0 is no bounce.", remixer: { control: "range", group: "both", groupTitle: "Both", min: 0, max: 0.6, step: 0.05, hideWhenReducedMotion: true } },
-        { name: "rollingText", label: "Rolling text", type: "boolean", default: false, description: "Result labels roll to a second copy on hover.", remixer: { control: "checkbox", group: "both", groupTitle: "Both", hideWhenReducedMotion: true } },
-        { name: "staggerItems", label: "Stagger items", type: "boolean", default: true, description: "Results appear one after another instead of all at once.", remixer: { control: "checkbox", group: "both", groupTitle: "Both", hideWhenReducedMotion: true } },
-        { name: "stagger", label: "Stagger", type: "number", default: 0.03, description: "Delay between each result appearing, in seconds. Needs Stagger items on.", remixer: { control: "range", group: "both", groupTitle: "Both", min: 0, max: 0.15, step: 0.01, disabledWhen: { "prop": "staggerItems", "equals": false }, hideWhenReducedMotion: true } },
-      ]}
     >
       {({ values, effect }) => (
         <>
           <DemoHeader />
           <div
-            {...getThemeProps(values.theme as AnimatedCommandTheme, values.mode as AnimatedCommandMode)}
+            {...getThemeProps(values.theme as AnimatedCommandMenuTheme, values.mode as AnimatedCommandMenuMode)}
             className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] pt-[10%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
@@ -53,6 +32,6 @@ export default function DemoContent() {
           </div>
         </>
       )}
-    </LocalRemixerDemo>
+    </RegistryRemixerDemo>
   );
 }

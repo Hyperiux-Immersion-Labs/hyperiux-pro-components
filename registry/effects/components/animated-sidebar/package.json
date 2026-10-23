@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/animated-sidebar",
+  "version": "1.0.0",
+  "description": "A collapsible side navigation with groups, badges and sub-menus.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

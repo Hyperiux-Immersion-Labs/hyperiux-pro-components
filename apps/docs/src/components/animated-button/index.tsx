@@ -301,7 +301,7 @@ const THEMES: Record<`${AnimatedButtonSetTheme}:${AnimatedButtonSetMode}`, Recor
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedButtonSetTheme = "default", mode: AnimatedButtonSetMode = "light") {
+function themeProps(theme: AnimatedButtonSetTheme = "default", mode: AnimatedButtonSetMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   return { "data-theme": mode, style: style as React.CSSProperties };

@@ -1,0 +1,425 @@
+{
+  "name": "animated-attachment",
+  "type": "registry:component",
+  "title": "Animated Attachment",
+  "description": "File chips that show upload progress, errors and previews.",
+  "dependencies": [
+    "@base-ui/react",
+    "@gsap/react",
+    "class-variance-authority",
+    "gsap",
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedAttachment",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "valorant",
+      "description": "Colour palette. The drop zone, border trace and progress take its primary colour.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the chosen palette.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "animateEnter",
+      "label": "Animate enter",
+      "type": "boolean",
+      "default": true,
+      "description": "New files scale up and fade into the list.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "adding",
+        "groupTitle": "Adding"
+      }
+    },
+    {
+      "name": "stagger",
+      "label": "Stagger",
+      "type": "number",
+      "default": 0.08,
+      "description": "Gap between files added together, in seconds.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "range",
+        "group": "adding",
+        "groupTitle": "Adding",
+        "min": 0,
+        "max": 0.3,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "flyIn",
+      "label": "Fly in from drop",
+      "type": "boolean",
+      "default": true,
+      "description": "Dropped files fly from where they were dropped into the list.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "adding",
+        "groupTitle": "Adding"
+      }
+    },
+    {
+      "name": "animatedBorder",
+      "label": "Animated border",
+      "type": "boolean",
+      "default": true,
+      "description": "The drop zone's border marches while a file is dragged over it.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "adding",
+        "groupTitle": "Adding"
+      }
+    },
+    {
+      "name": "animateExit",
+      "label": "Animate exit",
+      "type": "boolean",
+      "default": true,
+      "description": "Removed files shrink out and the rest slide together.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "rollingNumbers",
+      "label": "Rolling numbers",
+      "type": "boolean",
+      "default": true,
+      "description": "Upload percentages roll to each new number.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "progress",
+        "groupTitle": "Progress"
+      }
+    },
+    {
+      "name": "shimmerText",
+      "label": "Shimmer text",
+      "type": "boolean",
+      "default": true,
+      "description": "A light sweeps across the file name while it uploads.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "progress",
+        "groupTitle": "Progress"
+      }
+    },
+    {
+      "name": "borderTrace",
+      "label": "Border trace",
+      "type": "boolean",
+      "default": true,
+      "description": "A line traces around the card as it uploads.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "progress",
+        "groupTitle": "Progress"
+      }
+    },
+    {
+      "name": "fill",
+      "label": "Card fill (images)",
+      "type": "boolean",
+      "default": true,
+      "description": "Image cards fill up with the picture as they upload.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "progress",
+        "groupTitle": "Progress"
+      }
+    },
+    {
+      "name": "fillDirection",
+      "label": "Fill direction",
+      "type": "string",
+      "default": "bottom-to-top",
+      "description": "Which way the image fill grows. Needs Card fill on.",
+      "remixer": {
+        "disabledWhen": {
+          "prop": "fill",
+          "equals": false
+        },
+        "control": "select",
+        "group": "progress",
+        "groupTitle": "Progress",
+        "options": [
+          {
+            "label": "Left to right",
+            "value": "left-to-right"
+          },
+          {
+            "label": "Bottom to top",
+            "value": "bottom-to-top"
+          }
+        ]
+      }
+    },
+    {
+      "name": "shakeOnError",
+      "label": "Shake on error",
+      "type": "boolean",
+      "default": true,
+      "description": "A file that fails shakes: a random failure, or one that is too big or the wrong type.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "states",
+        "groupTitle": "States"
+      }
+    },
+    {
+      "name": "revealAction",
+      "label": "Reveal action",
+      "type": "boolean",
+      "default": true,
+      "description": "The remove button appears only on hover or focus (pointer devices).",
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover"
+      }
+    },
+    {
+      "name": "zoomOnHover",
+      "label": "Zoom on hover",
+      "type": "boolean",
+      "default": true,
+      "description": "Image previews zoom in slightly on hover.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover"
+      }
+    },
+    {
+      "name": "blurUntilLoaded",
+      "label": "Blur while uploading",
+      "type": "boolean",
+      "default": true,
+      "description": "Image previews stay blurred while they upload and process.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover"
+      }
+    },
+    {
+      "name": "expandable",
+      "label": "Expandable preview",
+      "type": "boolean",
+      "default": true,
+      "description": "Clicking an image opens it in a large preview.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover"
+      }
+    },
+    {
+      "name": "reorder",
+      "label": "Drag to reorder",
+      "type": "boolean",
+      "default": true,
+      "description": "Drag files sideways to reorder them.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "group",
+        "groupTitle": "Group"
+      }
+    },
+    {
+      "name": "tiltOnScroll",
+      "label": "Tilt on scroll",
+      "type": "boolean",
+      "default": false,
+      "description": "Cards lean as the row is scrolled sideways. Needs Wrap off.",
+      "remixer": {
+        "hideWhenReducedMotion": true,
+        "disabledWhen": {
+          "prop": "wrap",
+          "equals": true
+        },
+        "control": "checkbox",
+        "group": "group",
+        "groupTitle": "Group"
+      }
+    },
+    {
+      "name": "wrap",
+      "label": "Wrap",
+      "type": "boolean",
+      "default": true,
+      "description": "Files wrap onto new lines instead of scrolling in one row.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "group",
+        "groupTitle": "Group"
+      }
+    },
+    {
+      "name": "simulateFailures",
+      "label": "Simulate failures",
+      "type": "boolean",
+      "default": true,
+      "description": "Some uploads fail at random, to preview the error state.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "demo",
+        "groupTitle": "Demo"
+      }
+    },
+    {
+      "name": "maxSizeMB",
+      "label": "Max file size",
+      "type": "number",
+      "default": 5,
+      "description": "Files bigger than this show an error card instead of uploading.",
+      "remixer": {
+        "control": "select",
+        "group": "limits",
+        "groupTitle": "Limits",
+        "options": [
+          {
+            "label": "No limit",
+            "value": 0
+          },
+          {
+            "label": "5 MB",
+            "value": 5
+          },
+          {
+            "label": "10 MB",
+            "value": 10
+          },
+          {
+            "label": "25 MB",
+            "value": 25
+          }
+        ]
+      }
+    },
+    {
+      "name": "accept",
+      "label": "Accepted files",
+      "type": "string",
+      "default": "any",
+      "description": "Which files can be added. Others show an error card, and the file picker only offers these.",
+      "remixer": {
+        "control": "select",
+        "group": "limits",
+        "groupTitle": "Limits",
+        "options": [
+          {
+            "label": "Any",
+            "value": "any"
+          },
+          {
+            "label": "Images",
+            "value": "images"
+          },
+          {
+            "label": "Documents",
+            "value": "documents"
+          }
+        ]
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-attachment/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\nimport { createPortal } from \"react-dom\";\nimport { mergeProps } from \"@base-ui/react/merge-props\";\nimport { useRender } from \"@base-ui/react/use-render\";\nimport { useGSAP } from \"@gsap/react\";\nimport gsap from \"gsap\";\nimport { Flip } from \"gsap/Flip\";\nimport { MorphSVGPlugin } from \"gsap/MorphSVGPlugin\";\nimport { animate, AnimatePresence, motion, MotionConfig, Reorder, useDragControls, useMotionValue, useScroll, useSpring, useTransform, useVelocity, type HTMLMotionProps, type MotionValue } from \"motion/react\";\nimport { FileArchiveIcon, FileSpreadsheetIcon, FileTextIcon, PlusIcon, RotateCwIcon, XIcon } from \"lucide-react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false);\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\");\n    const read = () => setReduce(mq.matches);\n    read();\n    mq.addEventListener?.(\"change\", read);\n    return () => mq.removeEventListener?.(\"change\", read);\n  }, []);\n  return reduce;\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion();\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>;\n}\n\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nfunction slotAttr(name: string) {\n  return { \"data-slot\": name };\n}\n\nexport type AnimatedAttachmentTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedAttachmentMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedAttachmentTheme}:${AnimatedAttachmentMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"card\": \"oklch(1 0 0)\",\n    \"card-foreground\": \"oklch(0.145 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"card\": \"oklch(0.205 0 0)\",\n    \"card-foreground\": \"oklch(0.985 0 0)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"card\": \"#fcfcfc\",\n    \"card-foreground\": \"#202020\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"card\": \"#191919\",\n    \"card-foreground\": \"#eeeeee\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"card\": \"#faf9f5\",\n    \"card-foreground\": \"#141413\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"card\": \"#262624\",\n    \"card-foreground\": \"#faf9f5\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"card\": \"#f8f2e2\",\n    \"card-foreground\": \"#4a4436\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"card\": \"#27342f\",\n    \"card-foreground\": \"#e6e0cc\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"card\": \"#f6f6f6\",\n    \"card-foreground\": \"#191414\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"card\": \"#181818\",\n    \"card-foreground\": \"#ffffff\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"card\": \"#f5f2ec\",\n    \"card-foreground\": \"#0f1923\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"card\": \"#16232f\",\n    \"card-foreground\": \"#ece8e1\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"card\": \"#f8f8f8\",\n    \"card-foreground\": \"#3b3b3b\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"card\": \"#252526\",\n    \"card-foreground\": \"#cccccc\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedAttachmentTheme = \"default\", mode: AnimatedAttachmentMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  return { \"data-theme\": mode, style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\nfunction ThemeScope({ children }: { children?: React.ReactNode }) {\n  const themed = React.useContext(ThemeContext);\n  return (\n    <div {...themed} className=\"contents [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50\">\n      {children}\n    </div>\n  );\n}\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-md px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-md px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-md [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-md\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\n// ---- attachment.tsx ----\n\nif (typeof window !== \"undefined\") gsap.registerPlugin(useGSAP, Flip, MorphSVGPlugin)\n\ntype MotionDivProps = Omit<HTMLMotionProps<\"div\">, \"layout\" | \"values\">\n\ntype AttachmentState = \"idle\" | \"uploading\" | \"processing\" | \"error\" | \"done\"\n\nconst spring = { type: \"spring\", visualDuration: 0.4, bounce: 0.25 } as const\nconst settle = { type: \"spring\", visualDuration: 0.3, bounce: 0 } as const\nconst springyEase = \"ease-[cubic-bezier(0.34,1.56,0.64,1)]\"\n\nfunction assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {\n  if (typeof ref === \"function\") ref(node)\n  else if (ref) (ref as React.RefObject<T | null>).current = node\n}\n\nfunction matchParentRadius(rect: SVGRectElement | null) {\n  const parent = rect?.ownerSVGElement?.parentElement\n  if (!rect || !parent) return\n  const radius = getComputedStyle(parent).borderTopLeftRadius\n  rect.setAttribute(\"rx\", radius)\n  rect.setAttribute(\"ry\", radius)\n}\n\nconst subscribeNoop = () => () => {}\nfunction useIsClient() {\n  return React.useSyncExternalStore(\n    subscribeNoop,\n    () => true,\n    () => false\n  )\n}\n\nconst AttachmentReorderContext = React.createContext<{\n  draggable: boolean\n  /** The group's box: a dragged card can't leave it */\n  constraints: React.RefObject<HTMLDivElement | null>\n} | null>(null)\n\nconst AttachmentTiltContext = React.createContext<MotionValue<number> | null>(null)\n\nconst attachmentVariants = cva(\n  \"group/attachment relative isolate flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-md border bg-(--hx-card) text-(--hx-card-foreground) transition-colors focus-within:ring-1 focus-within:ring-(--hx-ring)/50 has-[>a,>button]:hover:bg-(--hx-muted)/50 data-[state=error]:border-(--hx-destructive)/30 data-[state=idle]:border-dashed\",\n  {\n    variants: {\n      size: {\n        default:\n          \"gap-2 text-sm has-data-[slot=attachment-content]:px-2.5 has-data-[slot=attachment-content]:py-2 has-data-[slot=attachment-media]:p-2\",\n        sm: \"gap-2.5 text-xs has-data-[slot=attachment-content]:px-2 has-data-[slot=attachment-content]:py-1.5 has-data-[slot=attachment-media]:p-1.5\",\n        xs: \"gap-1.5 rounded-md text-xs has-data-[slot=attachment-content]:px-1.5 has-data-[slot=attachment-content]:py-1 has-data-[slot=attachment-media]:p-1\",\n      },\n      orientation: {\n        horizontal: \"min-w-40 items-center\",\n        vertical: \"w-24 flex-col has-data-[slot=attachment-content]:w-30\",\n      },\n    },\n  }\n)\n\nfunction Attachment({\n  className,\n  state = \"done\",\n  size = \"default\",\n  orientation = \"horizontal\",\n  animateEnter = true,\n  enterDelay = 0,\n  enterFrom,\n  animateExit = true,\n  borderTrace = true,\n  shakeOnError = true,\n  fill = false,\n  fillDirection = \"left-to-right\",\n  progress = 0,\n  value,\n  ref,\n  style,\n  onPointerDown,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  VariantProps<typeof attachmentVariants> & {\n    state?: AttachmentState\n    animateEnter?: boolean\n    enterDelay?: number\n    enterFrom?: { x: number; y: number }\n    animateExit?: boolean\n    borderTrace?: boolean\n    shakeOnError?: boolean\n    fill?: boolean\n    fillDirection?: \"left-to-right\" | \"bottom-to-top\"\n    /** 0–100. Drives the upload fill. */\n    progress?: number\n    value?: string | number\n  }) {\n  const reduceMotion = usePrefersReducedMotion()\n  const reorderContext = React.useContext(AttachmentReorderContext)\n  const inReorder = reorderContext !== null && value !== undefined\n  const draggable = inReorder && reorderContext.draggable\n  const dragControls = useDragControls()\n  const node = React.useRef<HTMLDivElement>(null)\n  const x = useMotionValue(0)\n  const skewX = React.useContext(AttachmentTiltContext)\n\n  const setRef = React.useCallback(\n    (el: HTMLDivElement | null) => {\n      node.current = el\n      assignRef(ref, el)\n    },\n    [ref]\n  )\n\n  const flyFrom = React.useRef(enterFrom)\n  React.useLayoutEffect(() => {\n    const el = node.current\n    const from = flyFrom.current\n    if (!el || !from || reduceMotion) return\n    el.scrollIntoView({ block: \"nearest\", inline: \"nearest\" })\n    const rect = el.getBoundingClientRect()\n    const ghost = el.cloneNode(true) as HTMLElement\n    Object.assign(ghost.style, {\n      position: \"fixed\",\n      left: `${rect.left}px`,\n      top: `${rect.top}px`,\n      width: `${rect.width}px`,\n      height: `${rect.height}px`,\n      margin: \"0\",\n      zIndex: \"50\",\n      pointerEvents: \"none\",\n      transform: \"none\",\n      opacity: \"0\",\n    })\n    document.body.append(ghost)\n    el.style.visibility = \"hidden\"\n    const flight = animate(\n      ghost,\n      {\n        x: [from.x - (rect.left + rect.width / 2), 0],\n        y: [from.y - (rect.top + rect.height / 2), 0],\n        scale: [0.3, 1],\n        opacity: [0, 1],\n      },\n      { ...spring, visualDuration: 0.6, delay: enterDelay }\n    )\n    const land = () => {\n      ghost.remove()\n      el.style.visibility = \"\"\n    }\n    flight.then(land)\n    return () => {\n      flight.stop()\n      land()\n    }\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [])\n\n  // Shake when an upload fails.\n  const lastState = React.useRef(state)\n  React.useEffect(() => {\n    const was = lastState.current\n    lastState.current = state\n    if (!shakeOnError || reduceMotion || state !== \"error\" || was === \"error\") return\n    animate(x, [0, -6, 6, -4, 4, -2, 0], { duration: 0.45, ease: \"easeOut\" })\n  }, [state, shakeOnError, reduceMotion, x])\n\n  const flying = enterFrom !== undefined\n  const filling = fill && (state === \"uploading\" || state === \"processing\")\n  const motionProps = {\n    ref: setRef,\n    \"data-slot\": \"attachment\",\n    \"data-state\": state,\n    \"data-filling\": filling || undefined,\n    \"data-size\": size,\n    \"data-orientation\": orientation,\n    className: cn(\n      attachmentVariants({ size, orientation }),\n      draggable && \"cursor-grab select-none\",\n      className\n    ),\n    style: { ...style, x, ...(skewX && { skewX, originY: 1 }) },\n    initial: animateEnter && !flying ? { opacity: 0, scale: 0.8 } : false,\n    animate: { opacity: 1, scale: 1, transition: { ...spring, delay: enterDelay } },\n    exit: animateExit ? { opacity: 0, scale: 0.8, transition: settle } : undefined,\n    transition: { layout: spring },\n    ...(props as MotionDivProps),\n  }\n\n  const horizontalFill = fillDirection === \"left-to-right\"\n  const content = (\n    <>\n      <AnimatePresence>\n        {filling && (\n          <motion.span\n            key=\"fill\"\n            aria-hidden\n            className=\"pointer-events-none absolute inset-0 -z-10 overflow-hidden rounded-[inherit]\"\n            exit={{ opacity: 0, transition: settle }}\n          >\n            <motion.span\n              className={cn(\n                \"absolute inset-0 rounded-none bg-[color-mix(in_oklch,var(--hx-card),var(--hx-foreground)_12%)]\",\n                horizontalFill ? \"origin-left\" : \"origin-bottom\"\n              )}\n              initial={horizontalFill ? { scaleX: 0 } : { scaleY: 0 }}\n              animate={horizontalFill ? { scaleX: progress / 100 } : { scaleY: progress / 100 }}\n              transition={settle}\n            />\n          </motion.span>\n        )}\n      </AnimatePresence>\n      <AnimatePresence>\n        {borderTrace && (state === \"uploading\" || state === \"processing\") && (\n          <AttachmentBorderTrace key=\"trace\" />\n        )}\n      </AnimatePresence>\n      {children}\n    </>\n  )\n\n  return (\n    <ReducedMotionConfig>\n      {inReorder ? (\n        <Reorder.Item\n          as=\"div\"\n          value={value}\n          dragListener={false}\n          dragControls={dragControls}\n          // Stays inside its row instead of following the pointer across the page\n          dragConstraints={reorderContext?.constraints}\n          dragElastic={0.08}\n          whileDrag={{ scale: 1.04, zIndex: 10, cursor: \"grabbing\" }}\n          onPointerDown={(event: React.PointerEvent<HTMLDivElement>) => {\n            onPointerDown?.(event)\n            const onControl = (event.target as HTMLElement).closest(\"button, a, input\")\n            if (draggable && event.pointerType === \"mouse\" && !onControl) dragControls.start(event)\n          }}\n          {...motionProps}\n        >\n          {content}\n        </Reorder.Item>\n      ) : (\n        <motion.div\n          layout\n          onPointerDown={onPointerDown}\n          {...motionProps}\n        >\n          {content}\n        </motion.div>\n      )}\n    </ReducedMotionConfig>\n  )\n}\n\nfunction AttachmentBorderTrace() {\n  const rect = React.useRef<SVGRectElement>(null)\n\n  const reduceMotion = usePrefersReducedMotion()\n  useGSAP(() => {\n    matchParentRadius(rect.current)\n    // Reduced motion: no endless loop (the trace is also hidden by motion-reduce:hidden)\n    if (reduceMotion) return\n    gsap.fromTo(\n      rect.current,\n      { strokeDashoffset: 0 },\n      { strokeDashoffset: -100, duration: 1.4, ease: \"none\", repeat: -1 }\n    )\n  }, [reduceMotion])\n\n  return (\n    <motion.svg\n      aria-hidden\n      className=\"pointer-events-none absolute -inset-px z-10 size-[calc(100%+2px)] overflow-visible text-(--hx-primary) motion-reduce:hidden\"\n      initial={{ opacity: 0 }}\n      animate={{ opacity: 1 }}\n      exit={{ opacity: 0 }}\n    >\n      <rect\n        ref={rect}\n        width=\"100%\"\n        height=\"100%\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n        strokeWidth={1.5}\n        strokeLinecap=\"round\"\n        pathLength={100}\n        strokeDasharray=\"22 78\"\n      />\n    </motion.svg>\n  )\n}\n\nconst attachmentMediaVariants = cva(\n  \"relative flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-(--hx-muted) text-(--hx-foreground) group-data-[orientation=vertical]/attachment:w-full group-data-[size=sm]/attachment:w-8 group-data-[size=xs]/attachment:w-7 group-data-[size=xs]/attachment:rounded-md group-data-[state=error]/attachment:bg-(--hx-destructive)/10 group-data-[state=error]/attachment:text-(--hx-destructive) group-data-[orientation=vertical]/attachment:*:data-[slot=spinner]:size-6! [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 group-data-[orientation=vertical]/attachment:[&_svg:not([class*='size-'])]:size-6 group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5\",\n  {\n    variants: {\n      variant: {\n        icon: \"\",\n        image:\n          \"opacity-60 group-data-[state=done]/attachment:opacity-100 group-data-[state=idle]/attachment:opacity-100 *:transition-[opacity,scale,filter] *:duration-500 motion-reduce:*:transition-none group-data-filling/attachment:bg-(--hx-card) group-data-filling/attachment:opacity-100 [&_img]:transition-opacity [&_img]:duration-500 group-data-filling/attachment:[&_img]:opacity-60 *:[img]:aspect-square *:[img]:w-full *:[img]:object-cover [&_img]:size-full [&_img]:object-cover\",\n      },\n    },\n    defaultVariants: {\n      variant: \"icon\",\n    },\n  }\n)\n\nfunction AttachmentMedia({\n  className,\n  variant = \"icon\",\n  zoomOnHover = true,\n  blurUntilLoaded = true,\n  expandable = true,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  VariantProps<typeof attachmentMediaVariants> & {\n    zoomOnHover?: boolean\n    blurUntilLoaded?: boolean\n    expandable?: boolean\n  }) {\n  const isImage = variant === \"image\"\n  const canExpand = isImage && expandable\n  const [open, setOpen] = React.useState(false)\n  const layoutId = React.useId()\n  const isClient = useIsClient()\n\n  const dialogRef = React.useRef<HTMLDivElement>(null)\n  const triggerRef = React.useRef<HTMLDivElement>(null)\n  const wasOpen = React.useRef(false)\n\n  React.useEffect(() => {\n    if (!open) {\n      // Closing hands focus back to the thumbnail that opened it\n      if (wasOpen.current) triggerRef.current?.focus({ preventScroll: true })\n      wasOpen.current = false\n      return\n    }\n    wasOpen.current = true\n    // Focus moves into the preview; Escape closes it, and Tab stays on it (one focusable)\n    dialogRef.current?.focus({ preventScroll: true })\n    const onKeyDown = (event: KeyboardEvent) => {\n      if (event.key === \"Escape\") setOpen(false)\n      if (event.key === \"Tab\") {\n        event.preventDefault()\n        dialogRef.current?.focus({ preventScroll: true })\n      }\n    }\n    window.addEventListener(\"keydown\", onKeyDown)\n    return () => window.removeEventListener(\"keydown\", onKeyDown)\n  }, [open])\n\n  return (\n    <div\n      data-slot=\"attachment-media\"\n      data-variant={variant}\n      className={cn(\n        attachmentMediaVariants({ variant }),\n        isImage &&\n          zoomOnHover &&\n          cn(\"*:transition-[opacity,scale,filter] *:duration-500 group-hover/attachment:*:scale-110 motion-reduce:*:transition-none motion-reduce:group-hover/attachment:*:scale-100\", springyEase),\n        isImage &&\n          blurUntilLoaded &&\n          \"transition-opacity duration-700 motion-reduce:transition-none group-data-[state=processing]/attachment:*:blur-xs group-data-[state=uploading]/attachment:*:blur-sm\",\n        className\n      )}\n      {...props}\n    >\n      {canExpand ? (\n        <>\n          {!open && (\n            <motion.div\n              ref={triggerRef}\n              layoutId={layoutId}\n              role=\"button\"\n              tabIndex={0}\n              aria-label=\"Open preview\"\n              onTap={() => setOpen(true)}\n              onKeyDown={(event) => {\n                if (event.key === \"Enter\" || event.key === \" \") {\n                  event.preventDefault()\n                  setOpen(true)\n                }\n              }}\n              transition={spring}\n              className=\"size-full cursor-zoom-in overflow-hidden rounded-[inherit] outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)\"\n            >\n              {children}\n            </motion.div>\n          )}\n          {isClient &&\n            createPortal(\n              <ThemeScope><ReducedMotionConfig>\n                <AnimatePresence>\n                  {open && (\n                    <motion.div\n                      key=\"preview\"\n                      className=\"fixed inset-0 z-50 flex cursor-zoom-out items-center justify-center bg-(--hx-background)/80 backdrop-blur-sm\"\n                      initial={{ opacity: 0 }}\n                      animate={{ opacity: 1 }}\n                      exit={{ opacity: 0 }}\n                      onClick={() => setOpen(false)}\n                    >\n                      <motion.div\n                        ref={dialogRef}\n                        layoutId={layoutId}\n                        role=\"dialog\"\n                        aria-modal=\"true\"\n                        aria-label=\"Preview. Press Escape to close.\"\n                        tabIndex={-1}\n                        transition={spring}\n                        className=\"aspect-square w-[min(80vw,80vh)] overflow-hidden rounded-md shadow-2xl outline-none [&_img]:size-full [&_img]:object-cover\"\n                      >\n                        {children}\n                      </motion.div>\n                    </motion.div>\n                  )}\n                </AnimatePresence>\n              </ReducedMotionConfig></ThemeScope>,\n              document.body\n            )}\n        </>\n      ) : (\n        children\n      )}\n    </div>\n  )\n}\n\nconst SPINNER_PATH = \"M21 12a9 9 0 1 1-6.219-8.56\"\nconst CHECK_PATH = \"M20 6 9 17l-5-5\"\nconst CROSS_PATH = \"M18 6 6 18M6 6l12 12\"\n\nfunction AttachmentStatusIcon({\n  state,\n  icon: Icon,\n}: {\n  state: AttachmentState\n  icon: React.ComponentType\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  const loading = state === \"uploading\" || state === \"processing\"\n  const svg = React.useRef<SVGSVGElement>(null)\n  const path = React.useRef<SVGPathElement>(null)\n  const [showIcon, setShowIcon] = React.useState(state === \"done\" || state === \"idle\")\n  const [iconEnters] = React.useState(!showIcon)\n  const [initialPath] = React.useState(state === \"error\" ? CROSS_PATH : SPINNER_PATH)\n\n  useGSAP(\n    () => {\n      if (showIcon || !path.current || !svg.current) return\n      const target = loading ? SPINNER_PATH : state === \"error\" ? CROSS_PATH : CHECK_PATH\n      gsap.to(path.current, {\n        morphSVG: target,\n        duration: reduceMotion ? 0 : 0.5,\n        ease: \"power2.inOut\",\n      })\n      gsap.killTweensOf(svg.current, \"rotation\")\n      if (loading && !reduceMotion) {\n        gsap.to(svg.current, {\n          rotation: \"+=360\",\n          duration: 0.8,\n          ease: \"none\",\n          repeat: -1,\n          transformOrigin: \"50% 50%\",\n        })\n      } else {\n        const turned = Number(gsap.getProperty(svg.current, \"rotation\"))\n        gsap.to(svg.current, {\n          rotation: Math.ceil(turned / 360) * 360,\n          duration: reduceMotion ? 0 : 0.4,\n          ease: \"power2.out\",\n          transformOrigin: \"50% 50%\",\n        })\n      }\n      if (state === \"done\") gsap.delayedCall(reduceMotion ? 0 : 1.1, () => setShowIcon(true))\n    },\n    { dependencies: [state, showIcon, loading, reduceMotion] }\n  )\n\n  if (showIcon) {\n    return (\n      <motion.span\n        className=\"flex\"\n        initial={iconEnters ? { opacity: 0, scale: 0.4 } : false}\n        animate={{ opacity: 1, scale: 1 }}\n        transition={spring}\n      >\n        <Icon />\n      </motion.span>\n    )\n  }\n\n  return (\n    <svg\n      ref={svg}\n      viewBox=\"0 0 24 24\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth={2}\n      strokeLinecap=\"round\"\n      strokeLinejoin=\"round\"\n      aria-hidden\n    >\n      <path ref={path} d={initialPath} />\n    </svg>\n  )\n}\n\nfunction AttachmentContent({\n  className,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"attachment-content\"\n      className={cn(\n        \"max-w-full min-w-0 flex-1 leading-tight group-data-[orientation=vertical]/attachment:px-1\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\n// The shimmer is built in (the source relied on a `shimmer` class from its own global CSS,\n// which installs won't have): a light band sweeps through the name while it uploads.\nconst SHIMMER_KEYFRAMES = \"@keyframes hx-attachment-shimmer{from{background-position:150% 0}to{background-position:-50% 0}}\"\n// Written out in full so Tailwind can find every class. Reduced motion: no sweep, normal colour.\nconst SHIMMER_WHILE_UPLOADING = [\n  \"group-data-[state=uploading]/attachment:bg-[linear-gradient(90deg,var(--hx-foreground)_35%,var(--hx-muted-foreground)_50%,var(--hx-foreground)_65%)]\",\n  \"group-data-[state=processing]/attachment:bg-[linear-gradient(90deg,var(--hx-foreground)_35%,var(--hx-muted-foreground)_50%,var(--hx-foreground)_65%)]\",\n  \"group-data-[state=uploading]/attachment:bg-size-[200%_100%]\",\n  \"group-data-[state=processing]/attachment:bg-size-[200%_100%]\",\n  \"group-data-[state=uploading]/attachment:bg-clip-text\",\n  \"group-data-[state=processing]/attachment:bg-clip-text\",\n  \"group-data-[state=uploading]/attachment:text-transparent\",\n  \"group-data-[state=processing]/attachment:text-transparent\",\n  \"group-data-[state=uploading]/attachment:animate-[hx-attachment-shimmer_1.6s_linear_infinite]\",\n  \"group-data-[state=processing]/attachment:animate-[hx-attachment-shimmer_1.6s_linear_infinite]\",\n  \"group-data-[state=uploading]/attachment:motion-reduce:animate-none\",\n  \"group-data-[state=processing]/attachment:motion-reduce:animate-none\",\n  \"group-data-[state=uploading]/attachment:motion-reduce:bg-none\",\n  \"group-data-[state=processing]/attachment:motion-reduce:bg-none\",\n  \"group-data-[state=uploading]/attachment:motion-reduce:text-(--hx-foreground)\",\n  \"group-data-[state=processing]/attachment:motion-reduce:text-(--hx-foreground)\",\n].join(\" \")\n\nfunction AttachmentTitle({\n  className,\n  shimmerText = true,\n  ...props\n}: React.ComponentProps<\"span\"> & {\n  shimmerText?: boolean\n}) {\n  return (\n    <>\n      {shimmerText && <style>{SHIMMER_KEYFRAMES}</style>}\n      <span\n        data-slot=\"attachment-title\"\n        className={cn(\"block max-w-full min-w-0 truncate font-medium\", shimmerText && SHIMMER_WHILE_UPLOADING, className)}\n        {...props}\n      />\n    </>\n  )\n}\n\nfunction AttachmentDescription({\n  className,\n  ...props\n}: React.ComponentProps<\"span\">) {\n  return (\n    <span\n      data-slot=\"attachment-description\"\n      className={cn(\n        \"mt-0.5 block min-w-0 truncate text-xs text-(--hx-muted-foreground) group-data-[state=error]/attachment:text-(--hx-destructive)/80\",\n        \"max-w-full\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction AttachmentProgress({\n  className,\n  value,\n  rollingNumbers = true,\n  ...props\n}: React.ComponentProps<\"span\"> & {\n  /** 0–100. */\n  value: number\n  rollingNumbers?: boolean\n}) {\n  const text = String(Math.round(value))\n\n  if (!rollingNumbers) {\n    return (\n      <span data-slot=\"attachment-progress\" className={cn(\"tabular-nums\", className)} {...props}>\n        {text}%\n      </span>\n    )\n  }\n\n  const digits = text.split(\"\")\n  return (\n    <span data-slot=\"attachment-progress\" className={cn(\"tabular-nums\", className)} {...props}>\n      <span className=\"sr-only\">{text}%</span>\n      {digits.map((digit, i) => (\n        <RollingDigit key={digits.length - i} digit={Number(digit)} />\n      ))}\n      <span aria-hidden>%</span>\n    </span>\n  )\n}\n\nconst digitRoll = { type: \"spring\", visualDuration: 0.15, bounce: 0 } as const\n\nfunction RollingDigit({ digit }: { digit: number }) {\n  return (\n    <span aria-hidden className=\"relative inline-block [clip-path:inset(0)]\">\n      <span className=\"invisible\">{digit}</span>\n      <motion.span\n        className=\"absolute inset-x-0 top-0 flex flex-col\"\n        initial={false}\n        animate={{ y: `${-digit * 10}%` }}\n        transition={digitRoll}\n      >\n        {Array.from({ length: 10 }, (_, n) => (\n          <span key={n}>{n}</span>\n        ))}\n      </motion.span>\n    </span>\n  )\n}\n\nfunction AttachmentActions({\n  className,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"attachment-actions\"\n      className={cn(\n        \"relative z-20 flex shrink-0 items-center group-data-[orientation=vertical]/attachment:absolute group-data-[orientation=vertical]/attachment:top-3 group-data-[orientation=vertical]/attachment:right-3 group-data-[orientation=vertical]/attachment:gap-1\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction AttachmentAction({\n  className,\n  variant,\n  size = \"icon-xs\",\n  revealAction = false,\n  onClick,\n  children,\n  ...props\n}: React.ComponentProps<typeof Button> & {\n  revealAction?: boolean\n}) {\n  const [turns, setTurns] = React.useState(0)\n\n  return (\n    <Button\n      data-slot=\"attachment-action\"\n      variant={variant ?? \"ghost\"}\n      size={size}\n      onClick={(event) => {\n        onClick?.(event)\n        setTurns((t) => t + 1)\n      }}\n      className={cn(\n        revealAction &&\n          cn(\n            \"transition-[scale,rotate,opacity,background-color] duration-300 [&_svg]:transition-[rotate,scale] [&_svg]:duration-300 hover:[&_svg]:scale-110 hover:[&_svg]:rotate-90\",\n            // Reduced motion: the button just appears, with no spin or grow\n            \"motion-reduce:transition-none motion-reduce:[&_svg]:transition-none motion-reduce:hover:[&_svg]:rotate-0 motion-reduce:hover:[&_svg]:scale-100 motion-reduce:scale-100! motion-reduce:rotate-0!\",\n            \"pointer-fine:scale-50 pointer-fine:-rotate-90 pointer-fine:opacity-0\",\n            \"pointer-fine:group-hover/attachment:scale-100 pointer-fine:group-hover/attachment:rotate-0 pointer-fine:group-hover/attachment:opacity-100\",\n            \"pointer-fine:group-focus-within/attachment:scale-100 pointer-fine:group-focus-within/attachment:rotate-0 pointer-fine:group-focus-within/attachment:opacity-100\",\n            springyEase,\n            \"[&_svg]:ease-[cubic-bezier(0.34,1.56,0.64,1)]\"\n          ),\n        className\n      )}\n      {...props}\n    >\n      <motion.span\n        className=\"flex\"\n        initial={false}\n        animate={{ rotate: turns * 360 }}\n        transition={{ type: \"spring\", visualDuration: 0.6, bounce: 0.2 }}\n      >\n        {children}\n      </motion.span>\n    </Button>\n  )\n}\n\nfunction AttachmentTrigger({\n  className,\n  render,\n  type,\n  ...props\n}: useRender.ComponentProps<\"button\">) {\n  return useRender({\n    defaultTagName: \"button\",\n    props: mergeProps<\"button\">(\n      {\n        ...slotAttr(\"attachment-trigger\"),\n        type: render ? type : (type ?? \"button\"),\n        className: cn(\"absolute inset-0 z-10 outline-none\", className),\n      },\n      props\n    ),\n    render,\n  })\n}\n\nfunction AttachmentGroup({\n  className,\n  reorder = true,\n  values,\n  onReorder,\n  tiltOnScroll = false,\n  wrap = false,\n  style,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  reorder?: boolean\n  values?: (string | number)[]\n  onReorder?: (values: (string | number)[]) => void\n  tiltOnScroll?: boolean\n  wrap?: boolean\n}) {\n  const scroller = React.useRef<HTMLDivElement>(null)\n  const reduceMotion = usePrefersReducedMotion()\n  const [initialWrap] = React.useState(wrap)\n\n  React.useEffect(() => {\n    const group = scroller.current\n    if (!group || group.dataset.wrap === String(wrap)) return\n    const apply = () => {\n      group.dataset.wrap = String(wrap)\n    }\n    if (reduceMotion) return apply()\n    const flip: { tween?: gsap.core.Timeline } = {}\n    const frame = requestAnimationFrame(() => {\n      const items = Array.from(\n        group.querySelectorAll<HTMLElement>(\":scope > [data-slot=attachment]\")\n      )\n      const state = Flip.getState([group, ...items])\n      apply()\n      group.style.overflow = \"clip\"\n      flip.tween = Flip.from(state, {\n        duration: 0.6,\n        ease: \"power3.inOut\",\n        nested: true,\n        stagger: 0.015,\n        onComplete: () => {\n          gsap.set(items, { clearProps: \"transform,width,height\" })\n          gsap.set(group, { clearProps: \"width,height,overflow\" })\n        },\n      })\n    })\n    return () => {\n      cancelAnimationFrame(frame)\n      flip.tween?.progress(1)\n    }\n  }, [wrap, reduceMotion])\n  React.useEffect(() => {\n    const group = scroller.current\n    if (!group) return\n    const measure = () => {\n      group.dataset.overflow = String(group.scrollWidth > group.clientWidth + 1)\n    }\n    const resize = new ResizeObserver(measure)\n    const observeChildren = () => {\n      resize.disconnect()\n      resize.observe(group)\n      for (const child of group.children) resize.observe(child)\n      measure()\n    }\n    const mutations = new MutationObserver(observeChildren)\n    mutations.observe(group, { childList: true })\n    observeChildren()\n    return () => {\n      resize.disconnect()\n      mutations.disconnect()\n    }\n  }, [])\n\n  const { scrollX } = useScroll({ container: scroller })\n  const speed = useSpring(useVelocity(scrollX), { stiffness: 300, damping: 40 })\n  const lean = useTransform(speed, [-1500, 1500], [12, -12], { clamp: true })\n\n  const reorderable = values !== undefined && onReorder !== undefined\n  const reorderContext = React.useMemo(() => ({ draggable: reorder, constraints: scroller }), [reorder])\n  const groupProps = {\n    ref: scroller,\n    \"data-slot\": \"attachment-group\",\n    \"data-wrap\": String(initialWrap),\n    className: cn(\n      \"relative flex min-w-0 [mask-image:linear-gradient(to_right,transparent,#000_2.5rem,#000_calc(100%-2.5rem),transparent)] snap-x snap-mandatory scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start\",\n      \"data-[overflow=false]:[mask-image:none] data-[wrap=true]:snap-none data-[wrap=true]:[mask-image:none] data-[wrap=true]:flex-wrap data-[wrap=true]:overflow-visible\",\n      className\n    ),\n    style,\n    ...(props as MotionDivProps),\n  }\n\n  return (\n    <ReducedMotionConfig>\n      <AttachmentReorderContext.Provider value={reorderable ? reorderContext : null}>\n        {/* Reduced motion: no tilt (a manual spring, which MotionConfig doesn't reach) */}\n        <AttachmentTiltContext.Provider value={tiltOnScroll && !reduceMotion ? lean : null}>\n          {reorderable ? (\n            // layoutScroll: the row scrolls sideways, so Motion must account for its scroll\n            // when measuring cards, or dragged cards land in the wrong place and jump\n            <Reorder.Group\n              as=\"div\"\n              axis=\"x\"\n              layoutScroll\n              values={values}\n              onReorder={onReorder}\n              {...groupProps}\n            >\n              {children}\n            </Reorder.Group>\n          ) : (\n            <motion.div layoutScroll {...groupProps}>{children}</motion.div>\n          )}\n        </AttachmentTiltContext.Provider>\n      </AttachmentReorderContext.Provider>\n    </ReducedMotionConfig>\n  )\n}\n\nfunction AttachmentDropzone({\n  className,\n  onFiles,\n  animatedBorder = true,\n  children,\n  ...props\n}: React.ComponentProps<\"div\"> & {\n  onFiles?: (files: File[], point: { x: number; y: number }) => void\n  animatedBorder?: boolean\n}) {\n  const [dragging, setDragging] = React.useState(false)\n  const hasFiles = (event: React.DragEvent) => event.dataTransfer.types.includes(\"Files\")\n\n  return (\n    <div\n      data-slot=\"attachment-dropzone\"\n      data-dragging={dragging || undefined}\n      onDragOver={(event) => {\n        if (!hasFiles(event)) return\n        event.preventDefault()\n        setDragging(true)\n      }}\n      onDragLeave={(event) => {\n        if (!event.currentTarget.contains(event.relatedTarget as Node)) setDragging(false)\n      }}\n      onDrop={(event) => {\n        if (!hasFiles(event)) return\n        event.preventDefault()\n        setDragging(false)\n        onFiles?.(Array.from(event.dataTransfer.files), { x: event.clientX, y: event.clientY })\n      }}\n      className={cn(\n        \"relative rounded-md border transition-colors data-dragging:bg-(--hx-muted)/50\",\n        animatedBorder ? \"data-dragging:border-transparent\" : \"data-dragging:border-dashed data-dragging:border-(--hx-primary)\",\n        className\n      )}\n      {...props}\n    >\n      {children}\n      <AnimatePresence>{animatedBorder && dragging && <MarchingBorder key=\"border\" />}</AnimatePresence>\n    </div>\n  )\n}\n\nfunction MarchingBorder() {\n  const rect = React.useRef<SVGRectElement>(null)\n  // Reduced motion: the dashed border shows, but doesn't march\n  const reduceMotion = usePrefersReducedMotion()\n  React.useLayoutEffect(() => matchParentRadius(rect.current), [])\n\n  return (\n    <motion.svg\n      aria-hidden\n      className=\"pointer-events-none absolute inset-0 size-full overflow-visible text-(--hx-primary)\"\n      initial={{ opacity: 0 }}\n      animate={{ opacity: 1 }}\n      exit={{ opacity: 0 }}\n    >\n      <motion.rect\n        ref={rect}\n        width=\"100%\"\n        height=\"100%\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n        strokeWidth={1.5}\n        strokeDasharray=\"6 4\"\n        animate={reduceMotion ? undefined : { strokeDashoffset: [0, -20] }}\n        transition={{ duration: 0.8, ease: \"linear\", repeat: Infinity }}\n      />\n    </motion.svg>\n  )\n}\n\n// ---- demo: upload-demo.tsx ----\n\ntype State = \"uploading\" | \"processing\" | \"error\" | \"done\"\n\ntype Item = {\n  id: string\n  name: string\n  size: number\n  type: string\n  kind: \"file\" | \"image\"\n  state: State\n  progress: number\n  /** Object URL for uploaded images. */\n  preview?: string\n  gradient?: string\n  error?: string\n  retryable?: boolean\n  failAt?: number\n  /** Too big or the wrong type: fails with this message on the first tick (so it shakes) */\n  rejectWith?: string\n  from?: { x: number; y: number }\n  delay: number\n}\n\n// Accepted types per \"Accepted files\" option (MIME prefixes / extensions)\nconst ACCEPT = {\n  any: { label: \"\", input: undefined, test: () => true },\n  images: { label: \"Images only\", input: \"image/*\", test: (file: File) => file.type.startsWith(\"image/\") },\n  documents: {\n    label: \"Documents only\",\n    input: \".pdf,.doc,.docx,.txt,.md,.xls,.xlsx,.csv,.ppt,.pptx\",\n    test: (file: File) => /\\.(pdf|docx?|txt|md|xlsx?|csv|pptx?)$/i.test(file.name),\n  },\n} as const\n\n/** Checked as files are added, so a file that can't be uploaded says why straight away. */\nfunction rejectReason(file: File, maxSizeMB: number, accept: keyof typeof ACCEPT) {\n  if (!ACCEPT[accept].test(file)) return `Not accepted · ${ACCEPT[accept].label.toLowerCase()}`\n  if (maxSizeMB > 0 && file.size > maxSizeMB * 1024 * 1024) return `Over ${maxSizeMB} MB · ${formatSize(file.size)}`\n  return undefined\n}\nconst TICK = 200\nconst PROCESSING_TICKS = 5\nconst FAIL_CHANCE = 0.3\nconst DELETE_STAGGER_MS = 60\n\nconst seed: Item[] = [\n  { id: \"seed-1\", name: \"Q3-report.pdf\", size: 2.4e6, type: \"application/pdf\", kind: \"file\", state: \"done\", progress: 100, delay: 0 },\n  { id: \"seed-2\", name: \"roast-schedule.xlsx\", size: 1.1e6, type: \"\", kind: \"file\", state: \"error\", progress: 0, error: \"Upload failed\", retryable: true, delay: 0 },\n  { id: \"seed-3\", name: \"hero.jpg\", size: 1.2e6, type: \"image/jpeg\", kind: \"image\", state: \"done\", progress: 100, gradient: \"from-(--hx-warning) to-(--hx-destructive)\", delay: 0 },\n  { id: \"seed-4\", name: \"beans.jpg\", size: 8.6e5, type: \"image/jpeg\", kind: \"image\", state: \"done\", progress: 100, gradient: \"from-(--hx-success) to-(--hx-info)\", delay: 0 },\n  { id: \"seed-5\", name: \"cup.jpg\", size: 2.1e6, type: \"image/jpeg\", kind: \"image\", state: \"done\", progress: 100, gradient: \"from-(--hx-primary) to-(--hx-info)\", delay: 0 },\n]\n\nconst controls = {\n  animateEnter: { group: \"Adding\", type: \"checkbox\", label: \"Animate enter\", value: true },\n  stagger: { group: \"Adding\", type: \"slider\", label: \"Stagger\", value: 0.08, min: 0, max: 0.3, step: 0.01, unit: \"s\" },\n  flyIn: { group: \"Adding\", type: \"checkbox\", label: \"Fly in from drop\", value: true },\n  animatedBorder: { group: \"Adding\", type: \"checkbox\", label: \"Animated border\", value: true },\n\n  animateExit: { group: \"Layout\", type: \"checkbox\", label: \"Animate exit\", value: true },\n\n  rollingNumbers: { group: \"Progress\", type: \"checkbox\", label: \"Rolling numbers\", value: true },\n  shimmerText: { group: \"Progress\", type: \"checkbox\", label: \"Shimmer text\", value: true },\n  borderTrace: { group: \"Progress\", type: \"checkbox\", label: \"Border trace\", value: true },\n  fill: { group: \"Progress\", type: \"checkbox\", label: \"Card fill (images)\", value: true },\n  fillDirection: {\n    disabled: (v: Record<string, unknown>) => !v.fill,\n    group: \"Progress\",\n    type: \"select\",\n    label: \"Fill direction\",\n    value: \"bottom-to-top\",\n    options: [\n      { label: \"Left to right\", value: \"left-to-right\" },\n      { label: \"Bottom to top\", value: \"bottom-to-top\" },\n    ],\n  },\n\n  shakeOnError: { group: \"States\", type: \"checkbox\", label: \"Shake on error\", value: true },\n\n  revealAction: { group: \"Hover\", type: \"checkbox\", label: \"Reveal action\", value: true },\n  zoomOnHover: { group: \"Hover\", type: \"checkbox\", label: \"Zoom on hover\", value: true },\n  blurUntilLoaded: { group: \"Hover\", type: \"checkbox\", label: \"Blur while uploading\", value: true },\n  expandable: { group: \"Hover\", type: \"checkbox\", label: \"Expandable preview\", value: true },\n\n  reorder: { group: \"Group\", type: \"checkbox\", label: \"Drag to reorder\", value: true },\n  tiltOnScroll: { group: \"Group\", type: \"checkbox\", label: \"Tilt on scroll\", value: false },\n  wrap: { group: \"Group\", type: \"checkbox\", label: \"Wrap\", value: true },\n\n  simulateFailures: { group: \"Demo\", type: \"checkbox\", label: \"Simulate failures\", value: true },\n\n  maxSizeMB: {\n    group: \"Limits\",\n    type: \"select\",\n    label: \"Max file size\",\n    value: 5,\n    options: [\n      { label: \"No limit\", value: 0 },\n      { label: \"5 MB\", value: 5 },\n      { label: \"10 MB\", value: 10 },\n      { label: \"25 MB\", value: 25 },\n    ],\n  },\n  accept: {\n    group: \"Limits\",\n    type: \"select\",\n    label: \"Accepted files\",\n    value: \"any\",\n    options: [\n      { label: \"Any\", value: \"any\" },\n      { label: \"Images\", value: \"images\" },\n      { label: \"Documents\", value: \"documents\" },\n    ],\n  },\n}\n\nfunction truncateName(name: string, limit = 20) {\n  return name.length > limit ? `${name.slice(0, limit)}…` : name\n}\n\nfunction formatSize(bytes: number) {\n  if (bytes < 1024) return `${bytes} B`\n  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} KB`\n  return `${(bytes / 1024 / 1024).toFixed(1)} MB`\n}\n\nfunction fileIcon(item: Item) {\n  if (/sheet|excel|csv/.test(item.type) || /\\.(xlsx?|csv)$/.test(item.name)) return FileSpreadsheetIcon\n  if (/zip|compressed|tar/.test(item.type) || /\\.(zip|rar|7z|tar|gz)$/.test(item.name)) return FileArchiveIcon\n  return FileTextIcon\n}\n\nfunction UploadDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n\n  const [items, setItems] = React.useState<Item[]>(seed)\n  const inputRef = React.useRef<HTMLInputElement>(null)\n  const processing = React.useRef(new Map<string, number>())\n  const deleteTimers = React.useRef<number[]>([])\n  React.useEffect(() => () => deleteTimers.current.forEach((t) => window.clearTimeout(t)), [])\n\n  const busy = items.some((item) => item.state === \"uploading\" || item.state === \"processing\")\n\n  React.useEffect(() => {\n    if (!busy) return\n    const timer = window.setInterval(() => {\n      setItems((current) =>\n        current.map((item) => {\n          if (item.state === \"uploading\") {\n            if (item.rejectWith) {\n              return { ...item, state: \"error\", error: item.rejectWith, rejectWith: undefined, retryable: false }\n            }\n            const progress = Math.min(100, item.progress + 4 + Math.random() * 9)\n            if (item.failAt !== undefined && progress >= item.failAt) {\n              return { ...item, progress, state: \"error\", error: \"Upload failed\", retryable: true }\n            }\n            return progress >= 100\n              ? { ...item, progress: 100, state: \"processing\" }\n              : { ...item, progress }\n          }\n          if (item.state === \"processing\") {\n            const ticks = (processing.current.get(item.id) ?? 0) + 1\n            processing.current.set(item.id, ticks)\n            if (ticks < PROCESSING_TICKS) return item\n            processing.current.delete(item.id)\n            return { ...item, state: \"done\" }\n          }\n          return item\n        })\n      )\n    }, TICK)\n    return () => window.clearInterval(timer)\n  }, [busy])\n\n  const itemsRef = React.useRef(items)\n  React.useEffect(() => {\n    itemsRef.current = items\n  })\n  React.useEffect(\n    () => () => itemsRef.current.forEach((item) => item.preview && URL.revokeObjectURL(item.preview)),\n    []\n  )\n\n  function addFiles(files: File[], from?: { x: number; y: number }) {\n    if (!files.length) return\n    const added = files.map<Item>((file, i) => {\n      const image = file.type.startsWith(\"image/\")\n      const rejected = rejectReason(file, values.maxSizeMB, values.accept as keyof typeof ACCEPT)\n      if (rejected) {\n        // Too big or the wrong type: fails with the reason on the first tick, no upload\n        return {\n          id: crypto.randomUUID(),\n          name: file.name,\n          size: file.size,\n          type: file.type,\n          kind: \"file\",\n          state: \"uploading\",\n          progress: 0,\n          rejectWith: rejected,\n          from,\n          delay: i * values.stagger,\n        }\n      }\n      return {\n        id: crypto.randomUUID(),\n        name: file.name,\n        size: file.size,\n        type: file.type,\n        kind: image ? \"image\" : \"file\",\n        state: \"uploading\",\n        progress: 0,\n        preview: image ? URL.createObjectURL(file) : undefined,\n        failAt: values.simulateFailures && Math.random() < FAIL_CHANCE ? 30 + Math.random() * 50 : undefined,\n        from,\n        delay: i * values.stagger,\n      }\n    })\n    setItems((current) => [...current, ...added])\n  }\n\n  function remove(id: string) {\n    setItems((current) => {\n      const item = current.find((i) => i.id === id)\n      if (item?.preview) URL.revokeObjectURL(item.preview)\n      return current.filter((i) => i.id !== id)\n    })\n    processing.current.delete(id)\n  }\n\n  function removeAll() {\n    deleteTimers.current.forEach((t) => window.clearTimeout(t))\n    const order = [\n      ...items.filter((item) => item.kind === \"file\"),\n      ...items.filter((item) => item.kind === \"image\"),\n    ].reverse()\n    deleteTimers.current = order.map((item, i) =>\n      window.setTimeout(() => remove(item.id), i * DELETE_STAGGER_MS)\n    )\n  }\n\n  function retry(id: string) {\n    setItems((current) =>\n      current.map((item) =>\n        // Retries always succeed.\n        item.id === id\n          ? { ...item, state: \"uploading\", progress: 0, error: undefined, failAt: undefined, delay: 0 }\n          : item\n      )\n    )\n  }\n\n  function reorder(kind: Item[\"kind\"], ids: (string | number)[]) {\n    setItems((current) => {\n      const byId = new Map(current.map((item) => [item.id, item]))\n      const moved = ids.flatMap((id) => byId.get(String(id)) ?? [])\n      return [...moved, ...current.filter((item) => item.kind !== kind)]\n    })\n  }\n\n  function describe(item: Item) {\n    switch (item.state) {\n      case \"uploading\":\n        return (\n          <>\n            Uploading · <AttachmentProgress value={item.progress} rollingNumbers={values.rollingNumbers} />\n          </>\n        )\n      case \"processing\":\n        return \"Processing…\"\n      case \"error\":\n        return item.error ?? \"Upload failed\"\n      case \"done\":\n        return `${item.name.split(\".\").pop()?.toUpperCase()} · ${formatSize(item.size)}`\n    }\n  }\n\n  function renderItem(item: Item) {\n    const image = item.kind === \"image\"\n    return (\n      <Attachment\n        key={item.id}\n        value={item.id}\n        state={item.state}\n        orientation={image ? \"vertical\" : \"horizontal\"}\n        animateEnter={values.animateEnter}\n        enterDelay={item.delay}\n        enterFrom={values.flyIn ? item.from : undefined}\n        animateExit={values.animateExit}\n        borderTrace={values.borderTrace}\n        shakeOnError={values.shakeOnError}\n        fill={image && values.fill}\n        fillDirection={values.fillDirection as \"left-to-right\" | \"bottom-to-top\"}\n        progress={item.progress}\n      >\n        {image ? (\n          <AttachmentMedia\n            variant=\"image\"\n            zoomOnHover={values.zoomOnHover}\n            blurUntilLoaded={values.blurUntilLoaded}\n            expandable={values.expandable}\n          >\n            {item.preview ? (\n              // eslint-disable-next-line @next/next/no-img-element -- local object URL\n              <img src={item.preview} alt={item.name} draggable={false} />\n            ) : (\n              <div className={`size-full bg-linear-to-br ${item.gradient}`} />\n            )}\n          </AttachmentMedia>\n        ) : (\n          <AttachmentMedia>\n            <AttachmentStatusIcon state={item.state} icon={fileIcon(item)} />\n          </AttachmentMedia>\n        )}\n        <AttachmentContent>\n          <AttachmentTitle shimmerText={values.shimmerText} title={item.name}>\n            {truncateName(item.name)}\n          </AttachmentTitle>\n          <AttachmentDescription>{describe(item)}</AttachmentDescription>\n        </AttachmentContent>\n        <AttachmentActions>\n          {item.state === \"error\" && item.retryable && (\n            <AttachmentAction\n              variant={image ? \"secondary\" : undefined}\n              aria-label={`Retry ${item.name}`}\n              onClick={() => retry(item.id)}\n            >\n              <RotateCwIcon />\n            </AttachmentAction>\n          )}\n          <AttachmentAction\n            variant={image ? \"secondary\" : undefined}\n            revealAction={values.revealAction}\n            aria-label={`Remove ${item.name}`}\n            onClick={() => remove(item.id)}\n          >\n            <XIcon />\n          </AttachmentAction>\n        </AttachmentActions>\n      </Attachment>\n    )\n  }\n\n  const files = items.filter((item) => item.kind === \"file\")\n  const images = items.filter((item) => item.kind === \"image\")\n\n  return (\n    <section className=\"flex flex-col gap-4\">\n      <div className=\"flex flex-col gap-1\">\n        <p className=\"text-center text-sm text-(--hx-muted-foreground)\">\n          Click &ldquo;Add files&rdquo; or drop files here. Drag to reorder, click an image to open it.\n        </p>\n      </div>\n      <div className=\"flex items-center justify-between gap-6\">\n        <Attachment state=\"idle\" animateEnter={false}>\n          <AttachmentMedia>\n            <PlusIcon />\n          </AttachmentMedia>\n          <AttachmentContent>\n            <AttachmentTitle>Add files</AttachmentTitle>\n            <AttachmentDescription>{values.maxSizeMB > 0 ? `Up to ${values.maxSizeMB} MB each` : \"Any size\"}</AttachmentDescription>\n          </AttachmentContent>\n          <AttachmentTrigger aria-label=\"Add files\" onClick={() => inputRef.current?.click()} />\n        </Attachment>\n        <button\n          type=\"button\"\n          disabled={items.length === 0}\n          onClick={removeAll}\n          className={cn(\n            \"relative shrink-0 text-sm font-medium text-(--hx-muted-foreground) transition-[color,opacity] outline-none hover:text-(--hx-foreground) focus-visible:text-(--hx-foreground) disabled:pointer-events-none disabled:opacity-40\",\n            \"after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out\",\n            \"hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100\"\n          )}\n        >\n          Delete all\n        </button>\n      </div>\n\n      <AttachmentDropzone\n        animatedBorder={values.animatedBorder}\n        onFiles={addFiles}\n        className=\"flex min-h-76 flex-col gap-4 p-6 max-md:p-4\"\n      >\n        {/* Empty (e.g. after Delete all): say how to add files; clicking it opens the picker */}\n        <AnimatePresence>\n          {items.length === 0 && (\n            <motion.button\n              key=\"empty\"\n              type=\"button\"\n              onClick={() => inputRef.current?.click()}\n              initial={{ opacity: 0, y: 6 }}\n              animate={{ opacity: 1, y: 0 }}\n              exit={{ opacity: 0 }}\n              transition={{ duration: 0.3, ease: \"easeOut\" }}\n              className=\"m-auto flex cursor-pointer flex-col items-center gap-1.5 rounded-md px-4 py-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)\"\n            >\n              <span className=\"text-sm font-medium text-(--hx-foreground)\">No files yet</span>\n              <span className=\"text-sm text-(--hx-muted-foreground)\">\n                Drop files here, or click to upload.\n              </span>\n            </motion.button>\n          )}\n        </AnimatePresence>\n        <AttachmentGroup\n          reorder={values.reorder}\n          tiltOnScroll={values.tiltOnScroll}\n          wrap={values.wrap}\n          values={files.map((item) => item.id)}\n          onReorder={(ids) => reorder(\"file\", ids)}\n        >\n          <AnimatePresence initial={false} mode=\"popLayout\">\n            {files.map(renderItem)}\n          </AnimatePresence>\n        </AttachmentGroup>\n\n        <AttachmentGroup\n          reorder={values.reorder}\n          tiltOnScroll={values.tiltOnScroll}\n          wrap={values.wrap}\n          values={images.map((item) => item.id)}\n          onReorder={(ids) => reorder(\"image\", ids)}\n        >\n          <AnimatePresence initial={false} mode=\"popLayout\">\n            {images.map(renderItem)}\n          </AnimatePresence>\n        </AttachmentGroup>\n\n        <input\n          ref={inputRef}\n          type=\"file\"\n          multiple\n          hidden\n          accept={ACCEPT[values.accept as keyof typeof ACCEPT].input}\n          onChange={(e) => {\n            addFiles(Array.from(e.target.files ?? []))\n            e.target.value = \"\"\n          }}\n        />\n      </AttachmentDropzone>\n\n    </section>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedAttachmentProps extends Partial<ControlValues> {\n  theme?: AnimatedAttachmentTheme;\n  mode?: AnimatedAttachmentMode;\n  className?: string;\n}\n\nexport default function AnimatedAttachment({ theme = \"valorant\", mode = \"dark\", className, ...props }: AnimatedAttachmentProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <UploadDemo {...props} />\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  Attachment,\n  AttachmentGroup,\n  AttachmentDropzone,\n  AttachmentMedia,\n  AttachmentStatusIcon,\n  AttachmentContent,\n  AttachmentTitle,\n  AttachmentDescription,\n  AttachmentProgress,\n  AttachmentActions,\n  AttachmentAction,\n  AttachmentTrigger,\n};\n"
+    }
+  ]
+}

@@ -157,7 +157,7 @@ const THEMES: Record<`${AnimatedSliderTheme}:${AnimatedSliderMode}`, Record<stri
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedSliderTheme = "default", mode: AnimatedSliderMode = "light") {
+function themeProps(theme: AnimatedSliderTheme = "default", mode: AnimatedSliderMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

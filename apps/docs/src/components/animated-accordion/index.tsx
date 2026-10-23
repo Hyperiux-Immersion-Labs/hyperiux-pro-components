@@ -214,7 +214,7 @@ const THEMES: Record<`${AnimatedAccordionTheme}:${AnimatedAccordionMode}`, Recor
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedAccordionTheme = "default", mode: AnimatedAccordionMode = "light") {
+function themeProps(theme: AnimatedAccordionTheme = "default", mode: AnimatedAccordionMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   return { "data-theme": mode, style: style as React.CSSProperties };
@@ -566,7 +566,8 @@ function AccordionItem({
             aria-hidden
             data-slot="accordion-divider"
             className={cn(
-              "pointer-events-none absolute inset-x-0 bottom-0 h-px bg-(--hx-border)",
+              // a touch lighter than the theme border, so the dividers read on dark backgrounds too
+              "pointer-events-none absolute inset-x-0 bottom-0 h-px bg-[color-mix(in_oklch,var(--hx-border),var(--hx-foreground)_14%)]",
               fill &&
                 "transition-opacity duration-300 motion-reduce:transition-none group-data-open/accordion-item:opacity-0 group-has-[+[data-open]]/accordion-item:opacity-0"
             )}

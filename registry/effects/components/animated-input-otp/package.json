@@ -1,0 +1,22 @@
+{
+  "name": "@hyperiux/animated-input-otp",
+  "version": "1.0.0",
+  "description": "One-time code boxes that fill, shake and confirm.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "input-otp": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

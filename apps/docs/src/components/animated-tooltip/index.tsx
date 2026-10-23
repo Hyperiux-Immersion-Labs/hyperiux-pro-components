@@ -166,7 +166,7 @@ const THEMES: Record<`${AnimatedTooltipTheme}:${AnimatedTooltipMode}`, Record<st
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedTooltipTheme = "default", mode: AnimatedTooltipMode = "light") {
+function themeProps(theme: AnimatedTooltipTheme = "default", mode: AnimatedTooltipMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -308,6 +308,12 @@ function useReduceMotion() {
     return () => mq.removeEventListener?.("change", read)
   }, [])
   return reduceMotion
+}
+
+// Always/never instead of "user", so the demo's reduced-motion switch is honoured too
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = useReduceMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
 }
 
 // With reduced motion on, every move lands instantly. Otherwise the transition is unchanged.
@@ -558,7 +564,7 @@ function FloatingTooltipProvider({
         {children}
         {mounted &&
           createPortal(
-            <ThemeScope><MotionConfig reducedMotion="user">
+            <ThemeScope><ReducedMotionConfig>
               <AnimatePresence>
                 {open && payload && (
                   <motion.div
@@ -593,7 +599,7 @@ function FloatingTooltipProvider({
                   </motion.div>
                 )}
               </AnimatePresence>
-            </MotionConfig></ThemeScope>,
+            </ReducedMotionConfig></ThemeScope>,
             document.body
           )}
       </ControllerContext.Provider>
@@ -1012,11 +1018,11 @@ export default function AnimatedTooltip({ theme = "valorant", mode = "dark", cla
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
           <TooltipDemo {...props} />
         </div>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </ThemeContext.Provider>
   );
 }

@@ -2454,6 +2454,471 @@
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "pro"
+    },
+    {
+      "name": "animated-accordion",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedAccordion",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-attachment",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "@gsap/react",
+        "class-variance-authority",
+        "gsap",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedAttachment",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-button",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedButtonSet",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-chat-bubble",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedChatBubble",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-checkbox-group",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedCheckboxGroup",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-command-menu",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "cmdk",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedCommandMenu",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-data-table",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "gsap",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedDataTable",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-date-picker",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "date-fns",
+        "lucide-react",
+        "motion",
+        "react-day-picker",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedDatePicker",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-dialog",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedDialog",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-drawer",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedDrawer",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-dropdown-menu",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "gsap",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedDropdownMenu",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-hover-card",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedHoverCard",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-input-otp",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "input-otp",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedInputOtp",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-menubar",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedMenubar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-questionnaire",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedQuestionnaire",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-radio-group",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "motion"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedRadioGroup",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-sidebar",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedSidebar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-skeleton",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedSkeleton",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-slider",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedSlider",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-switch",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedSwitch",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-tabs-bar",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedTabsBar",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-theme-switch",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "gsap",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedThemeSwitch",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-toast",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "@base-ui/react",
+        "class-variance-authority",
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedToast",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "animated-tooltip",
+      "type": "registry:component",
+      "category": "components",
+      "categories": [
+        "components"
+      ],
+      "dependencies": [
+        "lucide-react",
+        "motion",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "exportName": "AnimatedTooltip",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     }
   ]
 }

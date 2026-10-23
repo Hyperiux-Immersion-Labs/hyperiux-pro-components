@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/animated-chat-bubble",
+  "version": "1.0.0",
+  "description": "Chat bubbles with streaming replies, reactions and swipe to reply.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

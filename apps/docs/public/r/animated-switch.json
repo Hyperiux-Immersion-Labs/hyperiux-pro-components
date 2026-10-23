@@ -1,0 +1,337 @@
+{
+  "name": "animated-switch",
+  "type": "registry:component",
+  "title": "Animated Switch",
+  "description": "A toggle between on and off.",
+  "dependencies": [
+    "@base-ui/react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedSwitch",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "valorant",
+      "description": "Colour palette for the track, thumb, marks and focus ring. Primary uses its primary colour; Green, Blue, Orange and Rose use its success, info, warning and destructive colours.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "variant",
+      "label": "Switch type",
+      "type": "string",
+      "default": "elastic",
+      "description": "Elastic stretches the thumb as it moves; Apple copies the iOS switch.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "Elastic",
+            "value": "elastic"
+          },
+          {
+            "label": "Apple",
+            "value": "apple"
+          }
+        ]
+      }
+    },
+    {
+      "name": "size",
+      "label": "Size",
+      "type": "string",
+      "default": "xl",
+      "description": "Size of the switch.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          }
+        ]
+      }
+    },
+    {
+      "name": "color",
+      "label": "On colour",
+      "type": "string",
+      "default": "primary",
+      "description": "Track colour when the switch is on.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "Primary",
+            "value": "primary"
+          },
+          {
+            "label": "Foreground",
+            "value": "foreground"
+          },
+          {
+            "label": "Green",
+            "value": "green"
+          },
+          {
+            "label": "Blue",
+            "value": "blue"
+          },
+          {
+            "label": "Orange",
+            "value": "orange"
+          },
+          {
+            "label": "Rose",
+            "value": "rose"
+          }
+        ]
+      }
+    },
+    {
+      "name": "appleGreen",
+      "label": "Apple green",
+      "type": "boolean",
+      "default": false,
+      "description": "Uses iOS green for the on track. Only for the Apple type with On colour set to Foreground.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style",
+        "disabledWhen": [
+          {
+            "prop": "variant",
+            "notEquals": "apple"
+          },
+          {
+            "prop": "color",
+            "notEquals": "foreground"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rounded",
+      "label": "Roundness",
+      "type": "string",
+      "default": "full",
+      "description": "Corner radius of the track and thumb.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "sm",
+            "value": "sm"
+          },
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "showMarks",
+      "label": "Show marks",
+      "type": "boolean",
+      "default": false,
+      "description": "Shows on and off marks inside the track.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "style",
+        "groupTitle": "Style"
+      }
+    },
+    {
+      "name": "labelPosition",
+      "label": "Label position",
+      "type": "string",
+      "default": "top",
+      "description": "Where the label sits relative to the switch.",
+      "remixer": {
+        "control": "select",
+        "group": "style",
+        "groupTitle": "Style",
+        "options": [
+          {
+            "label": "Above",
+            "value": "top"
+          },
+          {
+            "label": "Below",
+            "value": "bottom"
+          },
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pressSqueeze",
+      "label": "Press squeeze",
+      "type": "number",
+      "default": 0.24,
+      "description": "How much the thumb squashes when pressed (Elastic) or widens (Apple, which stops changing above about 0.27).",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.4,
+        "step": 0.01,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 0.35,
+      "description": "How long the thumb takes to move, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 1,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "bounce",
+      "label": "Bounce",
+      "type": "number",
+      "default": 0.3,
+      "description": "Springiness of the thumb when it lands. 0 means no overshoot.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.7,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-switch/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport * as React from \"react\";\nimport { Switch as SwitchPrimitive } from \"@base-ui/react/switch\";\nimport { MotionConfig, animate, motion, useMotionValue, useTransform, type MotionStyle, type Transition } from \"motion/react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedSwitchTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedSwitchMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedSwitchTheme}:${AnimatedSwitchMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"info\": \"oklch(0.588 0.158 241.966)\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"info\": \"oklch(0.685 0.169 237.323)\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedSwitchTheme = \"default\", mode: AnimatedSwitchMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\n// ---- switch.tsx ----\n\n/** elastic: the handle squashes when pressed and stretches as it travels. apple: a glass capsule that turns see-through when pressed, and can be dragged. */\ntype SwitchVariant = \"elastic\" | \"apple\"\ntype SwitchSize = \"md\" | \"lg\" | \"xl\"\ntype SwitchColor = \"primary\" | \"foreground\" | \"green\" | \"blue\" | \"orange\" | \"rose\"\ntype SwitchRounded = \"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\"\ntype SwitchLabelSide = \"top\" | \"right\" | \"bottom\" | \"left\"\n\ntype SwitchMotion = {\n  variant: SwitchVariant\n  size: SwitchSize\n  /** Track colour when on. \"primary\" follows the theme. */\n  color: SwitchColor\n  /** With \"foreground\" colour, use the system green on the apple switch. */\n  appleGreen: boolean\n  rounded: SwitchRounded\n  /** How hard the handle squashes (elastic) or widens (apple) when pressed. */\n  pressSqueeze: number\n  /** Travel time of the handle, in seconds. */\n  duration: number\n  bounce: number\n  /** Small I / O marks in the track. */\n  showMarks: boolean\n  labelPosition: SwitchLabelSide\n}\n\n// Track and handle sizes. The numbers are what the animation needs; the classes size the track.\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\nconst SIZE: Record<\n  SwitchSize,\n  { track: string; w: number; d: number; gap: number; label: string; mark: string }\n> = {\n  md: { track: \"h-6.5 w-11\", w: 44, d: 20, gap: 2, label: \"gap-2.5 text-base\", mark: \"text-[0.6rem]\" },\n  lg: { track: \"h-9 w-16\", w: 64, d: 28, gap: 4, label: \"gap-3 text-xl\", mark: \"text-xs\" },\n  xl: { track: \"h-13 w-24\", w: 96, d: 40, gap: 6, label: \"gap-5 text-3xl\", mark: \"text-lg\" },\n}\n\n// The apple switch is a little longer than the elastic one\nconst APPLE_WIDE: Record<SwitchSize, { track: string; w: number }> = {\n  md: { track: \"h-6.5 w-17\", w: 68 },\n  lg: { track: \"h-9 w-25\", w: 100 },\n  xl: { track: \"h-13 w-36\", w: 144 },\n}\n\nconst TRACK_ROUNDED: Record<SwitchRounded, string> = {\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  full: \"rounded-full\",\n}\n\n// One step tighter than the track, so the handle sits concentric inside it\nconst HANDLE_ROUNDED: Record<SwitchRounded, string> = {\n  sm: \"rounded-xs\",\n  md: \"rounded-sm\",\n  lg: \"rounded-md\",\n  xl: \"rounded-lg\",\n  full: \"rounded-full\",\n}\n\n// On a dark page \"on\" is the dark grey that \"off\" used to be, not a bright fill\nconst FOREGROUND = \"bg-(--hx-foreground) in-data-[theme=dark]:bg-(--hx-secondary)\"\n\nconst ON_COLOR: Record<SwitchColor, string> = {\n  primary: \"bg-(--hx-primary)\",\n  foreground: FOREGROUND,\n  green: \"bg-(--hx-success)\",\n  blue: \"bg-(--hx-info)\",\n  orange: \"bg-(--hx-warning)\",\n  rose: \"bg-(--hx-destructive)\",\n}\n\nconst IOS_GREEN = \"bg-(--hx-success)\"\nconst OFF: Record<SwitchVariant, string> = {\n  elastic: \"bg-(--hx-foreground)/20 in-data-[theme=dark]:bg-(--hx-foreground)/10\",\n  apple: \"bg-(--hx-foreground)/20 in-data-[theme=dark]:bg-(--hx-foreground)/10\",\n}\n\nconst FAST: Transition = { type: \"spring\", duration: 0.15, bounce: 0 }\nconst SNAP: Transition = { type: \"spring\", duration: 0.4, bounce: 0.5 }\n\nfunction Switch({\n  variant = \"elastic\",\n  size = \"xl\",\n  color = \"primary\",\n  appleGreen = false,\n  rounded = \"full\",\n  pressSqueeze = 0.18,\n  duration = 0.35,\n  bounce = 0.3,\n  showMarks = false,\n  labelPosition = \"right\",\n  label,\n  className,\n  labelClassName,\n  checked,\n  defaultChecked,\n  onCheckedChange,\n  disabled,\n  ...props\n}: Omit<SwitchPrimitive.Root.Props, \"children\" | \"className\" | \"render\"> &\n  Partial<SwitchMotion> & {\n    label?: React.ReactNode\n    className?: string\n    labelClassName?: string\n  }) {\n  const reduceMotion = usePrefersReducedMotion()\n  const spec = { ...SIZE[size], ...(variant === \"apple\" ? APPLE_WIDE[size] : null) }\n  // The apple handle is a wider capsule, like the system switch\n  const handleW = variant === \"apple\" ? Math.round(spec.d * 1.4) : spec.d\n  const handleH = variant === \"apple\" ? Math.round(spec.d * 1.1) : spec.d\n  const travel = spec.w - handleW - spec.gap * 2\n  // Only the apple switch can be dragged, like the system one\n  const canDrag = variant === \"apple\"\n\n  const [own, setOwn] = React.useState(defaultChecked ?? false)\n  const on = checked ?? own\n\n  // Where the handle is, and how it is squashed or widened\n  const x = useMotionValue(on ? travel : 0)\n  const scaleX = useMotionValue(1)\n  const scaleY = useMotionValue(1)\n  const widen = useMotionValue(0)\n  const lift = useMotionValue(0)\n  const fillOpacity = useTransform(x, [0, travel], [0, 1])\n  const offOpacity = useTransform(x, [0, travel], [1, 0])\n  // The apple handle grows both ways, so it can overhang the track ends\n  const appleX = useTransform(() => x.get() - widen.get() / 2)\n  const appleWidth = useTransform(widen, (w) => handleW + w)\n  const appleHeight = useTransform(lift, (h) => handleH + h)\n  // 0 at rest, 1 while pressed: the capsule goes from milky white to clear glass\n  const glass = useMotionValue(0)\n  const glassBg = useTransform(glass, (g) => `color-mix(in oklab, var(--hx-background) ${(1 - 0.7 * g) * 100}%, transparent)`)\n  const glassBlur = useTransform(glass, (g) => `blur(${g * 10}px) saturate(${1 + g * 0.8})`)\n  const glassShadow = useTransform(glass, (g) =>\n    [\n      `0 ${2 + g * 2}px ${8 + g * 6}px rgba(0,0,0,${0.2 - g * 0.08})`,\n      `inset 0 0 0 1px rgba(255,255,255,${0.35 + g * 0.35})`,\n      `inset 0 2px 3px rgba(255,255,255,${0.9 - g * 0.3})`,\n      `inset 0 -2px 4px rgba(0,0,0,${0.06 + g * 0.06})`,\n    ].join(\",\")\n  )\n\n  const ok = (t: Transition): Transition => (reduceMotion ? { duration: 0 } : t)\n  const travelSpring: Transition = { type: \"spring\", duration, bounce }\n\n  const dragging = React.useRef(false)\n  const suppressClick = React.useRef(false)\n  const allowClick = React.useRef(false)\n  const start = React.useRef({ pointer: 0, handle: 0 })\n\n  // Follow the state: slide the handle, with a stretch on the way for elastic\n  const previous = React.useRef(on)\n  React.useEffect(() => {\n    if (previous.current === on) return\n    previous.current = on\n    animate(x, on ? travel : 0, ok(travelSpring))\n    if (variant === \"elastic\" && !reduceMotion) {\n      animate(scaleX, 1 + pressSqueeze * 0.85, FAST).then(() => animate(scaleX, 1, SNAP))\n      animate(scaleY, 1 - pressSqueeze * 0.65, FAST).then(() => animate(scaleY, 1, SNAP))\n    }\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [on])\n\n  // Snap to a new size if it changes\n  React.useEffect(() => {\n    x.jump(on ? travel : 0)\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [travel])\n\n  const change = (next: boolean, details: Parameters<NonNullable<typeof onCheckedChange>>[1]) => {\n    setOwn(next)\n    onCheckedChange?.(next, details)\n  }\n\n  const press = () => {\n    if (reduceMotion) return\n    if (variant === \"elastic\") {\n      animate(scaleX, 1 - pressSqueeze, FAST)\n      animate(scaleY, 1 + pressSqueeze * 0.55, FAST)\n    } else {\n      // The glass swells wider and stands a little taller than the track\n      const cover = Math.min(1, pressSqueeze / 0.2)\n      // No bounce, so it lands on its final size and stays exactly that through a drag\n      const swell: Transition = { type: \"spring\", duration: 0.25, bounce: 0 }\n      animate(widen, (spec.w * 0.68 - handleW) * cover, swell)\n      animate(lift, handleH * Math.min(0.75, pressSqueeze * 2.8), swell)\n      animate(glass, 1, FAST)\n    }\n  }\n  const release = () => {\n    if (variant === \"elastic\") {\n      animate(scaleX, 1, ok(SNAP))\n      animate(scaleY, 1, ok(SNAP))\n    } else {\n      animate(widen, 0, ok({ type: \"spring\", duration: 0.35, bounce: 0.25 }))\n      animate(lift, 0, ok({ type: \"spring\", duration: 0.35, bounce: 0.25 }))\n      animate(glass, 0, ok({ duration: 0.3, ease: \"easeOut\" }))\n    }\n  }\n\n  const rootRef = React.useRef<HTMLElement>(null)\n\n  const fill = color === \"foreground\" && variant === \"apple\" && appleGreen ? IOS_GREEN : ON_COLOR[color]\n\n  const control = (\n    <SwitchPrimitive.Root\n      ref={rootRef as React.Ref<HTMLSpanElement>}\n      data-slot=\"switch\"\n      data-variant={variant}\n      checked={on}\n      disabled={disabled}\n      onCheckedChange={(next, details) => change(next, details)}\n      onPointerDown={(e) => {\n        if (disabled) return\n        press()\n        if (!canDrag) return\n        dragging.current = false\n        start.current = { pointer: e.clientX, handle: x.get() }\n        e.currentTarget.setPointerCapture(e.pointerId)\n      }}\n      onPointerMove={(e) => {\n        if (!canDrag || !e.currentTarget.hasPointerCapture(e.pointerId)) return\n        const dx = e.clientX - start.current.pointer\n        if (!dragging.current && Math.abs(dx) < 3) return\n        dragging.current = true\n        x.set(Math.min(travel, Math.max(0, start.current.handle + dx)))\n      }}\n      onPointerUp={(e) => {\n        release()\n        if (!canDrag || !dragging.current) return\n        dragging.current = false\n        e.currentTarget.releasePointerCapture(e.pointerId)\n        // The click the browser sends after a drag must not flip it a second time\n        suppressClick.current = true\n        setTimeout(() => (suppressClick.current = false), 100)\n        if (x.get() > travel / 2 !== on) {\n          // Flip through the switch's own click, so a parent that controls it hears about it\n          allowClick.current = true\n          e.currentTarget.click()\n        } else animate(x, on ? travel : 0, ok(travelSpring))\n      }}\n      onPointerLeave={release}\n      onPointerCancel={release}\n      onClickCapture={(e) => {\n        if (allowClick.current) {\n          allowClick.current = false\n          return\n        }\n        if (!suppressClick.current) return\n        suppressClick.current = false\n        e.stopPropagation()\n        e.preventDefault()\n      }}\n      className={cn(\n        \"relative inline-flex shrink-0 cursor-pointer items-center outline-none select-none\",\n        \"focus-visible:ring-2 focus-visible:ring-(--hx-ring) focus-visible:ring-offset-2 focus-visible:ring-offset-(--hx-background)\",\n        \"data-disabled:cursor-not-allowed data-disabled:opacity-50\",\n        canDrag && \"touch-none\",\n        spec.track,\n        TRACK_ROUNDED[rounded],\n        className\n      )}\n      {...props}\n    >\n      <span\n        aria-hidden\n        className={cn(\"absolute inset-0\", TRACK_ROUNDED[rounded], OFF[variant])}\n        style={variant === \"apple\" ? { boxShadow: \"inset 0 1px 3px rgba(0,0,0,0.22)\" } : undefined}\n      />\n      <motion.span\n        aria-hidden\n        className={cn(\"absolute inset-0\", TRACK_ROUNDED[rounded], fill)}\n        style={{ opacity: fillOpacity }}\n      />\n      {variant === \"apple\" && (\n        // A soft sheen along the top of the track\n        <span\n          aria-hidden\n          className={cn(\n            \"pointer-events-none absolute inset-0 bg-linear-to-b from-(--hx-background)/30 via-transparent to-(--hx-foreground)/5\",\n            TRACK_ROUNDED[rounded]\n          )}\n        />\n      )}\n      {showMarks && (\n        <>\n          <motion.span\n            aria-hidden\n            className={cn(\n              \"pointer-events-none absolute inset-y-0 flex items-center justify-center font-semibold\",\n              color === \"primary\" ? \"text-(--hx-primary-foreground)\" : \"text-(--hx-background)\",\n              spec.mark\n            )}\n            style={{ left: spec.gap, width: travel, opacity: fillOpacity }}\n          >\n            I\n          </motion.span>\n          <motion.span\n            aria-hidden\n            className={cn(\n              \"pointer-events-none absolute inset-y-0 flex items-center justify-center font-semibold text-(--hx-muted-foreground)\",\n              spec.mark\n            )}\n            style={{ right: spec.gap, width: travel, opacity: offOpacity }}\n          >\n            O\n          </motion.span>\n        </>\n      )}\n      <SwitchPrimitive.Thumb\n        data-slot=\"switch-thumb\"\n        render={(thumbProps) => (\n          <motion.span\n            {...(thumbProps as React.ComponentProps<typeof motion.span>)}\n            className={cn(\n              \"pointer-events-none z-10 block\",\n              variant === \"elastic\" && \"bg-(--hx-background) shadow-md ring-1 ring-(--hx-foreground)/10\",\n              HANDLE_ROUNDED[rounded]\n            )}\n            style={\n              {\n                ...thumbProps.style,\n                marginLeft: spec.gap,\n                ...(variant === \"apple\" ? {} : { height: spec.d }),\n                ...(variant === \"apple\"\n                  ? {\n                      width: appleWidth,\n                      height: appleHeight,\n                      x: appleX,\n                      backgroundColor: glassBg,\n                      backdropFilter: glassBlur,\n                      WebkitBackdropFilter: glassBlur,\n                      boxShadow: glassShadow,\n                    }\n                  : { width: spec.d, x, scaleX, scaleY }),\n              } as MotionStyle\n            }\n          />\n        )}\n      />\n    </SwitchPrimitive.Root>\n  )\n\n  if (label === undefined) return <MotionConfig reducedMotion={reduceMotion ? \"always\" : \"never\"}>{control}</MotionConfig>\n\n  return (\n    <MotionConfig reducedMotion={reduceMotion ? \"always\" : \"never\"}>\n      <label\n        className={cn(\n          \"inline-flex cursor-pointer items-center select-none\",\n          (labelPosition === \"top\" || labelPosition === \"bottom\") && \"flex-col\",\n          spec.label,\n          disabled && \"cursor-not-allowed opacity-50\",\n          labelClassName\n        )}\n        // A click on the text flips the switch, whichever side the text is on\n        onClick={(e) => {\n          if (e.target !== e.currentTarget && rootRef.current?.contains(e.target as Node)) return\n          e.preventDefault()\n          if (!disabled) rootRef.current?.click()\n        }}\n      >\n        {(labelPosition === \"left\" || labelPosition === \"top\") && <span>{label}</span>}\n        {control}\n        {(labelPosition === \"right\" || labelPosition === \"bottom\") && <span>{label}</span>}\n      </label>\n    </MotionConfig>\n  )\n}\n\n// ---- demo: switch-demo.tsx ----\n\nconst controls = {\n  variant: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Switch type\",\n    value: \"elastic\",\n    options: [\n      { label: \"Elastic\", value: \"elastic\" },\n      { label: \"Apple\", value: \"apple\" },\n    ],\n  },\n  size: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Size\",\n    value: \"xl\",\n    options: [\n      { label: \"md\", value: \"md\" },\n      { label: \"lg\", value: \"lg\" },\n      { label: \"xl\", value: \"xl\" },\n    ],\n  },\n  color: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"On colour\",\n    value: \"primary\",\n    options: [\n      { label: \"Primary\", value: \"primary\" },\n      { label: \"Foreground\", value: \"foreground\" },\n      { label: \"Green\", value: \"green\" },\n      { label: \"Blue\", value: \"blue\" },\n      { label: \"Orange\", value: \"orange\" },\n      { label: \"Rose\", value: \"rose\" },\n    ],\n  },\n  appleGreen: { disabled: (v: Record<string, unknown>) => v.variant !== \"apple\" || v.color !== \"foreground\", group: \"Style\", type: \"checkbox\", label: \"Apple green\", value: false },\n  rounded: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Roundness\",\n    value: \"full\",\n    options: [\n      { label: \"sm\", value: \"sm\" },\n      { label: \"md\", value: \"md\" },\n      { label: \"lg\", value: \"lg\" },\n      { label: \"xl\", value: \"xl\" },\n      { label: \"Full\", value: \"full\" },\n    ],\n  },\n  showMarks: { group: \"Style\", type: \"checkbox\", label: \"Show marks\", value: false },\n  labelPosition: {\n    group: \"Style\",\n    type: \"select\",\n    label: \"Label position\",\n    value: \"top\",\n    options: [\n      { label: \"Above\", value: \"top\" },\n      { label: \"Below\", value: \"bottom\" },\n      { label: \"Left\", value: \"left\" },\n      { label: \"Right\", value: \"right\" },\n    ],\n  },\n\n  pressSqueeze: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Press squeeze\",\n    value: 0.24,\n    min: 0,\n    max: 0.4,\n    step: 0.01,\n  },\n  duration: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 0.35,\n    min: 0.1,\n    max: 1,\n    step: 0.05,\n    unit: \"s\",\n  },\n  bounce: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Bounce\",\n    value: 0.3,\n    min: 0,\n    max: 0.7,\n    step: 0.05,\n  },\n}\n\nfunction SwitchDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const [on, setOn] = React.useState(true)\n\n  return (\n    <div className=\"flex flex-col gap-3\">\n      <div className=\"flex min-h-64 max-md:min-h-72 items-center justify-center px-4 py-8\">\n        <Switch\n          checked={on}\n          onCheckedChange={setOn}\n          label=\"Wi-Fi\"\n          variant={values.variant as SwitchVariant}\n          size={values.size as SwitchSize}\n          color={values.color as SwitchColor}\n          appleGreen={values.appleGreen}\n          rounded={values.rounded as SwitchRounded}\n          showMarks={values.showMarks}\n          labelPosition={values.labelPosition as SwitchLabelSide}\n          pressSqueeze={values.pressSqueeze}\n          duration={values.duration}\n          bounce={values.bounce}\n        />\n      </div>\n      <p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\">\n        {values.variant === \"apple\" ? \"Tip: press and hold to see the glass handle swell, then drag it across and let go past the middle to flip it.\" : \"Tip: press and hold to see the handle squeeze before you let go.\"}\n      </p>\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedSwitchProps extends Partial<ControlValues> {\n  theme?: AnimatedSwitchTheme;\n  mode?: AnimatedSwitchMode;\n  className?: string;\n}\n\nexport default function AnimatedSwitch({ theme = \"valorant\", mode = \"dark\", className, ...props }: AnimatedSwitchProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <ReducedMotionConfig>\n          <SwitchDemo {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  Switch,\n  type SwitchVariant,\n  type SwitchSize,\n  type SwitchColor,\n  type SwitchRounded,\n  type SwitchLabelSide,\n};\n"
+    }
+  ]
+}

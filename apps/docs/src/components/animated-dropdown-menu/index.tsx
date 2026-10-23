@@ -257,7 +257,7 @@ const THEMES: Record<`${AnimatedDropdownMenuTheme}:${AnimatedDropdownMenuMode}`,
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedDropdownMenuTheme = "default", mode: AnimatedDropdownMenuMode = "light") {
+function themeProps(theme: AnimatedDropdownMenuTheme = "default", mode: AnimatedDropdownMenuMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

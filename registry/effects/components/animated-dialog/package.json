@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/animated-dialog",
+  "version": "1.0.0",
+  "description": "A window over the page that asks for a decision before you carry on.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "lucide-react": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

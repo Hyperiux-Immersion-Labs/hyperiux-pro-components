@@ -1,0 +1,590 @@
+{
+  "name": "animated-data-table",
+  "type": "registry:component",
+  "title": "Animated Data Table",
+  "description": "Sort, filter, select and reorder rows that glide into place.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "gsap",
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedDataTable",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "ghibli",
+      "description": "Colour palette for the table, its menus and the action bar. Selected rows and primary buttons take its primary colour.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "staggerRows",
+      "label": "Stagger rows",
+      "type": "boolean",
+      "default": true,
+      "description": "Rows appear one after another when the table loads or changes.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "entrance",
+        "groupTitle": "Entrance",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "staggerCells",
+      "label": "Stagger cells",
+      "type": "boolean",
+      "default": false,
+      "description": "Cells inside each row also appear one after another.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "entrance",
+        "groupTitle": "Entrance",
+        "disabledWhen": {
+          "prop": "staggerRows",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "numberAnimation",
+      "label": "Number animation",
+      "type": "string",
+      "default": "roll",
+      "description": "How numbers change: roll digit by digit, count up, or switch instantly.",
+      "remixer": {
+        "control": "select",
+        "group": "entrance",
+        "groupTitle": "Entrance",
+        "options": [
+          {
+            "label": "Roll",
+            "value": "roll"
+          },
+          {
+            "label": "Count up",
+            "value": "on"
+          },
+          {
+            "label": "Off",
+            "value": "off"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 0.4,
+      "description": "How long each animation takes, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0.1,
+        "max": 1,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "stagger",
+      "label": "Stagger",
+      "type": "number",
+      "default": 0.04,
+      "description": "Delay between each row or cell appearing, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "timing",
+        "groupTitle": "Timing",
+        "min": 0,
+        "max": 0.15,
+        "step": 0.01,
+        "disabledWhen": {
+          "prop": "staggerRows",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "rowHighlight",
+      "label": "Row highlight",
+      "type": "string",
+      "default": "slide",
+      "description": "How the hover highlight moves between rows: slides, fills from the top, or none.",
+      "remixer": {
+        "control": "select",
+        "group": "hover",
+        "groupTitle": "Hover",
+        "options": [
+          {
+            "label": "Slide",
+            "value": "slide"
+          },
+          {
+            "label": "Fill from top",
+            "value": "fill"
+          },
+          {
+            "label": "None",
+            "value": "none"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "rowHighlightColor",
+      "label": "Row highlight color",
+      "type": "string",
+      "default": "primary",
+      "description": "Colour of the row highlight: soft grey or the theme's primary colour.",
+      "remixer": {
+        "control": "select",
+        "group": "hover",
+        "groupTitle": "Hover",
+        "options": [
+          {
+            "label": "Muted",
+            "value": "muted"
+          },
+          {
+            "label": "Primary",
+            "value": "primary"
+          }
+        ],
+        "disabledWhen": {
+          "prop": "rowHighlight",
+          "equals": "none"
+        }
+      }
+    },
+    {
+      "name": "rollingText",
+      "label": "Rolling text",
+      "type": "boolean",
+      "default": false,
+      "description": "Header and button labels roll to a second copy on hover.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "hover",
+        "groupTitle": "Hover",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "showStatusFilter",
+      "label": "Show status filter",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the status filter above the table.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "data",
+        "groupTitle": "Data"
+      }
+    },
+    {
+      "name": "highlightTotal",
+      "label": "Highlight total",
+      "type": "boolean",
+      "default": false,
+      "description": "Highlights the total figure in the footer.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "data",
+        "groupTitle": "Data"
+      }
+    },
+    {
+      "name": "showPagination",
+      "label": "Show pagination",
+      "type": "boolean",
+      "default": false,
+      "description": "Splits the rows into pages with next and previous buttons.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "data",
+        "groupTitle": "Data"
+      }
+    },
+    {
+      "name": "selectable",
+      "label": "Row checkboxes",
+      "type": "boolean",
+      "default": false,
+      "description": "Adds a checkbox to every row.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "selection",
+        "groupTitle": "Selection"
+      }
+    },
+    {
+      "name": "showSelectAll",
+      "label": "Show select all",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows the select-all checkbox in the header. Needs Row checkboxes on.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "selection",
+        "groupTitle": "Selection",
+        "disabledWhen": {
+          "prop": "selectable",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "selectMark",
+      "label": "Select mark",
+      "type": "string",
+      "default": "check",
+      "description": "Mark shown in a selected row's checkbox: checkmark or filled circle. Needs Row checkboxes on.",
+      "remixer": {
+        "control": "select",
+        "group": "selection",
+        "groupTitle": "Selection",
+        "options": [
+          {
+            "label": "Checkmark",
+            "value": "check"
+          },
+          {
+            "label": "Filled circle",
+            "value": "circle"
+          }
+        ],
+        "disabledWhen": {
+          "prop": "selectable",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "showActionBar",
+      "label": "Show action bar",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows a floating action bar when rows are selected. Needs Row checkboxes on.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "selection",
+        "groupTitle": "Selection",
+        "disabledWhen": {
+          "prop": "selectable",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "dragMode",
+      "label": "Drag mode",
+      "type": "boolean",
+      "default": false,
+      "description": "Lets you drag rows up and down to reorder them.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "rows",
+        "groupTitle": "Rows"
+      }
+    },
+    {
+      "name": "showStatusBadges",
+      "label": "Show status badges",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows status as coloured badges instead of plain text.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "rows",
+        "groupTitle": "Rows"
+      }
+    },
+    {
+      "name": "expandable",
+      "label": "Expandable preview",
+      "type": "boolean",
+      "default": false,
+      "description": "Rows open to reveal a preview underneath.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "rows",
+        "groupTitle": "Rows"
+      }
+    },
+    {
+      "name": "removable",
+      "label": "Delete column",
+      "type": "boolean",
+      "default": false,
+      "description": "Adds a button to delete a column.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "rows",
+        "groupTitle": "Rows"
+      }
+    },
+    {
+      "name": "addable",
+      "label": "Add rows",
+      "type": "boolean",
+      "default": true,
+      "description": "Adds a button to add new rows.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "rows",
+        "groupTitle": "Rows"
+      }
+    },
+    {
+      "name": "textAlign",
+      "label": "Text alignment",
+      "type": "string",
+      "default": "left",
+      "description": "Alignment of the text in the cells.",
+      "remixer": {
+        "control": "select",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "options": [
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Center",
+            "value": "center"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "bordered",
+      "label": "Border",
+      "type": "boolean",
+      "default": true,
+      "description": "Draws a border around the table.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "showHorizontalLines",
+      "label": "Show horizontal lines",
+      "type": "boolean",
+      "default": true,
+      "description": "Draws a line between rows.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "showVerticalLines",
+      "label": "Show vertical lines",
+      "type": "boolean",
+      "default": true,
+      "description": "Draws a line between columns.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "showHeaderBorder",
+      "label": "Show header border",
+      "type": "boolean",
+      "default": true,
+      "description": "Draws a line under the header row.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "boldHeader",
+      "label": "Bold header",
+      "type": "boolean",
+      "default": true,
+      "description": "Makes the header text bold.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "stickyHeader",
+      "label": "Sticky header",
+      "type": "boolean",
+      "default": true,
+      "description": "Keeps the header in view while the rows scroll.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "expandFullTable",
+      "label": "Expand full table",
+      "type": "boolean",
+      "default": false,
+      "description": "Grows the table to show every row instead of scrolling inside it.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    },
+    {
+      "name": "height",
+      "label": "Table height",
+      "type": "number",
+      "default": 40,
+      "description": "Height of the table, as a percentage of the viewport. Ignored when Expand full table is on.",
+      "remixer": {
+        "control": "range",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "min": 20,
+        "max": 100,
+        "step": 5,
+        "disabledWhen": {
+          "prop": "expandFullTable",
+          "equals": true
+        }
+      }
+    },
+    {
+      "name": "stickyFooter",
+      "label": "Sticky last row",
+      "type": "boolean",
+      "default": true,
+      "description": "Keeps the last row pinned at the bottom while the rows scroll.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout",
+        "disabledWhen": {
+          "prop": "highlightTotal",
+          "equals": false
+        }
+      }
+    },
+    {
+      "name": "loadingSkeleton",
+      "label": "Loading skeleton",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows shimmering placeholders for a moment before the rows appear.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "layout",
+        "groupTitle": "Layout"
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-data-table/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { animate, stagger, AnimatePresence, motion, MotionConfig, type Variants, Reorder, stagger as staggerChildren, useDragControls, useInView } from \"motion/react\";\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\n\nimport gsap from \"gsap\";\nimport { ArrowUpIcon, ChevronLeftIcon, ChevronRightIcon, GripVerticalIcon, PlusIcon, Trash2Icon, XIcon } from \"lucide-react\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedDataTableTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedDataTableMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedDataTableTheme}:${AnimatedDataTableMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"accent-foreground\": \"oklch(0.205 0 0)\",\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"default:dark\": {\n    \"accent-foreground\": \"oklch(0.985 0 0)\",\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:light\": {\n    \"accent-foreground\": \"#202020\",\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"caffeine:dark\": {\n    \"accent-foreground\": \"#eeeeee\",\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:light\": {\n    \"accent-foreground\": \"#28261b\",\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"claude:dark\": {\n    \"accent-foreground\": \"#f5f4ee\",\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:light\": {\n    \"accent-foreground\": \"#2f4a55\",\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"ghibli:dark\": {\n    \"accent-foreground\": \"#e6e0cc\",\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:light\": {\n    \"accent-foreground\": \"#0f6b30\",\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"spotify:dark\": {\n    \"accent-foreground\": \"#ffffff\",\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:light\": {\n    \"accent-foreground\": \"#0f1923\",\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"valorant:dark\": {\n    \"accent-foreground\": \"#ece8e1\",\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:light\": {\n    \"accent-foreground\": \"#3b3b3b\",\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\",\n    \"success\": \"oklch(0.596 0.145 163.225)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  },\n  \"vscode:dark\": {\n    \"accent-foreground\": \"#ffffff\",\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\",\n    \"success\": \"oklch(0.696 0.17 162.48)\",\n    \"warning\": \"oklch(0.769 0.188 70.08)\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedDataTableTheme = \"default\", mode: AnimatedDataTableMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\n// Keyframes and classes the component needs; no global CSS required\nconst COMPONENT_CSS = \"@keyframes hx-skeleton-sweep{from{background-position:0 0}to{background-position:60vw 0}}\\n@keyframes hx-skeleton-sweep-wide{from{background-position:0 0}to{background-position:100vw 0}}\\n.hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-background) 85%,transparent);background-image:linear-gradient(100deg,transparent 25%,var(--skeleton-highlight) 50%,transparent 75%);background-size:60vw 100%;background-repeat:repeat-x;background-attachment:fixed;animation:hx-skeleton-sweep var(--skeleton-duration,1.6s) linear var(--skeleton-delay,0s) infinite}\\n[data-theme=dark] .hx-skeleton-sweep{--skeleton-highlight:color-mix(in oklch,var(--hx-foreground) 9%,transparent)}\\n.hx-skeleton-sweep[data-animation=wave]{background-image:linear-gradient(100deg,transparent 10%,var(--skeleton-highlight) 50%,transparent 90%);background-size:100vw 100%;animation-name:hx-skeleton-sweep-wide}\\n@media (prefers-reduced-motion:reduce){.hx-skeleton-sweep{animation:none;background-image:none}}\";\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-md px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-md px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-md in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-md in-data-[slot=button-group]:rounded-md\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\ntype SkeletonAnimation = \"shimmer\" | \"pulse\" | \"wave\" | \"none\"\ntype SkeletonRounded = \"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\"\n\ntype SkeletonMotion = {\n  animation: SkeletonAnimation\n  duration: number\n  stagger: number\n  rounded: SkeletonRounded\n}\n\nconst ROUNDED: Record<SkeletonRounded, string> = {\n  none: \"rounded-none\",\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  full: \"rounded-full\",\n}\n\nconst SkeletonContext = React.createContext<SkeletonMotion | null>(null)\n\nconst SkeletonIndexContext = React.createContext(0)\n\nfunction Skeleton({\n  className,\n  animation,\n  duration,\n  rounded,\n  index,\n  style,\n  ...props\n}: React.ComponentProps<\"div\"> &\n  Partial<Pick<SkeletonMotion, \"animation\" | \"duration\" | \"rounded\">> & {\n    index?: number\n  }) {\n  const group = React.useContext(SkeletonContext)\n  const fallbackIndex = React.useContext(SkeletonIndexContext)\n  const reduced = usePrefersReducedMotion()\n\n  const kind = animation ?? group?.animation ?? \"shimmer\"\n  const seconds = duration ?? group?.duration ?? 1.6\n  const radius = rounded ?? group?.rounded ?? \"md\"\n  // Negative delay: offset, but moving immediately\n  const lag = ((index ?? fallbackIndex) * (group?.stagger ?? 0)) % seconds\n  const delay = lag === 0 ? 0 : lag - seconds\n\n  const active = !reduced && kind !== \"none\"\n\n  return (\n    <div\n      data-slot=\"skeleton\"\n      data-animation={kind}\n      className={cn(\n        \"relative overflow-hidden bg-(--hx-muted)\",\n        ROUNDED[radius],\n        active && kind === \"pulse\" && \"animate-pulse\",\n        // Shared viewport band; see globals.css\n        active && (kind === \"shimmer\" || kind === \"wave\") && \"hx-skeleton-sweep\",\n        // CSS catches reduced motion during hydration\n        \"motion-reduce:animate-none\",\n        className\n      )}\n      style={{\n        ...style,\n        ...(active\n          ? ({\n              \"--skeleton-duration\": `${seconds}s`,\n              \"--skeleton-delay\": `${delay}s`,\n              animationDuration: kind === \"pulse\" ? `${seconds}s` : undefined,\n              animationDelay: kind === \"pulse\" ? `${delay}s` : undefined,\n            } as React.CSSProperties)\n          : null),\n      }}\n      {...props}\n    />\n  )\n}\n\nfunction MorphChevron({\n  open,\n  duration = 0.35,\n  className,\n  ...props\n}: Omit<React.ComponentProps<\"svg\">, \"children\"> & { open: boolean; duration?: number }) {\n  const reduceMotion = usePrefersReducedMotion()\n  const transition = reduceMotion ? \"none\" : `transform ${duration}s ease-in-out`\n  const half = (d: string, angle: number) => (\n    <path\n      d={d}\n      style={{\n        transformBox: \"view-box\",\n        transformOrigin: \"50px 50px\",\n        transform: `rotate(${angle}deg)`,\n        transition,\n      }}\n    />\n  )\n\n  return (\n    <svg\n      aria-hidden\n      viewBox=\"0 0 100 100\"\n      fill=\"none\"\n      stroke=\"currentColor\"\n      strokeWidth={10}\n      strokeLinecap=\"square\"\n      className={cn(\"pointer-events-none size-4 shrink-0\", className)}\n      style={{ transform: open ? \"translateY(-25%)\" : \"translateY(0%)\", transition }}\n      {...props}\n    >\n      {half(\"M10 50H50\", open ? -42 : 42)}\n      {half(\"M90 50H50\", open ? 42 : -42)}\n    </svg>\n  )\n}\n\n// ---- data-table.tsx ----\n\nconst smoothEase = [0.22, 1, 0.36, 1] as const\nconst easeOutCubic = [0.33, 1, 0.68, 1] as const\nconst glide = { type: \"spring\", visualDuration: 0.3 * 0.6, bounce: 0.15 } as const\n\n/** Gap between a row's cells with `rowCellsStagger`, in seconds. */\nconst CELL_GAP = 0.04\n/** Gap between rows ticking in a select-all wave, in milliseconds. */\nconst WAVE_MS = 30\n\ntype DataTableRow = { id: string; [key: string]: unknown }\n\ntype DataTableColumn = {\n  key: string\n  header: string\n  kind?: \"text\" | \"number\" | \"currency\" | \"status\"\n  align?: \"left\" | \"right\"\n  /** Tailwind classes for the column's cells, e.g. a width like `w-[20%]`. */\n  className?: string\n}\n\ntype DataTableStatusTone = \"success\" | \"warning\" | \"danger\" | \"neutral\"\ntype DataTableStatus = {\n  value: string\n  tone: DataTableStatusTone\n  pulse?: boolean\n}\ntype DataTableHighlight = \"slide\" | \"fill\" | \"none\"\n/** Tailwind radius names for the table's outer corners. */\ntype DataTableRadius = \"none\" | \"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\"\n\nconst RADIUS_CLASS: Record<DataTableRadius, string> = {\n  none: \"rounded-none\",\n  sm: \"rounded-sm\",\n  md: \"rounded-md\",\n  lg: \"rounded-lg\",\n  xl: \"rounded-xl\",\n  \"2xl\": \"rounded-2xl\",\n}\n\n/** Colour of the hovered row's highlight. */\ntype DataTableHoverTone = \"muted\" | \"primary\"\n/** How numbers animate: digits roll, the value counts up, or no animation. */\ntype DataTableCountUp = \"roll\" | \"on\" | \"off\"\ntype DataTableDrag = \"none\" | \"rows\"\ntype DataTableSelectMark = \"check\" | \"circle\"\ntype DataTableAlign = \"left\" | \"center\" | \"right\"\n\nconst ALIGN_CLASS: Record<DataTableAlign, string> = {\n  left: \"text-left\",\n  center: \"text-center\",\n  right: \"text-right\",\n}\n\ntype DataTableProps = {\n  columns: DataTableColumn[]\n  rows: DataTableRow[]\n  caption?: string\n  /** Column summed in the footer. */\n  totalKey?: string\n  /** Column holding each row's status, for badges, filter chips and the action bar. */\n  statusKey?: string\n  statuses?: DataTableStatus[]\n  currency?: string\n  /** Content for a row's expandable detail panel. */\n  renderDetail?: (row: DataTableRow) => React.ReactNode\n  /** Makes a new row for the Add button, given the rows already in the table. */\n  createRow?: (rows: DataTableRow[]) => DataTableRow\n  loading?: boolean\n  className?: string\n\n  /** Base animation length, in seconds. */\n  duration?: number\n  /** Gap between rows appearing, in seconds. */\n  stagger?: number\n  /** Rows fade and rise in one after another when the table scrolls into view. */\n  staggerRows?: boolean\n  /** Cells come in left to right inside each row, making a diagonal wave. */\n  staggerCells?: boolean\n  /**\n   * How numbers animate, from zero the first time they appear and then between values:\n   * `roll` spins each digit like an odometer, `on` counts the value up, `off` doesn't animate.\n   */\n  numberAnimation?: DataTableCountUp\n  /** How the hovered row is highlighted. */\n  rowHighlight?: DataTableHighlight\n  /** Colour of the row highlight: a soft muted tint, or primary with light text. */\n  rowHighlightColor?: DataTableHoverTone\n  /** Text cells roll to a copy of themselves on hover (not numbers or status badges). */\n  rollingText?: boolean\n  /** Click a heading to sort; rows glide to their new places. */\n  sortable?: boolean\n  /** Status chips above the table filter the rows. */\n  showStatusFilter?: boolean\n  /** Show the total footer with a muted background and bold text; otherwise hide it. */\n  highlightTotal?: boolean\n  /** Row checkboxes, with shift-click ranges. */\n  selectable?: boolean\n  /** A header checkbox that ticks every row in a wave. */\n  showSelectAll?: boolean\n  /** How a selected row is marked: a checkbox with a tick, or a circle that fills solid. */\n  selectMark?: DataTableSelectMark\n  /** Text alignment for every heading, cell and the footer. */\n  textAlign?: DataTableAlign\n  /** A floating bar with actions for the selected rows. */\n  showActionBar?: boolean\n  /** What can be dragged to reorder. */\n  dragMode?: DataTableDrag\n  /** Status as coloured pills that change on click. */\n  showStatusBadges?: boolean\n  /** Click a row to open its detail panel. */\n  expandable?: boolean\n  /** A delete button on each row. */\n  removable?: boolean\n  /** An Add button above the table. */\n  addable?: boolean\n  /** Pin the footer (the total row) to the bottom while the rows scroll. */\n  stickyFooter?: boolean\n  /** Pin the header while the table scrolls. Does not change the table's height. */\n  stickyHeader?: boolean\n  /** Show every row without the internal height limit. */\n  expandFullTable?: boolean\n  /** Maximum table height when not expanded; CSS length or pixels. Defaults to 50vh. */\n  height?: React.CSSProperties[\"maxHeight\"]\n  /** The line under the header row. */\n  showHeaderBorder?: boolean\n  /** Semibold header text; off, it's regular weight. */\n  boldHeader?: boolean\n  /** Shimmering placeholder rows while `loading`. */\n  loadingSkeleton?: boolean\n  /** Split rows into pages that slide. */\n  showPagination?: boolean\n  pageSize?: number\n  /** A rounded border around the whole table. */\n  bordered?: boolean\n  /** Roundness of the table corners; row highlights clip at these outer edges. */\n  rounded?: DataTableRadius\n  /** Lines between rows. */\n  showHorizontalLines?: boolean\n  /** Lines between columns. */\n  showVerticalLines?: boolean\n}\n\ntype Settings = Required<\n  Omit<\n    DataTableProps,\n    | \"columns\"\n    | \"rows\"\n    | \"caption\"\n    | \"totalKey\"\n    | \"statusKey\"\n    | \"renderDetail\"\n    | \"createRow\"\n    | \"className\"\n  >\n> &\n  Pick<DataTableProps, \"statusKey\" | \"renderDetail\">\n\ntype ExitKind = \"remove\" | \"filter\" | \"page\"\ntype RowCustom = { delay: number; dir: number; kind: ExitKind }\n\ntype TableContextValue = {\n  settings: Settings\n  columns: DataTableColumn[]\n  revealed: boolean\n  /** The first reveal has finished; numbers that mount later show their value straight away. */\n  settled: boolean\n  /** Direction of the last page change (1 forward, -1 back), or 0 for any other change. */\n  pageDir: number\n  format: (column: DataTableColumn, value: number) => string\n  hoverRow: string | null\n  /** Measures the hovered row right away, in the pointer handler. */\n  hoverRowAt: (id: string, el: HTMLElement) => void\n  /** A row drag started (true) or ended (false); hover tracking pauses in between. */\n  setDragging: (dragging: boolean) => void\n  selected: Set<string>\n  toggleSelect: (id: string, range: boolean) => void\n  expanded: Set<string>\n  toggleExpand: (id: string) => void\n  removeRows: (ids: string[]) => void\n  cycleStatus: (id: string) => void\n  freshId: string | null\n  leading: number\n  trailing: number\n  /** When each drawn grid line starts, during the first reveal. */\n  lines: { start: number; step: number; columns: number }\n}\n\nconst TableContext = React.createContext<TableContextValue | null>(null)\n\nfunction useTable() {\n  const context = React.useContext(TableContext)\n  if (!context) throw new Error(\"DataTable parts must be used within <DataTable>.\")\n  return context\n}\n\nfunction DataTable({\n  columns,\n  rows,\n  caption,\n  totalKey,\n  statusKey,\n  statuses = [],\n  currency = \"USD\",\n  renderDetail,\n  createRow,\n  loading = false,\n  className,\n  duration = 0.4,\n  stagger = 0.04,\n  staggerRows = true,\n  staggerCells = false,\n  numberAnimation = \"roll\",\n  rowHighlight = \"slide\",\n  rowHighlightColor = \"muted\",\n  rollingText = false,\n  sortable = true,\n  showStatusFilter = true,\n  highlightTotal = false,\n  selectable = true,\n  showSelectAll = true,\n  selectMark = \"check\",\n  textAlign = \"left\",\n  showActionBar = true,\n  dragMode = \"none\",\n  showStatusBadges = true,\n  expandable = false,\n  removable = false,\n  addable = true,\n  stickyHeader = true,\n  expandFullTable = false,\n  height = \"50vh\",\n  showHeaderBorder = true,\n  boldHeader = true,\n  stickyFooter = true,\n  loadingSkeleton = true,\n  showPagination = false,\n  bordered = true,\n  rounded = \"md\",\n  showHorizontalLines = true,\n  showVerticalLines = true,\n  pageSize = 5,\n}: DataTableProps) {\n  const settings: Settings = {\n    statuses,\n    currency,\n    loading,\n    duration,\n    stagger,\n    staggerRows,\n    staggerCells,\n    numberAnimation,\n    rowHighlight,\n    rowHighlightColor,\n    rollingText,\n    sortable,\n    showStatusFilter,\n    highlightTotal,\n    selectable,\n    showSelectAll,\n    selectMark,\n    textAlign,\n    showActionBar,\n    dragMode,\n    showStatusBadges,\n    expandable: expandable && !!renderDetail,\n    removable,\n    addable: addable && !!createRow,\n    stickyHeader,\n    expandFullTable,\n    height,\n    showHeaderBorder,\n    boldHeader,\n    stickyFooter,\n    loadingSkeleton,\n    showPagination,\n    pageSize,\n    bordered,\n    rounded,\n    showHorizontalLines,\n    showVerticalLines,\n    statusKey,\n    renderDetail,\n  }\n\n  const [data, setData] = React.useState(rows)\n  const [sort, setSort] = React.useState<{ key: string; dir: 1 | -1 } | null>(null)\n  const [filter, setFilter] = React.useState<string | null>(null)\n  const [page, setPage] = React.useState(0)\n  const [exit, setExit] = React.useState<{ dir: number; kind: ExitKind }>({\n    dir: 0,\n    kind: \"remove\",\n  })\n  const [selected, setSelected] = React.useState<Set<string>>(() => new Set())\n  const [expanded, setExpanded] = React.useState<Set<string>>(() => new Set())\n  const [rowBox, setRowBox] = React.useState<RowBox | null>(null)\n  const hoverRow = rowBox?.id ?? null\n  const [freshId, setFreshId] = React.useState<string | null>(null)\n  const [scrolled, setScrolled] = React.useState(false)\n  const [atBottom, setAtBottom] = React.useState(false)\n\n  const wrapper = React.useRef<HTMLDivElement>(null)\n  const table = React.useRef<HTMLTableElement>(null)\n  const anchor = React.useRef<string | null>(null)\n  const timers = React.useRef<number[]>([])\n  const inView = useInView(wrapper, { once: true, amount: 0.2 })\n  // Only reset the entrance during loading when it is enabled. Otherwise the mounted rows\n  // retain their full height behind the skeleton and appear immediately when loading ends.\n  const headerRevealed = !staggerRows || inView\n  const showSkeleton = loading && loadingSkeleton\n  const revealed = headerRevealed && !(showSkeleton && staggerRows)\n  // Rows in the first reveal use its staggered timing; rows that arrive later come in quickly.\n  // Before that, with the entrance off, rows already on the page don't animate at all.\n  const [settled, setSettled] = React.useState(false)\n  // When loading finishes, the fresh rows get the full reveal again: they rise in, the grid\n  // lines redraw and the numbers roll up from zero.\n  const [wasLoading, setWasLoading] = React.useState(loading)\n  if (wasLoading !== loading) {\n    setWasLoading(loading)\n    if (!loading) setSettled(false)\n  }\n\n  React.useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), [])\n\n  const ordered = columns\n  const dragRows = dragMode === \"rows\"\n  const leading = (dragRows ? 1 : 0) + (selectable ? 1 : 0)\n  const trailing = (settings.expandable ? 1 : 0) + (removable ? 1 : 0)\n\n  const numberFormat = React.useMemo(\n    () => new Intl.NumberFormat(\"en-US\", { style: \"currency\", currency }),\n    [currency]\n  )\n  const format = React.useCallback(\n    (column: DataTableColumn, value: number) =>\n      column.kind === \"currency\" ? numberFormat.format(value) : Math.round(value).toLocaleString(),\n    [numberFormat]\n  )\n\n  // Filter → sort → page.\n  let view = filter && statusKey ? data.filter((row) => row[statusKey] === filter) : data\n  if (sort) {\n    view = [...view].sort((a, b) => {\n      const x = a[sort.key]\n      const y = b[sort.key]\n      const diff =\n        typeof x === \"number\" && typeof y === \"number\" ? x - y : String(x).localeCompare(String(y))\n      return diff * sort.dir\n    })\n  }\n  const pageCount = showPagination ? Math.max(1, Math.ceil(view.length / pageSize)) : 1\n  const currentPage = Math.min(page, pageCount - 1)\n  const visible = showPagination\n    ? view.slice(currentPage * pageSize, (currentPage + 1) * pageSize)\n    : view\n  const total = totalKey ? view.reduce((sum, row) => sum + Number(row[totalKey] ?? 0), 0) : 0\n\n  const exitAs = (kind: ExitKind, dir = 0) => setExit({ kind, dir })\n\n  const toggleSelect = (id: string, range: boolean) => {\n    const ids = visible.map((row) => row.id)\n    const on = !selected.has(id)\n    const from = anchor.current ? ids.indexOf(anchor.current) : -1\n    const to = ids.indexOf(id)\n    anchor.current = id\n    setSelected((prev) => {\n      const next = new Set(prev)\n      const span =\n        range && from !== -1 && to !== -1\n          ? ids.slice(Math.min(from, to), Math.max(from, to) + 1)\n          : [id]\n      span.forEach((v) => (on ? next.add(v) : next.delete(v)))\n      return next\n    })\n  }\n\n  const allSelected = visible.length > 0 && visible.every((row) => selected.has(row.id))\n  const someSelected = visible.some((row) => selected.has(row.id))\n  const toggleAll = () => {\n    timers.current.forEach((t) => window.clearTimeout(t))\n    const on = !allSelected\n    const ids = visible.map((row) => row.id).filter((id) => selected.has(id) !== on)\n    const wave = on ? ids : ids.toReversed()\n    timers.current = wave.map((id, i) =>\n      window.setTimeout(() => {\n        setSelected((prev) => {\n          const next = new Set(prev)\n          if (on) next.add(id)\n          else next.delete(id)\n          return next\n        })\n      }, i * WAVE_MS)\n    )\n  }\n\n  const toggleExpand = (id: string) =>\n    setExpanded((prev) => {\n      const next = new Set(prev)\n      if (next.has(id)) next.delete(id)\n      else next.add(id)\n      return next\n    })\n\n  const removeRows = (ids: string[]) => {\n    exitAs(\"remove\")\n    const gone = new Set(ids)\n    setData((prev) => prev.filter((row) => !gone.has(row.id)))\n    setSelected((prev) => new Set([...prev].filter((id) => !gone.has(id))))\n    setExpanded((prev) => new Set([...prev].filter((id) => !gone.has(id))))\n  }\n\n  const setStatus = (ids: string[], value: string) => {\n    if (!statusKey) return\n    const targets = new Set(ids)\n    setData((prev) =>\n      prev.map((row) => (targets.has(row.id) ? { ...row, [statusKey]: value } : row))\n    )\n  }\n\n  const cycleStatus = (id: string) => {\n    if (!statusKey || statuses.length === 0) return\n    const row = data.find((r) => r.id === id)\n    const at = statuses.findIndex((s) => s.value === row?.[statusKey])\n    exitAs(\"filter\")\n    setStatus([id], statuses[(at + 1) % statuses.length].value)\n  }\n\n  // Visible rows take the new order in the slots they already hold, so hidden rows stay put.\n  const reorderRows = (next: DataTableRow[]) => {\n    setSort(null)\n    const ids = new Set(visible.map((row) => row.id))\n    setData((prev) => {\n      // Copied inside the updater: React may run it twice in development.\n      const queue = [...next]\n      return prev.map((row) => (ids.has(row.id) ? (queue.shift() ?? row) : row))\n    })\n  }\n\n  const addRow = () => {\n    if (!createRow) return\n    const row = createRow(data)\n    exitAs(\"remove\")\n    setFilter(null)\n    setPage(0)\n    setSort(null)\n    setData((prev) => [row, ...prev])\n    setFreshId(row.id)\n  }\n\n  const cycleSort = (key: string) => {\n    exitAs(\"filter\")\n    setSort((prev) =>\n      prev?.key !== key ? { key, dir: 1 } : prev.dir === 1 ? { key, dir: -1 } : null\n    )\n  }\n\n  const goToPage = (next: number) => {\n    exitAs(\"page\", next > currentPage ? 1 : -1)\n    setPage(next)\n  }\n\n  // Positions are relative to the scrolling wrapper, so the overlays scroll with the rows.\n  // While a row is dragged, the hover highlight hides and stops tracking: otherwise it chases\n  // whichever row passes under the pointer and the lines around it flicker as rows swap.\n  const dragging = React.useRef(false)\n  const setDragging = (next: boolean) => {\n    dragging.current = next\n    if (next) {\n      setRowBox(null)\n      return\n    }\n    // Dropped: put the highlight on whichever row is now under the pointer.\n    const p = pointer.current\n    const tr = p && document.elementFromPoint(p.x, p.y)?.closest<HTMLElement>(\"tr[data-row-id]\")\n    if (tr?.dataset.rowId) hoverRowAt(tr.dataset.rowId, tr)\n  }\n\n  const hoverRowAt = (id: string, el: HTMLElement) => {\n    const root = wrapper.current\n    if (!root || dragging.current) return\n    const r = el.getBoundingClientRect()\n    const w = root.getBoundingClientRect()\n    // Absolute children use the padding edge; the bounding rect includes the border.\n    const top = r.top - w.top - root.clientTop + root.scrollTop\n    setRowBox((prev) =>\n      // Same row in the same place: keep the state so nothing re-renders.\n      prev?.id === id && Math.abs(prev.top - top) < 0.5 && Math.abs(prev.height - r.height) < 0.5\n        ? prev\n        : { id, top, height: r.height, snap: !prev }\n    )\n  }\n\n  // Last pointer position over the table, to find the row under it without a pointer event.\n  const pointer = React.useRef<{ x: number; y: number } | null>(null)\n  const trackPointer = React.useEffectEvent(() => {\n    const p = pointer.current\n    if (!p || dragging.current) return\n    const tr = document.elementFromPoint(p.x, p.y)?.closest<HTMLElement>(\"tr[data-row-id]\")\n    if (tr?.dataset.rowId) hoverRowAt(tr.dataset.rowId, tr)\n    else setRowBox(null)\n  })\n\n  // When rows are added, removed, filtered, sorted, paged or expanded, rows slide while the\n  // pointer stays put. Re-measure the row under the pointer every frame until they settle, so\n  // the highlight moves with them and ends on the right row.\n  const layoutKey = `${visible.map((row) => row.id).join()}|${[...expanded].join()}`\n  React.useEffect(() => {\n    if (!pointer.current) return\n    const until = performance.now() + (duration + 0.3) * 1000\n    let frame = requestAnimationFrame(function tick(now) {\n      trackPointer()\n      if (now < until) frame = requestAnimationFrame(tick)\n    })\n    return () => cancelAnimationFrame(frame)\n  }, [layoutKey, duration])\n\n  const context: TableContextValue = {\n    settings,\n    columns: ordered,\n    revealed,\n    settled,\n    pageDir: exit.kind === \"page\" ? exit.dir : 0,\n    format,\n    hoverRow,\n    hoverRowAt,\n    setDragging,\n    selected,\n    toggleSelect,\n    expanded,\n    toggleExpand,\n    removeRows,\n    cycleStatus,\n    freshId,\n    leading,\n    trailing,\n    // The grid forms from the top-left corner: the segment on cell (row, column) draws at\n    // start + (row + column) × step, so the lines sweep out diagonally and each segment hands\n    // off to the next one as it finishes. Row 0 is the header.\n    lines: {\n      start: 0.15,\n      step: (duration * 3) / (visible.length + ordered.length + leading + trailing + 2),\n      columns: ordered.length + leading + trailing,\n    },\n  }\n\n  // Header, then its line, then the rows.\n  const rowsStart = 0.1\n  const headVariants: Variants = {\n    hidden: { opacity: 0, y: -6 },\n    visible: { opacity: 1, y: 0, transition: { duration, ease: smoothEase } },\n  }\n\n  const headCell = (index: number, content: React.ReactNode) => (\n    <>\n      {content != null && (\n        <LoadingCell loading={showSkeleton}>{content}</LoadingCell>\n      )}\n      {showVerticalLines && index < context.lines.columns - 1 && (\n        <GridLine\n          axis=\"y\"\n          visible={headerRevealed}\n          delay={context.lines.start + index * context.lines.step}\n          duration={context.lines.step}\n        />\n      )}\n      {/* The header's bottom line draws with the rest of the grid, from the top left. */}\n      {showHeaderBorder && (\n        <GridLine\n          axis=\"x\"\n          visible={headerRevealed}\n          delay={context.lines.start + index * context.lines.step}\n          duration={context.lines.step}\n        />\n      )}\n    </>\n  )\n\n  const thClass = cn(\n    \"relative h-12 px-2 max-md:px-4 text-left align-middle whitespace-nowrap text-(--hx-foreground)\",\n    boldHeader ? \"font-semibold\" : \"font-normal\",\n    stickyHeader && \"sticky top-0 z-20 bg-(--hx-background) transition-shadow duration-300\",\n    stickyHeader && scrolled && \"shadow-[0_6px_10px_-6px_rgb(0_0_0/0.2)]\"\n  )\n\n  const headers = ordered.map((column, j) => {\n    const sorted = sort?.key === column.key ? sort.dir : 0\n    const label = sortable ? (\n      <button\n        type=\"button\"\n        onClick={() => cycleSort(column.key)}\n        className={cn(\n          \"group/sort -mx-1 inline-flex items-center gap-1 rounded-md px-1 py-0.5 outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50\",\n          // The sort arrow sits on the outer side of right-aligned headings.\n          textAlign === \"right\" && \"flex-row-reverse\"\n        )}\n      >\n        {column.header}\n        <motion.span\n          className={cn(\n            \"flex transition-opacity duration-200\",\n            sorted ? \"opacity-100\" : \"opacity-0 group-hover/sort:opacity-50\"\n          )}\n          initial={false}\n          animate={{ rotate: sorted === -1 ? 180 : 0 }}\n          transition={{ duration: 0.3, ease: smoothEase }}\n        >\n          <ArrowUpIcon className=\"size-3.5\" />\n        </motion.span>\n      </button>\n    ) : (\n      column.header\n    )\n    const props = {\n      \"data-col\": column.key,\n      className: cn(\n        thClass,\n        ALIGN_CLASS[textAlign],\n        column.className,\n        // Last, so a column's own font classes don't override the header weight.\n        boldHeader ? \"font-semibold\" : \"font-normal\"\n      ),\n      children: headCell(leading + j, label),\n    }\n    return <th key={column.key} {...props} />\n  })\n\n  const leadingHeads = (\n    <>\n      {dragRows && <th className={cn(thClass, \"w-8\")}>{headCell(0, null)}</th>}\n      {selectable && (\n        <th className={cn(thClass, \"w-8\")}>\n          {headCell(\n            dragRows ? 1 : 0,\n            showSelectAll ? (\n              <RowCheckbox\n                checked={allSelected}\n                indeterminate={!allSelected && someSelected}\n                label=\"Select all rows\"\n                onToggle={toggleAll}\n              />\n            ) : null\n          )}\n        </th>\n      )}\n    </>\n  )\n  const trailingHeads = Array.from({ length: trailing }, (_, i) => (\n    <th key={`trail-${i}`} className={cn(thClass, \"w-10\")}>\n      {headCell(leading + ordered.length + i, null)}\n    </th>\n  ))\n\n  const reveal = revealed ? \"visible\" : \"hidden\"\n  // A pinned footer is opaque, keeps a top line, and casts a shadow up while rows hide under it.\n  const footClass = cn(\n    \"relative\",\n    stickyFooter &&\n      \"sticky bottom-0 z-20 shadow-[inset_0_1px_0_var(--hx-border)] transition-shadow duration-300\",\n    stickyFooter && (highlightTotal ? \"bg-(--hx-muted)\" : \"bg-(--hx-background)\"),\n    stickyFooter &&\n      !expandFullTable &&\n      !atBottom &&\n      \"shadow-[inset_0_1px_0_var(--hx-border),0_-6px_10px_-6px_rgb(0_0_0/0.2)]\"\n  )\n\n  // The footer is the row after the last body row.\n  const footLine = (j: number) =>\n    showVerticalLines && j < context.lines.columns - 1 ? (\n      <GridLine\n        axis=\"y\"\n        visible={headerRevealed}\n        delay={context.lines.start + (visible.length + 1 + j) * context.lines.step}\n        duration={context.lines.step}\n      />\n    ) : null\n\n  const headRow = (\n    <motion.tr variants={headVariants} animate={headerRevealed ? \"visible\" : \"hidden\"}>\n      {leadingHeads}\n      {headers}\n      {trailingHeads}\n    </motion.tr>\n  )\n\n  const statusCounts = statusKey\n    ? statuses.map((status) => ({\n        ...status,\n        count: data.filter((row) => row[statusKey] === status.value).length,\n      }))\n    : []\n\n  // Flat list of rows and open detail rows, each keyed directly under AnimatePresence.\n  const bodyRows = visible.flatMap((row, i) => [\n    <DataTableRowView\n      // With pagination, rows are kept by position so paging swaps the content inside each\n      // cell (a sideways swipe) instead of replacing whole rows.\n      key={showPagination ? `slot-${i}` : row.id}\n      index={i}\n      // The last row's bottom line is the footer's top line, or the border without a footer.\n      bottomLine={i < visible.length - 1 || (!!totalKey && highlightTotal)}\n      nextId={visible[i + 1]?.id}\n      row={row}\n      dragRows={dragRows}\n      initial={staggerRows || settled ? \"hidden\" : false}\n      // Explicit, so rows that stay mounted through loading go hidden and reveal again.\n      animate={reveal}\n      custom={{\n        delay: settled ? Math.min(i, 8) * stagger * 0.5 : rowsStart + i * stagger,\n        dir: exit.dir,\n        kind: exit.kind,\n      }}\n    />,\n    settings.expandable && expanded.has(row.id) && (\n      <motion.tr\n        key={`${row.id}:detail`}\n        layout=\"position\"\n        className={cn(showHorizontalLines && \"border-b\")}\n      >\n        <td colSpan={leading + ordered.length + trailing} className=\"p-0\">\n          <motion.div\n            initial={{ height: 0, opacity: 0 }}\n            animate={{ height: \"auto\", opacity: 1 }}\n            exit={{ height: 0, opacity: 0 }}\n            transition={{ duration, ease: smoothEase }}\n            className=\"overflow-hidden\"\n          >\n            <div className=\"px-4 py-3 text-sm text-(--hx-muted-foreground)\">{renderDetail?.(row)}</div>\n          </motion.div>\n        </td>\n      </motion.tr>\n    ),\n  ])\n\n  React.useEffect(() => {\n    if (!inView || settled) return\n    const id = window.setTimeout(\n      () => setSettled(true),\n      (rowsStart + visible.length * stagger + duration) * 1000\n    )\n    return () => window.clearTimeout(id)\n    // Timed once per reveal (the first one, and again after each load).\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [inView, settled])\n\n  const body = (\n    <AnimatePresence initial={false} custom={exit}>\n      {bodyRows}\n    </AnimatePresence>\n  )\n\n  // As many placeholder rows as real ones, each as tall, so loading doesn't resize the table.\n  const skeletonRows = Math.max(1, visible.length)\n\n  return (\n    <TableContext.Provider value={context}>\n      <ReducedMotionConfig>\n        <div className={cn(\"flex w-full flex-col gap-3\", className)}>\n          {((showStatusFilter && statusKey && statuses.length > 0) || settings.addable) && (\n            <div className=\"flex items-center justify-between gap-3 max-md:flex-col max-md:items-start\">\n              {showStatusFilter && statusKey && statuses.length > 0 ? (\n                <FilterChips\n                  value={filter}\n                  counts={statusCounts}\n                  all={data.length}\n                  onChange={(value) => {\n                    exitAs(\"filter\")\n                    setFilter(value)\n                    setPage(0)\n                  }}\n                />\n              ) : (\n                <span />\n              )}\n              {settings.addable && (\n                <Button variant=\"outline\" size=\"sm\" onClick={addRow}>\n                  <PlusIcon />\n                  Add row\n                </Button>\n              )}\n            </div>\n          )}\n\n          <div className=\"relative w-full\">\n            <div\n              ref={wrapper}\n              style={{ maxHeight: expandFullTable ? undefined : height }}\n              onScroll={(event) => {\n                const el = event.currentTarget\n                setScrolled(el.scrollTop > 0)\n                setAtBottom(el.scrollTop + el.clientHeight >= el.scrollHeight - 1)\n              }}\n              className={cn(\n                \"relative w-full\",\n                RADIUS_CLASS[rounded],\n                // The outline is a plain border, there from the start; only the inner lines draw.\n                bordered && \"border\",\n                // A plain thin scrollbar in the theme's colours, not the page's branded one.\n                \"[scrollbar-width:thin] [scrollbar-color:color-mix(in_oklab,var(--hx-muted-foreground)_45%,transparent)_transparent]\",\n                \"overflow-auto\"\n              )}\n            >\n              <HoverOverlays\n                rowHighlight={rowHighlight}\n                tone={rowHighlightColor}\n                rowBox={rowBox}\n              />\n              <motion.table\n                ref={table}\n                data-slot=\"table\"\n                // Fixed layout: columns keep their widths when filtering or paging changes the rows.\n                // On phones it's wider than the screen and scrolls, so cells aren't cut off.\n                className=\"relative w-full table-fixed caption-bottom text-base max-md:min-w-3xl\"\n                initial={staggerRows ? \"hidden\" : false}\n                animate={reveal}\n                // Re-measured on every move, so the highlight follows rows that have shifted.\n                onPointerMove={(event) => {\n                  pointer.current = { x: event.clientX, y: event.clientY }\n                  const tr = (event.target as Element).closest<HTMLElement>(\"tr[data-row-id]\")\n                  if (tr?.dataset.rowId) hoverRowAt(tr.dataset.rowId, tr)\n                }}\n                onPointerLeave={() => {\n                  pointer.current = null\n                  setRowBox(null)\n                }}\n              >\n                {caption && (\n                  <caption className=\"py-4 text-sm text-(--hx-muted-foreground)\">{caption}</caption>\n                )}\n                <thead data-slot=\"table-header\">{headRow}</thead>\n\n                {showSkeleton && (\n                  <tbody data-slot=\"table-skeleton\">\n                    {Array.from({ length: skeletonRows }, (_, i) => (\n                      <tr key={i} className={cn(showHorizontalLines && \"border-b\")}>\n                        {Array.from({ length: leading + ordered.length + trailing }, (_, j) => (\n                          <td\n                            key={j}\n                            className={cn(\n                              \"px-2 py-3 align-middle max-md:px-4\",\n                              showVerticalLines &&\n                                j < leading + ordered.length + trailing - 1 &&\n                                \"border-r\"\n                            )}\n                          >\n                            <div className={cn(\"flex items-center\", removable ? \"h-7\" : \"h-6\")}>\n                              <Skeleton className=\"h-4 w-[70%]\" />\n                            </div>\n                          </td>\n                        ))}\n                      </tr>\n                    ))}\n                  </tbody>\n                )}\n                {dragRows ? (\n                  <Reorder.Group\n                    as=\"tbody\"\n                    axis=\"y\"\n                    values={visible}\n                    onReorder={reorderRows}\n                    data-slot=\"table-body\"\n                    className={cn(\n                      \"[&_tr:last-child]:border-0\",\n                      showSkeleton && \"hidden\",\n                      loading && !loadingSkeleton && \"opacity-50\"\n                    )}\n                  >\n                    {body}\n                  </Reorder.Group>\n                ) : (\n                  <motion.tbody\n                    data-slot=\"table-body\"\n                    className={cn(\n                      \"[&_tr:last-child]:border-0\",\n                      showSkeleton && \"hidden\",\n                      loading && !loadingSkeleton && \"opacity-50\"\n                    )}\n                  >\n                    {body}\n                  </motion.tbody>\n                )}\n\n                {totalKey && highlightTotal && (\n                  <tfoot\n                    data-slot=\"table-footer\"\n                    className={cn(highlightTotal ? \"bg-(--hx-muted) font-bold\" : \"font-normal\")}\n                  >\n                    <tr>\n                      {Array.from({ length: leading }, (_, i) => (\n                        <td key={`lead-${i}`} className={footClass}>\n                          {footLine(i)}\n                        </td>\n                      ))}\n                      {ordered.map((column, j) => (\n                        <motion.td\n                          key={column.key}\n                          className={cn(footClass, \"px-2 py-3 align-middle max-md:px-4\", ALIGN_CLASS[textAlign])}\n                        >\n                          {(column.key === totalKey || j === 0) && (\n                            <LoadingCell loading={showSkeleton}>\n                              {column.key === totalKey ? (\n                                <NumberValue\n                                  value={total}\n                                  format={(v) => format(column, v)}\n                                  mode={numberAnimation}\n                                  fromZero\n                                  animate\n                                  run={revealed}\n                                  duration={duration * 2.5}\n                                />\n                              ) : (\n                                \"Total\"\n                              )}\n                            </LoadingCell>\n                          )}\n                          {footLine(leading + j)}\n                        </motion.td>\n                      ))}\n                      {Array.from({ length: trailing }, (_, i) => (\n                        <td key={`trail-${i}`} className={footClass}>\n                          {footLine(leading + ordered.length + i)}\n                        </td>\n                      ))}\n                    </tr>\n                  </tfoot>\n                )}\n              </motion.table>\n            </div>\n          </div>\n\n          {showPagination && (\n            <div className=\"flex items-center justify-end gap-2 text-sm\">\n              <Button\n                variant=\"ghost\"\n                size=\"icon-sm\"\n                aria-label=\"Previous page\"\n                disabled={currentPage === 0}\n                onClick={() => goToPage(currentPage - 1)}\n              >\n                <ChevronLeftIcon />\n              </Button>\n              <span className=\"flex items-center gap-1 text-(--hx-muted-foreground)\">\n                Page\n                <RollingText value={String(currentPage + 1)} className=\"text-(--hx-foreground)\" />\n                of {pageCount}\n              </span>\n              <Button\n                variant=\"ghost\"\n                size=\"icon-sm\"\n                aria-label=\"Next page\"\n                disabled={currentPage >= pageCount - 1}\n                onClick={() => goToPage(currentPage + 1)}\n              >\n                <ChevronRightIcon />\n              </Button>\n            </div>\n          )}\n        </div>\n\n        {showActionBar && selectable && (\n          <ActionBar\n            count={selected.size}\n            markLabel={statuses[0]?.value}\n            onMark={() => {\n              if (statuses[0]) setStatus([...selected], statuses[0].value)\n            }}\n            onDelete={() => removeRows([...selected])}\n            onClear={() => setSelected(new Set())}\n          />\n        )}\n      </ReducedMotionConfig>\n    </TableContext.Provider>\n  )\n}\n\n/** Preserve content dimensions while replacing only the text/control with a placeholder. */\nfunction LoadingCell({ loading, children }: { loading: boolean; children: React.ReactNode }) {\n  return (\n    <div className=\"relative\">\n      <div className={cn(loading && \"invisible\")} aria-hidden={loading || undefined}>\n        {children}\n      </div>\n      {loading && (\n        <Skeleton className=\"absolute top-1/2 left-0 h-4 w-[70%] -translate-y-1/2\" />\n      )}\n    </div>\n  )\n}\n\nfunction DataTableRowView({\n  ref: forwardedRef,\n  index,\n  bottomLine,\n  nextId,\n  animate,\n  row,\n  dragRows,\n  initial,\n  custom,\n}: {\n  ref?: React.Ref<HTMLElement>\n  index: number\n  bottomLine: boolean\n  /** The row below, so this row's bottom line can fade when that one is hovered. */\n  nextId?: string\n  animate: \"visible\" | \"hidden\"\n  row: DataTableRow\n  dragRows: boolean\n  initial: \"hidden\" | false\n  custom: RowCustom\n}) {\n  const context = useTable()\n  const { settings, columns, hoverRow, selected, expanded, freshId } = context\n  const controls = useDragControls()\n  const hovered = hoverRow === row.id\n  const isSelected = selected.has(row.id)\n  // A primary highlight sits under the hovered row, so its text switches to light.\n  const onPrimary = hovered && settings.rowHighlightColor === \"primary\" && settings.rowHighlight !== \"none\"\n\n  const variants: Variants = {\n    // The row itself stays put; each cell's content slides up inside its cell (see `Reveal`).\n    hidden: (c: RowCustom) =>\n      c.kind === \"page\" && c.dir ? { opacity: 0, x: c.dir * 32 } : { opacity: 1 },\n    visible: (c: RowCustom) => ({\n      opacity: 1,\n      x: 0,\n      transition: {\n        duration: settings.duration,\n        ease: smoothEase,\n        delay: c.delay,\n        // Row cells stagger: the cells come in left to right; otherwise they rise together.\n        delayChildren: settings.staggerCells\n          ? staggerChildren(CELL_GAP, { startDelay: c.delay })\n          : c.delay,\n      },\n    }),\n    exit: (c: RowCustom) => ({\n      opacity: 0,\n      ...(c.kind === \"page\" ? { x: -c.dir * 32 } : c.kind === \"remove\" ? { x: -24 } : {}),\n      transition: { duration: settings.duration, ease: smoothEase },\n    }),\n  }\n\n  // A newly added row flashes the primary colour and fades back.\n  const ref = (node: HTMLElement | null) => {\n    if (typeof forwardedRef === \"function\") forwardedRef(node)\n    else if (forwardedRef) forwardedRef.current = node\n    if (!node || freshId !== row.id || node.dataset.flashed) return\n    node.dataset.flashed = \"true\"\n    node.animate(\n      [\n        {\n          backgroundColor: \"color-mix(in oklch, var(--hx-primary) 14%, transparent)\",\n        },\n        { backgroundColor: \"transparent\" },\n      ],\n      { duration: 1400, easing: \"ease-out\" }\n    )\n  }\n\n  const t = context.lines\n  // Grid lines for the cell in column `j`: its bottom edge and, unless it's last, its right edge.\n  // Lines the hover highlight covers fade out, so it reads as one solid block: this row's\n  // own lines when it's hovered, and its bottom line when the row below is hovered.\n  const highlighted = settings.rowHighlight !== \"none\"\n  const coverSelf = highlighted && hovered\n  const coverBottom = highlighted && (hovered || (!!nextId && hoverRow === nextId))\n  const lines = (j: number) => (\n    <>\n      {settings.showHorizontalLines && bottomLine && (\n        <GridLine\n          axis=\"x\"\n          delay={t.start + (index + 1 + j) * t.step}\n          duration={t.step}\n          faded={coverBottom}\n        />\n      )}\n      {settings.showVerticalLines && j < t.columns - 1 && (\n        <GridLine\n          axis=\"y\"\n          delay={t.start + (index + 1 + j) * t.step}\n          duration={t.step}\n          faded={coverSelf}\n        />\n      )}\n    </>\n  )\n  const lead = context.leading\n  const dragCol = 0\n  const selectCol = dragRows ? 1 : 0\n  const expandCol = lead + columns.length\n  const removeCol = expandCol + (settings.expandable ? 1 : 0)\n\n  const cells = (\n    <>\n      {dragRows && (\n        <td className=\"relative w-8 px-2 align-middle\">\n          <Reveal swapKey={row.id}>\n            <button\n              type=\"button\"\n              aria-label=\"Drag to reorder\"\n              onPointerDown={(event) => controls.start(event)}\n              className=\"flex cursor-grab touch-none items-center text-(--hx-muted-foreground) active:cursor-grabbing\"\n            >\n              <GripVerticalIcon className=\"size-4\" />\n            </button>\n          </Reveal>\n          {lines(dragCol)}\n        </td>\n      )}\n      {settings.selectable && (\n        <td className=\"relative w-8 px-2 align-middle\">\n          <Reveal swapKey={row.id}>\n            <RowCheckbox\n              checked={isSelected}\n              label={`Select ${row.id}`}\n              onToggle={(range) => context.toggleSelect(row.id, range)}\n            />\n          </Reveal>\n          {lines(selectCol)}\n        </td>\n      )}\n      {columns.map((column, k) => (\n        <motion.td\n          key={column.key}\n          data-col={column.key}\n          data-row={row.id}\n          className={cn(\n            \"relative px-2 align-middle whitespace-nowrap max-md:px-4\",\n            ALIGN_CLASS[settings.textAlign],\n            column.className\n          )}\n        >\n          <CellValue column={column} row={row} hovered={hovered} index={k} />\n          {lines(lead + k)}\n        </motion.td>\n      ))}\n      {settings.expandable && (\n        <td className=\"relative w-10 px-2 align-middle\">\n          <Reveal swapKey={row.id}>\n            <MorphChevron open={expanded.has(row.id)} className=\"size-3.5 text-(--hx-muted-foreground)\" />\n          </Reveal>\n          {lines(expandCol)}\n        </td>\n      )}\n      {settings.removable && (\n        <td className=\"relative w-10 px-2 text-right align-middle\">\n          <Reveal swapKey={row.id}>\n            <button\n              type=\"button\"\n              aria-label={`Delete ${row.id}`}\n              onClick={(event) => {\n                event.stopPropagation()\n                context.removeRows([row.id])\n              }}\n              className={cn(\n                \"inline-flex size-7 items-center justify-center rounded-md text-(--hx-muted-foreground) outline-none transition-[opacity,color] duration-200 hover:text-(--hx-destructive) focus-visible:opacity-100 focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50\",\n                hovered ? \"opacity-100\" : \"opacity-0\"\n              )}\n            >\n              <Trash2Icon className=\"size-4\" />\n            </button>\n          </Reveal>\n          {lines(removeCol)}\n        </td>\n      )}\n    </>\n  )\n\n  const props = {\n    ref,\n    \"data-slot\": \"table-row\",\n    \"data-row-id\": row.id,\n    \"data-selected\": isSelected || undefined,\n    custom,\n    variants,\n    initial,\n    animate,\n    exit: \"exit\",\n    onPointerEnter: (event: React.PointerEvent<HTMLElement>) =>\n      context.hoverRowAt(row.id, event.currentTarget),\n    onClick: settings.expandable ? () => context.toggleExpand(row.id) : undefined,\n    className: cn(\n      \"relative transition-colors duration-300\",\n      settings.rowHighlight === \"none\" &&\n        (settings.rowHighlightColor === \"primary\"\n          ? \"hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) hover:[--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)]\"\n          : \"hover:bg-(--hx-muted)/50\"),\n      isSelected && \"bg-(--hx-primary)/[0.06]\",\n      settings.expandable && \"cursor-pointer\",\n      onPrimary &&\n        \"text-(--hx-primary-foreground) [--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)]\"\n    ),\n    children: cells,\n  }\n\n  return dragRows ? (\n    <Reorder.Item\n      as=\"tr\"\n      value={row}\n      dragListener={false}\n      dragControls={controls}\n      {...props}\n      // A solid, lifted row while dragging, so the rows it passes over don't show through.\n      className={cn(\n        props.className,\n        \"data-dragging:z-30 data-dragging:bg-(--hx-background) data-dragging:shadow-lg\"\n      )}\n      onDragStart={(event) => {\n        ;(event.target as Element).closest(\"tr\")?.setAttribute(\"data-dragging\", \"\")\n        context.setDragging(true)\n      }}\n      onDragEnd={(event) => {\n        ;(event.target as Element).closest(\"tr\")?.removeAttribute(\"data-dragging\")\n        context.setDragging(false)\n      }}\n    />\n  ) : (\n    <motion.tr layout=\"position\" {...props} />\n  )\n}\n\nfunction CellValue({\n  column,\n  row,\n  hovered,\n  index,\n}: {\n  column: DataTableColumn\n  row: DataTableRow\n  hovered: boolean\n  /** Column position, so the text roll ripples across the row. */\n  index: number\n}) {\n  const { settings, format, revealed, settled, cycleStatus } = useTable()\n  const value = row[column.key]\n\n  let content: React.ReactNode\n  if (column.kind === \"status\") {\n    const status = settings.statuses.find((s) => s.value === value)\n    content = settings.showStatusBadges ? (\n      <StatusBadge value={String(value)} status={status} onCycle={() => cycleStatus(row.id)} />\n    ) : (\n      String(value)\n    )\n  } else if (column.kind === \"number\" || column.kind === \"currency\") {\n    content = (\n      <NumberValue\n        value={Number(value)}\n        format={(v) => format(column, v)}\n        mode={settings.numberAnimation}\n        fromZero={!settled}\n        animate\n        run={revealed}\n        duration={settings.duration * 2.5}\n      />\n    )\n  } else {\n    content = String(value)\n  }\n  // Text cells roll on hover, a touch later per column; numbers and status badges don't.\n  if (settings.rollingText && (column.kind ?? \"text\") === \"text\") {\n    content = (\n      <RollText active={hovered} delay={index * 0.03}>\n        {content}\n      </RollText>\n    )\n  }\n\n  return <Reveal swapKey={row.id}>{content}</Reveal>\n}\n\n/**\n * One edge of a cell, drawn in during the table's first reveal: a row line grows left to right\n * (scaleX 0 → 1), a column line grows top to bottom (scaleY 0 → 1). Afterwards it's just there.\n */\nfunction GridLine({\n  axis,\n  delay,\n  duration,\n  faded = false,\n  visible,\n}: {\n  axis: \"x\" | \"y\"\n  delay: number\n  duration: number\n  /** Fade out, e.g. where the hover highlight covers the line. */\n  faded?: boolean\n  /** Override row visibility for edges that remain visible during loading. */\n  visible?: boolean\n}) {\n  const { revealed, settled, settings } = useTable()\n  const draws = settings.staggerRows && !settled\n  const shown = axis === \"x\" ? { scaleX: 1 } : { scaleY: 1 }\n  const hidden = axis === \"x\" ? { scaleX: 0 } : { scaleY: 0 }\n  return (\n    <motion.span\n      aria-hidden\n      className={cn(\n        \"pointer-events-none absolute bg-(--hx-border) transition-opacity duration-200\",\n        axis === \"x\" ? \"inset-x-0 bottom-0 h-px origin-left\" : \"inset-y-0 right-0 w-px origin-top\",\n        faded && \"opacity-0\"\n      )}\n      initial={draws ? hidden : false}\n      animate={(visible ?? revealed) ? shown : hidden}\n      transition={{ duration, ease: \"linear\", delay }}\n    />\n  )\n}\n\n/** Cell content that slides up from the bottom edge of its own cell as the row comes in. */\nfunction Reveal({ swapKey, children }: { swapKey?: string; children: React.ReactNode }) {\n  const { settings, settled, pageDir } = useTable()\n  const transition = { duration: settings.duration, ease: smoothEase }\n  const preserveHeight = !settled || (settings.loading && settings.loadingSkeleton)\n  // The cell's vertical padding lives inside, so a collapsed cell is truly zero height.\n  // Initial and skeleton reveals keep full row heights; only the content slides in.\n  // Rows added or removed after settling can still expand or collapse.\n  return (\n    <motion.span\n      className=\"block overflow-hidden\"\n      variants={{\n        hidden: { height: preserveHeight ? \"auto\" : 0 },\n        visible: { height: \"auto\", transition },\n        exit: { height: 0, transition },\n      }}\n    >\n      <motion.span\n        className=\"block py-3\"\n        variants={{\n          hidden: { y: \"100%\" },\n          visible: { y: \"0%\", transition },\n          exit: { y: \"100%\", transition },\n        }}\n      >\n        {settings.showPagination && swapKey ? (\n          <Swap swapKey={swapKey} dir={pageDir} duration={settings.duration}>\n            {children}\n          </Swap>\n        ) : (\n          children\n        )}\n      </motion.span>\n    </motion.span>\n  )\n}\n\nconst swapVariants: Variants = {\n  enter: (dir: number) => (dir ? { x: `${dir * 100}%`, opacity: 1 } : { x: \"0%\", opacity: 0 }),\n  center: { x: \"0%\", opacity: 1 },\n  exit: (dir: number) => (dir ? { x: `${-dir * 100}%`, opacity: 1 } : { x: \"0%\", opacity: 0 }),\n}\n\n/**\n * When the row in a slot changes (paging), the old content swipes out sideways inside the cell\n * while the new content swipes in, left when paging forward and right when paging back. Other\n * changes cross-fade.\n */\nfunction Swap({\n  swapKey,\n  dir,\n  duration,\n  children,\n}: {\n  swapKey: string\n  dir: number\n  duration: number\n  children: React.ReactNode\n}) {\n  return (\n    <span className=\"relative block overflow-hidden\">\n      <AnimatePresence initial={false} mode=\"popLayout\" custom={dir}>\n        <motion.span\n          key={swapKey}\n          className=\"block\"\n          custom={dir}\n          variants={swapVariants}\n          initial=\"enter\"\n          animate=\"center\"\n          exit=\"exit\"\n          transition={{ duration, ease: smoothEase }}\n        >\n          {children}\n        </motion.span>\n      </AnimatePresence>\n    </span>\n  )\n}\n\n/** Picks the number animation: rolling digits, a GSAP count, or plain text. */\nfunction NumberValue({\n  mode,\n  fromZero,\n  ...props\n}: {\n  value: number\n  format: (value: number) => string\n  mode: DataTableCountUp\n  fromZero: boolean\n  animate: boolean\n  run: boolean\n  duration: number\n}) {\n  if (mode === \"off\") return <span className=\"tabular-nums\">{props.format(props.value)}</span>\n  if (mode === \"roll\") return <RollingNumber {...props} fromZero={fromZero} />\n  return <AnimatedNumber {...props} numberAnimation={fromZero} />\n}\n\n/**\n * The formatted value with each digit on its own rolling strip, like an odometer. Digits start\n * at zero on first appearance and roll to the value; later changes roll from the old digits.\n * Keyed from the right so the ones digit stays the ones digit when the length changes.\n */\nfunction RollingNumber({\n  value,\n  format,\n  fromZero,\n  animate,\n  run,\n  duration,\n}: {\n  value: number\n  format: (value: number) => string\n  fromZero: boolean\n  animate: boolean\n  run: boolean\n  duration: number\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  const text = format(value)\n  const chars = text.split(\"\")\n  const instant = reduceMotion || !animate\n\n  return (\n    <span className=\"inline-flex tabular-nums\">\n      <span className=\"sr-only\">{text}</span>\n      {chars.map((char, i) => {\n        const key = chars.length - i\n        if (!/\\d/.test(char)) {\n          return (\n            <span key={key} aria-hidden>\n              {char}\n            </span>\n          )\n        }\n        const digit = Number(char)\n        return (\n          <span\n            key={key}\n            aria-hidden\n            // `overflow-clip`, not clip-path: the 20-digit strip must not count as scrollable\n            // height (it left a gap under the table), and the digit keeps its text baseline.\n            className=\"relative inline-block overflow-clip select-none\"\n          >\n            <span className=\"invisible\">{char}</span>\n            {/* The strip holds 0–9 twice and digits rest in the second set, so on first\n                appearance every digit (zeros too) spins a full turn up from the first 0.\n                Later changes roll the short way within the second set. */}\n            <motion.span\n              className=\"absolute inset-x-0 top-0 flex flex-col\"\n              initial={fromZero ? { y: \"0%\" } : false}\n              // Back at zero whenever the table is hidden (before the reveal, or while loading).\n              animate={{ y: `${-((run ? 10 + digit : 0) / 20) * 100}%` }}\n              transition={\n                instant && !fromZero\n                  ? { duration: 0 }\n                  : // Digits settle right to left, a touch apart.\n                    { duration: duration * 1.2, ease: smoothEase, delay: (key - 1) * 0.04 }\n              }\n            >\n              {Array.from({ length: 20 }, (_, n) => (\n                <span key={n}>{n % 10}</span>\n              ))}\n            </motion.span>\n          </span>\n        )\n      })}\n    </span>\n  )\n}\n\n/** Counts to its value with GSAP: from zero on first appearance, then from the previous value. */\nfunction AnimatedNumber({\n  value,\n  format,\n  numberAnimation,\n  animate,\n  run,\n  duration,\n}: {\n  value: number\n  format: (value: number) => string\n  numberAnimation: boolean\n  animate: boolean\n  run: boolean\n  duration: number\n}) {\n  const ref = React.useRef<HTMLSpanElement>(null)\n  const reduceMotion = usePrefersReducedMotion()\n  const current = React.useRef(numberAnimation ? 0 : value)\n  const [initial] = React.useState(() => format(numberAnimation ? 0 : value))\n\n  const play = React.useEffectEvent(() => {\n    const el = ref.current\n    if (!el) return\n    if (!run) {\n      // Hidden again (loading): start from zero next time.\n      if (numberAnimation) current.current = 0\n      return\n    }\n    const from = current.current\n    if (reduceMotion || (!animate && !(numberAnimation && from === 0 && value !== 0)) || from === value) {\n      current.current = value\n      el.textContent = format(value)\n      return\n    }\n    const state = { v: from }\n    return gsap.to(state, {\n      v: value,\n      duration,\n      ease: \"power2.out\",\n      onUpdate: () => {\n        current.current = state.v\n        el.textContent = format(state.v)\n      },\n    })\n  })\n\n  React.useEffect(() => {\n    const tween = play()\n    return () => {\n      tween?.kill()\n    }\n  }, [value, run])\n\n  return (\n    <span ref={ref} className=\"tabular-nums\">\n      {initial}\n    </span>\n  )\n}\n\nconst toneClasses: Record<DataTableStatusTone, string> = {\n  success: \"bg-[color-mix(in_oklab,var(--hx-success)_12%,var(--hx-background))] text-(--hx-success)\",\n  warning: \"bg-[color-mix(in_oklab,var(--hx-warning)_15%,var(--hx-background))] text-(--hx-warning)\",\n  danger: \"bg-[color-mix(in_oklab,var(--hx-destructive)_12%,var(--hx-background))] text-(--hx-destructive)\",\n  neutral: \"bg-(--hx-muted) text-(--hx-muted-foreground)\",\n}\n\nfunction StatusBadge({\n  value,\n  status,\n  onCycle,\n}: {\n  value: string\n  status?: DataTableStatus\n  onCycle: () => void\n}) {\n  return (\n    <button\n      type=\"button\"\n      data-slot=\"status-badge\"\n      title=\"Click to change status\"\n      onClick={(event) => {\n        event.stopPropagation()\n        onCycle()\n      }}\n      className={cn(\n        \"inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-sm font-medium outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50\",\n        toneClasses[status?.tone ?? \"neutral\"]\n      )}\n    >\n      {status?.pulse && (\n        <span className=\"relative flex size-1.5\">\n          <span className=\"absolute inset-0 animate-ping rounded-full bg-current opacity-60\" />\n          <span className=\"relative size-1.5 rounded-full bg-current\" />\n        </span>\n      )}\n      <RollingText value={value} />\n    </button>\n  )\n}\n\n/** Text that rolls up to its new value when it changes. */\nfunction RollingText({ value, className }: { value: string; className?: string }) {\n  return (\n    <span className={cn(\"relative inline-grid overflow-hidden\", className)}>\n      <AnimatePresence initial={false} mode=\"popLayout\">\n        <motion.span\n          key={value}\n          className=\"block tabular-nums\"\n          initial={{ y: \"100%\", opacity: 0 }}\n          animate={{ y: \"0%\", opacity: 1 }}\n          exit={{ y: \"-100%\", opacity: 0 }}\n          transition={{ duration: 0.3, ease: smoothEase }}\n        >\n          {value}\n        </motion.span>\n      </AnimatePresence>\n    </span>\n  )\n}\n\n/** Text that rolls up to a copy of itself while `active`. */\nfunction RollText({\n  active,\n  delay = 0,\n  children,\n}: {\n  active: boolean\n  delay?: number\n  children: React.ReactNode\n}) {\n  const transition = { duration: 0.4, ease: easeOutCubic, delay }\n  return (\n    <span className=\"relative inline-block overflow-hidden align-bottom\">\n      <motion.span\n        className=\"block\"\n        initial={false}\n        animate={{ y: active ? \"-100%\" : \"0%\" }}\n        transition={transition}\n      >\n        {children}\n      </motion.span>\n      <motion.span\n        aria-hidden\n        className=\"absolute inset-x-0 top-0 block\"\n        initial={false}\n        animate={{ y: active ? \"0%\" : \"100%\" }}\n        transition={transition}\n      >\n        {children}\n      </motion.span>\n    </span>\n  )\n}\n\nfunction RowCheckbox({\n  checked,\n  indeterminate = false,\n  label,\n  onToggle,\n}: {\n  checked: boolean\n  indeterminate?: boolean\n  label: string\n  onToggle: (range: boolean) => void\n}) {\n  const { settings } = useTable()\n  const circle = settings.selectMark === \"circle\"\n  const marked = checked || indeterminate\n  return (\n    <button\n      type=\"button\"\n      role=\"checkbox\"\n      aria-checked={indeterminate ? \"mixed\" : checked}\n      aria-label={label}\n      // Keep shift-click from selecting text.\n      onMouseDown={(event) => event.shiftKey && event.preventDefault()}\n      onClick={(event) => {\n        event.stopPropagation()\n        onToggle(event.shiftKey)\n      }}\n      className={cn(\n        // The outline is an inset ring, not a border: it takes no space, so the fill paints\n        // over it edge to edge with no gap. Focus uses an outline so it doesn't fight the ring.\n        \"relative grid size-4 place-items-center overflow-hidden ring-1 ring-inset outline-none transition-[box-shadow,color] duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--hx-ring)/50\",\n        // The theme's rounded-sm (6px) makes a 16px box look round; xs keeps it a square.\n        circle ? \"rounded-full\" : \"rounded-xs\",\n        marked ? \"ring-(--hx-primary)\" : \"ring-(--hx-input) hover:ring-(--hx-foreground)/40\"\n      )}\n    >\n      <motion.span\n        aria-hidden\n        // Rounded like its box, so a filling checkbox never shows square corners.\n        className=\"absolute inset-0 rounded-[inherit] bg-(--hx-primary)\"\n        initial={false}\n        animate={{ scale: marked ? 1 : 0 }}\n        transition={{ type: \"spring\", visualDuration: 0.25, bounce: 0 }}\n      />\n      <svg\n        aria-hidden\n        viewBox=\"0 0 24 24\"\n        fill=\"none\"\n        stroke=\"currentColor\"\n        strokeWidth={3.5}\n        strokeLinecap=\"round\"\n        strokeLinejoin=\"round\"\n        className=\"relative size-full text-(--hx-primary-foreground)\"\n      >\n        {/* The circle mark is the solid fill alone; the checkbox draws a tick on top. */}\n        <motion.path\n          d=\"M5 12.5 10 17.5 19 7\"\n          initial={false}\n          animate={{\n            pathLength: checked && !circle ? 1 : 0,\n            opacity: checked && !circle ? 1 : 0,\n          }}\n          transition={{\n            pathLength: {\n              duration: 0.25,\n              ease: \"easeOut\",\n              delay: checked ? 0.08 : 0,\n            },\n            opacity: { duration: 0.1 },\n          }}\n        />\n        <motion.path\n          d=\"M6 12h12\"\n          initial={false}\n          animate={{\n            pathLength: indeterminate ? 1 : 0,\n            opacity: indeterminate ? 1 : 0,\n          }}\n          transition={{ duration: 0.2 }}\n        />\n      </svg>\n    </button>\n  )\n}\n\nfunction FilterChips({\n  value,\n  counts,\n  all,\n  onChange,\n}: {\n  value: string | null\n  counts: (DataTableStatus & { count: number })[]\n  all: number\n  onChange: (value: string | null) => void\n}) {\n  const id = React.useId()\n  const chips = [\n    { value: null, label: \"All\", count: all },\n    ...counts.map((c) => ({ value: c.value, label: c.value, count: c.count })),\n  ]\n  return (\n    <div role=\"radiogroup\" aria-label=\"Filter by status\" className=\"flex flex-wrap gap-1\">\n      {chips.map((chip) => {\n        const active = chip.value === value\n        return (\n          <button\n            key={chip.label}\n            type=\"button\"\n            role=\"radio\"\n            aria-checked={active}\n            onClick={() => onChange(chip.value)}\n            className={cn(\n              \"relative isolate flex items-center gap-1.5 rounded-md px-3 py-1 text-sm outline-none transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-(--hx-ring)/50\",\n              active ? \"text-(--hx-primary-foreground)\" : \"text-(--hx-muted-foreground) hover:text-(--hx-foreground)\"\n            )}\n          >\n            {active && (\n              <motion.span\n                layoutId={`${id}-chip`}\n                className=\"absolute inset-0 -z-10 rounded-md bg-(--hx-primary)\"\n                transition={glide}\n              />\n            )}\n            {chip.label}\n            <span className=\"text-xs tabular-nums opacity-70\">{chip.count}</span>\n          </button>\n        )\n      })}\n    </div>\n  )\n}\n\ntype RowBox = { id: string; top: number; height: number; snap: boolean }\n\n/** Square row highlights, clipped to the scroll wrapper's rounded outer corners. */\nfunction HoverOverlays({\n  rowHighlight,\n  tone,\n  rowBox,\n}: {\n  rowHighlight: DataTableHighlight\n  tone: DataTableHoverTone\n  rowBox: RowBox | null\n}) {\n  // `snap` places the highlight without gliding when it appears from nothing.\n  const snap = rowBox?.snap ?? true\n\n  return (\n    <>\n      {rowHighlight === \"slide\" && (\n        <motion.div\n          aria-hidden\n          className={cn(\n            \"pointer-events-none absolute inset-x-0 top-0\",\n            tone === \"primary\" ? \"bg-(--hx-primary)\" : \"bg-(--hx-muted)\"\n          )}\n          initial={false}\n          animate={{\n            y: rowBox?.top ?? 0,\n            height: rowBox?.height ?? 0,\n            opacity: rowBox ? 1 : 0,\n          }}\n          transition={{\n            y: snap ? { duration: 0 } : glide,\n            height: snap ? { duration: 0 } : glide,\n            opacity: { duration: 0.2 },\n          }}\n        />\n      )}\n      {rowHighlight === \"fill\" && (\n        <AnimatePresence>\n          {rowBox && (\n            <motion.div\n              key={rowBox.id}\n              aria-hidden\n              className={cn(\n                \"pointer-events-none absolute inset-x-0\",\n                tone === \"primary\" ? \"bg-(--hx-primary)\" : \"bg-(--hx-muted)\"\n              )}\n              style={{ top: rowBox.top, height: rowBox.height, originY: 0 }}\n              initial={{ scaleY: 0 }}\n              animate={{ scaleY: 1 }}\n              exit={{ scaleY: 0 }}\n              transition={{ duration: 0.3, ease: easeOutCubic }}\n            />\n          )}\n        </AnimatePresence>\n      )}\n    </>\n  )\n}\n\nfunction ActionBar({\n  count,\n  markLabel,\n  onMark,\n  onDelete,\n  onClear,\n}: {\n  count: number\n  markLabel?: string\n  onMark: () => void\n  onDelete: () => void\n  onClear: () => void\n}) {\n  return (\n    <div className=\"pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center\">\n      <AnimatePresence>\n        {count > 0 && (\n          <motion.div\n            role=\"toolbar\"\n            aria-label=\"Selected rows\"\n            className=\"pointer-events-auto flex items-center gap-2 rounded-full border bg-(--hx-background) py-1.5 pr-1.5 pl-4 text-sm shadow-lg\"\n            initial={{ y: 24, opacity: 0, scale: 0.96 }}\n            animate={{ y: 0, opacity: 1, scale: 1 }}\n            exit={{ y: 24, opacity: 0, scale: 0.96 }}\n            transition={{ type: \"spring\", visualDuration: 0.35, bounce: 0.2 }}\n          >\n            <span className=\"flex items-center gap-1\">\n              <RollingText value={String(count)} className=\"font-medium\" />\n              selected\n            </span>\n            {markLabel && (\n              <Button variant=\"ghost\" size=\"sm\" className=\"rounded-full\" onClick={onMark}>\n                Mark {markLabel.toLowerCase()}\n              </Button>\n            )}\n            <Button variant=\"destructive\" size=\"sm\" className=\"rounded-full\" onClick={onDelete}>\n              <Trash2Icon />\n              Delete\n            </Button>\n            <Button\n              variant=\"ghost\"\n              size=\"icon-sm\"\n              className=\"rounded-full\"\n              aria-label=\"Clear selection\"\n              onClick={onClear}\n            >\n              <XIcon />\n            </Button>\n          </motion.div>\n        )}\n      </AnimatePresence>\n    </div>\n  )\n}\n\n// ---- demo: page.tsx ----\n\nconst methods = [\"Credit Card\", \"PayPal\", \"Bank Transfer\"]\n\nconst invoices: DataTableRow[] = [\n  { id: \"INV001\", status: \"Paid\", method: \"Credit Card\", amount: 250 },\n  { id: \"INV002\", status: \"Pending\", method: \"PayPal\", amount: 150 },\n  { id: \"INV003\", status: \"Unpaid\", method: \"Bank Transfer\", amount: 350 },\n  { id: \"INV004\", status: \"Paid\", method: \"Credit Card\", amount: 450 },\n  { id: \"INV005\", status: \"Paid\", method: \"PayPal\", amount: 550 },\n  { id: \"INV006\", status: \"Pending\", method: \"Bank Transfer\", amount: 200 },\n  { id: \"INV007\", status: \"Unpaid\", method: \"Credit Card\", amount: 300 },\n  { id: \"INV008\", status: \"Paid\", method: \"Bank Transfer\", amount: 125 },\n  { id: \"INV009\", status: \"Pending\", method: \"Credit Card\", amount: 640 },\n  { id: \"INV010\", status: \"Paid\", method: \"PayPal\", amount: 90 },\n  { id: \"INV011\", status: \"Unpaid\", method: \"PayPal\", amount: 410 },\n  { id: \"INV012\", status: \"Paid\", method: \"Credit Card\", amount: 275 },\n]\n\nconst columns: DataTableColumn[] = [\n  { key: \"id\", header: \"Invoice\", className: \"w-[20%] font-medium\" },\n  { key: \"status\", header: \"Status\", kind: \"status\" },\n  { key: \"method\", header: \"Method\" },\n  { key: \"amount\", header: \"Amount\", kind: \"currency\", align: \"right\" },\n]\n\nconst statuses: DataTableStatus[] = [\n  { value: \"Paid\", tone: \"success\" },\n  { value: \"Pending\", tone: \"warning\", pulse: true },\n  { value: \"Unpaid\", tone: \"danger\" },\n]\n\n// Text button whose underline draws in from the left on hover, as in the other showcases.\nconst lineButton = cn(\n  \"relative font-medium text-(--hx-muted-foreground) transition-[color,opacity] outline-none hover:text-(--hx-foreground) focus-visible:text-(--hx-foreground) disabled:pointer-events-none disabled:opacity-40\",\n  \"after:absolute after:inset-x-0 after:bottom-0 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out\",\n  \"hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100\"\n)\n\nconst controls = {\n  staggerRows: { group: \"Entrance\", type: \"checkbox\", label: \"Stagger rows\", value: true },\n  staggerCells: {\n    disabled: (v: Record<string, unknown>) => !v.staggerRows,\n    group: \"Entrance\",\n    type: \"checkbox\",\n    label: \"Stagger cells\",\n    value: false,\n  },\n  numberAnimation: {\n    group: \"Entrance\",\n    type: \"select\",\n    label: \"Number animation\",\n    value: \"roll\",\n    options: [\n      { label: \"Roll\", value: \"roll\" },\n      { label: \"Count up\", value: \"on\" },\n      { label: \"Off\", value: \"off\" },\n    ],\n  },\n  duration: {\n    group: \"Timing\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 0.4,\n    min: 0.1,\n    max: 1,\n    step: 0.05,\n    unit: \"s\",\n  },\n  stagger: {\n    disabled: (v: Record<string, unknown>) => !v.staggerRows,\n    group: \"Timing\",\n    type: \"slider\",\n    label: \"Stagger\",\n    value: 0.04,\n    min: 0,\n    max: 0.15,\n    step: 0.01,\n    unit: \"s\",\n  },\n  rowHighlight: {\n    group: \"Hover\",\n    type: \"select\",\n    label: \"Row highlight\",\n    value: \"slide\",\n    options: [\n      { label: \"Slide\", value: \"slide\" },\n      { label: \"Fill from top\", value: \"fill\" },\n      { label: \"None\", value: \"none\" },\n    ],\n  },\n  rowHighlightColor: {\n    disabled: (v: Record<string, unknown>) => v.rowHighlight === \"none\",\n    group: \"Hover\",\n    type: \"select\",\n    label: \"Row highlight color\",\n    value: \"muted\",\n    options: [\n      { label: \"Muted\", value: \"muted\" },\n      { label: \"Primary\", value: \"primary\" },\n    ],\n  },\n  rollingText: { group: \"Hover\", type: \"checkbox\", label: \"Rolling text\", value: false },\n  showStatusFilter: { group: \"Data\", type: \"checkbox\", label: \"Show status filter\", value: true },\n  highlightTotal: { group: \"Data\", type: \"checkbox\", label: \"Highlight total\", value: false },\n  showPagination: { group: \"Data\", type: \"checkbox\", label: \"Show pagination\", value: false },\n  selectable: { group: \"Selection\", type: \"checkbox\", label: \"Row checkboxes\", value: false },\n  showSelectAll: { disabled: (v: Record<string, unknown>) => !v.selectable, group: \"Selection\", type: \"checkbox\", label: \"Show select all\", value: true },\n  selectMark: {\n    disabled: (v: Record<string, unknown>) => !v.selectable,\n    group: \"Selection\",\n    type: \"select\",\n    label: \"Select mark\",\n    value: \"check\",\n    options: [\n      { label: \"Checkmark\", value: \"check\" },\n      { label: \"Filled circle\", value: \"circle\" },\n    ],\n  },\n  showActionBar: { disabled: (v: Record<string, unknown>) => !v.selectable, group: \"Selection\", type: \"checkbox\", label: \"Show action bar\", value: true },\n  dragMode: {\n    group: \"Rows\",\n    type: \"checkbox\",\n    label: \"Drag mode\",\n    value: false,\n  },\n  showStatusBadges: { group: \"Rows\", type: \"checkbox\", label: \"Show status badges\", value: true },\n  expandable: { group: \"Rows\", type: \"checkbox\", label: \"Expandable preview\", value: false },\n  removable: { group: \"Rows\", type: \"checkbox\", label: \"Delete column\", value: false },\n  addable: { group: \"Rows\", type: \"checkbox\", label: \"Add rows\", value: true },\n  textAlign: {\n    group: \"Layout\",\n    type: \"select\",\n    label: \"Text alignment\",\n    value: \"left\",\n    options: [\n      { label: \"Left\", value: \"left\" },\n      { label: \"Center\", value: \"center\" },\n      { label: \"Right\", value: \"right\" },\n    ],\n  },\n  bordered: { group: \"Layout\", type: \"checkbox\", label: \"Border\", value: true },\n  showHorizontalLines: { group: \"Layout\", type: \"checkbox\", label: \"Show horizontal lines\", value: true },\n  showVerticalLines: { group: \"Layout\", type: \"checkbox\", label: \"Show vertical lines\", value: true },\n  showHeaderBorder: { group: \"Layout\", type: \"checkbox\", label: \"Show header border\", value: true },\n  boldHeader: { group: \"Layout\", type: \"checkbox\", label: \"Bold header\", value: true },\n  stickyHeader: { group: \"Layout\", type: \"checkbox\", label: \"Sticky header\", value: true },\n  expandFullTable: { group: \"Layout\", type: \"checkbox\", label: \"Expand full table\", value: false },\n  height: {\n    disabled: (v: Record<string, unknown>) => !!v.expandFullTable,\n    group: \"Layout\",\n    type: \"slider\",\n    label: \"Table height\",\n    value: 40,\n    min: 20,\n    max: 100,\n    step: 5,\n    unit: \"vh\",\n  },\n  stickyFooter: { disabled: (v: Record<string, unknown>) => !v.highlightTotal, group: \"Layout\", type: \"checkbox\", label: \"Sticky last row\", value: true },\n  loadingSkeleton: { group: \"Layout\", type: \"checkbox\", label: \"Loading skeleton\", value: true },\n}\n\nfunction TablePage(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const [replay, setReplay] = React.useState(0)\n  const [loading, setLoading] = React.useState(false)\n\n  const reload = () => {\n    setLoading(true)\n    window.setTimeout(() => setLoading(false), 1400)\n  }\n\n  return (\n    <div className=\"mx-auto flex w-full max-w-3xl flex-col gap-6\">\n      <div className=\"flex items-end justify-between gap-4 max-md:flex-col max-md:items-start\">\n        <div className=\"flex flex-col gap-1\">\n        </div>\n        <div className=\"flex gap-4 text-sm\">\n          <button type=\"button\" onClick={reload} disabled={loading} className={lineButton}>\n            Reload\n          </button>\n          <button type=\"button\" onClick={() => setReplay((n) => n + 1)} className={lineButton}>\n            Replay\n          </button>\n        </div>\n      </div>\n\n      <DataTable\n        key={replay}\n        // On phones the table breaks out of the page's 80vw column to 94vw, centred.\n        className=\"w-full\"\n        columns={columns}\n        rows={invoices}\n        totalKey=\"amount\"\n        statusKey=\"status\"\n        statuses={statuses}\n        loading={loading}\n        renderDetail={(row) =>\n          `${row.id} was paid by ${String(row.method).toLowerCase()}. Issued 12 March, due 12 April.`\n        }\n        createRow={(rows) => {\n          // One past the highest invoice number so far.\n          const n = Math.max(0, ...rows.map((row) => Number(String(row.id).slice(3)))) + 1\n          return {\n            id: `INV${String(n).padStart(3, \"0\")}`,\n            status: \"Pending\",\n            method: methods[n % methods.length],\n            amount: 100 + ((n * 37) % 500),\n          }\n        }}\n        {...values}\n        height={`${values.height}vh`}\n        sortable={false}\n        rowHighlight={values.rowHighlight as DataTableHighlight}\n        numberAnimation={values.numberAnimation as DataTableCountUp}\n        rowHighlightColor={values.rowHighlightColor as DataTableHoverTone}\n        selectMark={values.selectMark as DataTableSelectMark}\n        textAlign={values.textAlign as DataTableAlign}\n        rounded=\"md\"\n        dragMode={values.dragMode ? \"rows\" : \"none\"}\n      />\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedDataTableProps extends Partial<ControlValues> {\n  theme?: AnimatedDataTableTheme;\n  mode?: AnimatedDataTableMode;\n  className?: string;\n}\n\nexport default function AnimatedDataTable({ theme = \"ghibli\", mode = \"dark\", className, ...props }: AnimatedDataTableProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <style>{COMPONENT_CSS}</style>\n        <ReducedMotionConfig>\n          <TablePage {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  DataTable,\n  type DataTableProps,\n  type DataTableColumn,\n  type DataTableRow,\n  type DataTableStatus,\n  type DataTableHighlight,\n  type DataTableCountUp,\n  type DataTableDrag,\n  type DataTableSelectMark,\n  type DataTableHoverTone,\n  type DataTableRadius,\n  type DataTableAlign,\n};\n"
+    }
+  ]
+}

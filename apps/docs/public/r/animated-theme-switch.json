@@ -1,0 +1,194 @@
+{
+  "name": "animated-theme-switch",
+  "type": "registry:component",
+  "title": "Animated Theme Switch",
+  "description": "Switch between light and dark with a transition.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "gsap",
+    "lucide-react",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedThemeSwitch",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "spotify",
+      "description": "Colour palette. Any theme but Default also tints the sun and moon icon, except on the Default button, which is already primary.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "revealAnimation",
+      "label": "Reveal animation",
+      "type": "string",
+      "default": "circle",
+      "description": "How the new theme spreads over the old one.",
+      "remixer": {
+        "control": "select",
+        "group": "transition",
+        "groupTitle": "Transition",
+        "options": [
+          {
+            "label": "Circle from button",
+            "value": "circle"
+          },
+          {
+            "label": "Swipe",
+            "value": "swipe"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 0.85,
+      "description": "How long the theme change takes, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "transition",
+        "groupTitle": "Transition",
+        "min": 0.2,
+        "max": 2,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "iconAnimation",
+      "label": "Icon motion",
+      "type": "string",
+      "default": "orbit",
+      "description": "How the sun and moon icons swap.",
+      "remixer": {
+        "control": "select",
+        "group": "button",
+        "groupTitle": "Button",
+        "options": [
+          {
+            "label": "Spin",
+            "value": "spin"
+          },
+          {
+            "label": "Orbit",
+            "value": "orbit"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "showTooltip",
+      "label": "Tooltip",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows a tooltip naming the theme the button switches to.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "button",
+        "groupTitle": "Button"
+      }
+    },
+    {
+      "name": "variant",
+      "label": "Look",
+      "type": "string",
+      "default": "outline",
+      "description": "Style of the button: outline, ghost (no border) or filled.",
+      "remixer": {
+        "control": "select",
+        "group": "button",
+        "groupTitle": "Button",
+        "options": [
+          {
+            "label": "Outline",
+            "value": "outline"
+          },
+          {
+            "label": "Ghost",
+            "value": "ghost"
+          },
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Secondary",
+            "value": "secondary"
+          }
+        ]
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-theme-switch/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\nimport gsap from \"gsap\";\nimport { AnimatePresence, MotionConfig, motion } from \"motion/react\";\nimport { flushSync } from \"react-dom\";\nimport { MoonIcon, SunIcon } from \"lucide-react\";\nimport { twMerge } from \"tailwind-merge\";\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedThemeSwitchTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedThemeSwitchMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedThemeSwitchTheme}:${AnimatedThemeSwitchMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedThemeSwitchTheme = \"default\", mode: AnimatedThemeSwitchMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\nconst ModeContext = React.createContext<{ mode: AnimatedThemeSwitchMode; setMode: (mode: AnimatedThemeSwitchMode) => void } | null>(null);\n\n// Light/dark state owned by the component\nfunction useTheme() {\n  const context = React.useContext(ModeContext);\n  return {\n    resolvedTheme: context?.mode,\n    forcedTheme: undefined as string | undefined,\n    setTheme: (next: string) => context?.setMode(next === \"dark\" ? \"dark\" : \"light\"),\n  };\n}\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\n// ---- theme-switch.tsx ----\n\n/** swipe: the new theme wipes across, and back the other way. fade: it fades in. circle: it grows from the button. */\ntype ThemeSwitchVariant = \"swipe\" | \"fade\" | \"circle\"\n/** spin: the old icon spins away, the new one spins in. orbit: the two icons circle each other. */\ntype ThemeSwitchIconMotion = \"spin\" | \"orbit\"\n\ntype ThemeSwitchProps = Omit<React.ComponentProps<typeof Button>, \"size\" | \"onClick\"> & {\n  /** How the new theme reveals itself. */\n  revealAnimation?: ThemeSwitchVariant\n  /** Seconds. */\n  duration?: number\n  iconAnimation?: ThemeSwitchIconMotion\n  /** A label above the button while hovered or focused. */\n  showTooltip?: boolean\n  onThemeChange?: (theme: \"light\" | \"dark\") => void\n}\n\nfunction revealFrames(\n  revealAnimation: ThemeSwitchVariant,\n  toDark: boolean,\n  origin: { x: number; y: number; radius: number }\n): Keyframe[] {\n  if (revealAnimation === \"fade\") return [{ opacity: 0 }, { opacity: 1 }]\n  if (revealAnimation === \"swipe\") {\n    // Going dark wipes left to right, going light wipes back\n    return toDark\n      ? [{ clipPath: \"inset(0 100% 0 0)\" }, { clipPath: \"inset(0 0 0 0)\" }]\n      : [{ clipPath: \"inset(0 0 0 100%)\" }, { clipPath: \"inset(0 0 0 0)\" }]\n  }\n  return [\n    { clipPath: `circle(0px at ${origin.x}px ${origin.y}px)` },\n    { clipPath: `circle(${origin.radius}px at ${origin.x}px ${origin.y}px)` },\n  ]\n}\n\nconst subscribe = () => () => {}\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction useReduceMotion() {\n  const [reduceMotion, setReduceMotion] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduceMotion(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduceMotion\n}\n\n// Always/never instead of \"user\", so the demo's reduced-motion switch is honoured too\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = useReduceMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\n// Turns off the browser's own cross-fade for the page, so only our reveal shows, in both directions\nconst SWEEP_CSS =\n  \"html.theme-sweeping::view-transition-group(root){animation:none}\" +\n  \"html.theme-sweeping::view-transition-old(root),html.theme-sweeping::view-transition-new(root){animation:none;mix-blend-mode:normal}\" +\n  \"html.theme-sweeping::view-transition-old(root){z-index:1}\" +\n  \"html.theme-sweeping::view-transition-new(root){z-index:2}\"\n\nfunction ThemeSwitch({\n  revealAnimation = \"circle\",\n  duration = 0.85,\n  iconAnimation = \"spin\",\n  showTooltip = true,\n  variant = \"outline\",\n  className,\n  onThemeChange,\n  ...props\n}: ThemeSwitchProps) {\n  const { resolvedTheme, setTheme, forcedTheme } = useTheme()\n  const mounted = React.useSyncExternalStore(subscribe, () => true, () => false)\n  const busy = React.useRef(false)\n  const sun = React.useRef<SVGSVGElement>(null)\n  const moon = React.useRef<SVGSVGElement>(null)\n  const orbit = React.useRef<HTMLSpanElement>(null)\n  const wrapper = React.useRef<HTMLSpanElement>(null)\n  const previous = React.useRef(resolvedTheme)\n  const [hovered, setHovered] = React.useState(false)\n  const reduceMotion = useReduceMotion()\n  const dark = resolvedTheme === \"dark\"\n  const orbiting = iconAnimation === \"orbit\"\n\n  // The orbit starts wherever the current theme needs it\n  React.useLayoutEffect(() => {\n    if (!orbiting || !mounted || !orbit.current || !sun.current || !moon.current) return\n    gsap.set(orbit.current, { transformOrigin: \"50% 100%\", rotation: dark ? 180 : 0 })\n    gsap.set([sun.current, moon.current], { rotation: dark ? -180 : 0 })\n    // Only the first paint should reset it\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [orbiting, mounted])\n\n  React.useLayoutEffect(() => {\n    const before = previous.current\n    previous.current = resolvedTheme\n    if (!before || before === resolvedTheme || !sun.current || !moon.current) return\n    const reduced = window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches\n\n    if (orbiting && orbit.current) {\n      // Both icons travel half a circle, staying upright\n      gsap.killTweensOf([orbit.current, sun.current, moon.current])\n      const to = { duration: reduced ? 0 : 0.6, ease: \"power3.inOut\" }\n      gsap.to(orbit.current, { rotation: \"+=180\", ...to })\n      gsap.to([sun.current, moon.current], { rotation: \"-=180\", ...to })\n      return\n    }\n\n    // The old icon spins away, then the new one spins up in its place\n    const toDark = resolvedTheme === \"dark\"\n    const leaving = toDark ? sun.current : moon.current\n    const entering = toDark ? moon.current : sun.current\n    gsap.killTweensOf([leaving, entering])\n    if (reduced) {\n      gsap.set(leaving, { scale: 0, opacity: 0 })\n      gsap.set(entering, { scale: 1, rotate: 0, opacity: 1 })\n      return\n    }\n    gsap\n      .timeline()\n      .fromTo(\n        leaving,\n        { rotate: 0, scale: 1, opacity: 1 },\n        { rotate: 180, scale: 0, opacity: 0, duration: 0.17, ease: \"power2.in\" }\n      )\n      .fromTo(\n        entering,\n        { rotate: -180, scale: 0, opacity: 0 },\n        { rotate: 0, scale: 1, opacity: 1, duration: 0.25, ease: \"back.out(1.6)\" }\n      )\n  }, [resolvedTheme, orbiting])\n\n  const toggle = async (event: React.MouseEvent<HTMLButtonElement>) => {\n    if (busy.current || forcedTheme) return\n    const next = resolvedTheme === \"dark\" ? \"light\" : \"dark\"\n    const box = event.currentTarget.getBoundingClientRect()\n    const x = box.left + box.width / 2\n    const y = box.top + box.height / 2\n    const origin = {\n      x,\n      y,\n      radius: Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)),\n    }\n    const apply = () => {\n      setTheme(next)\n      onThemeChange?.(next)\n    }\n\n    if (\n      !document.startViewTransition ||\n      window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches\n    ) {\n      apply()\n      return\n    }\n\n    busy.current = true\n    const root = document.documentElement\n    const sweepStyle = document.createElement(\"style\")\n    sweepStyle.textContent = SWEEP_CSS\n    document.head.appendChild(sweepStyle)\n    root.classList.add(\"theme-sweeping\")\n    const view = document.startViewTransition(() => {\n      flushSync(apply)\n    })\n\n    try {\n      await view.ready\n      const progress = { value: 0 }\n      // A paused native animation holds the snapshot while GSAP sets its time\n      const reveal = root.animate(revealFrames(revealAnimation, next === \"dark\", origin), {\n        duration: 1000,\n        easing: \"linear\",\n        fill: \"both\",\n        pseudoElement: \"::view-transition-new(root)\",\n      })\n      reveal.pause()\n      await gsap.to(progress, {\n        value: 1000,\n        duration,\n        ease: \"power2.out\",\n        onUpdate: () => {\n          reveal.currentTime = progress.value\n        },\n      })\n      reveal.finish()\n      await view.finished\n    } catch {\n      // Hidden tabs can skip the snapshot\n      view.skipTransition()\n      await view.finished.catch(() => {})\n    } finally {\n      root.classList.remove(\"theme-sweeping\")\n      sweepStyle.remove()\n      busy.current = false\n      setHovered(wrapper.current?.matches(\":hover\") ?? false)\n    }\n  }\n\n  const word = dark ? \"light\" : \"dark\"\n  const current = dark ? \"Dark\" : \"Light\"\n  const iconClass = cn(\"size-10.5 transition-[scale] duration-200 group-hover/button:scale-90 motion-reduce:transition-none\", variant !== \"default\" && \"in-data-accent:text-(--hx-primary)\")\n\n  return (\n    <ReducedMotionConfig>\n    <span\n      ref={wrapper}\n      data-slot=\"theme-switch-root\"\n      className=\"relative inline-flex\"\n      onPointerEnter={() => setHovered(true)}\n      // The transition overlay steals the pointer, so leaving is checked afterwards\n      onPointerLeave={() => !busy.current && setHovered(false)}\n      onFocus={() => setHovered(true)}\n      onBlur={() => setHovered(false)}\n    >\n      <Button\n        data-slot=\"theme-switch\"\n        variant={variant}\n        size=\"icon-lg\"\n        aria-label=\"Toggle theme\"\n        onClick={toggle}\n        className={cn(\n          \"relative size-18 overflow-hidden\",\n          // These keep their colour on hover\n          variant === \"outline\" && \"hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30\",\n          variant === \"default\" && \"hover:bg-(--hx-primary)\",\n          variant === \"secondary\" && \"hover:bg-(--hx-secondary)\",\n          className\n        )}\n        {...props}\n      >\n        {orbiting ? (\n          mounted && (\n            <span ref={orbit} aria-hidden className=\"pointer-events-none absolute inset-0\">\n              <span className=\"absolute inset-0 grid place-items-center\">\n                <SunIcon ref={sun} className={iconClass} />\n              </span>\n              <span className=\"absolute inset-0 grid translate-y-18 place-items-center\">\n                <MoonIcon ref={moon} className={iconClass} />\n              </span>\n            </span>\n          )\n        ) : (\n          <>\n            <SunIcon ref={sun} className={cn(\"absolute opacity-100 in-data-[theme=dark]:opacity-0\", iconClass)} />\n            <MoonIcon ref={moon} className={cn(\"absolute opacity-0 in-data-[theme=dark]:opacity-100\", iconClass)} />\n          </>\n        )}\n      </Button>\n\n      {mounted && resolvedTheme && (\n        <span role=\"status\" aria-live=\"polite\" className=\"sr-only\">\n          {current} theme on\n        </span>\n      )}\n\n      <AnimatePresence>\n        {showTooltip && hovered && resolvedTheme && (\n          <motion.span\n            aria-hidden\n            className=\"pointer-events-none absolute bottom-[calc(100%+0.5rem)] left-1/2 z-50 flex -translate-x-1/2 gap-1 rounded-md bg-(--hx-foreground) px-2 py-1 text-xs font-medium whitespace-nowrap text-(--hx-background)\"\n            initial={{ opacity: 0, y: reduceMotion ? 0 : 4 }}\n            animate={{ opacity: 1, y: 0 }}\n            exit={{ opacity: 0, y: reduceMotion ? 0 : 4 }}\n            transition={{ duration: reduceMotion ? 0 : 0.15 }}\n          >\n            <span>Change to</span>\n            {reduceMotion ? (\n              <span>{word}</span>\n            ) : (\n              <span className=\"relative inline-flex overflow-hidden\">\n                <AnimatePresence initial={false} mode=\"popLayout\">\n                  <motion.span\n                    key={word}\n                    initial={{ y: \"100%\" }}\n                    animate={{ y: \"0%\" }}\n                    exit={{ y: \"-100%\" }}\n                    transition={{ duration: 0.2, ease: [0.45, 0, 0.25, 1] }}\n                  >\n                    {word}\n                  </motion.span>\n                </AnimatePresence>\n              </span>\n            )}\n            <span>theme</span>\n          </motion.span>\n        )}\n      </AnimatePresence>\n    </span>\n    </ReducedMotionConfig>\n  )\n}\n\n// ---- demo: theme-switch-demo.tsx ----\n\nconst controls = {\n  revealAnimation: {\n    group: \"Transition\",\n    type: \"select\",\n    label: \"Reveal animation\",\n    value: \"circle\",\n    options: [\n      { label: \"Circle from button\", value: \"circle\" },\n      { label: \"Swipe\", value: \"swipe\" },\n      { label: \"Fade\", value: \"fade\" },\n    ],\n  },\n  duration: {\n    group: \"Transition\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 0.85,\n    min: 0.2,\n    max: 2,\n    step: 0.05,\n    unit: \"s\",\n  },\n  iconAnimation: {\n    group: \"Button\",\n    type: \"select\",\n    label: \"Icon motion\",\n    value: \"orbit\",\n    options: [\n      { label: \"Spin\", value: \"spin\" },\n      { label: \"Orbit\", value: \"orbit\" },\n    ],\n  },\n  showTooltip: { group: \"Button\", type: \"checkbox\", label: \"Tooltip\", value: true },\n  variant: {\n    group: \"Button\",\n    type: \"select\",\n    label: \"Look\",\n    value: \"outline\",\n    options: [\n      { label: \"Outline\", value: \"outline\" },\n      { label: \"Ghost\", value: \"ghost\" },\n      { label: \"Default\", value: \"default\" },\n      { label: \"Secondary\", value: \"secondary\" },\n    ],\n  },\n}\n\nfunction ThemeSwitchDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { values } = panel\n  const reduceMotion = useReduceMotion()\n  const tip = reduceMotion\n    ? \"Reduced motion is on, so the theme changes at once\"\n    : values.revealAnimation === \"swipe\"\n      ? \"The new theme wipes across the page\"\n      : values.revealAnimation === \"fade\"\n        ? \"The new theme fades in over the page\"\n        : \"The circle grows from the button\"\n\n  return (\n    <div className=\"flex flex-col gap-3\">\n      <div className=\"flex items-center justify-center py-8\">\n        <ThemeSwitch\n          revealAnimation={values.revealAnimation as ThemeSwitchVariant}\n          duration={values.duration}\n          iconAnimation={values.iconAnimation as ThemeSwitchIconMotion}\n          showTooltip={values.showTooltip}\n          variant={values.variant as \"outline\" | \"ghost\" | \"default\" | \"secondary\"}\n        />\n      </div>\n      <p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\">\n        Tip: {tip}\n      </p>\n\n    </div>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedThemeSwitchProps extends Partial<ControlValues> {\n  theme?: AnimatedThemeSwitchTheme;\n  mode?: AnimatedThemeSwitchMode;\n  className?: string;\n  /** Called with the new mode each time the switch is used, so the page around it can follow. */\n  onModeChange?: (mode: AnimatedThemeSwitchMode) => void;\n}\n\nexport default function AnimatedThemeSwitch({ theme = \"spotify\", mode = \"dark\", className, onModeChange, ...props }: AnimatedThemeSwitchProps) {\n  const [liveMode, setLiveMode] = React.useState(mode);\n  const [seenMode, setSeenMode] = React.useState(mode);\n  if (seenMode !== mode) {\n    setSeenMode(mode);\n    setLiveMode(mode);\n  }\n  const modeContext = React.useMemo(\n    () => ({\n      mode: liveMode,\n      // Runs inside the reveal's flushSync, so the page and the switch change in the same frame\n      setMode: (next: AnimatedThemeSwitchMode) => {\n        setLiveMode(next);\n        onModeChange?.(next);\n      },\n    }),\n    [liveMode, onModeChange]\n  );\n  const themed = themeProps(theme, liveMode);\n  return (\n    <ModeContext.Provider value={modeContext}>\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <ThemeSwitchDemo {...props} />\n      </div>\n    </ThemeContext.Provider>\n    </ModeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  ThemeSwitch,\n  type ThemeSwitchIconMotion,\n  type ThemeSwitchVariant,\n};\n"
+    }
+  ]
+}

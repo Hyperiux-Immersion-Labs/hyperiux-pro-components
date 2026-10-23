@@ -257,7 +257,7 @@ const THEMES: Record<`${AnimatedInputOtpTheme}:${AnimatedInputOtpMode}`, Record<
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedInputOtpTheme = "default", mode: AnimatedInputOtpMode = "light") {
+function themeProps(theme: AnimatedInputOtpTheme = "default", mode: AnimatedInputOtpMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -648,6 +648,8 @@ function InputOTPSlot({
   const inputOTPContext = React.useContext(OTPInputContext)
   const options = React.useContext(InputOTPMotionContext)
   const { char, hasFakeCaret, isActive } = inputOTPContext?.slots[index] ?? {}
+  // Once every box is filled the last one stays "active"; the ring has nowhere left to go, so it leaves
+  const complete = !!inputOTPContext?.slots.length && inputOTPContext.slots.every((slot) => slot.char)
   const total = inputOTPContext?.slots.length ?? 0
   const waved = options.successWave && options.success
   const pasteDelay =
@@ -669,7 +671,10 @@ function InputOTPSlot({
       className={cn(
         "relative flex items-center justify-center border-(--hx-input) transition-[color,background-color,border-color,box-shadow] duration-300 outline-none aria-invalid:border-(--hx-destructive) in-data-[theme=dark]:bg-(--hx-input)/30",
         options.joined ? cn("border-y border-r rounded-none", index === 0 && "border-l") : "border",
+        // the active border marks where you type; a finished or verified code has no such box
         !options.glideRing &&
+          !complete &&
+          !waved &&
           "data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) in-data-accent:data-[active=true]:border-(--hx-primary) data-[active=true]:aria-invalid:border-(--hx-destructive)",
         waved &&
           "border-(--hx-success) bg-(--hx-success)/10 text-(--hx-success)",
@@ -684,7 +689,7 @@ function InputOTPSlot({
       )}
       {...(props as React.ComponentProps<typeof motion.div>)}
     >
-      {options.glideRing && isActive && (
+      {options.glideRing && isActive && !complete && (
         <motion.div
           layoutId={options.ringId}
           aria-hidden

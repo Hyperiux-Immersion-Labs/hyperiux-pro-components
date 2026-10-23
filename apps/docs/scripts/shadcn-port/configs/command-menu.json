@@ -1,6 +1,6 @@
 {
   "slug": "animated-command-menu",
-  "exportName": "AnimatedCommand",
+  "exportName": "AnimatedCommandMenu",
   "main": "components/ui/command.tsx",
   "demos": [
     "app/components/(default)/command/command-demo.tsx"

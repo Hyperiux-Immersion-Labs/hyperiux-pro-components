@@ -243,7 +243,7 @@ const THEMES: Record<`${AnimatedDialogTheme}:${AnimatedDialogMode}`, Record<stri
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedDialogTheme = "default", mode: AnimatedDialogMode = "light") {
+function themeProps(theme: AnimatedDialogTheme = "default", mode: AnimatedDialogMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

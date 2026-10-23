@@ -335,7 +335,7 @@ const THEMES: Record<`${AnimatedChatBubbleTheme}:${AnimatedChatBubbleMode}`, Rec
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedChatBubbleTheme = "default", mode: AnimatedChatBubbleMode = "light") {
+function themeProps(theme: AnimatedChatBubbleTheme = "default", mode: AnimatedChatBubbleMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   return { "data-theme": mode, style: style as React.CSSProperties };

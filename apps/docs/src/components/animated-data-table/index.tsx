@@ -286,7 +286,7 @@ const THEMES: Record<`${AnimatedDataTableTheme}:${AnimatedDataTableMode}`, Recor
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedDataTableTheme = "default", mode: AnimatedDataTableMode = "light") {
+function themeProps(theme: AnimatedDataTableTheme = "default", mode: AnimatedDataTableMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -1654,12 +1654,12 @@ function DataTableRowView({
       "relative transition-colors duration-300",
       settings.rowHighlight === "none" &&
         (settings.rowHighlightColor === "primary"
-          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) [&:hover_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70"
+          ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) hover:[--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)]"
           : "hover:bg-(--hx-muted)/50"),
       isSelected && "bg-(--hx-primary)/[0.06]",
       settings.expandable && "cursor-pointer",
       onPrimary &&
-        "text-(--hx-primary-foreground) [&_.text-(--hx-muted-foreground)]:text-(--hx-primary-foreground)/70"
+        "text-(--hx-primary-foreground) [--hx-muted-foreground:color-mix(in_oklab,var(--hx-primary-foreground)_70%,transparent)]"
     ),
     children: cells,
   }

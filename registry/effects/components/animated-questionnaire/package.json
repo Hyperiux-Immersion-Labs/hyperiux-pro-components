@@ -1,0 +1,20 @@
+{
+  "name": "@hyperiux/animated-questionnaire",
+  "version": "1.0.0",
+  "description": "A step-by-step set of questions with progress.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}

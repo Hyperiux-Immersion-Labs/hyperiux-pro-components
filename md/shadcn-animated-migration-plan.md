@@ -3,7 +3,7 @@
 Status, conventions and the remaining phases for bringing the 25 animated UI components from
 the `shadcn-animated` (Hpx) project into Vault as free, publicly installable effects.
 
-Last updated: 2026-10-22.
+Last updated: 2026-10-23.
 
 ---
 
@@ -13,14 +13,23 @@ Last updated: 2026-10-22.
 |---|---|---|
 | 0 | Port all 25 components to single files + Phase 0 demo pages | **Done** (type-check, lint and browser-load clean) |
 | 1 | Review & QA each component | **In progress.** Polish standard (below) applied, and audit fixes done, for 5 of 25: Accordion, Attachment, Button, Chat Bubble, Checkbox Group. One owner decision open (see "Open items"). Components 14–25 (Input OTP → Tooltip) have polish steps 1, 3, 4 and 5 done; steps 2 and 6 and the audits are still to do (see "Progress on 14–25"). |
-| 2 | Registry sync (`component-ship.mjs registry`) | Not started |
-| 3 | Codegen: global Remixer swap + Sanity JSX handoff | Not started |
-| 4 | Distribution: `public/r`, npm tarball, free mirror | Not started |
+| 2 | Registry sync (`component-ship.mjs registry`) | **Done** for the 24 listed (Form Fields retired). v1.0.0, free, `components`. Free mirror **not** synced (`--skip-free-mirror`): `../hyperiux-components` had unrelated uncommitted changes |
+| 3 | Codegen: global Remixer swap + Sanity JSX handoff | Global Remixer swap **done** (demos read `registry.json`). JSX written to `codegen/animated-*`; Sanity paste still manual |
+| 4 | Distribution: `public/r`, npm tarball, free mirror | `public/r/animated-*.json` and `registry/dist` tarballs built. Free mirror and clean-project install test **to do** |
 | 5 | Site listing (Sanity entries, detail pages, previews) | Not started |
 | 6 | Launch, then maintenance | Not started |
 
-Nothing has been shipped to the registry yet. Every component lives only in
-`apps/docs/src/components/animated-*/` with a draft demo at `/demo/animated-*`.
+The 24 listed components are in `registry/effects/components/animated-*/` and `public/r`. Their
+demos use `RegistryRemixerDemo`, so **remixer props now live in `registry.json`**, not in
+`DemoContent.tsx`. After editing a component, run `component-ship.mjs update --slug <slug>
+--no-version-bump` (before launch) or with `--bump` (after). `port.mjs` no longer refreshes the
+remixer panel; edit props in `registry.json`.
+
+Release fixes (2026-10-23): Data Table `--hx` classes inside selectors replaced with a variable
+redefinition; Theme Switch, Menubar and Tooltip `MotionConfig reducedMotion="user"` replaced with
+an always/never wrapper; every exported `getThemeProps` defaults to dark (bundler too); Command
+Menu default export renamed `AnimatedCommandMenu`. Button keeps `AnimatedButtonSet` because
+`AnimatedButton` is its own named part. Tabs Bar stays light by its config.
 
 ---
 

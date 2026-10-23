@@ -34,6 +34,12 @@ function useReduceMotion() {
   return reduceMotion;
 }
 
+// Always/never instead of "user", so the demo's reduced-motion switch is honoured too
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = useReduceMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
+
 export type AnimatedMenubarTheme = "default" | "caffeine" | "claude" | "ghibli" | "spotify" | "valorant" | "vscode";
 export type AnimatedMenubarMode = "light" | "dark";
 
@@ -237,7 +243,7 @@ const THEMES: Record<`${AnimatedMenubarTheme}:${AnimatedMenubarMode}`, Record<st
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedMenubarTheme = "default", mode: AnimatedMenubarMode = "light") {
+function themeProps(theme: AnimatedMenubarTheme = "default", mode: AnimatedMenubarMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -497,7 +503,7 @@ function DropdownMenu({
 
   return (
     <DropdownMenuContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <MenuPrimitive.Root
           data-slot="dropdown-menu"
           open={open}
@@ -515,7 +521,7 @@ function DropdownMenu({
         >
           {children}
         </MenuPrimitive.Root>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </DropdownMenuContext.Provider>
   )
 }
@@ -1919,7 +1925,8 @@ function DesktopMenubarContent({
   align = "start",
   alignOffset = -4,
   side = "bottom",
-  sideOffset = 8,
+  // clears the bar's own padding and border, so the dropdown floats just below it
+  sideOffset = 14,
   ...props
 }: MenuPrimitive.Popup.Props &
   Pick<MenuPrimitive.Positioner.Props, "align" | "alignOffset" | "side" | "sideOffset">) {
@@ -2288,7 +2295,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
   }, [open])
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       <div ref={root} data-slot="menubar-mobile" className="relative hidden max-[1025px]:block">
         <button
           type="button"
@@ -2330,7 +2337,7 @@ function MobileMenubar({ children }: { children: React.ReactNode }) {
           )}
         </AnimatePresence>
       </div>
-    </MotionConfig>
+    </ReducedMotionConfig>
   )
 }
 

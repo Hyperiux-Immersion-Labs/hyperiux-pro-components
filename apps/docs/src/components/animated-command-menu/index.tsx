@@ -43,10 +43,10 @@ function cn(...inputs: unknown[]) {
   return twMerge(toClass(inputs));
 }
 
-export type AnimatedCommandTheme = "default" | "caffeine" | "claude" | "ghibli" | "spotify" | "valorant" | "vscode";
-export type AnimatedCommandMode = "light" | "dark";
+export type AnimatedCommandMenuTheme = "default" | "caffeine" | "claude" | "ghibli" | "spotify" | "valorant" | "vscode";
+export type AnimatedCommandMenuMode = "light" | "dark";
 
-const THEMES: Record<`${AnimatedCommandTheme}:${AnimatedCommandMode}`, Record<string, string>> = {
+const THEMES: Record<`${AnimatedCommandMenuTheme}:${AnimatedCommandMenuMode}`, Record<string, string>> = {
   "default:light": {
     "background": "oklch(1 0 0)",
     "border": "oklch(0.922 0 0)",
@@ -246,7 +246,7 @@ const THEMES: Record<`${AnimatedCommandTheme}:${AnimatedCommandMode}`, Record<st
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedCommandTheme = "default", mode: AnimatedCommandMode = "light") {
+function themeProps(theme: AnimatedCommandMenuTheme = "default", mode: AnimatedCommandMenuMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -1345,13 +1345,13 @@ function useDemoControls(props: Partial<ControlValues>) {
   return { values, set };
 }
 
-export interface AnimatedCommandProps extends Partial<ControlValues> {
-  theme?: AnimatedCommandTheme;
-  mode?: AnimatedCommandMode;
+export interface AnimatedCommandMenuProps extends Partial<ControlValues> {
+  theme?: AnimatedCommandMenuTheme;
+  mode?: AnimatedCommandMenuMode;
   className?: string;
 }
 
-export default function AnimatedCommand({ theme = "claude", mode = "dark", className, ...props }: AnimatedCommandProps) {
+export default function AnimatedCommandMenu({ theme = "claude", mode = "dark", className, ...props }: AnimatedCommandMenuProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>

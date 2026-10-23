@@ -1,0 +1,297 @@
+{
+  "name": "animated-drawer",
+  "type": "registry:component",
+  "title": "Animated Drawer",
+  "description": "A panel that slides in from the edge and can be swiped away.",
+  "dependencies": [
+    "@base-ui/react",
+    "class-variance-authority",
+    "motion",
+    "tailwind-merge"
+  ],
+  "registryDependencies": [],
+  "exportName": "AnimatedDrawer",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-23",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "theme",
+      "label": "Theme",
+      "type": "string",
+      "default": "spotify",
+      "description": "Colour palette, drawer included. Its primary colour fills the main button and the hover fill.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Default",
+            "value": "default"
+          },
+          {
+            "label": "Caffeine",
+            "value": "caffeine"
+          },
+          {
+            "label": "Claude",
+            "value": "claude"
+          },
+          {
+            "label": "Ghibli",
+            "value": "ghibli"
+          },
+          {
+            "label": "Spotify",
+            "value": "spotify"
+          },
+          {
+            "label": "Valorant",
+            "value": "valorant"
+          },
+          {
+            "label": "Vscode",
+            "value": "vscode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "mode",
+      "label": "Mode",
+      "type": "string",
+      "default": "dark",
+      "description": "Light or dark version of the palette. Starts dark.",
+      "remixer": {
+        "control": "select",
+        "group": "theme",
+        "groupTitle": "Theme",
+        "options": [
+          {
+            "label": "Light",
+            "value": "light"
+          },
+          {
+            "label": "Dark",
+            "value": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "name": "rollingText",
+      "label": "Rolling text",
+      "type": "boolean",
+      "default": true,
+      "description": "The trigger and button labels roll to a second copy on hover.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "button",
+        "groupTitle": "Button",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "fillOnHover",
+      "label": "Fill on hover",
+      "type": "boolean",
+      "default": false,
+      "description": "Buttons fill with colour from the edge on hover.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "button",
+        "groupTitle": "Button"
+      }
+    },
+    {
+      "name": "side",
+      "label": "Side",
+      "type": "string",
+      "default": "bottom",
+      "description": "Which edge of the screen the drawer slides in from.",
+      "remixer": {
+        "control": "select",
+        "group": "drawer",
+        "groupTitle": "Drawer",
+        "options": [
+          {
+            "label": "Bottom",
+            "value": "bottom"
+          },
+          {
+            "label": "Top",
+            "value": "top"
+          },
+          {
+            "label": "Left",
+            "value": "left"
+          },
+          {
+            "label": "Right",
+            "value": "right"
+          }
+        ]
+      }
+    },
+    {
+      "name": "showSwipeHandle",
+      "label": "Swipe handle",
+      "type": "boolean",
+      "default": true,
+      "description": "Shows a handle you can grab to swipe the drawer away.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "drawer",
+        "groupTitle": "Drawer"
+      }
+    },
+    {
+      "name": "openAnimation",
+      "label": "Opens with",
+      "type": "string",
+      "default": "slide",
+      "description": "How the drawer arrives: slides in or fades in.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "label": "Slide",
+            "value": "slide"
+          },
+          {
+            "label": "Fade",
+            "value": "fade"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "elastic",
+      "label": "Elastic",
+      "type": "boolean",
+      "default": true,
+      "description": "The drawer springs in with a slight overshoot.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "disabledWhen": {
+          "prop": "openAnimation",
+          "equals": "fade"
+        },
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "label": "Duration",
+      "type": "number",
+      "default": 0.5,
+      "description": "How long the open animation takes, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.2,
+        "max": 1.2,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "bounce",
+      "label": "Bounce",
+      "type": "number",
+      "default": 0.2,
+      "description": "How much the drawer overshoots and settles. 0 is no bounce.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.6,
+        "step": 0.05,
+        "disabledWhen": [
+          {
+            "prop": "elastic",
+            "equals": false
+          },
+          {
+            "prop": "openAnimation",
+            "equals": "fade"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "stagger",
+      "label": "Stagger",
+      "type": "number",
+      "default": 0.04,
+      "description": "Delay between each piece of drawer content appearing, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.15,
+        "step": 0.01,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "tiltOnSwipe",
+      "label": "Tilt on swipe",
+      "type": "boolean",
+      "default": false,
+      "description": "The drawer tilts slightly as you swipe it.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "scaleBackground",
+      "label": "Shrink page behind",
+      "type": "boolean",
+      "default": true,
+      "description": "The page behind shrinks a little while the drawer is open.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/animated-drawer/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n\"use client\";\n\nimport { Button as ButtonPrimitive } from \"@base-ui/react/button\";\nimport { cva, type VariantProps } from \"class-variance-authority\";\nimport * as React from \"react\";\nimport { MotionConfig, motion, animate, stagger } from \"motion/react\";\nimport { Drawer as DrawerPrimitive } from \"@base-ui/react/drawer\";\nimport { twMerge } from \"tailwind-merge\";\n\n// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\nfunction usePrefersReducedMotion() {\n  const [reduce, setReduce] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduce(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n  return reduce\n}\n\n// Motion follows the same setting: transforms and layout animations land instantly when it's on\nfunction ReducedMotionConfig({ children }: { children: React.ReactNode }) {\n  const reduce = usePrefersReducedMotion()\n  return <MotionConfig reducedMotion={reduce ? \"always\" : \"never\"}>{children}</MotionConfig>\n}\n\nfunction toClass(value: unknown): string {\n  if (!value) return \"\";\n  if (typeof value === \"string\" || typeof value === \"number\") return String(value);\n  if (Array.isArray(value)) return value.map(toClass).filter(Boolean).join(\" \");\n  if (Object.getPrototypeOf(value) !== Object.prototype) return \"\";\n  const record = value as Record<string, unknown>;\n  return Object.keys(record).filter((key) => record[key]).join(\" \");\n}\n\nfunction cn(...inputs: unknown[]) {\n  return twMerge(toClass(inputs));\n}\n\nexport type AnimatedDrawerTheme = \"default\" | \"caffeine\" | \"claude\" | \"ghibli\" | \"spotify\" | \"valorant\" | \"vscode\";\nexport type AnimatedDrawerMode = \"light\" | \"dark\";\n\nconst THEMES: Record<`${AnimatedDrawerTheme}:${AnimatedDrawerMode}`, Record<string, string>> = {\n  \"default:light\": {\n    \"background\": \"oklch(1 0 0)\",\n    \"border\": \"oklch(0.922 0 0)\",\n    \"destructive\": \"oklch(0.577 0.245 27.325)\",\n    \"foreground\": \"oklch(0.145 0 0)\",\n    \"input\": \"oklch(0.922 0 0)\",\n    \"muted\": \"oklch(0.92 0 0)\",\n    \"muted-foreground\": \"oklch(0.556 0 0)\",\n    \"popover\": \"oklch(1 0 0)\",\n    \"popover-foreground\": \"oklch(0.145 0 0)\",\n    \"primary\": \"oklch(0.205 0 0)\",\n    \"primary-foreground\": \"oklch(0.985 0 0)\",\n    \"ring\": \"oklch(0.708 0 0)\",\n    \"secondary\": \"oklch(0.97 0 0)\",\n    \"secondary-foreground\": \"oklch(0.205 0 0)\"\n  },\n  \"default:dark\": {\n    \"background\": \"oklch(0.145 0 0)\",\n    \"border\": \"oklch(1 0 0 / 10%)\",\n    \"destructive\": \"oklch(0.704 0.191 22.216)\",\n    \"foreground\": \"oklch(0.985 0 0)\",\n    \"input\": \"oklch(1 0 0 / 15%)\",\n    \"muted\": \"oklch(0.269 0 0)\",\n    \"muted-foreground\": \"oklch(0.708 0 0)\",\n    \"popover\": \"oklch(0.205 0 0)\",\n    \"popover-foreground\": \"oklch(0.985 0 0)\",\n    \"primary\": \"oklch(0.922 0 0)\",\n    \"primary-foreground\": \"oklch(0.205 0 0)\",\n    \"ring\": \"oklch(0.556 0 0)\",\n    \"secondary\": \"oklch(0.269 0 0)\",\n    \"secondary-foreground\": \"oklch(0.985 0 0)\"\n  },\n  \"caffeine:light\": {\n    \"background\": \"#f9f9f9\",\n    \"border\": \"#d8d8d8\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#202020\",\n    \"input\": \"#d8d8d8\",\n    \"muted\": \"#efefef\",\n    \"muted-foreground\": \"#646464\",\n    \"popover\": \"#fcfcfc\",\n    \"popover-foreground\": \"#202020\",\n    \"primary\": \"#644a40\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#644a40\",\n    \"secondary\": \"#ffdfb5\",\n    \"secondary-foreground\": \"#582d1d\"\n  },\n  \"caffeine:dark\": {\n    \"background\": \"#111111\",\n    \"border\": \"#201e18\",\n    \"destructive\": \"#e54d2e\",\n    \"foreground\": \"#eeeeee\",\n    \"input\": \"#484848\",\n    \"muted\": \"#222222\",\n    \"muted-foreground\": \"#b4b4b4\",\n    \"popover\": \"#191919\",\n    \"popover-foreground\": \"#eeeeee\",\n    \"primary\": \"#ffe0c2\",\n    \"primary-foreground\": \"#081a1b\",\n    \"ring\": \"#ffe0c2\",\n    \"secondary\": \"#393028\",\n    \"secondary-foreground\": \"#ffe0c2\"\n  },\n  \"claude:light\": {\n    \"background\": \"#faf9f5\",\n    \"border\": \"#dad9d4\",\n    \"destructive\": \"#c0392b\",\n    \"foreground\": \"#3d3929\",\n    \"input\": \"#b4b2a7\",\n    \"muted\": \"#ede9de\",\n    \"muted-foreground\": \"#83827d\",\n    \"popover\": \"#ffffff\",\n    \"popover-foreground\": \"#28261b\",\n    \"primary\": \"#c96442\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#c96442\",\n    \"secondary\": \"#e9e6dc\",\n    \"secondary-foreground\": \"#535146\"\n  },\n  \"claude:dark\": {\n    \"background\": \"#262624\",\n    \"border\": \"#3e3e38\",\n    \"destructive\": \"#ef4444\",\n    \"foreground\": \"#c3c0b6\",\n    \"input\": \"#52514a\",\n    \"muted\": \"#1b1b19\",\n    \"muted-foreground\": \"#b7b5a9\",\n    \"popover\": \"#30302e\",\n    \"popover-foreground\": \"#e5e5e2\",\n    \"primary\": \"#d97757\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#d97757\",\n    \"secondary\": \"#faf9f5\",\n    \"secondary-foreground\": \"#30302e\"\n  },\n  \"ghibli:light\": {\n    \"background\": \"#f3ecd9\",\n    \"border\": \"#d5cba8\",\n    \"destructive\": \"#c0533a\",\n    \"foreground\": \"#4a4436\",\n    \"input\": \"#cfc59f\",\n    \"muted\": \"#e6dec4\",\n    \"muted-foreground\": \"#7a705a\",\n    \"popover\": \"#f8f2e2\",\n    \"popover-foreground\": \"#4a4436\",\n    \"primary\": \"#6f9a5b\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#6f9a5b\",\n    \"secondary\": \"#dcd3b6\",\n    \"secondary-foreground\": \"#4a4436\"\n  },\n  \"ghibli:dark\": {\n    \"background\": \"#1f2a26\",\n    \"border\": \"#3b4c45\",\n    \"destructive\": \"#e0745a\",\n    \"foreground\": \"#e6e0cc\",\n    \"input\": \"#46584f\",\n    \"muted\": \"#2c3a34\",\n    \"muted-foreground\": \"#a8b39f\",\n    \"popover\": \"#27342f\",\n    \"popover-foreground\": \"#e6e0cc\",\n    \"primary\": \"#8fbf7a\",\n    \"primary-foreground\": \"#15201a\",\n    \"ring\": \"#8fbf7a\",\n    \"secondary\": \"#34443d\",\n    \"secondary-foreground\": \"#e6e0cc\"\n  },\n  \"spotify:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e0e0e0\",\n    \"destructive\": \"#e22134\",\n    \"foreground\": \"#191414\",\n    \"input\": \"#d4d4d4\",\n    \"muted\": \"#ececec\",\n    \"muted-foreground\": \"#6a6a6a\",\n    \"popover\": \"#ffffff\",\n    \"popover-foreground\": \"#191414\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1db954\",\n    \"secondary\": \"#f0f0f0\",\n    \"secondary-foreground\": \"#191414\"\n  },\n  \"spotify:dark\": {\n    \"background\": \"#121212\",\n    \"border\": \"#2a2a2a\",\n    \"destructive\": \"#f3727f\",\n    \"foreground\": \"#ffffff\",\n    \"input\": \"#3a3a3a\",\n    \"muted\": \"#1f1f1f\",\n    \"muted-foreground\": \"#b3b3b3\",\n    \"popover\": \"#282828\",\n    \"popover-foreground\": \"#ffffff\",\n    \"primary\": \"#1db954\",\n    \"primary-foreground\": \"#000000\",\n    \"ring\": \"#1ed760\",\n    \"secondary\": \"#242424\",\n    \"secondary-foreground\": \"#ffffff\"\n  },\n  \"valorant:light\": {\n    \"background\": \"#ece8e1\",\n    \"border\": \"#cfc9bc\",\n    \"destructive\": \"#bd3944\",\n    \"foreground\": \"#0f1923\",\n    \"input\": \"#c4beb0\",\n    \"muted\": \"#e2ddd2\",\n    \"muted-foreground\": \"#5c6670\",\n    \"popover\": \"#f5f2ec\",\n    \"popover-foreground\": \"#0f1923\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#dcd7cc\",\n    \"secondary-foreground\": \"#0f1923\"\n  },\n  \"valorant:dark\": {\n    \"background\": \"#0f1923\",\n    \"border\": \"#2b3a48\",\n    \"destructive\": \"#ff6b76\",\n    \"foreground\": \"#ece8e1\",\n    \"input\": \"#344454\",\n    \"muted\": \"#1a2733\",\n    \"muted-foreground\": \"#8b978f\",\n    \"popover\": \"#1f2326\",\n    \"popover-foreground\": \"#ece8e1\",\n    \"primary\": \"#ff4655\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#ff4655\",\n    \"secondary\": \"#1f2b37\",\n    \"secondary-foreground\": \"#ece8e1\"\n  },\n  \"vscode:light\": {\n    \"background\": \"#ffffff\",\n    \"border\": \"#e5e5e5\",\n    \"destructive\": \"#e51400\",\n    \"foreground\": \"#3b3b3b\",\n    \"input\": \"#cecece\",\n    \"muted\": \"#f3f3f3\",\n    \"muted-foreground\": \"#717171\",\n    \"popover\": \"#f8f8f8\",\n    \"popover-foreground\": \"#3b3b3b\",\n    \"primary\": \"#007acc\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#e5e5e5\",\n    \"secondary-foreground\": \"#3b3b3b\"\n  },\n  \"vscode:dark\": {\n    \"background\": \"#1f1f1f\",\n    \"border\": \"#3c3c3c\",\n    \"destructive\": \"#f14c4c\",\n    \"foreground\": \"#cccccc\",\n    \"input\": \"#3c3c3c\",\n    \"muted\": \"#2a2d2e\",\n    \"muted-foreground\": \"#9d9d9d\",\n    \"popover\": \"#252526\",\n    \"popover-foreground\": \"#cccccc\",\n    \"primary\": \"#0e639c\",\n    \"primary-foreground\": \"#ffffff\",\n    \"ring\": \"#007fd4\",\n    \"secondary\": \"#3a3d41\",\n    \"secondary-foreground\": \"#ffffff\"\n  }\n};\n\n// Popups render in a portal, so they need these too\nfunction themeProps(theme: AnimatedDrawerTheme = \"default\", mode: AnimatedDrawerMode = \"dark\") {\n  const palette = THEMES[`${theme}:${mode}`] ?? THEMES[\"default:light\"];\n  const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));\n  // Any theme but Default tints key parts with its primary colour\n  return { \"data-theme\": mode, \"data-accent\": theme === \"default\" ? undefined : \"\", style: style as React.CSSProperties };\n}\n\nconst ThemeContext = React.createContext(themeProps());\n\nfunction ThemeScope({ children }: { children?: React.ReactNode }) {\n  const themed = React.useContext(ThemeContext);\n  return (\n    <div {...themed} className=\"contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50\">\n      {children}\n    </div>\n  );\n}\n\n// ---- button.tsx ----\n\nconst buttonVariants = cva(\n  \"group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4\",\n  {\n    variants: {\n      variant: {\n        default: \"bg-(--hx-primary) text-(--hx-primary-foreground) hover:bg-(--hx-primary)/80\",\n        outline:\n          \"border-(--hx-border) bg-(--hx-background) hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:border-(--hx-input) in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50\",\n        secondary:\n          \"bg-(--hx-secondary) text-(--hx-secondary-foreground) hover:bg-[color-mix(in_oklch,var(--hx-secondary),var(--hx-foreground)_5%)] aria-expanded:bg-(--hx-secondary) aria-expanded:text-(--hx-secondary-foreground)\",\n        ghost:\n          \"hover:bg-(--hx-muted) hover:text-(--hx-foreground) aria-expanded:bg-(--hx-muted) aria-expanded:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-muted)/50\",\n        destructive:\n          \"bg-(--hx-destructive)/10 text-(--hx-destructive) hover:bg-(--hx-destructive)/20 focus-visible:border-(--hx-destructive)/40 focus-visible:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-destructive)/20 in-data-[theme=dark]:hover:bg-(--hx-destructive)/30 in-data-[theme=dark]:focus-visible:ring-(--hx-destructive)/40\",\n        link: \"text-(--hx-primary) underline-offset-4 hover:underline\",\n      },\n      size: {\n        default:\n          \"h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        xs: \"h-6 gap-1 rounded-md px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3\",\n        sm: \"h-7 gap-1 rounded-md px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5\",\n        lg: \"h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2\",\n        icon: \"size-8\",\n        \"icon-xs\":\n          \"size-6 rounded-md in-data-[slot=button-group]:rounded-md [&_svg:not([class*='size-'])]:size-3\",\n        \"icon-sm\":\n          \"size-7 rounded-md in-data-[slot=button-group]:rounded-md\",\n        \"icon-lg\": \"size-9\",\n      },\n    },\n    defaultVariants: {\n      variant: \"default\",\n      size: \"default\",\n    },\n  }\n)\n\nfunction Button({\n  className,\n  variant = \"default\",\n  size = \"default\",\n  ...props\n}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {\n  return (\n    <ButtonPrimitive\n      data-slot=\"button\"\n      className={cn(buttonVariants({ variant, size, className }))}\n      {...props}\n    />\n  )\n}\n\n// ---- hover-effects.tsx ----\n\n/** Text that rolls up to a copy of itself while the nearest `group/roll` is hovered. */\nfunction RollText({ children }: { children: React.ReactNode }) {\n  const roll =\n    \"block transition-transform duration-400 ease-[cubic-bezier(0.33,1,0.68,1)] motion-reduce:transition-none\"\n  return (\n    <span className=\"relative block overflow-hidden\">\n      <span className={cn(roll, \"group-hover/roll:-translate-y-full\")}>{children}</span>\n      <span\n        aria-hidden\n        className={cn(roll, \"absolute inset-x-0 top-0 translate-y-full group-hover/roll:translate-y-0\")}\n      >\n        {children}\n      </span>\n    </span>\n  )\n}\n\n/** Classes for a button that carries the hover fill: the fill sits under its label. */\nconst HOVER_FILL_CLASSES =\n  \"relative isolate overflow-hidden transition-[border-color] duration-400 ease-in-out hover:border-(--hx-primary) hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30\"\n\n/**\n * A hover fill that grows as a circle from where the pointer came in, and shrinks back\n * towards where it left. Put `circle` inside the button, wrap its content in `label`, and\n * call `place` on enter and leave.\n */\nfunction useHoverFill() {\n  const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })\n  const place = (event: React.PointerEvent<HTMLElement>, on: boolean) => {\n    const rect = event.currentTarget.getBoundingClientRect()\n    setFill({ x: event.clientX - rect.left, y: event.clientY - rect.top, on })\n  }\n  const circle = (\n    // Wide enough to cover the button from any corner once fully grown.\n    <motion.span\n      aria-hidden\n      className=\"pointer-events-none absolute -z-10 aspect-square w-[250%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--hx-primary)\"\n      style={{ left: fill.x, top: fill.y }}\n      initial={false}\n      animate={{ scale: fill.on ? 1 : 0 }}\n      transition={{ duration: 0.5, ease: \"easeInOut\" }}\n    />\n  )\n  const label = (children: React.ReactNode) => <span className=\"relative\">{children}</span>\n  return { place, circle, label }\n}\n\n/**\n * The hover state shared by the dialog and drawer triggers: text that rolls, and optionally\n * the circle fill. Without the fill, hover leaves the background alone.\n */\nfunction useTriggerHover({ rollingText, fillOnHover }: { rollingText: boolean; fillOnHover: boolean }) {\n  const { place, circle, label } = useHoverFill()\n  return {\n    className: cn(\n      \"group/roll\",\n      fillOnHover\n        ? HOVER_FILL_CLASSES\n        : \"hover:bg-(--hx-background) hover:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30\"\n    ),\n    onPointerEnter: (event: React.PointerEvent<HTMLElement>) => {\n      if (fillOnHover) place(event, true)\n    },\n    onPointerLeave: (event: React.PointerEvent<HTMLElement>) => {\n      if (fillOnHover) place(event, false)\n    },\n    content: (children: React.ReactNode) => {\n      const text = rollingText && typeof children === \"string\" ? <RollText>{children}</RollText> : children\n      return fillOnHover ? (\n        <>\n          {circle}\n          {label(text)}\n        </>\n      ) : (\n        text\n      )\n    },\n  }\n}\n\n// ---- stagger-in.ts ----\n\n/**\n * Fades the elements matching `selector` inside `root` up into place one after another.\n * Call it as the container mounts (from a callback ref): the items are hidden first, so\n * they never show for a frame before their turn.\n */\nfunction staggerIn(\n  root: Element,\n  selector: string,\n  { gap, delay = 0.08, distance = 8 }: { gap: number; delay?: number; distance?: number }\n) {\n  if (gap <= 0 || window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) return\n  const items = Array.from(root.querySelectorAll<HTMLElement>(selector))\n  if (items.length === 0) return\n  for (const item of items) item.style.opacity = \"0\"\n  return animate(\n    items,\n    { opacity: [0, 1], y: [distance, 0] },\n    { delay: stagger(gap, { startDelay: delay }), duration: 0.35, ease: [0.22, 1, 0.36, 1] }\n  )\n}\n\n// ---- drawer.tsx ----\n\ntype DrawerMotion = {\n  /** Spring instead of an eased slide. */\n  elastic: boolean\n  /** Seconds. */\n  duration: number\n  /** Spring overshoot, 0–0.9. */\n  bounce: number\n  /** Gap between items fading in. */\n  stagger: number\n  /** Tilts a little while swiped. */\n  tiltOnSwipe: boolean\n  /** Trigger text rolls up on hover. */\n  rollingText: boolean\n  /** Trigger fills from pointer on hover. */\n  fillOnHover: boolean\n  /** Slide in, or fade in place. */\n  openAnimation: DrawerOpenAnimation\n}\n\ntype DrawerOpenAnimation = \"slide\" | \"fade\"\n\ntype DrawerContextProps = DrawerMotion & {\n  hasSnapPoints: boolean\n  modal: DrawerPrimitive.Root.Props[\"modal\"]\n  showSwipeHandle: boolean\n  swipeDirection: NonNullable<DrawerPrimitive.Root.Props[\"swipeDirection\"]>\n}\n\n/** A spring as CSS linear() easing. */\nfunction springEasing(bounce: number) {\n  const zeta = 1 - Math.min(Math.max(bounce, 0), 0.9)\n  const omega = 7 / zeta\n  const steps = 40\n  const points = Array.from({ length: steps + 1 }, (_, i) => {\n    const t = i / steps\n    if (i === steps) return 1\n    if (zeta >= 1) return 1 - Math.exp(-omega * t) * (1 + omega * t)\n    const damped = omega * Math.sqrt(1 - zeta ** 2)\n    return (\n      1 -\n      Math.exp(-zeta * omega * t) *\n        (Math.cos(damped * t) + ((zeta * omega) / damped) * Math.sin(damped * t))\n    )\n  })\n  return `linear(${points.map((p) => +p.toFixed(4)).join(\", \")})`\n}\n\n/** Titles and any element marked data-drawer-item stagger in, boxes included. */\nconst STAGGER_ITEMS =\n  '[data-slot=\"drawer-title\"], [data-slot=\"drawer-description\"], [data-drawer-item]'\n\nconst DrawerContext = React.createContext<DrawerContextProps | null>(null)\n\nfunction useDrawer() {\n  const context = React.useContext(DrawerContext)\n\n  if (!context) {\n    throw new Error(\"useDrawer must be used within a Drawer.\")\n  }\n\n  return context\n}\n\nfunction Drawer({\n  modal = true,\n  showSwipeHandle = false,\n  snapPoints,\n  swipeDirection = \"down\",\n  elastic = true,\n  duration = 0.5,\n  bounce = 0.2,\n  stagger = 0.04,\n  tiltOnSwipe = false,\n  rollingText = true,\n  fillOnHover = false,\n  openAnimation = \"slide\",\n  ...props\n}: DrawerPrimitive.Root.Props &\n  Partial<DrawerMotion> & {\n    showSwipeHandle?: boolean\n  }) {\n  // Base UI only snaps bottom sheets.\n  const snaps = swipeDirection === \"down\" ? snapPoints : undefined\n  const hasSnapPoints = snaps != null && snaps.length > 0\n  const contextValue = React.useMemo(\n    () => ({\n      hasSnapPoints,\n      modal,\n      showSwipeHandle,\n      swipeDirection,\n      elastic,\n      duration,\n      bounce,\n      stagger,\n      tiltOnSwipe,\n      rollingText,\n      fillOnHover,\n      openAnimation,\n    }),\n    [\n      hasSnapPoints,\n      modal,\n      showSwipeHandle,\n      swipeDirection,\n      elastic,\n      duration,\n      bounce,\n      stagger,\n      tiltOnSwipe,\n      rollingText,\n      fillOnHover,\n      openAnimation,\n    ]\n  )\n\n  return (\n    <DrawerContext.Provider value={contextValue}>\n      <DrawerPrimitive.Root\n        data-slot=\"drawer\"\n        modal={modal}\n        snapPoints={snaps}\n        swipeDirection={swipeDirection}\n        {...props}\n      />\n    </DrawerContext.Provider>\n  )\n}\n\nfunction DrawerTrigger({\n  onPointerEnter,\n  onPointerLeave,\n  className,\n  children,\n  ...props\n}: DrawerPrimitive.Trigger.Props) {\n  const hover = useTriggerHover(useDrawer())\n  return (\n    <DrawerPrimitive.Trigger\n      data-slot=\"drawer-trigger\"\n      onPointerEnter={(event) => {\n        onPointerEnter?.(event)\n        hover.onPointerEnter(event)\n      }}\n      onPointerLeave={(event) => {\n        onPointerLeave?.(event)\n        hover.onPointerLeave(event)\n      }}\n      className={(state) =>\n        cn(hover.className, typeof className === \"function\" ? className(state) : className)\n      }\n      {...props}\n    >\n      {hover.content(children)}\n    </DrawerPrimitive.Trigger>\n  )\n}\n\nfunction DrawerPortal({ ...props }: DrawerPrimitive.Portal.Props) {\n  return <DrawerPrimitive.Portal data-slot=\"drawer-portal\" {...props} />\n}\n\nfunction DrawerClose({ ...props }: DrawerPrimitive.Close.Props) {\n  return <DrawerPrimitive.Close data-slot=\"drawer-close\" {...props} />\n}\n\nfunction DrawerOverlay({\n  className,\n  ...props\n}: DrawerPrimitive.Backdrop.Props) {\n  return (\n    <DrawerPrimitive.Backdrop\n      data-slot=\"drawer-overlay\"\n      className={cn(\n        \"fixed inset-0 z-50 min-h-dvh bg-black/10 opacity-[max(var(--drawer-overlay-min-opacity,0),calc(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-[cubic-bezier(0.32,0.72,0,1)] select-none data-ending-style:pointer-events-none data-ending-style:opacity-0 data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-snap-points:[--drawer-overlay-min-opacity:0.5] data-starting-style:opacity-0 data-swiping:duration-0 supports-backdrop-filter:backdrop-blur-xs supports-[-webkit-touch-callout:none]:absolute\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerSwipeHandle({\n  className,\n  ...props\n}: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"drawer-swipe-handle\"\n      aria-hidden=\"true\"\n      className={cn(\n        \"relative z-10 flex shrink-0 cursor-grab transition-opacity duration-200 group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-drawer-swiping/drawer-popup:opacity-100 group-data-[swipe-axis=x]/drawer-popup:h-full group-data-[swipe-axis=x]/drawer-popup:w-3 group-data-[swipe-axis=x]/drawer-popup:items-center group-data-[swipe-axis=y]/drawer-popup:h-3 group-data-[swipe-axis=y]/drawer-popup:w-full group-data-[swipe-axis=y]/drawer-popup:justify-center group-data-[swipe-direction=down]/drawer-popup:items-end group-data-[swipe-direction=left]/drawer-popup:order-last group-data-[swipe-direction=left]/drawer-popup:justify-start group-data-[swipe-direction=right]/drawer-popup:justify-end group-data-[swipe-direction=up]/drawer-popup:order-last group-data-[swipe-direction=up]/drawer-popup:items-start after:block after:shrink-0 after:rounded-full after:bg-(--hx-muted) group-data-[swipe-axis=x]/drawer-popup:after:h-24 group-data-[swipe-axis=x]/drawer-popup:after:w-1 group-data-[swipe-axis=y]/drawer-popup:after:h-1 group-data-[swipe-axis=y]/drawer-popup:after:w-24 active:cursor-grabbing\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerContent({\n  className,\n  children,\n  ...props\n}: DrawerPrimitive.Popup.Props) {\n  const {\n    hasSnapPoints,\n    modal,\n    showSwipeHandle,\n    swipeDirection,\n    elastic,\n    duration,\n    bounce,\n    stagger,\n    tiltOnSwipe,\n    openAnimation,\n  } = useDrawer()\n  const fade = openAnimation === \"fade\"\n  const swipeAxis =\n    swipeDirection === \"down\" || swipeDirection === \"up\" ? \"y\" : \"x\"\n  const ease = React.useMemo(\n    () => (elastic && !fade ? springEasing(bounce) : \"cubic-bezier(0.22,1,0.36,1)\"),\n    [elastic, bounce, fade]\n  )\n  const attach = React.useCallback(\n    (node: HTMLDivElement | null) => {\n      if (!node) return\n      const delay = duration * 0.3\n      // Fade content in, stagger its items.\n      const content = node.querySelector<HTMLElement>('[data-slot=\"drawer-content\"]')\n      if (content && !window.matchMedia(\"(prefers-reduced-motion: reduce)\").matches) {\n        content.animate([{ opacity: 0 }, { opacity: 1 }], {\n          duration: 350,\n          delay: delay * 1000,\n          easing: \"ease-out\",\n          fill: \"backwards\",\n        })\n      }\n      staggerIn(node, STAGGER_ITEMS, { gap: stagger, delay })\n    },\n    [stagger, duration]\n  )\n\n  return (\n    <DrawerPortal data-slot=\"drawer-portal\"><ThemeScope>\n      {modal === true && (\n        <DrawerOverlay data-snap-points={hasSnapPoints ? \"\" : undefined} />\n      )}\n      <DrawerPrimitive.Viewport\n        data-slot=\"drawer-viewport\"\n        data-modal={modal}\n        className=\"pointer-events-none fixed inset-0 z-50 select-none data-[modal=true]:pointer-events-auto\"\n      >\n        <DrawerPrimitive.Popup\n          ref={attach}\n          data-slot=\"drawer-popup\"\n          data-swipe-axis={swipeAxis}\n          data-snap-points={hasSnapPoints ? \"\" : undefined}\n          style={\n            {\n              \"--drawer-duration\": `${duration}s`,\n              \"--drawer-ease\": ease,\n              // Fade: close in place.\n              ...(fade && {\n                \"--closed-transform\":\n                  \"translate3d(var(--translate-x,0px),var(--translate-y,0px),0) scale(var(--stack-scale))\",\n              }),\n            } as React.CSSProperties\n          }\n          className={cn(\n            // Base.\n            \"group/drawer-popup pointer-events-auto fixed z-50 m-(--drawer-inset,0px) flex h-(--drawer-content-height) max-h-(--drawer-content-max-height,none) min-h-0 w-(--drawer-content-width,auto) transform-[translate3d(var(--translate-x,0px),var(--translate-y,0px),0)_scale(var(--stack-scale))] flex-col bg-(--hx-popover) text-sm text-(--hx-popover-foreground) transition-[transform,height,opacity,filter,rotate] duration-(--drawer-duration) ease-(--drawer-ease) will-change-transform outline-none select-none [interpolate-size:allow-keywords] data-[swipe-direction=down]:rounded-t-xl data-[swipe-direction=down]:border-t data-[swipe-direction=left]:rounded-r-xl data-[swipe-direction=left]:border-r data-[swipe-direction=right]:rounded-l-xl data-[swipe-direction=right]:border-l data-[swipe-direction=up]:rounded-b-xl data-[swipe-direction=up]:border-b\",\n            // Nested.\n            \"data-nested-drawer-open:overflow-hidden data-nested-drawer-open:brightness-95\",\n            // Bleed.\n            \"after:pointer-events-none after:absolute after:bg-(--drawer-bleed-background,var(--color-popover)) data-[swipe-axis=x]:after:inset-y-0 data-[swipe-axis=x]:after:w-(--bleed) data-[swipe-axis=y]:after:inset-x-0 data-[swipe-axis=y]:after:h-(--bleed) data-[swipe-direction=down]:after:top-full data-[swipe-direction=left]:after:right-full data-[swipe-direction=right]:after:left-full data-[swipe-direction=up]:after:bottom-full\",\n            // Sizing.\n            \"[--drawer-content-height:var(--drawer-height,auto)] data-[swipe-axis=x]:[--drawer-content-width:75%] data-[swipe-axis=y]:[--drawer-content-max-height:calc(100dvh-6rem)] data-[swipe-axis=y]:data-snap-points:[--drawer-content-height:100dvh] data-[swipe-axis=x]:sm:[--drawer-content-width:32rem]\",\n            // Stack.\n            \"[--bleed:3rem] [--peek:1rem] [--stack-height:var(--drawer-frontmost-height,var(--drawer-height,0px))] [--stack-peek-offset:max(0px,calc((var(--nested-drawers)-var(--stack-progress))*var(--peek)))] [--stack-progress:clamp(0,var(--drawer-swipe-progress),1)] [--stack-scale-base:max(0,calc(1-(var(--nested-drawers)*var(--stack-step))))] [--stack-scale:clamp(0,calc(var(--stack-scale-base)+(var(--stack-step)*var(--stack-progress))),1)] [--stack-shrink:calc(1-var(--stack-scale))] [--stack-step:0.05]\",\n            // Transitions.\n            \"data-ending-style:transform-(--closed-transform) data-ending-style:opacity-[0.9999] data-ending-style:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-nested-drawer-swiping:duration-0 data-ending-style:data-nested-drawer-swiping:duration-[calc(var(--drawer-swipe-strength)*400ms)] data-starting-style:transform-(--closed-transform) data-swiping:duration-0 data-ending-style:data-swiping:duration-[calc(var(--drawer-swipe-strength)*400ms)]\",\n            // Top/bottom drawers: centred column.\n            \"data-[swipe-axis=y]:inset-x-0 data-[swipe-axis=y]:min-h-[45vh] data-[swipe-axis=y]:w-auto data-[swipe-axis=y]:data-nested-drawer-open:h-(--stack-height)\",\n            // Axis: x.\n            \"data-[swipe-axis=x]:inset-y-0 data-[swipe-axis=x]:flex-row\",\n            // Direction: down.\n            \"data-[swipe-direction=down]:bottom-0 data-[swipe-direction=down]:origin-bottom data-[swipe-direction=down]:[--closed-transform:translate3d(0,calc(100%+var(--drawer-inset,0px)+2px),0)] data-[swipe-direction=down]:[--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)-var(--stack-peek-offset)-(var(--stack-shrink)*var(--stack-height)))]\",\n            // Direction: up.\n            \"data-[swipe-direction=up]:top-0 data-[swipe-direction=up]:origin-top data-[swipe-direction=up]:[--closed-transform:translate3d(0,calc(-100%-var(--drawer-inset,0px)-2px),0)] data-[swipe-direction=up]:[--translate-y:calc(var(--drawer-snap-point-offset,0px)+var(--drawer-swipe-movement-y)+var(--stack-peek-offset)+(var(--stack-shrink)*var(--stack-height)))]\",\n            // Direction: left.\n            \"data-[swipe-direction=left]:left-0 data-[swipe-direction=left]:origin-left data-[swipe-direction=left]:[--closed-transform:translate3d(calc(-100%-var(--drawer-inset,0px)-2px),0,0)] data-[swipe-direction=left]:[--translate-x:calc(var(--drawer-swipe-movement-x)+var(--stack-peek-offset)+(var(--stack-shrink)*100%))]\",\n            // Direction: right.\n            \"data-[swipe-direction=right]:right-0 data-[swipe-direction=right]:origin-right data-[swipe-direction=right]:[--closed-transform:translate3d(calc(100%+var(--drawer-inset,0px)+2px),0,0)] data-[swipe-direction=right]:[--translate-x:calc(var(--drawer-swipe-movement-x)-var(--stack-peek-offset)-(var(--stack-shrink)*100%))]\",\n            // Tilt with the drag.\n            tiltOnSwipe &&\n              \"data-[swipe-axis=x]:rotate-[atan2(var(--drawer-swipe-movement-x,0px),3000px)] data-[swipe-axis=y]:rotate-[atan2(var(--drawer-swipe-movement-y,0px),3000px)]\",\n            fade && \"data-ending-style:opacity-0 data-starting-style:opacity-0\",\n            className\n          )}\n          {...props}\n        >\n          {showSwipeHandle && <DrawerSwipeHandle />}\n          <DrawerPrimitive.Content\n            data-slot=\"drawer-content\"\n            className={cn(\n              \"flex min-h-0 flex-1 flex-col overflow-hidden overscroll-contain rounded-[inherit] transition-opacity duration-300 ease-[cubic-bezier(0.45,1.005,0,1.005)] select-text group-data-nested-drawer-open/drawer-popup:opacity-0 group-data-nested-drawer-swiping/drawer-popup:opacity-100 group-data-swiping/drawer-popup:select-none\"\n            )}\n          >\n            {children}\n          </DrawerPrimitive.Content>\n        </DrawerPrimitive.Popup>\n      </DrawerPrimitive.Viewport>\n    </ThemeScope></DrawerPortal>\n  )\n}\n\n/** Wraps the page behind drawers. */\nfunction DrawerProvider({ ...props }: DrawerPrimitive.Provider.Props) {\n  return <DrawerPrimitive.Provider {...props} />\n}\n\n/** Optional colour behind the indented page. */\nfunction DrawerIndentBackground({\n  className,\n  ...props\n}: DrawerPrimitive.IndentBackground.Props) {\n  return (\n    <DrawerPrimitive.IndentBackground\n      data-slot=\"drawer-indent-background\"\n      className={cn(\"absolute inset-0 -z-10 rounded-[inherit]\", className)}\n      {...props}\n    />\n  )\n}\n\n/** Page behind: shrinks while drawer opens. */\nfunction DrawerIndent({\n  className,\n  scale = true,\n  ...props\n}: DrawerPrimitive.Indent.Props & {\n  /** Shrink and round while open. */\n  scale?: boolean\n}) {\n  return (\n    <DrawerPrimitive.Indent\n      data-slot=\"drawer-indent\"\n      className={cn(\n        \"origin-top transition-[scale,border-radius,translate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none\",\n        scale &&\n          \"data-active:translate-y-[2vh] data-active:scale-[0.94] data-active:overflow-hidden data-active:rounded-2xl\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerHeader({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"drawer-header\"\n      className={cn(\n        \"flex shrink-0 flex-col gap-1 px-6 py-4 max-sm:px-4 group-data-[swipe-axis=y]/drawer-popup:text-center md:gap-0.5 md:text-left\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerFooter({ className, ...props }: React.ComponentProps<\"div\">) {\n  return (\n    <div\n      data-slot=\"drawer-footer\"\n      className={cn(\"mt-auto flex shrink-0 flex-col gap-2 px-6 py-4 max-sm:px-4\", className)}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerTitle({ className, ...props }: DrawerPrimitive.Title.Props) {\n  return (\n    <DrawerPrimitive.Title\n      data-slot=\"drawer-title\"\n      className={cn(\n        \"font-heading text-base font-medium text-(--hx-foreground)\",\n        className\n      )}\n      {...props}\n    />\n  )\n}\n\nfunction DrawerDescription({\n  className,\n  ...props\n}: DrawerPrimitive.Description.Props) {\n  return (\n    <DrawerPrimitive.Description\n      data-slot=\"drawer-description\"\n      className={cn(\"text-sm text-balance text-(--hx-muted-foreground)\", className)}\n      {...props}\n    />\n  )\n}\n\n// ---- demo: drawer-demo.tsx ----\n\nconst roasts = [\n  { name: \"Ethiopia Guji\", notes: \"Jasmine, peach, black tea\" },\n  { name: \"Colombia Huila\", notes: \"Red apple, caramel, cocoa\" },\n  { name: \"Kenya Nyeri\", notes: \"Blackcurrant, grapefruit\" },\n  { name: \"House blend\", notes: \"Chocolate, hazelnut\" },\n]\n\nconst SIDES = { bottom: \"down\", top: \"up\", left: \"left\", right: \"right\" } as const\n\nconst controls = {\n  rollingText: { group: \"Button\", type: \"checkbox\", label: \"Rolling text\", value: true },\n  fillOnHover: { group: \"Button\", type: \"checkbox\", label: \"Fill on hover\", value: false },\n\n  side: {\n    group: \"Drawer\",\n    type: \"select\",\n    label: \"Side\",\n    value: \"bottom\",\n    options: [\n      { label: \"Bottom\", value: \"bottom\" },\n      { label: \"Top\", value: \"top\" },\n      { label: \"Left\", value: \"left\" },\n      { label: \"Right\", value: \"right\" },\n    ],\n  },\n  showSwipeHandle: { group: \"Drawer\", type: \"checkbox\", label: \"Swipe handle\", value: true },\n\n  openAnimation: {\n    group: \"Motion\",\n    type: \"select\",\n    label: \"Opens with\",\n    value: \"slide\",\n    options: [\n      { label: \"Slide\", value: \"slide\" },\n      { label: \"Fade\", value: \"fade\" },\n    ],\n  },\n  elastic: { disabled: (v: Record<string, unknown>) => v.openAnimation === \"fade\", group: \"Motion\", type: \"checkbox\", label: \"Elastic\", value: true },\n  duration: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Duration\",\n    value: 0.5,\n    min: 0.2,\n    max: 1.2,\n    step: 0.05,\n    unit: \"s\",\n  },\n  bounce: { disabled: (v: Record<string, unknown>) => !v.elastic || v.openAnimation === \"fade\", group: \"Motion\", type: \"slider\", label: \"Bounce\", value: 0.2, min: 0, max: 0.6, step: 0.05 },\n  stagger: {\n    group: \"Motion\",\n    type: \"slider\",\n    label: \"Stagger\",\n    value: 0.04,\n    min: 0,\n    max: 0.15,\n    step: 0.01,\n    unit: \"s\",\n  },\n  tiltOnSwipe: { group: \"Motion\", type: \"checkbox\", label: \"Tilt on swipe\", value: false },\n  scaleBackground: { group: \"Motion\", type: \"checkbox\", label: \"Shrink page behind\", value: true },\n}\n\nfunction DrawerDemo(props: Partial<ControlValues>) {\n  const panel = useDemoControls(props)\n  const { side, scaleBackground, openAnimation, ...options } = panel.values\n  const direction = SIDES[side as keyof typeof SIDES]\n\n  return (\n    <DrawerProvider>\n      <div className=\"relative isolate rounded-2xl\">\n        <DrawerIndent scale={scaleBackground} className=\"flex flex-col gap-6 py-2\">\n          <div className=\"flex flex-col gap-1\">\n          </div>\n\n          <div className=\"flex min-h-54 items-center justify-center\">\n            <Drawer\n              key={side}\n              {...options}\n              swipeDirection={direction}\n              openAnimation={openAnimation as DrawerOpenAnimation}\n            >\n              <DrawerTrigger\n                className=\"h-auto px-5 py-2.5 text-lg\"\n                render={<Button variant=\"outline\" />}\n              >\n                Choose a roast\n              </DrawerTrigger>\n              <DrawerContent>\n                <div className=\"flex w-full flex-1 flex-col\">\n                  <DrawerHeader>\n                    <DrawerTitle>Next box</DrawerTitle>\n                    <DrawerDescription>Pick the roast for Friday&apos;s delivery.</DrawerDescription>\n                  </DrawerHeader>\n                  <div className=\"flex flex-col gap-3 px-6 py-2 max-sm:px-4\">\n                    {roasts.map((roast) => (\n                      <DrawerClose\n                        key={roast.name}\n                        render={\n                          // Hover leaves the background alone; the text rolls, like the trigger.\n                          <Button\n                            variant=\"outline\"\n                            data-drawer-item\n                            className=\"group/roll h-auto justify-between gap-3 py-3 whitespace-normal transition-[color,background-color,border-color] duration-300 hover:border-(--hx-primary) hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-primary) motion-reduce:transition-none max-sm:flex-col max-sm:items-start max-sm:gap-0.5\"\n                          />\n                        }\n                      >\n                        <span className=\"font-medium\">\n                          <RollText>{roast.name}</RollText>\n                        </span>\n                        <span className=\"text-(--hx-muted-foreground) transition-colors duration-300 group-hover/roll:text-(--hx-primary-foreground)/80 motion-reduce:transition-none\">\n                          <RollText>{roast.notes}</RollText>\n                        </span>\n                      </DrawerClose>\n                    ))}\n                  </div>\n                  <DrawerFooter>\n                    <DrawerClose\n                      render={\n                        <Button\n                          variant=\"ghost\"\n                          data-drawer-item\n                          className=\"group/line transition-[color,background-color] hover:bg-transparent in-data-[theme=dark]:hover:bg-transparent\"\n                        />\n                      }\n                    >\n                      {/* An underline draws in from the left on hover and leaves to the right. */}\n                      <span className=\"relative after:absolute after:inset-x-0 after:-bottom-0.5 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out group-hover/line:after:origin-left group-hover/line:after:scale-x-100 group-focus-visible/line:after:origin-left group-focus-visible/line:after:scale-x-100 motion-reduce:after:transition-none\">\n                        Close\n                      </span>\n                    </DrawerClose>\n                  </DrawerFooter>\n                </div>\n              </DrawerContent>\n            </Drawer>\n          </div>\n          <p className=\"text-center text-sm text-(--hx-muted-foreground)\">\n            Tip: drag the drawer back towards its edge to close it.\n          </p>\n        </DrawerIndent>\n      </div>\n\n    </DrawerProvider>\n  )\n}\n\ntype ControlValues = { [K in keyof typeof controls]: (typeof controls)[K][\"value\"] };\nconst controlDefaults = Object.fromEntries(\n  Object.entries(controls).map(([key, control]) => [key, control.value])\n) as ControlValues;\n\n// Demo-set values win until the props change\nfunction useDemoControls(props: Partial<ControlValues>) {\n  const [overrides, setOverrides] = React.useState<Partial<ControlValues>>({});\n  const [seen, setSeen] = React.useState(props);\n  if (seen !== props && JSON.stringify(seen) !== JSON.stringify(props)) {\n    setSeen(props);\n    setOverrides({});\n  }\n  const values = { ...controlDefaults, ...props, ...overrides } as ControlValues;\n  const set = <K extends keyof ControlValues>(key: K, value: ControlValues[K]) =>\n    setOverrides((current) => ({ ...current, [key]: value }));\n  return { values, set };\n}\n\nexport interface AnimatedDrawerProps extends Partial<ControlValues> {\n  theme?: AnimatedDrawerTheme;\n  mode?: AnimatedDrawerMode;\n  className?: string;\n}\n\nexport default function AnimatedDrawer({ theme = \"spotify\", mode = \"dark\", className, ...props }: AnimatedDrawerProps) {\n  const themed = themeProps(theme, mode);\n  return (\n    <ThemeContext.Provider value={themed}>\n      <div {...themed} className={cn(\"w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50\", className)}>\n        <ReducedMotionConfig>\n          <DrawerDemo {...props} />\n        </ReducedMotionConfig>\n      </div>\n    </ThemeContext.Provider>\n  );\n}\n\nexport {\n  themeProps as getThemeProps,\n  Drawer,\n  DrawerProvider,\n  DrawerIndent,\n  DrawerIndentBackground,\n  DrawerPortal,\n  DrawerOverlay,\n  DrawerSwipeHandle,\n  DrawerTrigger,\n  DrawerClose,\n  DrawerContent,\n  DrawerHeader,\n  DrawerFooter,\n  DrawerTitle,\n  DrawerDescription,\n  type DrawerOpenAnimation,\n};\n"
+    }
+  ]
+}

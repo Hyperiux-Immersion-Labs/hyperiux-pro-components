@@ -225,7 +225,7 @@ const THEMES: Record<`${AnimatedThemeSwitchTheme}:${AnimatedThemeSwitchMode}`, R
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedThemeSwitchTheme = "default", mode: AnimatedThemeSwitchMode = "light") {
+function themeProps(theme: AnimatedThemeSwitchTheme = "default", mode: AnimatedThemeSwitchMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour
@@ -349,6 +349,12 @@ function useReduceMotion() {
     return () => mq.removeEventListener?.("change", read)
   }, [])
   return reduceMotion
+}
+
+// Always/never instead of "user", so the demo's reduced-motion switch is honoured too
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = useReduceMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
 }
 
 // Turns off the browser's own cross-fade for the page, so only our reveal shows, in both directions
@@ -501,7 +507,7 @@ function ThemeSwitch({
   const iconClass = cn("size-10.5 transition-[scale] duration-200 group-hover/button:scale-90 motion-reduce:transition-none", variant !== "default" && "in-data-accent:text-(--hx-primary)")
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
     <span
       ref={wrapper}
       data-slot="theme-switch-root"
@@ -586,7 +592,7 @@ function ThemeSwitch({
         )}
       </AnimatePresence>
     </span>
-    </MotionConfig>
+    </ReducedMotionConfig>
   )
 }
 

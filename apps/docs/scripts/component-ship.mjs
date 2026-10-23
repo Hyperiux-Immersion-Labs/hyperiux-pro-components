@@ -324,14 +324,17 @@ function swapDemoToGlobalRemixer(slug, category) {
     /import\s+(?:\{\s*LocalRemixerDemo\s*\}|LocalRemixerDemo)\s+from\s+["']@\/components\/local-remixer(?:\/LocalRemixerDemo)?["'];?\n?/,
     'import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";\n'
   );
-  content = content.replace(/<LocalRemixerDemo\b([\s\S]*?)>/, (_match, attrs) => {
-    const cleanedAttrs = attrs
-      .replace(/\bname\s*=\s*(?:"[^"]*"|'[^']*'|\{[^}]*\})/g, "")
-      .replace(/\bprops\s*=\s*\{\[[\s\S]*?\]\}/, "")
-      .replace(/\bremixer\s*=\s*\{[\s\S]*?\}\}/, "")
+  // Attribute values hold JSX and arrows (`render={(values) => <X />}`), so the tag and its
+  // `{…}` values are found by brace depth rather than by regex.
+  const tagStart = content.search(/<LocalRemixerDemo\b/);
+  if (tagStart !== -1) {
+    const tagEnd = findJsxTagEnd(content, tagStart);
+    const attrs = content.slice(tagStart + "<LocalRemixerDemo".length, tagEnd);
+    const cleanedAttrs = ["name", "category", "props", "remixer"]
+      .reduce((text, attr) => removeJsxAttribute(text, attr), attrs)
       .trim();
-    return `<RegistryRemixerDemo registry={registry}${cleanedAttrs ? ` ${cleanedAttrs}` : ""}>`;
-  });
+    content = `${content.slice(0, tagStart)}<RegistryRemixerDemo registry={registry}${cleanedAttrs ? ` ${cleanedAttrs}` : ""}>${content.slice(tagEnd + 1)}`;
+  }
   content = content.replace(/<\/LocalRemixerDemo>/g, "</RegistryRemixerDemo>");
 
   // Give the default-exported component a `registry` param if its
@@ -354,6 +357,38 @@ function swapDemoToGlobalRemixer(slug, category) {
   return {
     message: `swapped LocalRemixerDemo -> RegistryRemixerDemo in ${relative(demoFile)} (best-effort - review the JSX attributes)${pageResult ? `; ${pageResult}` : ""}`,
   };
+}
+
+// Index of the `>` that closes the JSX opening tag starting at `from`, skipping
+// anything inside `{…}` attribute values and quoted strings.
+function findJsxTagEnd(source, from) {
+  let depth = 0;
+  let quote = null;
+  for (let i = from; i < source.length; i += 1) {
+    const char = source[i];
+    if (quote) {
+      if (char === quote && source[i - 1] !== "\\") quote = null;
+    } else if (char === "\"" || char === "'" || char === "`") {
+      quote = char;
+    } else if (char === "{") depth += 1;
+    else if (char === "}") depth -= 1;
+    else if (char === ">" && depth === 0) return i;
+  }
+  return source.length;
+}
+
+// Removes `name="…"` or `name={…}` (balanced braces) from a JSX attribute string.
+function removeJsxAttribute(attrs, name) {
+  const match = new RegExp(`\\b${name}\\s*=\\s*`).exec(attrs);
+  if (!match) return attrs;
+  const valueStart = match.index + match[0].length;
+  let valueEnd = valueStart;
+  if (attrs[valueStart] === "{") {
+    valueEnd = findJsxTagEnd(`${attrs.slice(valueStart)}>`, 0) + valueStart;
+  } else {
+    valueEnd = attrs.indexOf(attrs[valueStart], valueStart + 1) + 1;
+  }
+  return attrs.slice(0, match.index) + attrs.slice(valueEnd);
 }
 
 function ensurePageImportsRegistry(demoDir, slug, category) {

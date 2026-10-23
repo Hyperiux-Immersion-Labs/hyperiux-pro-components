@@ -256,7 +256,7 @@ const THEMES: Record<`${AnimatedSkeletonTheme}:${AnimatedSkeletonMode}`, Record<
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedSkeletonTheme = "default", mode: AnimatedSkeletonMode = "light") {
+function themeProps(theme: AnimatedSkeletonTheme = "default", mode: AnimatedSkeletonMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

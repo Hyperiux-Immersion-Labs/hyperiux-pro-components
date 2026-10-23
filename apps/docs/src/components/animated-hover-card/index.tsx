@@ -258,7 +258,7 @@ const THEMES: Record<`${AnimatedHoverCardTheme}:${AnimatedHoverCardMode}`, Recor
 };
 
 // Popups render in a portal, so they need these too
-function themeProps(theme: AnimatedHoverCardTheme = "default", mode: AnimatedHoverCardMode = "light") {
+function themeProps(theme: AnimatedHoverCardTheme = "default", mode: AnimatedHoverCardMode = "dark") {
   const palette = THEMES[`${theme}:${mode}`] ?? THEMES["default:light"];
   const style = Object.fromEntries(Object.entries(palette).map(([token, value]) => [`--hx-${token}`, value]));
   // Any theme but Default tints key parts with its primary colour

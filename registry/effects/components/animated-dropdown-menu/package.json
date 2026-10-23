@@ -1,0 +1,21 @@
+{
+  "name": "@hyperiux/animated-dropdown-menu",
+  "version": "1.0.0",
+  "description": "A menu of actions or options that opens from a button.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "components",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@base-ui/react": "*",
+    "class-variance-authority": "*",
+    "gsap": "*",
+    "motion": "*",
+    "tailwind-merge": "*"
+  }
+}
