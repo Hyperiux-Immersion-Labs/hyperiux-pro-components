@@ -315,6 +315,39 @@ Fixed along the way:
 - **Sidebar's Elastic tooltips** now set `transitionDuration` / `transitionTimingFunction`
   (they set animation timing, which the bundler's enter transitions don't read).
 
+### Progress on 1–13 (synced to the 14–25 standard)
+
+**6–13** (Command Menu, Data Table, Date Picker, Dialog, Drawer, Dropdown Menu, Form Fields,
+Hover Card) are bundled, so everything is in their configs:
+
+| Step | State |
+|---|---|
+| 1. Dark by default | Done (`defaultMode: "dark"`) |
+| 2. Theme colour | Theme descriptions written from what already uses `--hx-primary`. No new `data-accent` tints yet; Hover Card's link and underline still use foreground (**to do**) |
+| 3. Tailwind sizes | Done. Demo containers lose `vh`/`vw` and their border; Data Table's phone bleed (`94vw`, `150vw`) is now a `min-w-3xl` table that scrolls inside its box. Drawer keeps `vh` on the open panel and the page-shrink effect (full-screen overlay, allowed) |
+| 4–5. Rules, descriptions | Done (descriptions earlier; rules come from the bundler) |
+| 6a. Reduced motion | Done through the bundler (below) plus `hideWhenReducedMotion` lists |
+| Data Table shimmer | Fixed (regenerated, so `hx-skeleton-sweep` now ships in the file) |
+| Audits | **To do**: run `reduced-motion-audit` and `props-remixer-audit` on all 8 |
+
+**The bundler now does §6a itself** for every component that imports `motion/react`:
+`useReducedMotion()` becomes `usePrefersReducedMotion()`, `<MotionConfig reducedMotion="user">`
+becomes `<ReducedMotionConfig>` (always/never), the default export is wrapped in it, and the
+themed root also stops CSS transitions and animations under the demo's switch
+(`in-data-pc-rm:**:…`). Per-component patches are only needed for motion that isn't a transform
+(height, `pathLength`, delays).
+
+**1–5** (hand-edited, never regenerated) got the same change by hand: the hook, `ReducedMotionConfig`
+(Button had no `MotionConfig` at all), the CSS stop on the root (not Checkbox Group, whose root
+differs), `hideWhenReducedMotion` in each `DemoContent`, centred tips, and no border on
+Attachment's demo container.
+
+**Warning: some 14–25 files are no longer reproducible.** Commit `6edfeb8c` hand-edited files
+that the configs don't describe (Sidebar and Toast demo sizing, Questionnaire), and the
+Menubar, Tooltip and Theme Switch configs have patches that no longer match the bundler's
+output. Running `port.mjs` on any of these overwrites or fails. Fold those edits back into the
+configs before regenerating them.
+
 ### Open items for the first five
 
 The audit fixes for the first five are done:

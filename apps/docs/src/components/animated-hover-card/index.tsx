@@ -5,9 +5,28 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Input as InputPrimitive } from "@base-ui/react/input";
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
-import { motion, useMotionValue, useReducedMotion, useSpring, type MotionValue } from "motion/react";
+import { MotionConfig, motion, useMotionValue, useSpring, type MotionValue } from "motion/react";
 import { ShuffleIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -251,7 +270,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -494,7 +513,7 @@ function HoverCardContent({
     "align" | "alignOffset" | "side" | "sideOffset"
   >) {
   const { motion: options, follow } = useHoverCard()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const x = useSpring(follow, { stiffness: 260, damping: 26 })
 
   const attach = React.useCallback(
@@ -723,7 +742,7 @@ function LinkPreviewCard({ url, preview }: { url: string; preview: ReturnType<ty
   if (loading) {
     return (
       <div className="flex animate-pulse flex-col gap-2">
-        <div className="h-[12vh] rounded-md bg-(--hx-muted)" />
+        <div className="h-24 rounded-md bg-(--hx-muted)" />
         <div className="h-3 w-1/3 rounded-sm bg-(--hx-muted)" />
         <div className="h-4 w-4/5 rounded-sm bg-(--hx-muted)" />
         <div className="h-3 w-full rounded-sm bg-(--hx-muted)" />
@@ -752,7 +771,7 @@ function LinkPreviewCard({ url, preview }: { url: string; preview: ReturnType<ty
           alt=""
           referrerPolicy="no-referrer"
           onError={() => setBrokenImage(data.image)}
-          className="h-[12vh] w-full rounded-md bg-(--hx-muted) object-cover"
+          className="h-24 w-full rounded-md bg-(--hx-muted) object-cover"
         />
       )}
       <div className="flex items-center gap-2 text-xs text-(--hx-muted-foreground)">
@@ -832,7 +851,7 @@ function HoverCardDemo(props: Partial<ControlValues>) {
         {roast.name}
       </HoverCardTrigger>
       <HoverCardContent className="flex flex-col gap-2">
-        <div className={`h-[8vh] rounded-md ${roast.color}`} />
+        <div className={`h-16 rounded-md ${roast.color}`} />
         <span className="font-medium">{roast.name}</span>
         <span className="text-xs text-(--hx-muted-foreground)">{roast.process}</span>
         <span className="text-(--hx-muted-foreground)">{roast.notes}</span>
@@ -875,7 +894,7 @@ function HoverCardDemo(props: Partial<ControlValues>) {
           </Button>
         </form>
       )}
-      <div className="flex min-h-[40vh] items-center justify-center rounded-lg border px-6 text-sm">
+      <div className="flex min-h-80 items-center justify-center px-6 text-sm">
         {linkMode ? (
           <p className="max-w-[60%] text-lg text-center leading-relaxed">
             Worth a read this week: {siteLink}. Hover the link to peek at it.
@@ -887,7 +906,7 @@ function HoverCardDemo(props: Partial<ControlValues>) {
           </p>
         )}
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
         {linkMode
           ? "Tip: type a site name or paste a link, then hover it. Some sites block previews."
           : "Tip: hover a coffee name and hold still, or tap it on a touch screen."}
@@ -922,12 +941,14 @@ export interface AnimatedHoverCardProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedHoverCard({ theme = "default", mode = "light", className, ...props }: AnimatedHoverCardProps) {
+export default function AnimatedHoverCard({ theme = "default", mode = "dark", className, ...props }: AnimatedHoverCardProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <HoverCardDemo {...props} />
+        <ReducedMotionConfig>
+          <HoverCardDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

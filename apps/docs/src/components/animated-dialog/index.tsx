@@ -3,10 +3,29 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { motion, AnimatePresence, MotionConfig, animate, useReducedMotion, type Transition } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, animate, type Transition } from "motion/react";
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { XIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -236,7 +255,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -568,7 +587,7 @@ function Dialog({
 
   return (
     <DialogContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <DialogPrimitive.Root
           data-slot="dialog"
           open={open}
@@ -579,7 +598,7 @@ function Dialog({
           disablePointerDismissal={!dismissible}
           {...props}
         />
-      </MotionConfig>
+      </ReducedMotionConfig>
     </DialogContext.Provider>
   )
 }
@@ -669,7 +688,7 @@ function DialogContent({
 }) {
   const { open, origin, motion: options } = useDialog()
   const popup = React.useRef<HTMLDivElement | null>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   const enter: Transition = reduceMotion
     ? { duration: 0.2, ease: "easeOut" }
@@ -922,7 +941,7 @@ function DialogDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[40vh] items-center justify-center rounded-lg border">
+      <div className="flex min-h-80 items-center justify-center">
         <Dialog
           {...values}
           backdrop={values.backdrop as DialogBackdrop}
@@ -945,7 +964,7 @@ function DialogDemo(props: Partial<ControlValues>) {
           </DialogContent>
         </Dialog>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: turn off &quot;Click outside closes&quot;, then click the backdrop.
       </p>
 
@@ -978,12 +997,14 @@ export interface AnimatedDialogProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDialog({ theme = "default", mode = "light", className, ...props }: AnimatedDialogProps) {
+export default function AnimatedDialog({ theme = "default", mode = "dark", className, ...props }: AnimatedDialogProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <DialogDemo {...props} />
+        <ReducedMotionConfig>
+          <DialogDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

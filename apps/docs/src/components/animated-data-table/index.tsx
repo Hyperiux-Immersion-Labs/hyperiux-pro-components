@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, stagger, AnimatePresence, motion, useReducedMotion, MotionConfig, type Variants, Reorder, stagger as staggerChildren, useDragControls, useInView } from "motion/react";
+import { animate, stagger, AnimatePresence, motion, MotionConfig, type Variants, Reorder, stagger as staggerChildren, useDragControls, useInView } from "motion/react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
@@ -8,6 +8,25 @@ import * as React from "react";
 import gsap from "gsap";
 import { ArrowUpIcon, ChevronLeftIcon, ChevronRightIcon, GripVerticalIcon, PlusIcon, Trash2Icon, XIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -370,7 +389,7 @@ function Skeleton({
   }) {
   const group = React.useContext(SkeletonContext)
   const fallbackIndex = React.useContext(SkeletonIndexContext)
-  const reduced = useReducedMotion()
+  const reduced = usePrefersReducedMotion()
 
   const kind = animation ?? group?.animation ?? "shimmer"
   const seconds = duration ?? group?.duration ?? 1.6
@@ -417,7 +436,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -1205,7 +1224,7 @@ function DataTable({
 
   return (
     <TableContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <div className={cn("flex w-full flex-col gap-3", className)}>
           {((showStatusFilter && statusKey && statuses.length > 0) || settings.addable) && (
             <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
@@ -1259,7 +1278,7 @@ function DataTable({
                 data-slot="table"
                 // Fixed layout: columns keep their widths when filtering or paging changes the rows.
                 // On phones it's wider than the screen and scrolls, so cells aren't cut off.
-                className="relative w-full table-fixed caption-bottom text-base max-md:min-w-[150vw]"
+                className="relative w-full table-fixed caption-bottom text-base max-md:min-w-3xl"
                 initial={staggerRows ? "hidden" : false}
                 animate={reveal}
                 // Re-measured on every move, so the highlight follows rows that have shifted.
@@ -1417,7 +1436,7 @@ function DataTable({
             onClear={() => setSelected(new Set())}
           />
         )}
-      </MotionConfig>
+      </ReducedMotionConfig>
     </TableContext.Provider>
   )
 }
@@ -1875,7 +1894,7 @@ function RollingNumber({
   run: boolean
   duration: number
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const text = format(value)
   const chars = text.split("")
   const instant = reduceMotion || !animate
@@ -1945,7 +1964,7 @@ function AnimatedNumber({
   duration: number
 }) {
   const ref = React.useRef<HTMLSpanElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const current = React.useRef(numberAnimation ? 0 : value)
   const [initial] = React.useState(() => format(numberAnimation ? 0 : value))
 
@@ -2290,7 +2309,7 @@ function ActionBar({
   onClear: () => void
 }) {
   return (
-    <div className="pointer-events-none fixed inset-x-0 bottom-[4vh] z-50 flex justify-center">
+    <div className="pointer-events-none fixed inset-x-0 bottom-6 z-50 flex justify-center">
       <AnimatePresence>
         {count > 0 && (
           <motion.div
@@ -2537,7 +2556,7 @@ function TablePage(props: Partial<ControlValues>) {
       <DataTable
         key={replay}
         // On phones the table breaks out of the page's 80vw column to 94vw, centred.
-        className="max-md:relative max-md:left-1/2 max-md:w-[94vw] max-md:-translate-x-1/2"
+        className="w-full"
         columns={columns}
         rows={invoices}
         totalKey="amount"
@@ -2598,13 +2617,15 @@ export interface AnimatedDataTableProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDataTable({ theme = "default", mode = "light", className, ...props }: AnimatedDataTableProps) {
+export default function AnimatedDataTable({ theme = "default", mode = "dark", className, ...props }: AnimatedDataTableProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <style>{COMPONENT_CSS}</style>
-        <TablePage {...props} />
+        <ReducedMotionConfig>
+          <TablePage {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

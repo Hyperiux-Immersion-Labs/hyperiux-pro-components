@@ -2978,7 +2978,7 @@ function MenubarDemo(props: Partial<ControlValues>) {
         </Menubar>
 
       </div>
-      <p className="text-center text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: open a menu, then slide the pointer along the bar or press the arrow keys.
       </p>
 

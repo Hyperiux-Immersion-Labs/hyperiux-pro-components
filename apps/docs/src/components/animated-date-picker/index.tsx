@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { forwardRef, useCallback, useImperativeHandle, useRef, type HTMLAttributes } from "react";
-import { type Variants, LazyMotion, domMin, m, useAnimation, useReducedMotion, animate, useAnimate } from "motion/react";
+import { MotionConfig, type Variants, LazyMotion, domMin, m, useAnimation, animate, useAnimate } from "motion/react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover";
@@ -11,6 +11,12 @@ import { ChevronDownIcon, CheckIcon, ChevronUpIcon, ChevronLeftIcon, ChevronRigh
 import { DayPicker, getDefaultClassNames, type DayButton, type Locale } from "react-day-picker";
 import { addMonths, addYears, differenceInCalendarMonths, endOfYear, format, startOfToday, startOfYear } from "date-fns";
 import { twMerge } from "tailwind-merge";
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -296,7 +302,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -362,7 +368,7 @@ const CalendarRangeIcon = forwardRef<
     ref
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -1747,12 +1753,14 @@ export interface AnimatedDatePickerProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDatePicker({ theme = "default", mode = "light", className, ...props }: AnimatedDatePickerProps) {
+export default function AnimatedDatePicker({ theme = "default", mode = "dark", className, ...props }: AnimatedDatePickerProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <DatePickerPage {...props} />
+        <ReducedMotionConfig>
+          <DatePickerPage {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

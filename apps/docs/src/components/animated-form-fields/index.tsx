@@ -5,12 +5,31 @@ import { useMemo } from "react";
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion, AnimatePresence, MotionConfig, stagger, useReducedMotion, type HTMLMotionProps, type TargetAndTransition, type Variants, animate } from "motion/react";
+import { motion, AnimatePresence, MotionConfig, stagger, type HTMLMotionProps, type TargetAndTransition, type Variants, animate } from "motion/react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import gsap from "gsap";
 import { getCountries, getCountryCallingCode } from "libphonenumber-js/min";
 import { z } from "zod";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -268,7 +287,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -656,7 +675,7 @@ function DropdownMenu({
 
   return (
     <DropdownMenuContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <MenuPrimitive.Root
           data-slot="dropdown-menu"
           open={open}
@@ -674,7 +693,7 @@ function DropdownMenu({
         >
           {children}
         </MenuPrimitive.Root>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </DropdownMenuContext.Provider>
   )
 }
@@ -782,7 +801,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -1026,7 +1045,7 @@ function MorphPanel({
   ...props
 }: React.ComponentProps<"div"> & { contentClassName?: string }) {
   const context = useDropdownMenu()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const root = React.useRef<HTMLDivElement>(null)
   const header = React.useRef<HTMLDivElement>(null)
   const timeline = React.useRef<gsap.core.Timeline | null>(null)
@@ -1674,7 +1693,7 @@ function FieldInput({
 }) {
   const options = React.useContext(FieldMotionContext)
   const { invalid, valid } = React.useContext(FieldStateContext)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const generatedId = React.useId()
   const id = idProp ?? generatedId
   const box = React.useRef<HTMLDivElement>(null)
@@ -1931,7 +1950,7 @@ function FieldError({
   }, [children, errors])
 
   const { errorAnimation } = React.useContext(FieldMotionContext)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   const error = (
     <div
@@ -2086,7 +2105,7 @@ function FormDemo(props: Partial<ControlValues>) {
     <div className="flex flex-col gap-3">
       <form
         noValidate
-        className="flex flex-col gap-6 rounded-lg border p-6 max-md:p-4"
+        className="flex flex-col gap-6 p-6 max-md:px-0"
         onSubmit={(event) => {
           event.preventDefault()
           setTouched({ name: true, email: true, postcode: true })
@@ -2229,7 +2248,7 @@ function FormDemo(props: Partial<ControlValues>) {
           </AnimatePresence>
         </div>
       </form>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: turn on &quot;Check required fields&quot;, then press Save with the form empty to see the errors.
       </p>
 
@@ -2262,12 +2281,14 @@ export interface AnimatedFormProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedForm({ theme = "default", mode = "light", className, ...props }: AnimatedFormProps) {
+export default function AnimatedForm({ theme = "default", mode = "dark", className, ...props }: AnimatedFormProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <FormDemo {...props} />
+        <ReducedMotionConfig>
+          <FormDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

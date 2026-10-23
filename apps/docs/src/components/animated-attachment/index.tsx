@@ -10,9 +10,29 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { Flip } from "gsap/Flip";
 import { MorphSVGPlugin } from "gsap/MorphSVGPlugin";
-import { animate, AnimatePresence, motion, MotionConfig, Reorder, useDragControls, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity, type HTMLMotionProps, type MotionValue } from "motion/react";
+import { animate, AnimatePresence, motion, MotionConfig, Reorder, useDragControls, useMotionValue, useScroll, useSpring, useTransform, useVelocity, type HTMLMotionProps, type MotionValue } from "motion/react";
 import { FileArchiveIcon, FileSpreadsheetIcon, FileTextIcon, PlusIcon, RotateCwIcon, XIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion();
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>;
+}
+
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -324,7 +344,7 @@ function ThemeScope({ children }: { children?: React.ReactNode }) {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -342,14 +362,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -418,14 +438,14 @@ const AttachmentReorderContext = React.createContext<{
 const AttachmentTiltContext = React.createContext<MotionValue<number> | null>(null)
 
 const attachmentVariants = cva(
-  "group/attachment relative isolate flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-xl border bg-(--hx-card) text-(--hx-card-foreground) transition-colors focus-within:ring-1 focus-within:ring-(--hx-ring)/50 has-[>a,>button]:hover:bg-(--hx-muted)/50 data-[state=error]:border-(--hx-destructive)/30 data-[state=idle]:border-dashed",
+  "group/attachment relative isolate flex w-fit max-w-full min-w-0 shrink-0 flex-wrap rounded-md border bg-(--hx-card) text-(--hx-card-foreground) transition-colors focus-within:ring-1 focus-within:ring-(--hx-ring)/50 has-[>a,>button]:hover:bg-(--hx-muted)/50 data-[state=error]:border-(--hx-destructive)/30 data-[state=idle]:border-dashed",
   {
     variants: {
       size: {
         default:
           "gap-2 text-sm has-data-[slot=attachment-content]:px-2.5 has-data-[slot=attachment-content]:py-2 has-data-[slot=attachment-media]:p-2",
         sm: "gap-2.5 text-xs has-data-[slot=attachment-content]:px-2 has-data-[slot=attachment-content]:py-1.5 has-data-[slot=attachment-media]:p-1.5",
-        xs: "gap-1.5 rounded-lg text-xs has-data-[slot=attachment-content]:px-1.5 has-data-[slot=attachment-content]:py-1 has-data-[slot=attachment-media]:p-1",
+        xs: "gap-1.5 rounded-md text-xs has-data-[slot=attachment-content]:px-1.5 has-data-[slot=attachment-content]:py-1 has-data-[slot=attachment-media]:p-1",
       },
       orientation: {
         horizontal: "min-w-40 items-center",
@@ -470,7 +490,7 @@ function Attachment({
     progress?: number
     value?: string | number
   }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const reorderContext = React.useContext(AttachmentReorderContext)
   const inReorder = reorderContext !== null && value !== undefined
   const draggable = inReorder && reorderContext.draggable
@@ -595,7 +615,7 @@ function Attachment({
   )
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       {inReorder ? (
         <Reorder.Item
           as="div"
@@ -624,14 +644,14 @@ function Attachment({
           {content}
         </motion.div>
       )}
-    </MotionConfig>
+    </ReducedMotionConfig>
   )
 }
 
 function AttachmentBorderTrace() {
   const rect = React.useRef<SVGRectElement>(null)
 
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   useGSAP(() => {
     matchParentRadius(rect.current)
     // Reduced motion: no endless loop (the trace is also hidden by motion-reduce:hidden)
@@ -667,7 +687,7 @@ function AttachmentBorderTrace() {
 }
 
 const attachmentMediaVariants = cva(
-  "relative flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-(--hx-muted) text-(--hx-foreground) group-data-[orientation=vertical]/attachment:w-full group-data-[size=sm]/attachment:w-8 group-data-[size=xs]/attachment:w-7 group-data-[size=xs]/attachment:rounded-md group-data-[state=error]/attachment:bg-(--hx-destructive)/10 group-data-[state=error]/attachment:text-(--hx-destructive) group-data-[orientation=vertical]/attachment:*:data-[slot=spinner]:size-6! [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 group-data-[orientation=vertical]/attachment:[&_svg:not([class*='size-'])]:size-6 group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5",
+  "relative flex aspect-square w-10 shrink-0 items-center justify-center overflow-hidden rounded-md bg-(--hx-muted) text-(--hx-foreground) group-data-[orientation=vertical]/attachment:w-full group-data-[size=sm]/attachment:w-8 group-data-[size=xs]/attachment:w-7 group-data-[size=xs]/attachment:rounded-md group-data-[state=error]/attachment:bg-(--hx-destructive)/10 group-data-[state=error]/attachment:text-(--hx-destructive) group-data-[orientation=vertical]/attachment:*:data-[slot=spinner]:size-6! [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 group-data-[orientation=vertical]/attachment:[&_svg:not([class*='size-'])]:size-6 group-data-[size=xs]/attachment:[&_svg:not([class*='size-'])]:size-3.5",
   {
     variants: {
       variant: {
@@ -767,7 +787,7 @@ function AttachmentMedia({
           )}
           {isClient &&
             createPortal(
-              <ThemeScope><MotionConfig reducedMotion="user">
+              <ThemeScope><ReducedMotionConfig>
                 <AnimatePresence>
                   {open && (
                     <motion.div
@@ -786,14 +806,14 @@ function AttachmentMedia({
                         aria-label="Preview. Press Escape to close."
                         tabIndex={-1}
                         transition={spring}
-                        className="aspect-square w-[min(80vw,80vh)] overflow-hidden rounded-2xl shadow-2xl outline-none [&_img]:size-full [&_img]:object-cover"
+                        className="aspect-square w-[min(80vw,80vh)] overflow-hidden rounded-md shadow-2xl outline-none [&_img]:size-full [&_img]:object-cover"
                       >
                         {children}
                       </motion.div>
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </MotionConfig></ThemeScope>,
+              </ReducedMotionConfig></ThemeScope>,
               document.body
             )}
         </>
@@ -815,7 +835,7 @@ function AttachmentStatusIcon({
   state: AttachmentState
   icon: React.ComponentType
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const loading = state === "uploading" || state === "processing"
   const svg = React.useRef<SVGSVGElement>(null)
   const path = React.useRef<SVGPathElement>(null)
@@ -1115,7 +1135,7 @@ function AttachmentGroup({
   wrap?: boolean
 }) {
   const scroller = React.useRef<HTMLDivElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const [initialWrap] = React.useState(wrap)
 
   React.useEffect(() => {
@@ -1191,7 +1211,7 @@ function AttachmentGroup({
   }
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       <AttachmentReorderContext.Provider value={reorderable ? reorderContext : null}>
         {/* Reduced motion: no tilt (a manual spring, which MotionConfig doesn't reach) */}
         <AttachmentTiltContext.Provider value={tiltOnScroll && !reduceMotion ? lean : null}>
@@ -1213,7 +1233,7 @@ function AttachmentGroup({
           )}
         </AttachmentTiltContext.Provider>
       </AttachmentReorderContext.Provider>
-    </MotionConfig>
+    </ReducedMotionConfig>
   )
 }
 
@@ -1249,7 +1269,7 @@ function AttachmentDropzone({
         onFiles?.(Array.from(event.dataTransfer.files), { x: event.clientX, y: event.clientY })
       }}
       className={cn(
-        "relative rounded-lg border transition-colors data-dragging:bg-(--hx-muted)/50",
+        "relative rounded-md border transition-colors data-dragging:bg-(--hx-muted)/50",
         animatedBorder ? "data-dragging:border-transparent" : "data-dragging:border-dashed data-dragging:border-(--hx-primary)",
         className
       )}
@@ -1264,7 +1284,7 @@ function AttachmentDropzone({
 function MarchingBorder() {
   const rect = React.useRef<SVGRectElement>(null)
   // Reduced motion: the dashed border shows, but doesn't march
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   React.useLayoutEffect(() => matchParentRadius(rect.current), [])
 
   return (
@@ -1377,7 +1397,7 @@ const controls = {
 
   reorder: { group: "Group", type: "checkbox", label: "Drag to reorder", value: true },
   tiltOnScroll: { group: "Group", type: "checkbox", label: "Tilt on scroll", value: false },
-  wrap: { group: "Group", type: "checkbox", label: "Wrap", value: false },
+  wrap: { group: "Group", type: "checkbox", label: "Wrap", value: true },
 
   simulateFailures: { group: "Demo", type: "checkbox", label: "Simulate failures", value: true },
 
@@ -1385,7 +1405,7 @@ const controls = {
     group: "Limits",
     type: "select",
     label: "Max file size",
-    value: 10,
+    value: 5,
     options: [
       { label: "No limit", value: 0 },
       { label: "5 MB", value: 5 },
@@ -1639,7 +1659,7 @@ function UploadDemo(props: Partial<ControlValues>) {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1">
-        <p className="text-sm text-(--hx-muted-foreground)">
+        <p className="text-center text-sm text-(--hx-muted-foreground)">
           Click &ldquo;Add files&rdquo; or drop files here. Drag to reorder, click an image to open it.
         </p>
       </div>
@@ -1684,7 +1704,7 @@ function UploadDemo(props: Partial<ControlValues>) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
-              className="m-auto flex cursor-pointer flex-col items-center gap-1.5 rounded-lg px-4 py-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)"
+              className="m-auto flex cursor-pointer flex-col items-center gap-1.5 rounded-md px-4 py-6 text-center outline-none focus-visible:ring-2 focus-visible:ring-(--hx-ring)"
             >
               <span className="text-sm font-medium text-(--hx-foreground)">No files yet</span>
               <span className="text-sm text-(--hx-muted-foreground)">
@@ -1759,11 +1779,11 @@ export interface AnimatedAttachmentProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedAttachment({ theme = "default", mode = "dark", className, ...props }: AnimatedAttachmentProps) {
+export default function AnimatedAttachment({ theme = "valorant", mode = "dark", className, ...props }: AnimatedAttachmentProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <UploadDemo {...props} />
       </div>
     </ThemeContext.Provider>

@@ -17,6 +17,12 @@ import { useRender } from "@base-ui/react/use-render";
 
 import { twMerge } from "tailwind-merge";
 
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
+
 function toClass(value: unknown): string {
   if (!value) return "";
   if (typeof value === "string" || typeof value === "number") return String(value);
@@ -406,7 +412,7 @@ const COMPONENT_CSS = "@keyframes hx-skeleton-sweep{from{background-position:0 0
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -3947,8 +3953,9 @@ function Page({ page }: { page: string }) {
   return (
     <div className="flex flex-col items-start gap-3">
       <Heading title="Sidebar">
-        A collapsible side navigation. Press ⌘B (Ctrl+B) or the button in the header to collapse
-        it to icons; on mobile it slides in from the left, or swipe in from the edge.
+        A collapsible side navigation.{" "}
+        <span className="max-lg:hidden">Press ⌘B (Ctrl+B) or the button in the header to collapse it to icons.</span>
+        <span className="lg:hidden">Tap the button in the header to slide it in, or swipe in from the left edge.</span>
       </Heading>
       <ReceiveMessage />
     </div>
@@ -4029,7 +4036,9 @@ export default function AnimatedSidebar({ theme = "vscode", mode = "dark", class
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <style>{COMPONENT_CSS}</style>
-        <SidebarDemo {...props} />
+        <ReducedMotionConfig>
+          <SidebarDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

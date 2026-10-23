@@ -8,6 +8,25 @@ import { MinusIcon } from "lucide-react";
 import { AnimatePresence, MotionConfig, animate, motion, type TargetAndTransition } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
+
 function toClass(value: unknown): string {
   if (!value) return "";
   if (typeof value === "string" || typeof value === "number") return String(value);
@@ -952,7 +971,9 @@ export default function AnimatedInputOtp({ theme = "ghibli", mode = "dark", clas
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <style>{COMPONENT_CSS}</style>
-        <InputOTPDemo {...props} />
+        <ReducedMotionConfig>
+          <InputOTPDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

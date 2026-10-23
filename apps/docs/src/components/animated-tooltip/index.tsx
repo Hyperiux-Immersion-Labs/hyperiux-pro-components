@@ -974,7 +974,7 @@ function TooltipDemo(props: Partial<ControlValues>) {
           </div>
         </FloatingTooltipProvider>
       </div>
-      <p className="text-center text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: move the pointer across the buttons (on a touch screen, tap one). Set &quot;Change animation&quot; to a Morph option to see one tooltip
         stay put while its box reshapes and the text slides, fades or rolls the way you moved.
       </p>

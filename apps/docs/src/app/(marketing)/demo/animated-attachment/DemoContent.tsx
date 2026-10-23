@@ -15,28 +15,28 @@ export default function DemoContent() {
         <AnimatedAttachment {...values} className="p-[2vw] max-md:p-[5vw]" />
       )}
       props={[
-        { name: "theme", label: "Theme", type: "string", default: "default", description: "Colour palette. The drop zone, border trace and progress take its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
+        { name: "theme", label: "Theme", type: "string", default: "valorant", description: "Colour palette. The drop zone, border trace and progress take its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
         { name: "mode", label: "Mode", type: "string", default: "dark", description: "Light or dark version of the chosen palette.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Light", value: "light" }, { label: "Dark", value: "dark" }] } },
-        { name: "animateEnter", label: "Animate enter", type: "boolean", default: true, description: "New files scale up and fade into the list.", remixer: { control: "checkbox", group: "adding", groupTitle: "Adding" } },
-        { name: "stagger", label: "Stagger", type: "number", default: 0.08, description: "Gap between files added together, in seconds.", remixer: { control: "range", group: "adding", groupTitle: "Adding", min: 0, max: 0.3, step: 0.01 } },
-        { name: "flyIn", label: "Fly in from drop", type: "boolean", default: true, description: "Dropped files fly from where they were dropped into the list.", remixer: { control: "checkbox", group: "adding", groupTitle: "Adding" } },
-        { name: "animatedBorder", label: "Animated border", type: "boolean", default: true, description: "The drop zone's border marches while a file is dragged over it.", remixer: { control: "checkbox", group: "adding", groupTitle: "Adding" } },
-        { name: "animateExit", label: "Animate exit", type: "boolean", default: true, description: "Removed files shrink out and the rest slide together.", remixer: { control: "checkbox", group: "layout", groupTitle: "Layout" } },
-        { name: "rollingNumbers", label: "Rolling numbers", type: "boolean", default: true, description: "Upload percentages roll to each new number.", remixer: { control: "checkbox", group: "progress", groupTitle: "Progress" } },
-        { name: "shimmerText", label: "Shimmer text", type: "boolean", default: true, description: "A light sweeps across the file name while it uploads.", remixer: { control: "checkbox", group: "progress", groupTitle: "Progress" } },
-        { name: "borderTrace", label: "Border trace", type: "boolean", default: true, description: "A line traces around the card as it uploads.", remixer: { control: "checkbox", group: "progress", groupTitle: "Progress" } },
+        { name: "animateEnter", label: "Animate enter", type: "boolean", default: true, description: "New files scale up and fade into the list.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "adding", groupTitle: "Adding" } },
+        { name: "stagger", label: "Stagger", type: "number", default: 0.08, description: "Gap between files added together, in seconds.", remixer: { hideWhenReducedMotion: true, control: "range", group: "adding", groupTitle: "Adding", min: 0, max: 0.3, step: 0.01 } },
+        { name: "flyIn", label: "Fly in from drop", type: "boolean", default: true, description: "Dropped files fly from where they were dropped into the list.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "adding", groupTitle: "Adding" } },
+        { name: "animatedBorder", label: "Animated border", type: "boolean", default: true, description: "The drop zone's border marches while a file is dragged over it.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "adding", groupTitle: "Adding" } },
+        { name: "animateExit", label: "Animate exit", type: "boolean", default: true, description: "Removed files shrink out and the rest slide together.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "layout", groupTitle: "Layout" } },
+        { name: "rollingNumbers", label: "Rolling numbers", type: "boolean", default: true, description: "Upload percentages roll to each new number.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "progress", groupTitle: "Progress" } },
+        { name: "shimmerText", label: "Shimmer text", type: "boolean", default: true, description: "A light sweeps across the file name while it uploads.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "progress", groupTitle: "Progress" } },
+        { name: "borderTrace", label: "Border trace", type: "boolean", default: true, description: "A line traces around the card as it uploads.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "progress", groupTitle: "Progress" } },
         { name: "fill", label: "Card fill (images)", type: "boolean", default: true, description: "Image cards fill up with the picture as they upload.", remixer: { control: "checkbox", group: "progress", groupTitle: "Progress" } },
         { name: "fillDirection", label: "Fill direction", type: "string", default: "bottom-to-top", description: "Which way the image fill grows. Needs Card fill on.", remixer: { disabledWhen: { prop: "fill", equals: false }, control: "select", group: "progress", groupTitle: "Progress", options: [{ label: "Left to right", value: "left-to-right" }, { label: "Bottom to top", value: "bottom-to-top" }] } },
-        { name: "shakeOnError", label: "Shake on error", type: "boolean", default: true, description: "A file that fails shakes: a random failure, or one that is too big or the wrong type.", remixer: { control: "checkbox", group: "states", groupTitle: "States" } },
+        { name: "shakeOnError", label: "Shake on error", type: "boolean", default: true, description: "A file that fails shakes: a random failure, or one that is too big or the wrong type.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "states", groupTitle: "States" } },
         { name: "revealAction", label: "Reveal action", type: "boolean", default: true, description: "The remove button appears only on hover or focus (pointer devices).", remixer: { control: "checkbox", group: "hover", groupTitle: "Hover" } },
-        { name: "zoomOnHover", label: "Zoom on hover", type: "boolean", default: true, description: "Image previews zoom in slightly on hover.", remixer: { control: "checkbox", group: "hover", groupTitle: "Hover" } },
+        { name: "zoomOnHover", label: "Zoom on hover", type: "boolean", default: true, description: "Image previews zoom in slightly on hover.", remixer: { hideWhenReducedMotion: true, control: "checkbox", group: "hover", groupTitle: "Hover" } },
         { name: "blurUntilLoaded", label: "Blur while uploading", type: "boolean", default: true, description: "Image previews stay blurred while they upload and process.", remixer: { control: "checkbox", group: "hover", groupTitle: "Hover" } },
         { name: "expandable", label: "Expandable preview", type: "boolean", default: true, description: "Clicking an image opens it in a large preview.", remixer: { control: "checkbox", group: "hover", groupTitle: "Hover" } },
         { name: "reorder", label: "Drag to reorder", type: "boolean", default: true, description: "Drag files sideways to reorder them.", remixer: { control: "checkbox", group: "group", groupTitle: "Group" } },
-        { name: "tiltOnScroll", label: "Tilt on scroll", type: "boolean", default: false, description: "Cards lean as the row is scrolled sideways. Needs Wrap off.", remixer: { disabledWhen: { prop: "wrap", equals: true }, control: "checkbox", group: "group", groupTitle: "Group" } },
-        { name: "wrap", label: "Wrap", type: "boolean", default: false, description: "Files wrap onto new lines instead of scrolling in one row.", remixer: { control: "checkbox", group: "group", groupTitle: "Group" } },
+        { name: "tiltOnScroll", label: "Tilt on scroll", type: "boolean", default: false, description: "Cards lean as the row is scrolled sideways. Needs Wrap off.", remixer: { hideWhenReducedMotion: true, disabledWhen: { prop: "wrap", equals: true }, control: "checkbox", group: "group", groupTitle: "Group" } },
+        { name: "wrap", label: "Wrap", type: "boolean", default: true, description: "Files wrap onto new lines instead of scrolling in one row.", remixer: { control: "checkbox", group: "group", groupTitle: "Group" } },
         { name: "simulateFailures", label: "Simulate failures", type: "boolean", default: true, description: "Some uploads fail at random, to preview the error state.", remixer: { control: "checkbox", group: "demo", groupTitle: "Demo" } },
-        { name: "maxSizeMB", label: "Max file size", type: "number", default: 10, description: "Files bigger than this show an error card instead of uploading.", remixer: { control: "select", group: "limits", groupTitle: "Limits", options: [{ label: "No limit", value: 0 }, { label: "5 MB", value: 5 }, { label: "10 MB", value: 10 }, { label: "25 MB", value: 25 }] } },
+        { name: "maxSizeMB", label: "Max file size", type: "number", default: 5, description: "Files bigger than this show an error card instead of uploading.", remixer: { control: "select", group: "limits", groupTitle: "Limits", options: [{ label: "No limit", value: 0 }, { label: "5 MB", value: 5 }, { label: "10 MB", value: 10 }, { label: "25 MB", value: 25 }] } },
         { name: "accept", label: "Accepted files", type: "string", default: "any", description: "Which files can be added. Others show an error card, and the file picker only offers these.", remixer: { control: "select", group: "limits", groupTitle: "Limits", options: [{ label: "Any", value: "any" }, { label: "Images", value: "images" }, { label: "Documents", value: "documents" }] } },
       ]}
     >
@@ -45,17 +45,17 @@ export default function DemoContent() {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedAttachmentTheme, values.mode as AnimatedAttachmentMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) motion-reduce:transition-none max-lg:gap-[6vw] max-lg:py-[15%] max-md:gap-[8vw] max-md:py-[25%]"
           >
-            <div className="flex flex-col items-center gap-[1vw]">
+            <div className="flex w-full flex-col items-center gap-[1vw] max-lg:gap-[2vw]">
               <HeadAnim>
-                <h1 className="text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">Animated Attachment</h1>
+                <h1 className="text-center text-[4vw] max-lg:text-[6vw] max-md:text-[7vw] max-sm:text-[9vw]">Animated Attachment</h1>
               </HeadAnim>
               <SplitLine>
-                <p className="text-center max-md:w-[80vw]">File chips that show upload progress, errors and previews.</p>
+                <p className="text-center max-lg:w-[80vw]">File chips that show upload progress, errors and previews.</p>
               </SplitLine>
             </div>
-            <div className="w-[60vw] max-md:w-full">{effect}</div>
+            <div className="w-[60vw] max-lg:w-[85vw] max-md:w-full">{effect}</div>
           </div>
         </>
       )}

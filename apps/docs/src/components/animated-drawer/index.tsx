@@ -3,9 +3,28 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { motion, animate, stagger } from "motion/react";
+import { MotionConfig, motion, animate, stagger } from "motion/react";
 import { Drawer as DrawerPrimitive } from "@base-ui/react/drawer";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -263,7 +282,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -913,7 +932,7 @@ function DrawerDemo(props: Partial<ControlValues>) {
           <div className="flex flex-col gap-1">
           </div>
 
-          <div className="flex min-h-[40vh] items-center justify-center rounded-lg border">
+          <div className="flex min-h-80 items-center justify-center">
             <Drawer
               key={side}
               {...options}
@@ -974,7 +993,7 @@ function DrawerDemo(props: Partial<ControlValues>) {
               </DrawerContent>
             </Drawer>
           </div>
-          <p className="text-sm text-(--hx-muted-foreground)">
+          <p className="text-center text-sm text-(--hx-muted-foreground)">
             Tip: drag the drawer back towards its edge to close it.
           </p>
         </DrawerIndent>
@@ -1009,12 +1028,14 @@ export interface AnimatedDrawerProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDrawer({ theme = "default", mode = "light", className, ...props }: AnimatedDrawerProps) {
+export default function AnimatedDrawer({ theme = "default", mode = "dark", className, ...props }: AnimatedDrawerProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <DrawerDemo {...props} />
+        <ReducedMotionConfig>
+          <DrawerDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

@@ -662,7 +662,7 @@ function ThemeSwitchDemo(props: Partial<ControlValues>) {
           variant={values.variant as "outline" | "ghost" | "default" | "secondary"}
         />
       </div>
-      <p className="text-center text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: {tip}
       </p>
 

@@ -2,9 +2,29 @@
 
 import * as React from "react";
 
-import { motion, MotionConfig, stagger, useReducedMotion, type HTMLMotionProps, type Variants, useAnimate } from "motion/react";
+import { motion, MotionConfig, stagger, type HTMLMotionProps, type Variants, useAnimate } from "motion/react";
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion();
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>;
+}
+
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -208,7 +228,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -288,7 +308,6 @@ type MotionPreset = {
   panelClose: Transition
   fillOpen: Transition
   fillClose: Transition
-  fillClosedScaleX: number
   iconDuration: number
   lineDraw: Transition
   lineRetract: Transition
@@ -324,7 +343,6 @@ function buildPreset({
       panelClose: smooth,
       fillOpen: fill,
       fillClose: fill,
-      fillClosedScaleX: 1,
       iconDuration: duration,
       lineDraw: { duration, ease: "easeOut" },
       lineRetract: { duration, ease: "easeOut" },
@@ -342,7 +360,6 @@ function buildPreset({
     panelClose: settle,
     fillOpen: spring(bounce),
     fillClose: settle,
-    fillClosedScaleX: 0.94,
     iconDuration: duration,
     lineDraw: spring(bounce - 0.1),
     lineRetract: settle,
@@ -449,11 +466,11 @@ function Accordion({
       <AccordionHoverContext.Provider
         value={hoverEnabled ? openFromHover : null}
       >
-        <MotionConfig reducedMotion="user">
+        <ReducedMotionConfig>
           <AccordionPrimitive.Root
             data-slot="accordion"
             className={cn(
-              "flex w-full flex-col gap-3",
+              "flex w-full flex-col",
               // The outer border already closes the list, so the last item skips its divider
               bordered && "rounded-lg border p-6 max-md:p-4 [&>[data-slot=accordion-item]:last-child>[data-slot=accordion-divider]]:hidden",
               className
@@ -472,7 +489,7 @@ function Accordion({
             }}
             {...props}
           />
-        </MotionConfig>
+        </ReducedMotionConfig>
       </AccordionHoverContext.Provider>
     </AccordionMotionContext.Provider>
   )
@@ -505,6 +522,7 @@ function AccordionItem({
   return (
     <AccordionPrimitive.Item
       data-slot="accordion-item"
+      data-fill={fill ? "" : undefined}
       onPointerMove={(event) => {
         onPointerMove?.(event)
         if (
@@ -517,8 +535,10 @@ function AccordionItem({
         }
       }}
       className={cn(
-        "group/accordion-item relative py-3",
-        fill && cn("isolate px-4 transition-colors duration-500 motion-reduce:transition-none", rounded, FILL_COLOR[fill].text),
+        // No padding on the item itself: the trigger and panel carry it, so the whole header
+        // block (not just the question's line) opens the item
+        "group/accordion-item relative",
+        fill && cn("isolate transition-colors duration-500 motion-reduce:transition-none", rounded, FILL_COLOR[fill].text),
         className
       )}
       render={(itemProps, state) => (
@@ -536,10 +556,8 @@ function AccordionItem({
               )}
               style={{ originY: 0 }}
               initial={false}
-              animate={{
-                scaleY: state.open ? 1 : 0,
-                scaleX: state.open ? 1 : preset.fillClosedScaleX,
-              }}
+              // Grows down from the top edge only; the width never changes
+              animate={{ scaleY: state.open ? 1 : 0 }}
               transition={state.open ? preset.fillOpen : preset.fillClose}
             />
           )}
@@ -575,7 +593,7 @@ function AccordionItemLine({ hovered, open, accent = false }: { hovered: boolean
   if (closedUnderPointer && !hovered) setClosedUnderPointer(false)
   const drawn = open || (hovered && !closedUnderPointer)
   const preset = React.useContext(AccordionMotionContext)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const [scope, animate] = useAnimate<HTMLDivElement>()
   const isDrawn = React.useRef(false)
   const running = React.useRef(false)
@@ -634,7 +652,7 @@ function AccordionTrigger({
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger px-2 relative flex flex-1 items-center justify-between rounded-lg border border-transparent py-2.5 text-left text-sm font-medium transition-[border-color,box-shadow] motion-reduce:transition-none outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-(--hx-muted-foreground)",
+          "group/accordion-trigger px-2 group-data-fill/accordion-item:px-6 max-md:group-data-fill/accordion-item:px-4 relative flex flex-1 cursor-pointer items-center justify-between rounded-lg border border-transparent py-5.5 text-left text-sm font-medium transition-[color,border-color,box-shadow] duration-500 motion-reduce:transition-none outline-none aria-disabled:pointer-events-none aria-disabled:opacity-50 **:data-[slot=accordion-trigger-icon]:ml-auto **:data-[slot=accordion-trigger-icon]:size-4 **:data-[slot=accordion-trigger-icon]:text-(--hx-muted-foreground)",
           accent && "text-(--hx-primary) **:data-[slot=accordion-trigger-icon]:text-(--hx-primary)",
           className
         )}
@@ -671,13 +689,13 @@ function AccordionContent({
   children,
   ...props
 }: AccordionPrimitive.Panel.Props) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const preset = React.useContext(AccordionMotionContext)
 
   return (
     <AccordionPrimitive.Panel
       data-slot="accordion-content"
-      className="overflow-hidden text-sm "
+      className="overflow-hidden text-sm text-(--hx-muted-foreground) transition-colors duration-500 motion-reduce:transition-none"
       keepMounted
       render={({ hidden, children: _children, ...panelProps }, state) => (
         <motion.div
@@ -698,7 +716,7 @@ function AccordionContent({
             animate={state.open ? "open" : "closed"}
             variants={contentVariants(preset, Boolean(reduceMotion))}
             className={cn(
-              "flex max-w-[90%] flex-col gap-4 px-2 pb-2.5 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-(--hx-foreground)",
+              "flex max-w-[90%] flex-col gap-4 px-2 pb-5.5 group-data-fill/accordion-item:px-6 max-md:group-data-fill/accordion-item:px-4 [&_a]:underline [&_a]:underline-offset-3 [&_a]:hover:text-(--hx-foreground)",
               typeof className === "function" ? className(state) : className
             )}
           >
@@ -746,20 +764,6 @@ const faqs = [
       "Your feedback also tunes future boxes, so we can steer you toward the flavours you enjoy.",
     ],
   },
-  {
-    question: "Is the packaging recyclable?",
-    answer: [
-      "Yes. Our bags are made from paper with a plant-based lining, and they go in your home compost or paper recycling. The one-way valve pulls out and goes in general waste.",
-      "The shipping box is recycled cardboard, sized to fit through a standard letterbox so you don't need to be home.",
-    ],
-  },
-  {
-    question: "Can I send a subscription as a gift?",
-    answer: [
-      "Yes. Choose three, six or twelve months, add a personal note, and pick the date the first box should arrive.",
-      "Gift subscriptions are paid upfront and end on their own, so there's nothing for the recipient to cancel.",
-    ],
-  },
 ]
 
 const controls = {
@@ -782,12 +786,12 @@ const controls = {
       { label: "3xl", value: "rounded-3xl" },
     ],
   },
-  elastic: { group: "Accordion", type: "checkbox", label: "Elastic", value: false },
+  elastic: { group: "Accordion", type: "checkbox", label: "Elastic", value: true },
   duration: {
     group: "Timing",
     type: "slider",
     label: "Duration",
-    value: 0.5,
+    value: 0.3,
     min: 0.1,
     max: 1.5,
     step: 0.05,
@@ -798,7 +802,7 @@ const controls = {
     group: "Timing",
     type: "slider",
     label: "Bounce",
-    value: 0.3,
+    value: 0.4,
     min: 0,
     max: 0.8,
     step: 0.05,
@@ -823,13 +827,13 @@ const controls = {
     step: 0.01,
     unit: "s",
   },
-  fill: { group: "Item", type: "checkbox", label: "Fill", value: false },
+  fill: { group: "Item", type: "checkbox", label: "Fill", value: true },
   fillColor: {
     disabled: (v: Record<string, unknown>) => !v.fill,
     group: "Item",
     type: "select",
     label: "Fill colour",
-    value: "muted",
+    value: "primary",
     options: [
       { label: "Muted", value: "muted" },
       { label: "Primary", value: "primary" },
@@ -939,11 +943,11 @@ export interface AnimatedAccordionProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedAccordion({ theme = "default", mode = "dark", className, ...props }: AnimatedAccordionProps) {
+export default function AnimatedAccordion({ theme = "caffeine", mode = "dark", className, ...props }: AnimatedAccordionProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         {/* Any theme but the default puts the question, icon and hover line in its primary colour */}
         <AccordionPage {...props} accent={theme !== "default"} />
       </div>

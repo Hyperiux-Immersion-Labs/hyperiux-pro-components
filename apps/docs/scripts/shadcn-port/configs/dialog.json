@@ -23,5 +23,34 @@
     "shakeOnBlock": "The dialog shakes when you click outside and it can't close.",
     "backdrop": "What sits behind the dialog: nothing, a dim layer, or a blur.",
     "rounded": "Corner radius of the dialog."
-  }
+  },
+  "patches": [
+    [
+      "\"flex min-h-[40vh] items-center justify-center rounded-lg border\"",
+      "\"flex min-h-80 items-center justify-center\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\">",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\">"
+    ],
+    [
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\"",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\""
+    ]
+  ],
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, dialog included. Its primary colour fills the main button and the hover fill.",
+  "hideWhenReducedMotion": [
+    "rollingText",
+    "originFromTrigger",
+    "elastic",
+    "duration",
+    "bounce",
+    "fadeContent",
+    "scaleContent",
+    "exitAnimation",
+    "fadeContentOut",
+    "shakeOnBlock"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
 }

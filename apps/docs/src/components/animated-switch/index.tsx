@@ -2,8 +2,14 @@
 
 import * as React from "react";
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
-import { MotionConfig, animate, motion, useMotionValue,  useTransform, type MotionStyle, type Transition } from "motion/react";
+import { MotionConfig, animate, motion, useMotionValue, useTransform, type MotionStyle, type Transition } from "motion/react";
 import { twMerge } from "tailwind-merge";
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -718,7 +724,7 @@ function SwitchDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-64 max-md:min-h-72 items-center justify-center px-4 py-8">
+      <div className="flex min-h-96 max-md:min-h-72 items-center justify-center px-4 py-8">
         <Switch
           checked={on}
           onCheckedChange={setOn}
@@ -735,7 +741,7 @@ function SwitchDemo(props: Partial<ControlValues>) {
           bounce={values.bounce}
         />
       </div>
-      <p className="text-center text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         {values.variant === "apple" ? "Tip: press and hold to see the glass handle swell, then drag it across and let go past the middle to flip it." : "Tip: press and hold to see the handle squeeze before you let go."}
       </p>
 
@@ -773,7 +779,9 @@ export default function AnimatedSwitch({ theme = "valorant", mode = "dark", clas
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <SwitchDemo {...props} />
+        <ReducedMotionConfig>
+          <SwitchDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

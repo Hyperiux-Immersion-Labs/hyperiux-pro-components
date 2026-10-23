@@ -344,7 +344,7 @@ function useTheme() {
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -486,6 +486,47 @@ for (const [from, to] of cfg.patches || []) {
   if (!file.includes(from)) throw new Error(`patch not found: ${from}`);
   file = file.split(from).join(to);
 }
+// ---------- reduced motion: the OS setting and the demo's simulated switch (§6a) ----------
+// Motion's own hook caches the OS setting, so every component reads it through this hook and
+// the default export wraps everything in a MotionConfig that follows it.
+if (/from "motion\/react"/.test(file)) {
+  const hookDef = `// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+`;
+  const configDef = `
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
+`;
+  file = file.replace(/\buseReducedMotion\(\)/g, "usePrefersReducedMotion()");
+  const opens = (file.match(/<MotionConfig reducedMotion="user">/g) || []).length;
+  const closes = (file.match(/<\/MotionConfig>/g) || []).length;
+  if (opens && opens === closes) file = file.replace(/<MotionConfig reducedMotion="user">/g, "<ReducedMotionConfig>").replace(/<\/MotionConfig>/g, "</ReducedMotionConfig>");
+  let defs = "";
+  if (!/function usePrefersReducedMotion\(/.test(file)) defs += hookDef;
+  if (!/function ReducedMotionConfig\(/.test(file)) defs += configDef;
+  if (defs) file = file.replace("function toClass(value: unknown): string {", defs + "\nfunction toClass(value: unknown): string {");
+  file = file.replace(`        <${demoFn} {...props} />`, `        <ReducedMotionConfig>\n          <${demoFn} {...props} />\n        </ReducedMotionConfig>`);
+  // Keep the motion import in step: MotionConfig in, the unused useReducedMotion out
+  file = file.replace(/import \{([^}]*)\} from "motion\/react";/, (m, names) => {
+    let list = names.split(",").map((n) => n.trim()).filter(Boolean).filter((n) => n !== "useReducedMotion" || /\buseReducedMotion\b/.test(file.replace(m, "")));
+    if (!list.includes("MotionConfig")) list.unshift("MotionConfig");
+    return `import { ${list.join(", ")} } from "motion/react";`;
+  });
+}
+
 file = prune(file).replace(/\n{3,}/g, "\n\n");
 
 const outDir = path.join(REPO, "src/components", cfg.slug);
@@ -624,7 +665,7 @@ ${rows.map((r) => `        ${r},`).join("\n")}
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>
-                <h1 className="text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">${cfg.title}</h1>
+                <h1 className="text-center text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">${cfg.title}</h1>
               </HeadAnim>
               <SplitLine>
                 <p className="text-center max-md:w-[80vw]">${cfg.subtitle}</p>

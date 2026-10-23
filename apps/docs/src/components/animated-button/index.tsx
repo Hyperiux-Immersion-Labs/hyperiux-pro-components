@@ -1,10 +1,33 @@
 "use client";
 
-import { type Variants, LazyMotion, domMin, m, useAnimation, useReducedMotion, AnimatePresence, motion, useMotionValue, useSpring } from "motion/react";
+import { MotionConfig, type Variants, LazyMotion, domMin, m, useAnimation, AnimatePresence, motion, useMotionValue, useAnimationFrame } from "motion/react";
+
+/** Share of the remaining distance the magnetic button covers each frame. Lower is lazier. */
+const MAGNET_LERP = 0.12
 import * as React from "react";
 import { forwardRef, useCallback, useImperativeHandle, useRef, type HTMLAttributes } from "react";
 import { ArrowRightIcon, LoaderCircleIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion();
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>;
+}
+
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -324,7 +347,7 @@ const SearchIcon = forwardRef<SearchIconHandle, SearchIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -440,7 +463,7 @@ const SettingsIcon = forwardRef<SettingsIconHandle, SettingsIconProps>(
     ref,
   ) => {
     const controls = useAnimation()
-    const reduced = useReducedMotion()
+    const reduced = usePrefersReducedMotion()
     const isControlled = useRef(false)
 
     useImperativeHandle(ref, () => {
@@ -767,7 +790,7 @@ const TONES: Record<
 function ButtonIcon({ icon, hovered }: { icon: AnimatedButtonIcon; hovered: boolean }) {
   const search = React.useRef<SearchIconHandle>(null)
   const settings = React.useRef<SettingsIconHandle>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const handle = icon === "search" ? search.current : settings.current
@@ -791,7 +814,7 @@ function ButtonIcon({ icon, hovered }: { icon: AnimatedButtonIcon; hovered: bool
 
 // Letters roll up one by one, each a little after the last
 function CharStagger({ text, stagger }: { text: string; stagger: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   return (
     <span aria-hidden className="flex">
@@ -823,7 +846,7 @@ function CharStagger({ text, stagger }: { text: string; stagger: number }) {
 // Shuffles random glyphs and settles them left to right while active
 function ScrambleText({ text, duration, active }: { text: string; duration: number; active: boolean }) {
   const ref = React.useRef<HTMLSpanElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   React.useEffect(() => {
     const el = ref.current
@@ -868,7 +891,7 @@ function StatusSlot({
   icon: AnimatedButtonIcon
   hovered: boolean
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const roll = {
     initial: reduceMotion ? { opacity: 0 } : { opacity: 0, x: -20, rotate: -180 },
     animate: { opacity: 1, x: 0, rotate: 0 },
@@ -924,7 +947,7 @@ function StatusLabel({
   loadingText: string
   successText: string
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const text = { idle: idleText, loading: loadingText, success: successText }
 
   return (
@@ -973,7 +996,7 @@ function TextRoll({ children }: { children: React.ReactNode }) {
 
 // The label dims while a bright copy of it, clipped to a band, sweeps across on a loop
 function TextShimmer({ text }: { text: string }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   return (
     <span className="relative inline-block">
@@ -1053,7 +1076,7 @@ function AnimatedButton({
     return () => observer.disconnect()
   }, [])
   const [dot, setDot] = React.useState({ left: "50%", top: "50%", on: false })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
 
   const borderDraw = variant === "border-draw"
   // Link is the only bare (no background, no border) look
@@ -1118,11 +1141,20 @@ function AnimatedButton({
     }
   }
 
-  // Magnetic: the button trails the pointer a little, then springs home
+  // Magnetic: the button eases after the pointer (a lerp each frame), then glides home
   const x = useMotionValue(0)
   const y = useMotionValue(0)
-  const pullX = useSpring(x, { stiffness: 220, damping: 16, mass: 0.4 })
-  const pullY = useSpring(y, { stiffness: 220, damping: 16, mass: 0.4 })
+  const pullX = useMotionValue(0)
+  const pullY = useMotionValue(0)
+  useAnimationFrame((_, delta) => {
+    const dx = x.get() - pullX.get()
+    const dy = y.get() - pullY.get()
+    if (Math.abs(dx) < 0.01 && Math.abs(dy) < 0.01) return
+    // Covers MAGNET_LERP of the gap per 60fps frame, the same at any frame rate
+    const k = 1 - Math.pow(1 - MAGNET_LERP, delta / (1000 / 60))
+    pullX.set(pullX.get() + dx * k)
+    pullY.set(pullY.get() + dy * k)
+  })
 
   const labelNode = (
     <>
@@ -1424,7 +1456,7 @@ const controls = {
     group: "Motion",
     type: "slider",
     label: "Duration",
-    value: 0.55,
+    value: 0.4,
     min: 0.2,
     max: 1.2,
     step: 0.05,
@@ -1475,7 +1507,8 @@ function ButtonDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-80 items-center justify-center rounded-lg border px-8 py-8 max-md:px-4">
+      {/* 30% larger on phones, where the button reads small */}
+      <div className="flex min-h-64 items-center justify-center px-8 py-8 max-md:px-4 max-md:*:scale-130">
         <AnimatedButton
           variant={values.variant as AnimatedButtonVariant}
           surface={values.surface as AnimatedButtonSurface}
@@ -1498,7 +1531,7 @@ function ButtonDemo(props: Partial<ControlValues>) {
         </AnimatedButton>
       </div>
       {/* The tip follows the chosen effect and whether clicking shows the loading state */}
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: {HOVER_TIPS[values.variant as AnimatedButtonVariant] ?? HOVER_TIPS["dot-fill"]}{" "}
         {values.showLoadingState
           ? "Click it to see the loading and success state."
@@ -1534,12 +1567,14 @@ export interface AnimatedButtonSetProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedButtonSet({ theme = "default", mode = "dark", className, ...props }: AnimatedButtonSetProps) {
+export default function AnimatedButtonSet({ theme = "spotify", mode = "dark", className, ...props }: AnimatedButtonSetProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <ButtonDemo {...props} />
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <ReducedMotionConfig>
+          <ButtonDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

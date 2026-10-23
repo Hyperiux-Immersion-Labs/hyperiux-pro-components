@@ -6,7 +6,7 @@ import * as React from "react";
 import { flushSync } from "react-dom";
 import { Toast as ToastPrimitive } from "@base-ui/react/toast";
 import { ChevronDownIcon, CircleCheckIcon, InfoIcon, Loader2Icon, OctagonXIcon, TriangleAlertIcon, XIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
+import { MotionConfig, AnimatePresence, motion } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 // Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
@@ -20,6 +20,12 @@ function usePrefersReducedMotion() {
     return () => mq.removeEventListener?.("change", read)
   }, [])
   return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
 }
 
 function toClass(value: unknown): string {
@@ -323,7 +329,7 @@ const COMPONENT_CSS = "@keyframes hx-toast-timer{from{transform:scaleX(1)}to{tra
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -1347,7 +1353,9 @@ export default function AnimatedToast({ theme = "claude", mode = "dark", classNa
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <style>{COMPONENT_CSS}</style>
-        <ToastPage {...props} />
+        <ReducedMotionConfig>
+          <ToastPage {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

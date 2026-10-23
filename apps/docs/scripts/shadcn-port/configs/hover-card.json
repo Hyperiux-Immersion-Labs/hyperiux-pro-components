@@ -16,6 +16,26 @@
     [
       "const previewCache = new Map<string, LinkPreview>()",
       "const previewCache = new Map<string, LinkPreview>()\n\nconst SAMPLE_PREVIEWS: Record<string, Pick<LinkPreview, \"title\" | \"description\" | \"siteName\">> = {\n  \"vault.hyperiux.com\": { title: \"Hyperiux Vault\", description: \"Animated components and effects, ready to install.\", siteName: \"Hyperiux\" },\n  \"nextjs.org\": { title: \"Next.js\", description: \"The React framework for the web.\", siteName: \"Next.js\" },\n  \"react.dev\": { title: \"React\", description: \"The library for web and native user interfaces.\", siteName: \"React\" },\n  \"tailwindcss.com\": { title: \"Tailwind CSS\", description: \"Rapidly build modern websites without ever leaving your HTML.\", siteName: \"Tailwind CSS\" },\n  \"github.com\": { title: \"GitHub\", description: \"Where the world builds software.\", siteName: \"GitHub\" },\n  \"wikipedia.org\": { title: \"Wikipedia\", description: \"The free encyclopedia.\", siteName: \"Wikipedia\" },\n  \"motion.dev\": { title: \"Motion\", description: \"A modern animation library for JavaScript and React.\", siteName: \"Motion\" },\n}\n\n// Swap for a fetch to your own preview endpoint\nfunction loadPreview(url: string): Promise<LinkPreview> {\n  const hostname = new URL(url).hostname.replace(/^www\\./, \"\")\n  const sample = SAMPLE_PREVIEWS[hostname]\n  return new Promise((resolve) =>\n    setTimeout(() =>\n      resolve({\n        url,\n        hostname,\n        title: sample?.title ?? hostname,\n        description: sample?.description ?? null,\n        siteName: sample?.siteName ?? null,\n        image: null,\n        favicon: null,\n      }), 400)\n  )\n}"
+    ],
+    [
+      "h-[12vh] rounded-md bg-(--hx-muted)",
+      "h-24 rounded-md bg-(--hx-muted)"
+    ],
+    [
+      "h-[12vh] w-full rounded-md",
+      "h-24 w-full rounded-md"
+    ],
+    [
+      "h-[8vh] rounded-md",
+      "h-16 rounded-md"
+    ],
+    [
+      "\"flex min-h-[40vh] items-center justify-center rounded-lg border px-6 text-sm\"",
+      "\"flex min-h-80 items-center justify-center px-6 text-sm\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\"",
+      "<p className=\"text-sm text-(--hx-muted-foreground) max-lg:hidden\""
     ]
   ],
   "descriptions": {
@@ -29,5 +49,14 @@
     "followCursor": "The card follows the pointer instead of staying put.",
     "underline": "The link underline draws in on hover.",
     "rounded": "Corner radius of the card."
-  }
+  },
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, card included. Its primary colour fills the card's button.",
+  "hideWhenReducedMotion": [
+    "contentAnimation",
+    "startScale",
+    "fadeContent",
+    "underline"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
 }

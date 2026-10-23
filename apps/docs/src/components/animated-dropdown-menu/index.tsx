@@ -5,8 +5,27 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 import { Menu as MenuPrimitive } from "@base-ui/react/menu";
 import gsap from "gsap";
-import { AnimatePresence, motion, MotionConfig, stagger, useReducedMotion, type HTMLMotionProps, type TargetAndTransition, type Variants } from "motion/react";
+import { AnimatePresence, motion, MotionConfig, stagger, type HTMLMotionProps, type TargetAndTransition, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -250,7 +269,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -543,7 +562,7 @@ function DropdownMenu({
 
   return (
     <DropdownMenuContext.Provider value={context}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <MenuPrimitive.Root
           data-slot="dropdown-menu"
           open={open}
@@ -561,7 +580,7 @@ function DropdownMenu({
         >
           {children}
         </MenuPrimitive.Root>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </DropdownMenuContext.Provider>
   )
 }
@@ -673,7 +692,7 @@ function MorphChevron({
   className,
   ...props
 }: Omit<React.ComponentProps<"svg">, "children"> & { open: boolean; duration?: number }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const transition = reduceMotion ? "none" : `transform ${duration}s ease-in-out`
   const half = (d: string, angle: number) => (
     <path
@@ -917,7 +936,7 @@ function MorphPanel({
   ...props
 }: React.ComponentProps<"div"> & { contentClassName?: string }) {
   const context = useDropdownMenu()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const root = React.useRef<HTMLDivElement>(null)
   const header = React.useRef<HTMLDivElement>(null)
   const timeline = React.useRef<gsap.core.Timeline | null>(null)
@@ -1686,7 +1705,7 @@ function DropdownMenuPage(props: Partial<ControlValues>) {
       <div className="flex flex-col gap-1">
       </div>
 
-      <div className="flex min-h-[50vh] items-start justify-center">
+      <div className="flex min-h-96 items-start justify-center">
         <DropdownMenu
           animation={values.animation as "collapse" | "slide" | "scale" | "reveal" | "morph"}
           exitFast={values.exitFast}
@@ -1779,12 +1798,14 @@ export interface AnimatedDropdownMenuProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedDropdownMenu({ theme = "default", mode = "light", className, ...props }: AnimatedDropdownMenuProps) {
+export default function AnimatedDropdownMenu({ theme = "default", mode = "dark", className, ...props }: AnimatedDropdownMenuProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <DropdownMenuPage {...props} />
+        <ReducedMotionConfig>
+          <DropdownMenuPage {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

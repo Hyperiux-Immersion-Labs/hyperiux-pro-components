@@ -7,9 +7,28 @@ import { Input as InputPrimitive } from "@base-ui/react/input";
 
 import { Dialog as DialogPrimitive } from "@base-ui/react/dialog";
 import { Command as CommandPrimitive, useCommandState } from "cmdk";
-import { AnimatePresence, MotionConfig, animate, motion, stagger, useReducedMotion } from "motion/react";
+import { AnimatePresence, MotionConfig, animate, motion, stagger } from "motion/react";
 import { SearchIcon, CheckIcon, CalculatorIcon, CalendarIcon, CreditCardIcon, SettingsIcon, SmileIcon, UserIcon } from "lucide-react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -239,7 +258,7 @@ const ThemeContext = React.createContext(themeProps());
 function ThemeScope({ children }: { children?: React.ReactNode }) {
   const themed = React.useContext(ThemeContext);
   return (
-    <div {...themed} className="contents motion-reduce:**:transition-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
+    <div {...themed} className="contents motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&_*)]:border-(--hx-border) [:where(&_*)]:outline-(--hx-ring)/50">
       {children}
     </div>
   );
@@ -248,7 +267,7 @@ function ThemeScope({ children }: { children?: React.ReactNode }) {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -307,7 +326,7 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
       type={type}
       data-slot="input"
       className={cn(
-        "h-8 w-full min-w-0 rounded-lg border border-(--hx-input) bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-(--hx-foreground) placeholder:text-(--hx-muted-foreground) focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-(--hx-input)/50 disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 md:text-sm in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:disabled:bg-(--hx-input)/80 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40",
+        "h-8 w-full min-w-0 rounded-md border border-(--hx-input) bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-(--hx-foreground) placeholder:text-(--hx-muted-foreground) focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-(--hx-input)/50 disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 md:text-sm in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:disabled:bg-(--hx-input)/80 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40",
         className
       )}
       {...props}
@@ -323,7 +342,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="input-group"
       role="group"
       className={cn(
-        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-lg border border-(--hx-input) transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-(--hx-input)/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-(--hx-ring) has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-(--hx-ring)/50 has-[[data-slot][aria-invalid=true]]:border-(--hx-destructive) has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-(--hx-destructive)/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:has-disabled:bg-(--hx-input)/80 in-data-[theme=dark]:has-[[data-slot][aria-invalid=true]]:ring-(--hx-destructive)/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
+        "group/input-group relative flex h-8 w-full min-w-0 items-center rounded-md border border-(--hx-input) transition-colors outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-disabled:bg-(--hx-input)/50 has-disabled:opacity-50 has-[[data-slot=input-group-control]:focus-visible]:border-(--hx-ring) has-[[data-slot=input-group-control]:focus-visible]:ring-3 has-[[data-slot=input-group-control]:focus-visible]:ring-(--hx-ring)/50 has-[[data-slot][aria-invalid=true]]:border-(--hx-destructive) has-[[data-slot][aria-invalid=true]]:ring-3 has-[[data-slot][aria-invalid=true]]:ring-(--hx-destructive)/20 has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:has-disabled:bg-(--hx-input)/80 in-data-[theme=dark]:has-[[data-slot][aria-invalid=true]]:ring-(--hx-destructive)/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
         className
       )}
       {...props}
@@ -369,21 +388,6 @@ function InputGroupAddon({
         }
         e.currentTarget.parentElement?.querySelector("input")?.focus()
       }}
-      {...props}
-    />
-  )
-}
-
-/** The part of an `AnimatedLink` that gets the drawn underline. */
-function AnimatedLinkText({ className, ...props }: React.ComponentProps<"span">) {
-  return (
-    <span
-      className={cn(
-        "relative",
-        "after:absolute after:inset-x-0 after:-bottom-px after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out",
-        "group-hover/link:after:origin-left group-hover/link:after:scale-x-100 group-focus-visible/link:after:origin-left group-focus-visible/link:after:scale-x-100",
-        className
-      )}
       {...props}
     />
   )
@@ -544,12 +548,12 @@ function CommandDialog({
   children: React.ReactNode
 } & Partial<CommandMotion>) {
   const options = useMergedMotion({ duration, bounce, staggerItems, stagger, delay, animateIcon, rollingText, itemHighlight, itemHighlightColor, rounded })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const from = { opacity: fadeContent || reduceMotion ? 0 : 1, scale: reduceMotion ? 1 : startScale }
 
   return (
     <CommandMotionContext.Provider value={options}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <DialogPrimitive.Root open={open} onOpenChange={(next) => onOpenChange(next)}>
           <AnimatePresence>
             {open && (
@@ -596,7 +600,7 @@ function CommandDialog({
             )}
           </AnimatePresence>
         </DialogPrimitive.Root>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </CommandMotionContext.Provider>
   )
 }
@@ -628,7 +632,7 @@ function CommandInput({
           "shadow-none! *:data-[slot=input-group-addon]:pr-4!",
           plain
             ? "h-14! rounded-none! border-0! bg-transparent! has-[[data-slot=input-group-control]:focus-visible]:ring-0!"
-            : "h-12! rounded-lg! border-(--hx-input)/30 bg-(--hx-input)/30"
+            : "h-12! rounded-md! border-(--hx-input)/30 bg-(--hx-input)/30"
         )}
       >
         <CommandPrimitive.Input
@@ -670,7 +674,7 @@ function CommandList({
   ...props
 }: React.ComponentProps<typeof CommandPrimitive.List>) {
   const { duration, staggerItems, stagger: gap, delay } = useCommandMotion()
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const list = React.useRef<HTMLDivElement>(null)
   const listId = React.useId()
 
@@ -772,7 +776,7 @@ function CommandItem({
 }: React.ComponentProps<typeof CommandPrimitive.Item>) {
   const { itemHighlight, itemHighlightColor, duration, bounce, rounded, rollingText } = useCommandMotion()
   const listId = React.useContext(CommandListContext)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const [node, setNode] = React.useState<HTMLElement | null>(null)
   // Same store update for old and new item, so the highlight never drops out
   const current = useCommandState((state) => state.value)
@@ -900,7 +904,7 @@ function CommandSearch({
   morphWidth?: number
 } & Partial<CommandMotion>) {
   const options = useMergedMotion({ duration, bounce, staggerItems, stagger, delay, animateIcon, rollingText, itemHighlight, itemHighlightColor, rounded })
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const desktop = useDesktop()
   const [triggerHovered, setTriggerHovered] = React.useState(false)
   const [triggerFocused, setTriggerFocused] = React.useState(false)
@@ -918,7 +922,7 @@ function CommandSearch({
 
   return (
     <CommandMotionContext.Provider value={options}>
-      <MotionConfig reducedMotion="user">
+      <ReducedMotionConfig>
         <div
           ref={root}
           data-slot="command-search"
@@ -1062,7 +1066,7 @@ function CommandSearch({
             </AnimatePresence>
           </CommandPrimitive>
         </div>
-      </MotionConfig>
+      </ReducedMotionConfig>
     </CommandMotionContext.Provider>
   )
 }
@@ -1137,7 +1141,7 @@ const controls = {
     group: "Palette",
     type: "slider",
     label: "Delay",
-    value: 0.15,
+    value: 0.1,
     min: 0,
     max: 1,
     step: 0.05,
@@ -1168,7 +1172,7 @@ const controls = {
     group: "Both",
     type: "select",
     label: "Roundness",
-    value: "sm",
+    value: "md",
     options: [
       { label: "None", value: "none" },
       { label: "sm", value: "sm" },
@@ -1274,7 +1278,7 @@ function CommandDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-[60vh] flex-col items-center justify-start gap-[4vw] rounded-lg border px-[4vw] py-8 max-md:gap-[10vw]">
+      <div className="flex min-h-64 flex-col items-center justify-start gap-8 px-12 max-lg:px-8 max-md:gap-10 max-md:px-0">
         <div className="w-full max-w-xs">
           <CommandSearch
             inputRef={search}
@@ -1290,11 +1294,11 @@ function CommandDemo(props: Partial<ControlValues>) {
 
         <Button
           variant="outline"
-          className="group/link h-11 px-4 text-base border-none hover:bg-(--hx-background) aria-expanded:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30 in-data-[theme=dark]:aria-expanded:bg-(--hx-input)/30"
+          className="group/link h-11 rounded-md border border-(--hx-foreground)/15 px-4 text-base hover:border-(--hx-foreground)/30 hover:bg-(--hx-background) aria-expanded:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30 in-data-[theme=dark]:aria-expanded:bg-(--hx-input)/30"
           onClick={() => setOpen(true)}
         >
-          <AnimatedLinkText>Open palette</AnimatedLinkText>
-          <kbd className="rounded-sm bg-(--hx-muted) px-1.5 font-mono text-sm text-(--hx-muted-foreground)">⌘K</kbd>
+          <span>Open palette</span>
+          <kbd className="max-lg:hidden rounded-sm bg-(--hx-muted) px-1.5 font-mono text-sm text-(--hx-muted-foreground)">⌘K</kbd>
         </Button>
 
         <CommandDialog
@@ -1314,7 +1318,7 @@ function CommandDemo(props: Partial<ControlValues>) {
           </Command>
         </CommandDialog>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: press / to search, ⌘K for the palette, ↑ ↓ to move, Enter to pick and Esc to close.
       </p>
 
@@ -1347,12 +1351,14 @@ export interface AnimatedCommandProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedCommand({ theme = "default", mode = "light", className, ...props }: AnimatedCommandProps) {
+export default function AnimatedCommand({ theme = "claude", mode = "dark", className, ...props }: AnimatedCommandProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <CommandDemo {...props} />
+        <ReducedMotionConfig>
+          <CommandDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

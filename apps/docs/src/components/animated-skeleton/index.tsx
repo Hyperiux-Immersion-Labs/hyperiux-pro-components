@@ -1,6 +1,6 @@
 "use client";
 
-import { animate, stagger, AnimatePresence, motion } from "motion/react";
+import { MotionConfig, animate, stagger, AnimatePresence, motion } from "motion/react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
@@ -18,6 +18,12 @@ function usePrefersReducedMotion() {
     return () => mq.removeEventListener?.("change", read);
   }, []);
   return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
 }
 
 function toClass(value: unknown): string {
@@ -803,7 +809,9 @@ export default function AnimatedSkeleton({ theme = "spotify", mode = "dark", cla
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         <style>{COMPONENT_CSS}</style>
-        <SkeletonDemo {...props} />
+        <ReducedMotionConfig>
+          <SkeletonDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

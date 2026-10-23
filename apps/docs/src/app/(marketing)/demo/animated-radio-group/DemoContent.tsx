@@ -39,7 +39,7 @@ export default function DemoContent() {
                 <h1 className="text-center text-[4vw] max-md:text-[7vw] max-sm:text-[9vw]">Animated Radio Group</h1>
               </HeadAnim>
               <SplitLine>
-                <p className="text-center max-md:w-[80vw]">Pick one option. Arrow keys, Home and End move the choice.</p>
+                <p className="text-center max-md:w-[80vw]">Pick one option.<span className="max-lg:hidden"> Arrow keys, Home and End move the choice.</span></p>
               </SplitLine>
             </div>
             <div className="w-[40vw] max-lg:w-[75vw] max-md:w-full">{effect}</div>

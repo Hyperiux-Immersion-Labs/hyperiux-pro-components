@@ -3,8 +3,27 @@
 import * as React from "react";
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
-import { motion, animate, AnimatePresence, MotionConfig, useAnimationControls, useMotionTemplate, useMotionValue, type Transition, type Variants } from "motion/react";
+import { MotionConfig, motion, AnimatePresence, useAnimationControls, type Transition, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false)
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const read = () => setReduce(mq.matches)
+    read()
+    mq.addEventListener?.("change", read)
+    return () => mq.removeEventListener?.("change", read)
+  }, [])
+  return reduce
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -17,19 +36,6 @@ function toClass(value: unknown): string {
 
 function cn(...inputs: unknown[]) {
   return twMerge(toClass(inputs));
-}
-
-// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
-function useReduceMotion() {
-  const [reduceMotion, setReduceMotion] = React.useState(false)
-  React.useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const read = () => setReduceMotion(mq.matches)
-    read()
-    mq.addEventListener?.("change", read)
-    return () => mq.removeEventListener?.("change", read)
-  }, [])
-  return reduceMotion
 }
 
 export type AnimatedQuestionnaireTheme = "default" | "caffeine" | "claude" | "ghibli" | "spotify" | "valorant" | "vscode";
@@ -1652,7 +1658,7 @@ const QuestionnairePrimitive = {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px motion-reduce:active:translate-y-0 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -1670,14 +1676,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-md px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-md",
+          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
         "icon-lg": "size-9",
       },
     },
@@ -1703,74 +1709,34 @@ function Button({
   )
 }
 
-/** Seconds the hover fill takes to grow or shrink; the text colour follows the same clip. */
-const HOVER_FILL_DURATION = 0.35
-const HOVER_FILL_EASE = [0.32, 0.72, 0, 1] as const
+/** Classes for a button that carries the hover fill: the fill sits under its label. */
+const HOVER_FILL_CLASSES =
+  "relative isolate overflow-hidden transition-[border-color] duration-400 ease-in-out hover:border-(--hx-primary) hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30"
 
 /**
  * A hover fill that grows as a circle from where the pointer came in, and shrinks back
- * towards where it left. The circle is a clip-path, sized to just reach the farthest
- * corner, so the whole duration is visible. The label is drawn twice: once plain, and once
- * in the fill's text colour inside the same clip, so the text changes exactly where the
- * fill has reached.
+ * towards where it left. Put `circle` inside the button, wrap its content in `label`, and
+ * call `place` on enter and leave.
  */
-function useHoverFill(tone: "primary" | "background") {
-  const reduceMotion = useReduceMotion()
-  const x = useMotionValue(0)
-  const y = useMotionValue(0)
-  const radius = useMotionValue(0)
-  const clipPath = useMotionTemplate`circle(${radius}px at ${x}px ${y}px)`
-
-  const move = (event: React.PointerEvent<HTMLElement>, on: boolean) => {
-    const box = event.currentTarget.getBoundingClientRect()
-    const px = event.clientX - box.left
-    const py = event.clientY - box.top
-    const transition: Transition = { duration: HOVER_FILL_DURATION, ease: HOVER_FILL_EASE }
-    if (reduceMotion) {
-      // No growing or shrinking: the fill is simply there while hovered
-      x.jump(px)
-      y.jump(py)
-      radius.jump(on ? Math.hypot(box.width, box.height) : 0)
-      return
-    }
-    if (on) {
-      // A fresh entry starts at the pointer; one that is still shrinking just grows back
-      if (radius.get() < 0.5) {
-        x.jump(px)
-        y.jump(py)
-      }
-      const reach = Math.hypot(Math.max(x.get(), box.width - x.get()), Math.max(y.get(), box.height - y.get()))
-      animate(radius, reach + 1, transition)
-      return
-    }
-    animate(x, px, transition)
-    animate(y, py, transition)
-    animate(radius, 0, transition)
+function useHoverFill() {
+  const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })
+  const place = (event: React.PointerEvent<HTMLElement>, on: boolean) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    setFill({ x: event.clientX - rect.left, y: event.clientY - rect.top, on })
   }
-
-  const solid = tone === "background"
-  return {
-    onPointerEnter: (event: React.PointerEvent<HTMLElement>) => move(event, true),
-    onPointerLeave: (event: React.PointerEvent<HTMLElement>) => move(event, false),
-    /** Wrap the button's children: the plain label, then the filled copy on top. */
-    content: (children: React.ReactNode) => (
-      <>
-        <span className="relative">{children}</span>
-        <motion.span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute inset-0 flex items-center justify-center [gap:inherit]",
-            solid
-              ? "bg-(--hx-background) text-(--hx-foreground)"
-              : "bg-(--hx-primary) text-(--hx-primary-foreground)"
-          )}
-          style={{ clipPath }}
-        >
-          {children}
-        </motion.span>
-      </>
-    ),
-  }
+  const circle = (
+    // Wide enough to cover the button from any corner once fully grown.
+    <motion.span
+      aria-hidden
+      className="pointer-events-none absolute -z-10 aspect-square w-[250%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--hx-primary)"
+      style={{ left: fill.x, top: fill.y }}
+      initial={false}
+      animate={{ scale: fill.on ? 1 : 0 }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+    />
+  )
+  const label = (children: React.ReactNode) => <span className="relative">{children}</span>
+  return { place, circle, label }
 }
 
 /** An outlined button with the hover fill. */
@@ -1781,26 +1747,24 @@ function FillButton({
   onPointerLeave,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const hover = useHoverFill("primary")
+  const { place, circle, label } = useHoverFill()
 
   return (
     <Button
       variant="outline"
       onPointerEnter={(event) => {
         onPointerEnter?.(event)
-        hover.onPointerEnter(event)
+        place(event, true)
       }}
       onPointerLeave={(event) => {
         onPointerLeave?.(event)
-        hover.onPointerLeave(event)
+        place(event, false)
       }}
-      className={cn(
-        "relative overflow-hidden transition-[border-color] duration-350 ease-out hover:border-(--hx-primary) hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
-        className
-      )}
+      className={cn(HOVER_FILL_CLASSES, className)}
       {...props}
     >
-      {hover.content(children)}
+      {circle}
+      {label(children)}
     </Button>
   )
 }
@@ -1858,8 +1822,6 @@ type QuestionnaireContextValue = QuestionnaireMotion & {
   item: string | null
   /** 1 when moving forward, -1 when going back. */
   direction: number
-  /** Reduced motion: nothing travels, fades, draws or staggers. */
-  reduceMotion: boolean
 }
 
 const QuestionnaireContext = React.createContext<QuestionnaireContextValue | null>(null)
@@ -1873,8 +1835,9 @@ function useQuestionnaire() {
 // Slow at both ends, so a fade never starts or stops abruptly
 const fadeEase = [0.45, 0, 0.25, 1] as const
 
-function useSpring(context: Pick<QuestionnaireContextValue, "bounce" | "duration" | "reduceMotion">): Transition {
-  return context.reduceMotion
+function useSpring(context: QuestionnaireMotion): Transition {
+  const reduceMotion = usePrefersReducedMotion()
+  return reduceMotion
     ? { duration: 0 }
     : { type: "spring", duration: context.duration, bounce: context.bounce }
 }
@@ -1906,18 +1869,15 @@ function Questionnaire({
   const [own, setOwn] = React.useState<string | null>(defaultItem ?? null)
   const [direction, setDirection] = React.useState(1)
   const item = itemProp ?? own
-  const reduceMotion = useReduceMotion()
 
   const context = React.useMemo(
     () => ({
       contentAnimation, slideDistance, duration, bounce, staggerChoices, stagger, progressStyle, showProgress,
       multiple, choiceColor, choiceIndicator, indicatorBorder, indicatorRounded, choiceLayout, choiceHover, item, direction,
-      reduceMotion,
     }),
     [
       contentAnimation, slideDistance, duration, bounce, staggerChoices, stagger, progressStyle, showProgress,
       multiple, choiceColor, choiceIndicator, indicatorBorder, indicatorRounded, choiceLayout, choiceHover, item, direction,
-      reduceMotion,
     ]
   )
 
@@ -2050,7 +2010,7 @@ function QuestionnaireItem({
   }, [node])
 
   const context = useQuestionnaire()
-  const { reduceMotion } = context
+  const reduceMotion = usePrefersReducedMotion()
   const still = context.contentAnimation === "none" || reduceMotion
   const slideX = context.contentAnimation === "slide-x" && !reduceMotion
   const slideY = context.contentAnimation === "slide-y" && !reduceMotion
@@ -2075,11 +2035,6 @@ function QuestionnaireItem({
     mounted.current = true
   }, [active, controls])
 
-  // The setting is read after mount, so settle an entrance that already began
-  React.useEffect(() => {
-    if (reduceMotion && active) controls.set("center")
-  }, [reduceMotion, active, controls])
-
   const offset = (d: number) => ({
     opacity: still ? 1 : 0,
     x: slideX ? `${d * context.slideDistance}%` : "0%",
@@ -2102,7 +2057,7 @@ function QuestionnaireItem({
       transition: {
         ...(context.contentAnimation === "fade" ? { duration: context.duration, ease: fadeEase } : spring),
         staggerChildren: context.staggerChoices && !reduceMotion ? context.stagger : 0,
-        delayChildren: reduceMotion ? 0 : 0.08,
+        delayChildren: 0.08,
       },
     },
   }
@@ -2190,121 +2145,31 @@ function QuestionnaireChoices({
   )
 }
 
-// Choices rise in one by one; with reduced motion they are simply there
-const choiceVariants = (still: boolean): Variants => ({
-  enter: { opacity: still ? 1 : 0, y: still ? 0 : 10 },
-  center: { opacity: 1, y: 0, transition: still ? { duration: 0 } : { type: "spring", duration: 0.4, bounce: 0.1 } },
-})
+const choiceVariants: Variants = {
+  enter: { opacity: 0, y: 10 },
+  center: { opacity: 1, y: 0, transition: { type: "spring", duration: 0.4, bounce: 0.1 } },
+}
 
 function QuestionnaireChoice({
   children,
   className,
   ...props
 }: React.ComponentProps<typeof QuestionnairePrimitive.Choice>) {
-  const { choiceColor, choiceIndicator, indicatorBorder, indicatorRounded, choiceLayout, choiceHover, duration, reduceMotion } =
+  const { choiceColor, choiceIndicator, indicatorBorder, indicatorRounded, choiceLayout, choiceHover, duration } =
     useQuestionnaire()
+  const reduceMotion = usePrefersReducedMotion()
   const card = choiceLayout === "card"
   const bare = choiceIndicator === "check" && !indicatorBorder
   const primary = choiceColor === "primary"
+  const solid = card && primary
   const hover = card ? choiceHover : "none"
-  // A primary fill from the top carries its own copy of the content (see `overlay`), so text and
-  // indicator change exactly where the fill has reached instead of flipping before or after it
-  const wipe = hover === "top" && primary
   const layer = cn("pointer-events-none absolute -inset-px -z-10 rounded-[inherit]", primary ? "bg-(--hx-primary)" : "bg-(--hx-muted)")
-
-  // The indicator, label and shortcut. Drawn once plain, and once more inside the fill layer
-  const content = (overlay: boolean) => {
-    const solid = card && primary && (overlay || !wipe)
-    const slot = (name: string) => (overlay ? {} : { "data-slot": name })
-    return (
-      <>
-        <span
-          aria-hidden="true"
-          className={cn(
-            "pointer-events-none flex shrink-0 items-center overflow-hidden transition-[width,margin-right,opacity] ease-[cubic-bezier(0.45,0,0.25,1)]",
-            choiceIndicator === "radio"
-              ? "mr-2.5 w-5 opacity-100"
-              : "mr-0 w-0 opacity-0",
-            choiceIndicator === "check" &&
-              "group-data-checked/questionnaire-choice:mr-2.5 group-data-checked/questionnaire-choice:w-5 group-data-checked/questionnaire-choice:opacity-100"
-          )}
-          style={{ transitionDuration: `${reduceMotion ? 0 : duration}s` }}
-        >
-          <span
-            aria-hidden="true"
-            {...slot("questionnaire-choice-indicator")}
-            data-indicator={choiceIndicator}
-            className={cn(
-              "pointer-events-none relative flex size-5 shrink-0 items-center justify-center rounded-md border border-(--hx-input) bg-(--hx-background) shadow-xs transition-[background-color,border-color,color,border-radius] duration-300 group-hover/questionnaire-choice:border-(--hx-foreground)/40 group-data-checked/questionnaire-choice:border-(--hx-primary) in-data-[theme=dark]:bg-(--hx-input)/30",
-              "group-data-checked/questionnaire-choice:bg-(--hx-primary) group-data-checked/questionnaire-choice:text-(--hx-primary-foreground) in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-(--hx-primary)",
-              choiceIndicator === "radio" && "rounded-full",
-              choiceIndicator === "check" && INDICATOR_ROUNDED[indicatorRounded],
-              solid &&
-                "group-data-checked/questionnaire-choice:border-(--hx-primary-foreground) group-data-checked/questionnaire-choice:bg-(--hx-primary-foreground) group-data-checked/questionnaire-choice:text-(--hx-primary) in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-(--hx-primary-foreground)",
-              bare &&
-                cn(
-                  "border-transparent bg-transparent shadow-none group-hover/questionnaire-choice:border-transparent group-data-checked/questionnaire-choice:border-transparent group-data-checked/questionnaire-choice:bg-transparent in-data-[theme=dark]:bg-transparent in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-transparent",
-                  solid ? "group-data-checked/questionnaire-choice:text-(--hx-primary-foreground)" : "group-data-checked/questionnaire-choice:text-(--hx-primary)"
-                )
-            )}
-          >
-            <span
-              {...slot("questionnaire-choice-indicator-dot")}
-              className={cn(
-                "size-2.5 scale-0 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-data-checked/questionnaire-choice:scale-100 motion-reduce:transition-none",
-                solid ? "bg-(--hx-primary)" : "bg-(--hx-primary-foreground)",
-                choiceIndicator === "check" && "hidden"
-              )}
-            />
-            <svg
-              {...slot("questionnaire-choice-indicator-check")}
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={3}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className={cn(
-                "hidden size-3.5",
-                choiceIndicator === "check" && "block"
-              )}
-            >
-              {/* Draws in when the choice is picked */}
-              <path
-                d="M4 12.5 9.5 18 20 6.5"
-                pathLength={1}
-                strokeDasharray={1}
-                className="[stroke-dashoffset:1] transition-[stroke-dashoffset] duration-300 ease-out group-data-checked/questionnaire-choice:[stroke-dashoffset:0] motion-reduce:transition-none"
-              />
-            </svg>
-          </span>
-        </span>
-        <QuestionnairePrimitive.ChoiceLabel
-          {...slot("questionnaire-choice-label")}
-          className={cn(
-            "flex min-w-0 flex-1 flex-col gap-0.5 leading-snug",
-            // Without a wipe the text follows the fill with the same fade, not an instant flip
-            card && primary && !wipe && "transition-colors [&_[data-slot=questionnaire-choice-description]]:transition-colors",
-            card && primary && !wipe && "group-data-checked/questionnaire-choice:text-(--hx-primary-foreground) group-data-checked/questionnaire-choice:[&_[data-slot=questionnaire-choice-description]]:text-(--hx-primary-foreground)/70",
-            card && primary && !wipe && "group-hover/questionnaire-choice:text-(--hx-primary-foreground) group-hover/questionnaire-choice:[&_[data-slot=questionnaire-choice-description]]:text-(--hx-primary-foreground)/70",
-            overlay && "[&_[data-slot=questionnaire-choice-description]]:text-(--hx-primary-foreground)/70"
-          )}
-        >
-          {children}
-        </QuestionnairePrimitive.ChoiceLabel>
-        <QuestionnairePrimitive.ChoiceShortcut
-          {...slot("questionnaire-choice-shortcut")}
-          className="pointer-events-none ms-2.5 hidden size-5 shrink-0 items-center justify-center rounded-md border border-(--hx-input) bg-(--hx-background) font-mono text-[0.625rem] leading-none font-medium text-(--hx-muted-foreground) group-data-[shortcut]/questionnaire-choice:inline-flex"
-        />
-      </>
-    )
-  }
 
   return (
     <QuestionnairePrimitive.Choice
       data-slot="questionnaire-choice"
       render={(choiceProps) => (
-        <motion.label {...(choiceProps as React.ComponentProps<typeof motion.label>)} variants={choiceVariants(reduceMotion)}>
+        <motion.label {...(choiceProps as React.ComponentProps<typeof motion.label>)} variants={choiceVariants}>
           {card && (
             // The border sits under the fills, so a fill meets it exactly
             <span
@@ -2329,7 +2194,7 @@ function QuestionnaireChoice({
             <span
               aria-hidden
               className={cn(
-                "pointer-events-none absolute inset-0 -z-20 rounded-[calc(var(--radius-md)-1px)] bg-(--hx-background) in-data-[theme=dark]:bg-(--hx-input)/20",
+                "pointer-events-none absolute inset-0 -z-20 rounded-[calc(var(--radius-lg)-1px)] bg-(--hx-background) in-data-[theme=dark]:bg-(--hx-input)/20",
                 // The wipe layer carries the fill, so the base never tints
                 hover !== "top" && "transition-colors",
                 hover === "fade" &&
@@ -2343,7 +2208,7 @@ function QuestionnaireChoice({
               )}
             />
           )}
-          {hover === "top" && !wipe && (
+          {hover === "top" && (
             <span
               aria-hidden
               className={cn(
@@ -2353,21 +2218,12 @@ function QuestionnaireChoice({
             />
           )}
           {choiceProps.children as React.ReactNode}
-          {wipe && (
-            // Sits over the content, with its own copy of it in the fill's text colour
-            <span
-              aria-hidden
-              className="pointer-events-none absolute -inset-px z-20 rounded-[inherit] bg-(--hx-primary) text-(--hx-primary-foreground) [clip-path:inset(0_0_100%_0)] transition-[clip-path] duration-300 ease-out group-hover/questionnaire-choice:[clip-path:inset(0)] group-data-checked/questionnaire-choice:[clip-path:inset(0)] motion-reduce:transition-none"
-            >
-              <span className="absolute inset-px flex items-center px-4 py-3 text-start text-base">{content(true)}</span>
-            </span>
-          )}
         </motion.label>
       )}
       className={cn(
         "group/questionnaire-choice relative isolate flex cursor-pointer items-center text-start text-base outline-none select-none",
         card
-          ? "min-h-14 rounded-md border border-transparent px-4 py-3"
+          ? "min-h-14 rounded-lg border border-transparent px-4 py-3"
           : "min-h-9 rounded-none border-b border-(--hx-border) py-2.5 text-(--hx-muted-foreground) transition-colors hover:text-(--hx-foreground) data-checked:font-medium data-checked:text-(--hx-foreground)",
         "data-disabled:pointer-events-none data-disabled:cursor-not-allowed data-disabled:opacity-50",
         className
@@ -2378,7 +2234,82 @@ function QuestionnaireChoice({
         data-slot="questionnaire-choice-input"
         className="absolute inset-0 z-10 size-full cursor-pointer opacity-0"
       />
-      {content(false)}
+      <span
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none flex shrink-0 items-center overflow-hidden transition-[width,margin-right,opacity] ease-[cubic-bezier(0.45,0,0.25,1)]",
+          choiceIndicator === "radio"
+            ? "mr-2.5 w-5 opacity-100"
+            : "mr-0 w-0 opacity-0",
+          choiceIndicator === "check" &&
+            "group-data-checked/questionnaire-choice:mr-2.5 group-data-checked/questionnaire-choice:w-5 group-data-checked/questionnaire-choice:opacity-100"
+        )}
+        style={{ transitionDuration: `${reduceMotion ? 0 : duration}s` }}
+      >
+      <span
+        aria-hidden="true"
+        data-slot="questionnaire-choice-indicator"
+        data-indicator={choiceIndicator}
+        className={cn(
+          "pointer-events-none relative flex size-5 shrink-0 items-center justify-center rounded-md border border-(--hx-input) bg-(--hx-background) shadow-xs transition-[background-color,border-color,color,border-radius] duration-300 group-hover/questionnaire-choice:border-(--hx-foreground)/40 group-data-checked/questionnaire-choice:border-(--hx-primary) in-data-[theme=dark]:bg-(--hx-input)/30",
+          "group-data-checked/questionnaire-choice:bg-(--hx-primary) group-data-checked/questionnaire-choice:text-(--hx-primary-foreground) in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-(--hx-primary)",
+          choiceIndicator === "radio" && "rounded-full",
+          choiceIndicator === "check" && INDICATOR_ROUNDED[indicatorRounded],
+          solid &&
+            "group-data-checked/questionnaire-choice:border-(--hx-primary-foreground) group-data-checked/questionnaire-choice:bg-(--hx-primary-foreground) group-data-checked/questionnaire-choice:text-(--hx-primary) in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-(--hx-primary-foreground)",
+          bare &&
+            cn(
+              "border-transparent bg-transparent shadow-none group-hover/questionnaire-choice:border-transparent group-data-checked/questionnaire-choice:border-transparent group-data-checked/questionnaire-choice:bg-transparent in-data-[theme=dark]:bg-transparent in-data-[theme=dark]:group-data-checked/questionnaire-choice:bg-transparent",
+              solid ? "group-data-checked/questionnaire-choice:text-(--hx-primary-foreground)" : "group-data-checked/questionnaire-choice:text-(--hx-primary)"
+            )
+        )}
+      >
+        <span
+          data-slot="questionnaire-choice-indicator-dot"
+          className={cn(
+            "size-2.5 scale-0 rounded-full transition-transform duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)] group-data-checked/questionnaire-choice:scale-100 motion-reduce:transition-none",
+            solid ? "bg-(--hx-primary)" : "bg-(--hx-primary-foreground)",
+            choiceIndicator === "check" && "hidden"
+          )}
+        />
+        <svg
+          data-slot="questionnaire-choice-indicator-check"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={3}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className={cn(
+            "hidden size-3.5",
+            choiceIndicator === "check" && "block"
+          )}
+        >
+          {/* Draws in when the choice is picked */}
+          <path
+            d="M4 12.5 9.5 18 20 6.5"
+            pathLength={1}
+            strokeDasharray={1}
+            className="[stroke-dashoffset:1] transition-[stroke-dashoffset] duration-300 ease-out group-data-checked/questionnaire-choice:[stroke-dashoffset:0] motion-reduce:transition-none"
+          />
+        </svg>
+      </span>
+      </span>
+      <QuestionnairePrimitive.ChoiceLabel
+        data-slot="questionnaire-choice-label"
+        className={cn(
+          "flex min-w-0 flex-1 flex-col gap-0.5 leading-snug",
+          // Text switches to the fill's foreground while it is picked or hovered
+          card && primary && "group-data-checked/questionnaire-choice:text-(--hx-primary-foreground) group-data-checked/questionnaire-choice:[&_[data-slot=questionnaire-choice-description]]:text-(--hx-primary-foreground)/70",
+          card && primary && "group-hover/questionnaire-choice:text-(--hx-primary-foreground) group-hover/questionnaire-choice:[&_[data-slot=questionnaire-choice-description]]:text-(--hx-primary-foreground)/70"
+        )}
+      >
+        {children}
+      </QuestionnairePrimitive.ChoiceLabel>
+      <QuestionnairePrimitive.ChoiceShortcut
+        data-slot="questionnaire-choice-shortcut"
+        className="pointer-events-none ms-2.5 hidden size-5 shrink-0 items-center justify-center rounded-md border border-(--hx-input) bg-(--hx-background) font-mono text-[0.625rem] leading-none font-medium text-(--hx-muted-foreground) group-data-[shortcut]/questionnaire-choice:inline-flex"
+      />
     </QuestionnairePrimitive.Choice>
   )
 }
@@ -2408,7 +2339,7 @@ function QuestionnaireInput({
       <QuestionnairePrimitive.Input
         data-slot="questionnaire-input"
         className={cn(
-          "h-12 w-full min-w-0 rounded-md border border-(--hx-input) bg-transparent px-3 py-1 text-base transition-[color,box-shadow,background-color] outline-none focus-visible:border-(--hx-ring) disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-(--hx-input)/50 disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:disabled:bg-(--hx-input)/80 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40",
+          "h-12 w-full min-w-0 rounded-lg border border-(--hx-input) bg-transparent px-3 py-1 text-base transition-[color,box-shadow,background-color] outline-none focus-visible:border-(--hx-ring) disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-(--hx-input)/50 disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:disabled:bg-(--hx-input)/80 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40",
           "selection:bg-(--hx-primary) selection:text-(--hx-primary-foreground) placeholder:text-(--hx-muted-foreground)",
           className
         )}
@@ -2456,26 +2387,45 @@ function useActionHover(
   onPointerEnter?: ActionPointerHandler,
   onPointerLeave?: ActionPointerHandler
 ) {
+  const reduceMotion = usePrefersReducedMotion()
+  const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })
   const solid = variant === "default"
-  const fill = useHoverFill(solid ? "background" : "primary")
+
+  const place = (event: React.PointerEvent<HTMLButtonElement>, on: boolean) => {
+    const box = event.currentTarget.getBoundingClientRect()
+    setFill({ x: event.clientX - box.left, y: event.clientY - box.top, on })
+  }
 
   return {
     className: cn(
-      solid
-        ? "hover:bg-(--hx-primary) hover:text-(--hx-primary-foreground)"
-        : "hover:bg-(--hx-background) hover:text-(--hx-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
-      "relative h-11 overflow-hidden px-5 text-base focus-visible:ring-0",
+      solid ? "hover:bg-(--hx-primary) hover:text-(--hx-foreground)" : "hover:bg-(--hx-background) hover:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
+      "relative isolate h-11 overflow-hidden px-5 text-base focus-visible:ring-0",
       solid && "border-(--hx-primary)"
     ),
     onPointerEnter: (event: React.PointerEvent<HTMLButtonElement>) => {
       onPointerEnter?.(event)
-      fill.onPointerEnter(event)
+      place(event, true)
     },
     onPointerLeave: (event: React.PointerEvent<HTMLButtonElement>) => {
       onPointerLeave?.(event)
-      fill.onPointerLeave(event)
+      place(event, false)
     },
-    content: fill.content,
+    content: (children: React.ReactNode) => (
+      <>
+        <motion.span
+          aria-hidden
+          className={cn(
+            "pointer-events-none absolute -z-10 aspect-square w-[250%] -translate-x-1/2 -translate-y-1/2 rounded-full",
+            solid ? "bg-(--hx-background)" : "bg-(--hx-primary)"
+          )}
+          style={{ left: fill.x, top: fill.y }}
+          initial={false}
+          animate={{ scale: fill.on ? 1 : 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.65, 0, 0.35, 1] }}
+        />
+        <span className="relative">{children}</span>
+      </>
+    ),
   }
 }
 
@@ -2761,7 +2711,7 @@ function QuestionnaireDemo(props: Partial<ControlValues>) {
     <div className="flex flex-col gap-3">
       <div
         className={cn(
-          "flex min-h-96 flex-col justify-start rounded-md border px-12 py-8 max-md:px-4",
+          "flex min-h-96 flex-col justify-start rounded-lg border px-12 py-8 max-md:px-4",
           !values.bordered && "border-transparent"
         )}
       >
@@ -2866,7 +2816,7 @@ function QuestionnaireDemo(props: Partial<ControlValues>) {
           </Questionnaire>
         )}
       </div>
-      <p className="text-sm text-(--hx-muted-foreground) max-lg:text-center">
+      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: press a choice&apos;s letter to pick it, Enter to continue, and ← to go back.
       </p>
 
@@ -2903,11 +2853,11 @@ export default function AnimatedQuestionnaire({ theme = "spotify", mode = "dark"
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <MotionConfig reducedMotion="user">
-        <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:transition-none motion-reduce:**:transition-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+        <ReducedMotionConfig>
           <QuestionnaireDemo {...props} />
-        </div>
-      </MotionConfig>
+        </ReducedMotionConfig>
+      </div>
     </ThemeContext.Provider>
   );
 }

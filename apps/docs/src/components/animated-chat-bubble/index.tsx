@@ -8,8 +8,28 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon, ClockIcon, ReplyIcon, Rotate
 import { Select as SelectPrimitive } from "@base-ui/react/select";
 import { mergeProps } from "@base-ui/react/merge-props";
 import { useRender } from "@base-ui/react/use-render";
-import { animate, AnimatePresence, motion, MotionConfig, useDragControls, useMotionValue, useReducedMotion, useTransform, type HTMLMotionProps, type Variants } from "motion/react";
+import { animate, AnimatePresence, motion, MotionConfig, useDragControls, useMotionValue, useTransform, type HTMLMotionProps, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion();
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>;
+}
+
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -335,7 +355,7 @@ function ThemeScope({ children }: { children?: React.ReactNode }) {
 // ---- button.tsx ----
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
@@ -353,14 +373,14 @@ const buttonVariants = cva(
       size: {
         default:
           "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        xs: "h-6 gap-1 rounded-md px-2 text-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-md px-2.5 text-[0.8rem] has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         icon: "size-8",
         "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+          "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
         "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+          "size-7 rounded-md",
         "icon-lg": "size-9",
       },
     },
@@ -451,7 +471,7 @@ function SelectTrigger({
       data-slot="select-trigger"
       data-size={size}
       className={cn(
-        "flex w-fit items-center justify-between gap-1.5 rounded-lg border border-(--hx-input) bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 data-placeholder:text-(--hx-muted-foreground) data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-[min(var(--radius-md),10px)] *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "flex w-fit items-center justify-between gap-1.5 rounded-md border border-(--hx-input) bg-transparent py-2 pr-2 pl-2.5 text-sm whitespace-nowrap transition-colors outline-none select-none focus-visible:border-(--hx-ring) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 disabled:cursor-not-allowed disabled:opacity-50 aria-invalid:border-(--hx-destructive) aria-invalid:ring-3 aria-invalid:ring-(--hx-destructive)/20 data-placeholder:text-(--hx-muted-foreground) data-[size=default]:h-8 data-[size=sm]:h-7 data-[size=sm]:rounded-md *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-1.5 in-data-[theme=dark]:bg-(--hx-input)/30 in-data-[theme=dark]:hover:bg-(--hx-input)/50 in-data-[theme=dark]:aria-invalid:border-(--hx-destructive)/50 in-data-[theme=dark]:aria-invalid:ring-(--hx-destructive)/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
@@ -493,7 +513,7 @@ function SelectContent({
         <SelectPrimitive.Popup
           data-slot="select-content"
           data-align-trigger={alignItemWithTrigger}
-          className={cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95", className )}
+          className={cn("relative isolate z-50 max-h-(--available-height) w-(--anchor-width) min-w-36 origin-(--transform-origin) overflow-x-hidden overflow-y-auto rounded-md bg-(--hx-popover) text-(--hx-popover-foreground) shadow-md ring-1 ring-(--hx-foreground)/10 duration-100 data-[align-trigger=true]:animate-none data-[side=bottom]:data-starting-style:-translate-y-2 data-[side=inline-end]:data-starting-style:-translate-x-2 data-[side=inline-start]:data-starting-style:translate-x-2 data-[side=left]:data-starting-style:translate-x-2 data-[side=right]:data-starting-style:-translate-x-2 data-[side=top]:data-starting-style:translate-y-2 transition-[opacity,scale,translate] duration-150 ease-out data-open:data-starting-style:opacity-0 data-open:data-starting-style:scale-95  data-closed:data-ending-style:opacity-0 data-closed:data-ending-style:scale-95", className )}
           {...props}
         >
           <SelectScrollUpButton />
@@ -584,8 +604,12 @@ function assignRef<T>(ref: React.Ref<T> | undefined, node: T | null) {
 
 const BubbleThreadContext = React.createContext(false)
 
+// A slim, plain scrollbar in the theme's colours, instead of whatever the page styles scrollbars as
+const THREAD_SCROLLBAR =
+  "[scrollbar-width:thin] [scrollbar-color:color-mix(in_oklch,var(--hx-foreground)_30%,transparent)_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[color-mix(in_oklch,var(--hx-foreground)_30%,transparent)]"
+
 function BubbleThread({ className, children, ...props }: React.ComponentProps<"div">) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const scroller = React.useRef<HTMLDivElement>(null)
   const content = React.useRef<HTMLDivElement>(null)
 
@@ -621,13 +645,13 @@ function BubbleThread({ className, children, ...props }: React.ComponentProps<"d
   }, [reduceMotion])
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       <BubbleThreadContext.Provider value={true}>
         <motion.div
           ref={scroller}
           layoutScroll
           data-slot="bubble-thread"
-          className={cn("overflow-y-auto overscroll-contain", className)}
+          className={cn(THREAD_SCROLLBAR, "overflow-y-auto overscroll-contain", className)}
           {...(props as HTMLMotionProps<"div">)}
         >
           <div ref={content} className="relative flex min-h-full flex-col justify-end gap-4">
@@ -635,7 +659,7 @@ function BubbleThread({ className, children, ...props }: React.ComponentProps<"d
           </div>
         </motion.div>
       </BubbleThreadContext.Provider>
-    </MotionConfig>
+    </ReducedMotionConfig>
   )
 }
 
@@ -762,7 +786,7 @@ function Bubble({
     /** Emojis offered by the picker. */
     reactions?: string[]
   }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const inThread = React.useContext(BubbleThreadContext)
   const node = React.useRef<HTMLDivElement>(null)
   const x = useMotionValue(0)
@@ -1026,7 +1050,7 @@ function ReactionPicker({
   magnifyEmojis: boolean
   onPick: (emoji: string) => void
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const scaleUnderPointer = (row: HTMLElement, pointerX: number | null) => {
     if (!magnifyEmojis || reduceMotion) return
     for (const button of row.querySelectorAll<HTMLElement>("[data-emoji]")) {
@@ -1126,7 +1150,7 @@ function BubbleContent({
   grow?: boolean
   layoutId?: string
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const node = React.useRef<HTMLDivElement>(null)
 
   const wasTyping = React.useRef(typing)
@@ -1149,7 +1173,7 @@ function BubbleContent({
       {
         ...slotAttr("bubble-content"),
         className: cn(
-          "relative w-fit max-w-full min-w-0 origin-bottom-left overflow-hidden rounded-xl border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:origin-bottom-right group-data-[align=end]/bubble:self-end [button]:text-left [button,a]:transition-colors [button,a]:outline-none [button,a]:focus-visible:border-(--hx-ring) [button,a]:focus-visible:ring-3 [button,a]:focus-visible:ring-(--hx-ring)/50",
+          "relative w-fit max-w-full min-w-0 origin-bottom-left overflow-hidden rounded-md border border-transparent px-3 py-2 text-sm leading-relaxed wrap-break-word group-data-[align=end]/bubble:origin-bottom-right group-data-[align=end]/bubble:self-end [button]:text-left [button,a]:transition-colors [button,a]:outline-none [button,a]:focus-visible:border-(--hx-ring) [button,a]:focus-visible:ring-3 [button,a]:focus-visible:ring-(--hx-ring)/50",
           className
         ),
         children: render ? (
@@ -1218,7 +1242,7 @@ function BubbleText({
   collapsible?: boolean
   lines?: number
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const tokens = text.split(/(\s+)/)
   const [streams] = React.useState(stream)
   const [shown, setShown] = React.useState(streams ? 1 : tokens.length)
@@ -1386,7 +1410,7 @@ function BubbleReactions({
   rollingNumbers?: boolean
 }) {
   const node = React.useRef<HTMLDivElement>(null)
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const lastCount = React.useRef(count)
   React.useEffect(() => {
     const was = lastCount.current
@@ -1481,7 +1505,7 @@ function BubbleStatus({
   animated?: boolean
   onRetry?: () => void
 }) {
-  const reduceMotion = useReducedMotion()
+  const reduceMotion = usePrefersReducedMotion()
   const icon = React.useRef<HTMLSpanElement>(null)
   const [spinning, setSpinning] = React.useState(false)
   // pathLength isn't a transform, so it's switched off here for reduced motion
@@ -1598,7 +1622,7 @@ function BubbleSuggestion({ className, ...props }: HTMLMotionProps<"button">) {
       whileTap={{ scale: 0.95 }}
       transition={{ layout: spring }}
       className={cn(
-        "w-fit rounded-xl border border-(--hx-border) bg-(--hx-background) px-3 py-2 text-sm leading-relaxed transition-colors outline-none hover:bg-(--hx-muted) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 in-data-[theme=dark]:hover:bg-(--hx-input)/30",
+        "w-fit rounded-md border border-(--hx-border) bg-(--hx-background) px-3 py-2 text-sm leading-relaxed transition-colors outline-none hover:bg-(--hx-muted) focus-visible:ring-3 focus-visible:ring-(--hx-ring)/50 in-data-[theme=dark]:hover:bg-(--hx-input)/30",
         className
       )}
       {...props}
@@ -1675,7 +1699,7 @@ const controls = {
   typing: { group: "Arriving", type: "checkbox", label: "Typing indicator", value: true },
   streamText: { group: "Arriving", type: "checkbox", label: "Stream text", value: false },
 
-  flyIn: { group: "Sending", type: "checkbox", label: "Fly from input", value: false },
+  flyIn: { group: "Sending", type: "checkbox", label: "Fly from input", value: true },
   showDeliveryStatus: { group: "Sending", type: "checkbox", label: "Show delivery status", value: true },
   shakeOnError: { disabled: (v: Record<string, unknown>) => !v.simulateFailures, group: "Sending", type: "checkbox", label: "Shake on error", value: true },
   simulateFailures: { group: "Sending", type: "checkbox", label: "Simulate failures", value: true },
@@ -1684,15 +1708,22 @@ const controls = {
   rollingNumbers: { group: "Reactions", type: "checkbox", label: "Rolling numbers", value: true },
   doubleClickToReact: { group: "Reactions", type: "checkbox", label: "Double click to react", value: true },
   showReactionPicker: { group: "Reactions", type: "checkbox", label: "Show reaction picker", value: true },
-  magnifyEmojis: { disabled: (v: Record<string, unknown>) => !v.showReactionPicker, group: "Reactions", type: "checkbox", label: "Magnify emojis", value: false },
+  magnifyEmojis: { disabled: (v: Record<string, unknown>) => !v.showReactionPicker, group: "Reactions", type: "checkbox", label: "Magnify emojis", value: true },
 
-  liftOnHover: { group: "Interaction", type: "checkbox", label: "Lift on hover", value: false },
+  liftOnHover: { group: "Interaction", type: "checkbox", label: "Lift on hover", value: true },
   selectable: { group: "Interaction", type: "checkbox", label: "Selectable text", value: true },
   swipeToReply: { group: "Interaction", type: "checkbox", label: "Swipe to reply", value: true },
   showSuggestions: { group: "Interaction", type: "checkbox", label: "Show suggestions", value: true },
   collapsible: { group: "Interaction", type: "checkbox", label: "Collapsible", value: true },
 
-  joined: { group: "Grouping", type: "checkbox", label: "Joined corners", value: false },
+  joined: { group: "Grouping", type: "checkbox", label: "Joined corners", value: true },
+  sendStyle: {
+    group: "Grouping",
+    type: "select",
+    label: "Sent bubble style",
+    value: "default",
+    options: variants.map(({ label, value }) => ({ label, value })),
+  },
 }
 
 const FAIL_CHANCE = 0.25
@@ -1718,12 +1749,14 @@ function groupMessages(messages: Message[]) {
 }
 
 function ChatDemo(props: Partial<ControlValues>) {
+  const [engaged, setEngaged] = React.useState(false)
+  const [hovering, setHovering] = React.useState(false)
   const panel = useDemoControls(props)
   const { values } = panel
 
   const [messages, setMessages] = React.useState<Message[]>(seed)
   const [draft, setDraft] = React.useState("")
-  const [variant, setVariant] = React.useState<Variant>("default")
+  const variant = values.sendStyle as Variant
   const [replyTo, setReplyTo] = React.useState<Message | null>(null)
   const [suggestions, setSuggestions] = React.useState<{ id: string; texts: string[] } | null>(null)
   const inputRef = React.useRef<HTMLTextAreaElement>(null)
@@ -1934,7 +1967,7 @@ function ChatDemo(props: Partial<ControlValues>) {
 
   return (
     <section className="flex flex-col gap-3">
-      <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-start">
+      <div className="flex items-center justify-between gap-3 max-md:flex-col max-md:items-center max-md:text-center">
         <h2 className="text-sm font-medium text-(--hx-muted-foreground)">
           Send a message, double-click or hover a bubble to react, swipe one to reply.
         </h2>
@@ -1949,8 +1982,32 @@ function ChatDemo(props: Partial<ControlValues>) {
           </Button>
         </div>
       </div>
-      <div className="flex h-150 flex-col overflow-hidden rounded-lg border max-md:h-130">
-        <BubbleThread className="min-h-0 flex-1 px-6 py-6 max-md:px-4">
+      <div
+        className="relative flex h-150 flex-col overflow-hidden rounded-md border max-md:h-130"
+        // The conversation only takes the wheel once clicked, so scrolling past it moves the page
+        onPointerDown={() => setEngaged(true)}
+        onPointerEnter={() => setHovering(true)}
+        onPointerLeave={() => {
+          setHovering(false)
+          setEngaged(false)
+        }}
+      >
+        <AnimatePresence>
+          {hovering && !engaged && (
+            <motion.div
+              key="scroll-hint"
+              role="status"
+              className="pointer-events-none absolute top-3 left-1/2 z-20 -translate-x-1/2 rounded-md bg-(--hx-foreground) px-2.5 py-1 text-xs font-medium whitespace-nowrap text-(--hx-background) shadow-md"
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.15 }}
+            >
+              Click inside to scroll the chat
+            </motion.div>
+          )}
+        </AnimatePresence>
+        <BubbleThread className={cn("min-h-0 flex-1 px-6 py-6 max-md:px-4", !engaged && "overflow-y-hidden overscroll-auto")}>
           {groupMessages(messages).map((group) => (
             <BubbleGroup key={group.id} joined={values.joined}>
               {group.messages.map(renderMessage)}
@@ -2016,25 +2073,9 @@ function ChatDemo(props: Partial<ControlValues>) {
               }}
               placeholder="Message"
               aria-label="Message"
-              className="max-h-24 min-h-8 w-full max-md:flex-1 min-w-0 resize-none rounded-lg border border-(--hx-input) bg-transparent px-2.5 py-1.5 text-base leading-snug transition-colors outline-none field-sizing-content placeholder:text-(--hx-muted-foreground) focus-visible:border-(--hx-primary) md:text-sm in-data-[theme=dark]:bg-(--hx-input)/30"
+              className="max-h-24 min-h-9 w-full max-md:flex-1 min-w-0 resize-none rounded-md border border-(--hx-input) bg-transparent px-2.5 py-1.5 text-base leading-snug transition-colors outline-none field-sizing-content placeholder:text-(--hx-muted-foreground) focus-visible:border-(--hx-primary) md:text-sm in-data-[theme=dark]:bg-(--hx-input)/30"
             />
-            <Select
-              items={variants}
-              value={variant}
-              onValueChange={(value) => value && setVariant(value as Variant)}
-            >
-              <SelectTrigger aria-label="Bubble variant" className="w-32 shrink-0 max-md:order-last max-md:w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {variants.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button type="submit" size="icon" aria-label="Send" disabled={!draft.trim()}>
+            <Button type="submit" size="icon" aria-label="Send" className="size-9" disabled={!draft.trim()}>
               <ArrowUpIcon />
             </Button>
           </div>
@@ -2070,15 +2111,15 @@ export interface AnimatedChatBubbleProps extends Partial<ControlValues> {
   className?: string;
 }
 
-export default function AnimatedChatBubble({ theme = "default", mode = "dark", className, ...props }: AnimatedChatBubbleProps) {
+export default function AnimatedChatBubble({ theme = "valorant", mode = "dark", className, ...props }: AnimatedChatBubbleProps) {
   const themed = themeProps(theme, mode);
   return (
     <ThemeContext.Provider value={themed}>
-      <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
+      <div {...themed} className={cn("w-full text-(--hx-foreground) motion-reduce:**:transition-none in-data-pc-rm:**:transition-none in-data-pc-rm:**:animate-none [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
         {/* Covers parts outside the thread too (suggestions, input, standalone bubbles) */}
-        <MotionConfig reducedMotion="user">
+        <ReducedMotionConfig>
           <ChatDemo {...props} />
-        </MotionConfig>
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

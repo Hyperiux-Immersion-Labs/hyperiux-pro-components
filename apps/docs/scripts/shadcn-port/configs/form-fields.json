@@ -17,5 +17,26 @@
     "validate": "Checks required fields when you submit and shows errors for empty ones.",
     "errorAnimation": "How the error message enters: slides open, fades in, or appears at once.",
     "shakeOnError": "The field shakes when it shows an error."
-  }
+  },
+  "patches": [
+    [
+      "\"flex flex-col gap-6 rounded-lg border p-6 max-md:p-4\"",
+      "\"flex flex-col gap-6 p-6 max-md:px-0\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\">",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\">"
+    ],
+    [
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\"",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\""
+    ]
+  ],
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette for the fields. Checked options and the submit button take its primary colour.",
+  "hideWhenReducedMotion": [
+    "errorAnimation",
+    "shakeOnError"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
 }

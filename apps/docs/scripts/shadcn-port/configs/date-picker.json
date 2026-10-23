@@ -41,5 +41,20 @@
     "fixedWeeks": "Always shows six weeks so the calendar keeps the same height.",
     "disablePast": "Greys out dates before today so they can't be picked.",
     "highlightToday": "Gives today's date its own highlight."
-  }
+  },
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, calendar included. The selected day and range take its primary colour.",
+  "hideWhenReducedMotion": [
+    "rollingText",
+    "fromBehind",
+    "contentAnimation",
+    "startScale",
+    "monthAnimation",
+    "monthSlideDistance",
+    "slideArrows",
+    "hoverAnimation",
+    "hoverDuration",
+    "hoverBounce"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full"
 }

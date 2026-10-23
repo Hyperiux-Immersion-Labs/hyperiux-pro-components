@@ -24,5 +24,77 @@
     "rollingText": "Result labels roll to a second copy on hover.",
     "staggerItems": "Results appear one after another instead of all at once.",
     "stagger": "Delay between each result appearing, in seconds. Needs Stagger items on."
+  },
+  "patches": [
+    [
+      "\"flex min-h-[60vh] flex-col items-center justify-start gap-[4vw] rounded-lg border px-[4vw] py-8 max-md:gap-[10vw]\"",
+      "\"flex min-h-96 flex-col items-center justify-start gap-12 px-12 py-8 max-lg:px-8 max-md:gap-10 max-md:px-0\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\">",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\">"
+    ],
+    [
+      "inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent",
+      "inline-flex shrink-0 items-center justify-center rounded-md border border-transparent"
+    ],
+    [
+      "\"h-8 w-full min-w-0 rounded-lg border border-(--hx-input)",
+      "\"h-8 w-full min-w-0 rounded-md border border-(--hx-input)"
+    ],
+    [
+      "relative flex h-8 w-full min-w-0 items-center rounded-lg border border-(--hx-input)",
+      "relative flex h-8 w-full min-w-0 items-center rounded-md border border-(--hx-input)"
+    ],
+    [
+      "\"h-12! rounded-lg! border-(--hx-input)/30",
+      "\"h-12! rounded-md! border-(--hx-input)/30"
+    ],
+    [
+      "className=\"group/link h-11 px-4 text-base border-none hover:bg-(--hx-background)",
+      "className=\"group/link h-11 rounded-md border border-(--hx-foreground)/15 px-4 text-base hover:border-(--hx-foreground)/30 hover:bg-(--hx-background)"
+    ],
+    [
+      "<AnimatedLinkText>Open palette</AnimatedLinkText>",
+      "<span>Open palette</span>"
+    ],
+    [
+      "    label: \"Delay\",\n    value: 0.15,",
+      "    label: \"Delay\",\n    value: 0.1,"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"sm\",",
+      "    label: \"Roundness\",\n    value: \"md\","
+    ],
+    [
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground)\"",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\""
+    ],
+    [
+      "<kbd className=\"rounded-sm bg-(--hx-muted) px-1.5 font-mono text-sm text-(--hx-muted-foreground)\">\u2318K</kbd>",
+      "<kbd className=\"max-lg:hidden rounded-sm bg-(--hx-muted) px-1.5 font-mono text-sm text-(--hx-muted-foreground)\">\u2318K</kbd>"
+    ]
+  ],
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, popup included. With Item highlight color set to Primary, the highlighted result takes its primary colour.",
+  "hideWhenReducedMotion": [
+    "dropdownAnimation",
+    "morphWidth",
+    "delay",
+    "fadeContent",
+    "startScale",
+    "itemHighlight",
+    "animateIcon",
+    "duration",
+    "bounce",
+    "rollingText",
+    "staggerItems",
+    "stagger"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaultTheme": "claude",
+  "defaults": {
+    "delay": 0.1,
+    "rounded": "md"
   }
 }

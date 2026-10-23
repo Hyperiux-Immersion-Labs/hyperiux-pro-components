@@ -2,8 +2,14 @@
 
 import * as React from "react";
 import { Slider as SliderPrimitive } from "@base-ui/react/slider";
-import { AnimatePresence, animate, MotionConfig, motion, useMotionValue,  useSpring, useTransform, type MotionStyle, type MotionValue, type Transition } from "motion/react";
+import { AnimatePresence, animate, MotionConfig, motion, useMotionValue, useSpring, useTransform, type MotionStyle, type MotionValue, type Transition } from "motion/react";
 import { twMerge } from "tailwind-merge";
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion()
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>
+}
 
 function toClass(value: unknown): string {
   if (!value) return "";
@@ -1283,7 +1289,7 @@ function SliderDemo(props: Partial<ControlValues>) {
           </p>
         </div>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: drag an edge, or click straight to a spot on the track to see the fill spring across.
       </p>
 
@@ -1321,7 +1327,9 @@ export default function AnimatedSlider({ theme = "caffeine", mode = "dark", clas
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <SliderDemo {...props} />
+        <ReducedMotionConfig>
+          <SliderDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );

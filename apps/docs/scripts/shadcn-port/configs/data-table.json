@@ -48,5 +48,30 @@
     "height": "Height of the table, as a percentage of the viewport. Ignored when Expand full table is on.",
     "stickyFooter": "Keeps the last row pinned at the bottom while the rows scroll.",
     "loadingSkeleton": "Shows shimmering placeholders for a moment before the rows appear."
-  }
+  },
+  "patches": [
+    [
+      "max-md:min-w-[150vw]",
+      "max-md:min-w-3xl"
+    ],
+    [
+      "bottom-[4vh] z-50",
+      "bottom-6 z-50"
+    ],
+    [
+      "\"max-md:relative max-md:left-1/2 max-md:w-[94vw] max-md:-translate-x-1/2\"",
+      "\"w-full\""
+    ]
+  ],
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette for the table, its menus and the action bar. Selected rows and primary buttons take its primary colour.",
+  "hideWhenReducedMotion": [
+    "staggerRows",
+    "staggerCells",
+    "numberAnimation",
+    "duration",
+    "stagger",
+    "rowHighlight",
+    "rollingText"
+  ]
 }

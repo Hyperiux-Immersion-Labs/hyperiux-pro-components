@@ -12,7 +12,7 @@ export default function DemoContent() {
       name="animated-sidebar"
       category="components"
       render={(values) => (
-        <AnimatedSidebar {...values} className="h-[71vh] overflow-hidden [transform:translateZ(0)] p-0" />
+        <AnimatedSidebar {...values} className="h-[85vh] overflow-hidden [transform:translateZ(0)] p-0" />
       )}
       props={[
         { name: "theme", label: "Theme", type: "string", default: "vscode", description: "Colour palette, tooltips included. With Highlight color set to Primary, the active item takes its primary colour.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
@@ -37,7 +37,7 @@ export default function DemoContent() {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedSidebarTheme, values.mode as AnimatedSidebarMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] pt-[6%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:pt-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>

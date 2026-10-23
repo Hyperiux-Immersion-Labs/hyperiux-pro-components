@@ -1,15 +1,27 @@
 "use client";
 
 import * as React from "react";
-import {
-  animate,
-  AnimatePresence,
-  motion,
-  MotionConfig,
-  Reorder,
-  useMotionValue,
-  useReducedMotion,
-} from "motion/react";
+import { animate, AnimatePresence, motion, MotionConfig, Reorder, useMotionValue } from "motion/react";
+
+// Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = React.useState(false);
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Motion follows the same setting: transforms and layout animations land instantly when it's on
+function ReducedMotionConfig({ children }: { children: React.ReactNode }) {
+  const reduce = usePrefersReducedMotion();
+  return <MotionConfig reducedMotion={reduce ? "always" : "never"}>{children}</MotionConfig>;
+}
+
 
 export type CheckboxVariant = "default" | "card";
 export type CheckboxAppearance = "filled" | "outline";
@@ -51,11 +63,11 @@ type CheckboxOptions = {
 const defaultOptions: CheckboxOptions = {
   fill: true,
   elastic: true,
-  strike: false,
+  strike: true,
   showIcon: true,
   appearance: "filled",
   mark: "check",
-  rounded: "sm",
+  rounded: "md",
 };
 
 type CheckboxGroupContextValue = {
@@ -357,7 +369,7 @@ export function CheckboxGroup({
   "aria-label": ariaLabel,
   ...optionProps
 }: CheckboxGroupProps) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const x = useMotionValue(0);
   const [internal, setInternal] = React.useState(defaultValue ?? []);
   const [invalid, setInvalid] = React.useState(false);
@@ -476,7 +488,7 @@ export function CheckboxGroup({
   };
 
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       <CheckboxOptionsContext.Provider value={options}>
         <CheckboxGroupContext.Provider value={context}>
           <div
@@ -551,7 +563,7 @@ export function CheckboxGroup({
           </div>
         </CheckboxGroupContext.Provider>
       </CheckboxOptionsContext.Provider>
-    </MotionConfig>
+    </ReducedMotionConfig>
   );
 }
 
@@ -588,7 +600,7 @@ export function CheckboxItem({
   const group = React.useContext(CheckboxGroupContext);
   const options = React.useContext(CheckboxOptionsContext);
   const index = React.useContext(CheckboxIndexContext);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = usePrefersReducedMotion();
   const root = React.useRef<HTMLLabelElement>(null);
   const visual = React.useRef<HTMLSpanElement>(null);
   const dragged = React.useRef(false);
@@ -707,7 +719,7 @@ export function CheckboxItem({
         "rounded-md has-focus-visible:outline-2 has-focus-visible:outline-offset-4 has-focus-visible:outline-(--checkbox-accent)/50",
       card &&
         cx(
-          "isolate overflow-hidden rounded-xl border px-4 py-3 transition-colors duration-300 motion-reduce:transition-none",
+          "isolate overflow-hidden rounded-md border px-4 py-3 transition-colors duration-300 motion-reduce:transition-none",
           checked
             ? solid
               ? "border-(--checkbox-accent)"
@@ -789,7 +801,8 @@ export function CheckboxItem({
           transition={reduceMotion ? { duration: 0 } : spring}
         >
           <motion.span
-            className={cx("absolute inset-0", onFill ? "bg-(--checkbox-on-accent)" : "bg-(--checkbox-accent)")}
+            // A circle from the centre, sized to cover the box's corners when fully grown
+            className={cx("absolute top-1/2 left-1/2 size-[150%] -translate-x-1/2 -translate-y-1/2 rounded-full", onFill ? "bg-(--checkbox-on-accent)" : "bg-(--checkbox-accent)")}
             initial={false}
             animate={{ scale: marked && filled ? 1 : 0 }}
             transition={{ scale: options.fill ? snappy : { duration: 0 } }}
@@ -892,9 +905,9 @@ export function CheckboxItem({
 
   // A checkbox outside a group has no group MotionConfig, so it brings its own
   return (
-    <MotionConfig reducedMotion="user">
+    <ReducedMotionConfig>
       <motion.label {...rootProps}>{content}</motion.label>
-    </MotionConfig>
+    </ReducedMotionConfig>
   );
 }
 
@@ -948,11 +961,14 @@ export default function AnimatedCheckboxGroup({
   options = SAMPLE_OPTIONS,
   defaultValue,
   value,
-  variant = "default",
+  variant = "card",
+  cardFillColor = "accent",
+  theme = "vscode",
+  reorder = true,
   max = 0,
   min = 0,
   showDescription = true,
-  colorful = false,
+  colorful = true,
   className,
   "aria-label": ariaLabel = "Options",
   ...groupProps
@@ -963,6 +979,9 @@ export default function AnimatedCheckboxGroup({
     <CheckboxGroup
       {...groupProps}
       variant={variant}
+      cardFillColor={cardFillColor}
+      theme={theme}
+      reorder={reorder}
       // 0 means no upper limit. At least can't exceed At most (it could never be met)
       max={max > 0 ? max : undefined}
       min={max > 0 ? Math.min(min, max) : min}

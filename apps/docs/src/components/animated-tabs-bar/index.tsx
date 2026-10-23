@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
-import { AnimatePresence, MotionConfig, motion,  type Transition, type Variants } from "motion/react";
+import { AnimatePresence, MotionConfig, motion, type Transition, type Variants } from "motion/react";
 import { twMerge } from "tailwind-merge";
 
 function toClass(value: unknown): string {
@@ -782,7 +782,7 @@ function TabsDemo(props: Partial<ControlValues>) {
           </TabsPanels>
         </Tabs>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: click tabs left and right to see the content travel the way you moved. Arrow keys switch tabs too.
       </p>
 
@@ -820,7 +820,9 @@ export default function AnimatedTabsBar({ theme = "ghibli", mode = "light", clas
   return (
     <ThemeContext.Provider value={themed}>
       <div {...themed} className={cn("w-full text-(--hx-foreground) [:where(&,&_*)]:border-(--hx-border) [:where(&,&_*)]:outline-(--hx-ring)/50", className)}>
-        <TabsDemo {...props} />
+        <ReducedMotionConfig>
+          <TabsDemo {...props} />
+        </ReducedMotionConfig>
       </div>
     </ThemeContext.Provider>
   );
