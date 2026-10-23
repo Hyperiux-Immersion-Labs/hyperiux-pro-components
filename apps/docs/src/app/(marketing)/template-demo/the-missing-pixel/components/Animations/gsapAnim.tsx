@@ -115,9 +115,10 @@ export function FadeUp<T extends ElementType = "div">({
 type RuleDrawProps = {
   className?: string;
   delay?: number;
+  syncWithFade?: boolean;
 };
 
-export function RuleDraw({ className = "", delay = 0 }: RuleDrawProps) {
+export function RuleDraw({ className = "", delay = 0, syncWithFade = false }: RuleDrawProps) {
   const ref = useRef<HTMLSpanElement | null>(null);
 
   useGSAP(() => {
@@ -127,6 +128,19 @@ export function RuleDraw({ className = "", delay = 0 }: RuleDrawProps) {
     if (prefersReducedMotion()) {
       gsap.set(el, { scaleX: 1 });
       return;
+    }
+
+    if (syncWithFade) {
+      gsap.set(el, { scaleX: 0, transformOrigin: "left" });
+
+      return onEnter(el.parentElement ?? el, () => {
+        gsap.to(el, {
+          scaleX: 1,
+          duration: 0.8,
+          delay,
+          ease: "power2.out",
+        });
+      });
     }
 
     const tween = gsap.fromTo(
@@ -185,6 +199,9 @@ export function MaskReveal<T extends ElementType = "h2">({
       return;
     }
 
+    if (el.dataset.mpxReveal) return;
+    el.dataset.mpxReveal = "";
+
     let split: SplitText | null = null;
     let tween: gsap.core.Tween | null = null;
 
@@ -224,10 +241,13 @@ export function MaskReveal<T extends ElementType = "h2">({
     });
 
     return () => {
-      stopWaiting();
-      tween?.scrollTrigger?.kill();
-      tween?.kill();
-      split?.revert();
+      window.setTimeout(() => {
+        if (el.isConnected) return;
+        stopWaiting();
+        tween?.scrollTrigger?.kill();
+        tween?.kill();
+        split?.revert();
+      }, 0);
     };
   }, []);
 
@@ -264,6 +284,9 @@ export function LineReveal<T extends ElementType = "p">({
       return;
     }
 
+    if (el.dataset.mpxReveal) return;
+    el.dataset.mpxReveal = "";
+
     let split: SplitText | null = null;
     let tween: gsap.core.Tween | null = null;
 
@@ -286,10 +309,13 @@ export function LineReveal<T extends ElementType = "p">({
     });
 
     return () => {
-      stopWaiting();
-      tween?.scrollTrigger?.kill();
-      tween?.kill();
-      split?.revert();
+      window.setTimeout(() => {
+        if (el.isConnected) return;
+        stopWaiting();
+        tween?.scrollTrigger?.kill();
+        tween?.kill();
+        split?.revert();
+      }, 0);
     };
   }, []);
 
@@ -350,8 +376,8 @@ export function MediaReveal({
   );
 }
 
-const ODOMETER_CELL = "overflow-hidden leading-[1.1] h-[3.7vw] w-[2vw] max-lg:h-[5.1vw] max-lg:w-[2.8vw] max-md:h-[11.6vw] max-md:w-[6.2vw]";
-const ODOMETER_ROW = "leading-[1.1] h-[3.7vw] max-lg:h-[5.1vw] max-md:h-[11.6vw]";
+const ODOMETER_CELL = "overflow-hidden leading-[1.1] h-[3.7vw] w-[2vw] max-lg:h-[6.6vw] max-lg:w-[3.4vw] max-md:h-[11.6vw] max-md:w-[6.2vw]";
+const ODOMETER_ROW = "leading-[1.1] h-[3.7vw] max-lg:h-[6.6vw] max-md:h-[11.6vw]";
 
 type OdometerProps = {
   value: string;

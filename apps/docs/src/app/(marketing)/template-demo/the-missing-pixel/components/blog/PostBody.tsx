@@ -120,9 +120,11 @@ const PostBody = ({ post }: PostBodyProps) => {
     <section className="flex flex-col gap-[6vw] px-[5vw] py-[7%] max-lg:gap-[10vw] max-lg:px-[6vw] max-lg:py-[12%] max-md:gap-14 max-md:px-[7vw] max-md:py-[15%]">
       <div className="flex flex-col items-start gap-[2vw] max-lg:gap-4">
         <MaskReveal as="h2">Keep reading</MaskReveal>
-        <UnderlineLink href={ROUTES.blog} className="font-mpx-head text-24 font-medium text-mpx-ink">
-          All Essays
-        </UnderlineLink>
+        <FadeUp>
+          <UnderlineLink href={ROUTES.blog} className="font-mpx-head text-24 font-medium text-mpx-ink">
+            All Essays
+          </UnderlineLink>
+        </FadeUp>
       </div>
       <div className="grid grid-cols-3 gap-x-[3.3vw] gap-y-[5vw] max-lg:grid-cols-2 max-lg:gap-x-[4vw] max-lg:gap-y-[8vw] max-md:grid-cols-1 max-md:gap-y-12">
         {related.map((item, index) => (

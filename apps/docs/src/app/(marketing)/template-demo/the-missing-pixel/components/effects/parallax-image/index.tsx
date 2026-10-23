@@ -19,6 +19,7 @@ type ParallaxImageProps = {
   sizes?: string;
   priority?: boolean;
   pixel?: boolean;
+  hoverZoom?: boolean;
   travel?: number;
   scale?: number;
   start?: string;
@@ -32,6 +33,7 @@ const ParallaxImage = ({
   sizes = "(max-width: 768px) 90vw, 90vw",
   priority = false,
   pixel = false,
+  hoverZoom = false,
   travel = 7,
   scale = 1.2,
   start = "top bottom",
@@ -39,6 +41,16 @@ const ParallaxImage = ({
 }: ParallaxImageProps) => {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const moveRef = useRef<HTMLDivElement | null>(null);
+  const zoomRef = useRef<HTMLDivElement | null>(null);
+
+  const zoom = (active: boolean) => {
+    if (!hoverZoom) return;
+    gsap.to(zoomRef.current, {
+      scale: active ? 1.06 : 1,
+      duration: prefersReducedMotion() ? 0 : 1.2,
+      ease: "power3.out",
+    });
+  };
 
   useGSAP(
     () => {
@@ -68,8 +80,11 @@ const ParallaxImage = ({
   return (
     <div
       ref={wrapRef}
+      onMouseEnter={() => zoom(true)}
+      onMouseLeave={() => zoom(false)}
       className={`relative w-full overflow-hidden ${pixel ? "" : "bg-mpx-surface"} ${className}`.trim()}
     >
+      <div ref={zoomRef} className="h-full w-full">
       {pixel ? (
         <PixelReveal gridSize={26} edgeHeight={0.4} direction="down" start="top 85%" className="h-full w-full">
         <div ref={moveRef} className="h-full w-full will-change-transform">
@@ -97,6 +112,7 @@ const ParallaxImage = ({
         </div>
       </MediaReveal>
       )}
+      </div>
     </div>
   );
 };

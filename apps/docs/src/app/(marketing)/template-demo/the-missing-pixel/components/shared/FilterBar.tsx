@@ -2,6 +2,8 @@
 
 "use client";
 
+import { FadeUp, PAGE_DELAY } from "../Animations/gsapAnim";
+
 type Option = { value: string; label: string; count?: number };
 
 type FilterBarProps = {
@@ -15,11 +17,11 @@ type FilterBarProps = {
 const FilterBar = ({ label, options, value, onChange, countText }: FilterBarProps) => (
   <div className="flex flex-wrap items-center justify-between gap-5 max-md:flex-col max-md:items-start max-md:gap-6">
     <div role="group" aria-label={label} className="flex flex-wrap gap-2 max-lg:gap-3">
-      {options.map((option) => {
+      {options.map((option, index) => {
         const active = option.value === value;
         return (
+          <FadeUp key={option.value} delay={PAGE_DELAY + 0.4 + index * 0.08}>
           <button
-            key={option.value}
             type="button"
             aria-pressed={active}
             onClick={() => onChange(option.value)}
@@ -32,12 +34,15 @@ const FilterBar = ({ label, options, value, onChange, countText }: FilterBarProp
             {option.label}
             {option.count !== undefined && <span className="text-[0.8vw] pl-2 opacity-60 max-md:text-[4vw]">{option.count}</span>}
           </button>
+          </FadeUp>
         );
       })}
     </div>
-    <p aria-live="polite" className="text-24 text-mpx-muted">
-      {countText}
-    </p>
+    <FadeUp delay={PAGE_DELAY + 0.4 + options.length * 0.08}>
+      <p aria-live="polite" className="text-24 text-mpx-muted">
+        {countText}
+      </p>
+    </FadeUp>
   </div>
 );
 

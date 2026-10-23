@@ -12,6 +12,7 @@ const Gallery = ({ items }: GalleryProps) => (
     {items.map((item) => (
       <ParallaxImage
         pixel
+        hoverZoom
         key={item.alt}
         image={item.image}
         alt={item.alt}

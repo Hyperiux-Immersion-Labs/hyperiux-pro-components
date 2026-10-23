@@ -22,6 +22,7 @@ const CaseBody = ({ project, next }: CaseBodyProps) => (
     <div className="flex flex-col gap-14 px-[5vw] max-lg:gap-11 max-lg:px-[6vw] max-md:px-[7vw]">
       <ParallaxImage
         pixel
+        hoverZoom
         image={project.image}
         alt={project.alt}
         className="aspect-video rounded-lg"

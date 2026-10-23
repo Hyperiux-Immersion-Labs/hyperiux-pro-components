@@ -22,7 +22,7 @@ const NineBlock = () => (
         </UnderlineLink>
       </div>
     </div>
-    <ol className="col-span-5 col-start-8 grid grid-cols-3 gap-[0.7vw] max-lg:col-span-12 max-lg:col-start-1 max-lg:w-[60%] max-lg:gap-2 max-md:w-full">
+    <ol className="col-span-5 col-start-8 grid grid-cols-3 gap-[0.7vw] max-lg:col-span-12 max-lg:col-start-1  max-lg:gap-2 max-lg:w-full">
       {PROJECTS.map((project) => (
         <li key={project.title}>
           <Link

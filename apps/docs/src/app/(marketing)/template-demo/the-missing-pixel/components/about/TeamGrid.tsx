@@ -24,7 +24,7 @@ const LINK_CLASSES =
   "translate-y-[250%] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-focus-within:translate-y-0 group-hover:translate-y-0 max-lg:translate-y-0 inline-flex h-[3.2vh] items-center rounded-full bg-[#f5f5f5] px-[0.9vw] text-14 text-[#0a0a0a] max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[3.8vh] max-md:px-[3.5vw]";
 
 const TeamGrid = () => (
-  <ul className="grid grid-cols-4 gap-x-9 gap-y-14 max-lg:grid-cols-3 max-lg:gap-x-6 max-lg:gap-y-11 max-md:grid-cols-2 max-md:gap-x-4 max-md:gap-y-9">
+  <ul className="grid grid-cols-4 gap-x-9 gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:gap-x-4 max-md:gap-y-9">
     {TEAM.map((member, index) => (
       <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08}>
         <article className="h-full">

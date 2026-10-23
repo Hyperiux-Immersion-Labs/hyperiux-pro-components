@@ -14,7 +14,7 @@ const AboutHero = () => (
      
       <Breadcrumb crumbs={[{ label: "Home", href: ROUTES.home }, { label: "About" }]} />
       <div className="grid flex-1 grid-cols-12 content-end items-end gap-x-12 gap-y-10 max-md:gap-y-8 max-lg:gap-x-8">
-        <MaskReveal as="h1" delay={PAGE_DELAY} className="col-span-8 max-lg:col-span-12 w-[70%] text-[5vw]! max-md:text-[8vw]! max-md:w-full tracking-wider">
+        <MaskReveal as="h1" delay={PAGE_DELAY} className="col-span-8 max-lg:col-span-12 w-[70%] text-[5vw]! max-lg:w-[85%] max-lg:text-[7vw]! max-md:text-[8vw]! max-md:w-full tracking-wider">
           We noticed one missing pixel. Twelve years later, we’re still looking.
         </MaskReveal>
         <ParallaxImage
@@ -25,14 +25,14 @@ const AboutHero = () => (
           priority
           className="col-span-4 col-start-9 row-span-2 aspect-[4/5] self-start rounded-lg max-lg:col-span-12 max-lg:col-start-1 max-lg:row-auto max-lg:w-[56%] max-md:w-full"
         />
-        <LineReveal delay={PAGE_DELAY + 0.3} className="col-span-6 max-lg:col-span-12 text-28 leading-[1.3] w-[90%] max-md:w-full">
+        <LineReveal delay={PAGE_DELAY + 0.3} className="col-span-6 max-lg:col-span-12 text-28 leading-[1.3] w-[90%] max-lg:w-[75%] max-md:w-full">
             Founded in Delhi in 2014 on one hunch: small, senior teams make braver work than big agencies. Four cities and sixty people later, it still holds.
           </LineReveal>
       </div>
     </section>
 
     <div className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
-      <div className="grid grid-cols-[7fr_5fr] gap-12 max-lg:gap-8 max-md:grid-cols-1 max-md:gap-5">
+      <div className="grid grid-cols-[7fr_5fr] gap-12 max-lg:gap-8 max-lg:grid-cols-1 max-md:gap-5">
         <ParallaxImage
           pixel
           image={studio1}
@@ -44,7 +44,7 @@ const AboutHero = () => (
           pixel
           image={studio2}
           alt="Three colleagues by the window in the Dubai studio"
-          className="rounded-lg max-md:aspect-[16/11]"
+          className="rounded-lg max-lg:aspect-[16/11]"
           sizes="(max-width: 768px) 90vw, 40vw"
         />
       </div>

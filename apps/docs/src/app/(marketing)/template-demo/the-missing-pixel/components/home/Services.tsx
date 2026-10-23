@@ -231,12 +231,14 @@ const Services = () => {
         <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%]  max-md:w-full ">
           Six disciplines, one team, no hand-offs. Strategy, design and code share a table, so nothing gets lost in translation.
         </LineReveal>
-        <UnderlineLink
-          href={ROUTES.services}
-          className="font-mpx-head text-24 font-medium text-mpx-ink "
-        >
-          All services
-        </UnderlineLink>
+        <FadeUp>
+          <UnderlineLink
+            href={ROUTES.services}
+            className="font-mpx-head text-24 font-medium text-mpx-ink "
+          >
+            All services
+          </UnderlineLink>
+        </FadeUp>
       </div>
 
       <div className="relative grid grid-cols-12 gap-x-[3.3vw]">

@@ -65,6 +65,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
   const activePreviewRef = useRef(-1);
   const stackRef = useRef(0);
   const shownRef = useRef<Set<HTMLElement>>(new Set());
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const [times, setTimes] = useState<string[]>(STUDIOS.map(() => ""));
 
   useEffect(() => {
@@ -73,6 +74,17 @@ const Menu = ({ open, onClose }: MenuProps) => {
     const timer = window.setInterval(tick, 30000);
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (open && !prefersReducedMotion()) {
+      video.preload = "auto";
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [open]);
 
   useGSAP(
     () => {
@@ -234,15 +246,26 @@ const Menu = ({ open, onClose }: MenuProps) => {
           </nav>
 
           <div className="flex w-[30%] flex-col gap-6 max-lg:w-full max-lg:gap-8 max-md:gap-7">
-            <div data-menu-fade className="relative aspect-[4/5] h-[min(46vh,24vw)] overflow-hidden rounded-lg bg-[#0a0a0a] max-lg:hidden">
-              <Image quality={95} src={menuPoster} alt="" sizes="24vw" className="h-full w-full object-cover" />
+            <div data-menu-fade className="relative isolate h-[min(38vh,19vw)] w-[15vw] overflow-hidden rounded-lg [transform:translateZ(0)] bg-[#0a0a0a] max-lg:hidden">
+              <video
+                ref={videoRef}
+                muted
+                loop
+                playsInline
+                preload="none"
+                poster={menuPoster.src}
+                aria-hidden="true"
+                className="h-full w-full object-cover"
+              >
+                <source src="/templates/the-missing-pixel/menu-ink.mp4" type="video/mp4" />
+              </video>
               {MENU_LINKS.map((link, index) => (
                 <div
                   key={link.label}
                   ref={(el) => {
                     previewRefs.current[index] = el;
                   }}
-                  className="absolute inset-0 [clip-path:inset(100%_0%_0%_0%)]"
+                  className="absolute inset-0 overflow-hidden rounded-lg [clip-path:inset(100%_0%_0%_0%)]"
                 >
                   <Image quality={95} src={link.preview} alt="" sizes="24vw" className="h-full w-full object-cover" />
                 </div>

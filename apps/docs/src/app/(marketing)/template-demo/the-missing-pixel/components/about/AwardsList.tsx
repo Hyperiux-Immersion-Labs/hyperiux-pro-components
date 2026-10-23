@@ -4,6 +4,7 @@
 
 import { useRef } from "react";
 import gsap from "gsap";
+import { FadeUp, RuleDraw } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 
 type Award = { year: string; name: string; project: string };
@@ -53,13 +54,16 @@ const AwardsList = () => {
         <li
           key={`${award.year}-${award.name}`}
           onMouseEnter={(event) => moveTo(event.currentTarget)}
-          className="relative flex items-baseline justify-between gap-9 border-t border-black/10 px-[1vw] py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-1 max-md:px-0 max-md:py-[5vw]"
+          className="relative"
         >
-          <span className="w-[14%] text-24 text-mpx-muted max-md:w-full">{award.year}</span>
-          <span className="font-mpx-head w-[46%] text-30 max-md:w-full">{award.name}</span>
-          <span className="w-[30%] text-right text-24 text-mpx-muted max-md:w-full max-md:text-left">
-            {award.project}
-          </span>
+          <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-black/10" />
+          <FadeUp className="flex items-baseline justify-between gap-9 px-[1vw] py-[1.4vw] max-lg:py-[2.6vw] max-md:flex-col max-md:gap-1 max-md:px-0 max-md:py-[5vw]">
+            <span className="w-[14%] text-24 text-mpx-muted max-md:w-full">{award.year}</span>
+            <span className="font-mpx-head w-[46%] text-30 max-md:w-full">{award.name}</span>
+            <span className="w-[30%] text-right text-24 text-mpx-muted max-md:w-full max-md:text-left">
+              {award.project}
+            </span>
+          </FadeUp>
         </li>
       ))}
     </ul>

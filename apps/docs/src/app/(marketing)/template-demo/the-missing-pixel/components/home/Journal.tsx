@@ -96,12 +96,14 @@ const Journal = () => (
       <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] max-md:w-full">
         Opinions, process and the occasional confession.
       </LineReveal>
-      <UnderlineLink
-        href={ROUTES.blog}
-        className="font-mpx-head text-24 font-medium text-mpx-ink"
-      >
-        Read the journal
-      </UnderlineLink>
+      <FadeUp>
+        <UnderlineLink
+          href={ROUTES.blog}
+          className="font-mpx-head text-24 font-medium text-mpx-ink"
+        >
+          Read the journal
+        </UnderlineLink>
+      </FadeUp>
     </div>
     <div className="grid grid-cols-3 gap-x-[3.3vw] gap-y-[5vw] max-lg:grid-cols-2 max-lg:gap-x-[4vw] max-lg:gap-y-[8vw] max-md:grid-cols-1 max-md:gap-y-12">
       {POSTS.map((post, index) => (

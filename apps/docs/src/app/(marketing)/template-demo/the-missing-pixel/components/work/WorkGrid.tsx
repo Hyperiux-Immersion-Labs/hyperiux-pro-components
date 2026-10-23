@@ -44,7 +44,7 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
       onBlur={() => hover(false)}
       className={`flex flex-col gap-5 max-lg:gap-4 ${offset ? "translate-y-[7vw] max-lg:translate-y-0" : ""}`}
     >
-      <div className="relative isolate overflow-hidden rounded-lg">
+      <FadeUp className="relative isolate overflow-hidden rounded-lg">
         <div ref={zoomRef} className="h-full w-full">
           <ParallaxImage
             pixel
@@ -59,14 +59,14 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
           aria-hidden
           className="pointer-events-none  absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
         />
-      </div>
-      <div className="flex justify-between gap-4 max-md:px-2">
+      </FadeUp>
+      <FadeUp className="flex justify-between gap-4 max-md:px-2">
         <div className="flex flex-col gap-1">
           <h3 className="text-30 tracking-tight">{project.title}</h3>
           <p className="text-14 max-md:text-[3.8vw]! text-mpx-muted">{project.meta}</p>
         </div>
         <span className="text-14 max-md:text-[3.8vw]! text-mpx-muted">{project.year}</span>
-      </div>
+      </FadeUp>
     </Link>
   );
 };
@@ -94,9 +94,7 @@ const WorkGrid = () => {
       />
       <div key={filter} className="grid grid-cols-2 gap-x-9 gap-y-14 py-[3vw] max-lg:gap-x-6 max-lg:py-0 max-md:grid-cols-1 max-md:gap-y-12">
         {visible.map((project, index) => (
-          <FadeUp key={project.title} delay={(index % 2) * 0.1}>
-            <WorkListCard project={project} offset={index % 2 === 1} />
-          </FadeUp>
+          <WorkListCard key={project.title} project={project} offset={index % 2 === 1} />
         ))}
       </div>
     </div>

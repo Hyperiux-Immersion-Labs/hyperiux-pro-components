@@ -8,7 +8,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { MaskReveal, LineReveal } from "../Animations/gsapAnim";
+import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { ArrowUpRight } from "../Buttons/icons";
 import UnderlineLink from "../Buttons/UnderlineLink";
@@ -199,12 +199,14 @@ const WorkScroll = () => {
           <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] ] max-md:w-full ">
             Keep scrolling. The work moves sideways, which is how good ideas tend to arrive.
           </LineReveal>
-          <UnderlineLink
-            href={ROUTES.work}
-            className="font-mpx-head text-24 font-medium text-mpx-ink  "
-          >
-            All eight projects
-          </UnderlineLink>
+          <FadeUp>
+            <UnderlineLink
+              href={ROUTES.work}
+              className="font-mpx-head text-24 font-medium text-mpx-ink  "
+            >
+              All eight projects
+            </UnderlineLink>
+          </FadeUp>
         </div>
 
         <div className="max-lg:snap-x max-lg:snap-mandatory max-lg:scroll-px-[6vw] max-md:scroll-px-[7vw] max-lg:overflow-x-auto max-lg:py-2">

@@ -204,10 +204,10 @@ const ServiceDetail = ({ service }: { service: Service }) => (
         </UnderlineLink>
       </SectionHead>
       <ul className="grid grid-cols-2 gap-9 max-lg:gap-6 max-md:grid-cols-1 max-md:gap-12">
-        {work().map((project, index) => (
-          <FadeUp as="li" key={project.title} delay={index * 0.1}>
+        {work().map((project) => (
+          <li key={project.title}>
             <WorkListCard project={project} offset={false} />
-          </FadeUp>
+          </li>
         ))}
       </ul>
     </section>

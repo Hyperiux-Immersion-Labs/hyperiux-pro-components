@@ -26,9 +26,11 @@ const Intro = () => (
           </span>{" "}
           obsessed with the one detail people remember.
         </MaskReveal>
-        <UnderlineLink href={ROUTES.about} className="font-mpx-head text-24 font-medium text-mpx-ink">
-          Meet the studio
-        </UnderlineLink>
+        <FadeUp>
+          <UnderlineLink href={ROUTES.about} className="font-mpx-head text-24 font-medium text-mpx-ink">
+            Meet the studio
+          </UnderlineLink>
+        </FadeUp>
       </div>
 
       <ul className="grid grid-cols-3 gap-[1vw] max-lg:grid-cols-1 max-lg:gap-3 max-md:gap-5">
