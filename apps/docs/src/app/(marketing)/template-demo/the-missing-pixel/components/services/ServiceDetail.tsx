@@ -20,7 +20,7 @@ import { DETAIL, SERVICES, type Service } from "./services";
 import danielCho from "../../assets/pictures/q-1.webp";
 
 const PX = "px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]";
-const SECTION = `${PX} flex flex-col gap-14 py-[4vw] max-lg:gap-11 max-lg:py-[6vw] max-md:py-[10vw]`;
+const SECTION = `${PX} flex flex-col gap-14 py-[7%] max-lg:gap-11 max-lg:py-[12%] max-md:py-[15%]`;
 
 const ServiceDetail = ({ service }: { service: Service }) => (
   <>
@@ -118,7 +118,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
       </ul>
     </section>
 
-    <section id="approach" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[2vw] max-lg:py-[3vw]">
+    <section id="approach" className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[7%] max-lg:py-[12%] max-md:py-[15%]">
       <div className="flex flex-col gap-14 rounded-lg bg-[#0a0a0a] px-[4vw] py-[5vw] text-[#f5f5f5] max-lg:gap-11 max-lg:px-[5vw] max-lg:py-[8vw] max-md:px-[6vw] max-md:py-[12vw]">
         <div className="flex flex-col items-start gap-6">
           <MaskReveal as="h2" className="w-[35%] max-lg:w-[70%] max-md:w-full">
@@ -192,7 +192,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
 
     <section
       id="pricing"
-      className={`${PX} py-[4vw] max-lg:py-[6vw] max-md:py-[10vw]`}
+      className={`${PX} py-[7%] max-lg:py-[12%] max-md:py-[15%]`}
     >
       <Pricing />
     </section>
@@ -220,7 +220,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
       </ul>
     </section>
 
-    <div className={`${PX} py-[4vw] max-lg:py-[6vw] max-md:py-[10vw]`}>
+    <div className={`${PX} py-[7%] max-lg:py-[12%] max-md:py-[15%]`}>
       <QuoteBlock
         quote="Our board was nervous. They treated that as a design problem, not an obstacle, and twelve weeks later every team wanted to use the brand."
         name="Daniel Cho"
