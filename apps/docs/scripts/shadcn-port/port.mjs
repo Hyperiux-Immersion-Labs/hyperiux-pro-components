@@ -647,8 +647,9 @@ export async function generateMetadata() {
   if (fs.existsSync(contentPath)) {
     const current = fs.readFileSync(contentPath, "utf8");
     const block = /(props=\{\[\n)[\s\S]*?(\n {6}\]\})/;
-    if (!block.test(current)) throw new Error(`props list not found in ${contentPath}`);
-    fs.writeFileSync(contentPath, current.replace(block, (_, open, close) => open + propsList + close));
+    // Shipped demos use the global Remixer, whose props live in registry.json - nothing to refresh here.
+    if (block.test(current)) fs.writeFileSync(contentPath, current.replace(block, (_, open, close) => open + propsList + close));
+    else console.log(`${cfg.slug}: DemoContent has no props list (global Remixer) - update registry.json props instead`);
   } else fs.writeFileSync(contentPath, `"use client";
 
 import ${cfg.exportName}, { getThemeProps, type ${cfg.exportName}Theme, type ${cfg.exportName}Mode } from "@/components/${cfg.slug}";

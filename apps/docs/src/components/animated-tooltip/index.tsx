@@ -338,7 +338,7 @@ function FloatingTooltipProvider({
   stiffness = 750,
   closeDelay = 0.1,
   duration = 0.35,
-  bounce = 0.2,
+  bounce = 0.1,
 }: { children: React.ReactNode } & Partial<FloatingTooltipOptions>) {
   const options = React.useMemo(
     () => ({
@@ -362,6 +362,10 @@ function FloatingTooltipProvider({
   const [direction, setDirection] = React.useState(1)
   // A tap, not a hover: no gliding, no sliding, just a fade
   const [touch, setTouch] = React.useState(false)
+  // False from opening until it has been placed, so it never fades in somewhere else first
+  const [placed, setPlaced] = React.useState(false)
+  const placedRef = React.useRef(false)
+  const lastSpot = React.useRef({ x: 0, y: 0 })
 
   const anchorEl = React.useRef<HTMLElement | null>(null)
   const source = React.useRef<"pointer" | "focus" | "touch">("pointer")
@@ -383,16 +387,23 @@ function FloatingTooltipProvider({
     reduceRef.current = reduceMotion
   })
 
-  // Where the tooltip should be (target), and where it is now (spring towards it)
+  // Where the tooltip should be (target), and where it is now (spring towards it). The follow
+  // spring keeps its velocity as the target moves with the pointer, so it never overshoots wildly.
   const tx = useMotionValue(0)
   const ty = useMotionValue(0)
   // Bounce sets the damping ratio; without elastic it is critical, so no overshoot
   const springDamping = 2 * Math.sqrt(stiffness) * (elastic ? 1 - bounce : 1)
   const sx = useSpring(tx, { stiffness, damping: springDamping })
   const sy = useSpring(ty, { stiffness, damping: springDamping })
+  // \`place\` reads the values the tooltip is drawn with, never ones from a discarded dev render.
+  const position = React.useRef({ tx, ty, sx, sy })
+  React.useLayoutEffect(() => {
+    position.current = { tx, ty, sx, sy }
+  })
 
   const place = React.useCallback(
     (jump = false) => {
+      const { tx, ty, sx, sy } = position.current
       const o = optionsRef.current
       const { w, h } = size$.current
       const gap = Number(o.sideOffset) * 4
@@ -429,14 +440,27 @@ function FloatingTooltipProvider({
 
       x = clamp(x, EDGE, Math.max(EDGE, vw - w - EDGE))
       y = clamp(y, EDGE, Math.max(EDGE, vh - h - EDGE))
+      lastSpot.current = { x, y }
       tx.set(x)
       ty.set(y)
-      if (jump || reduceRef.current || source.current === "touch") {
+      // Until it has been shown in place, every placement snaps: it only glides once visible.
+      if (jump || !placedRef.current || reduceRef.current || source.current === "touch") {
         sx.jump(x)
         sy.jump(y)
+        if (!placedRef.current) {
+          // Mounting the tooltip (twice in dev) resets it to where it was at render, so snap to
+          // the latest spot again just before the first paint, then let it fade in there.
+          requestAnimationFrame(() => {
+            if (placedRef.current) return
+            sx.jump(lastSpot.current.x)
+            sy.jump(lastSpot.current.y)
+            placedRef.current = true
+            setPlaced(true)
+          })
+        }
       }
     },
-    [tx, ty, sx, sy]
+    []
   )
 
   const show = React.useCallback<Show>(
@@ -460,9 +484,15 @@ function FloatingTooltipProvider({
         source.current = from
         setTouch(from === "touch")
         opening.current = !openRef.current
+        if (!openRef.current) {
+          placedRef.current = false
+          setPlaced(false)
+        }
         setPayload(next)
         setOpen(true)
-        place(!openRef.current)
+        // Opening fresh, it's placed once it has been measured (before the first paint); placing
+        // it now with an old or empty size started a glide from the wrong spot.
+        if (openRef.current) place()
         // A finger has no hover to end, so a tap keeps it open for a while, then it goes
         if (from === "touch") {
           touchTimer.current = setTimeout(() => setOpen(false), TOUCH_HOLD)
@@ -519,15 +549,22 @@ function FloatingTooltipProvider({
     }
   }, [])
 
-  // Keep it placed as the box reshapes, and land it in the right spot the first time it opens
-  React.useEffect(() => {
+  // Keep it placed as the box reshapes, and land it in the right spot the first time it opens.
+  // Measured before the first paint: placing it with last time's (or no) size showed it off to
+  // the side for a frame, then it jumped into place.
+  React.useLayoutEffect(() => {
     const el = shell.current
     if (!el) return
-    const observer = new ResizeObserver(() => {
+    const measure = () => {
       size$.current = { w: el.offsetWidth, h: el.offsetHeight }
+      // The text sizes itself a moment after mounting; until it has a size, the first
+      // placement stays a jump rather than a glide from the wrong spot.
+      if (!el.offsetWidth) return
       place(opening.current)
       opening.current = false
-    })
+    }
+    measure()
+    const observer = new ResizeObserver(measure)
     observer.observe(el)
     return () => observer.disconnect()
   }, [open, place])
@@ -576,7 +613,7 @@ function FloatingTooltipProvider({
                     className="pointer-events-none fixed top-0 left-0 z-50 w-max"
                     style={{ x: sx, y: sy }}
                     initial={appearIn}
-                    animate={{ opacity: 1, scale: 1, transition: enter }}
+                    animate={placed ? { opacity: 1, scale: 1, transition: enter } : appearIn}
                     exit={{ ...appearOut, transition: exit }}
                   >
                     <motion.div
@@ -663,6 +700,7 @@ function Morph({
   const width = useMotionValue(0)
   const height = useMotionValue(0)
   const placed = React.useRef(false)
+  const box = React.useRef<HTMLDivElement>(null)
 
   const onSize = React.useCallback(
     (w: number, h: number) => {
@@ -678,6 +716,15 @@ function Morph({
     [width, height, reshape, reduceMotion]
   )
 
+  // Motion writes the size on its next frame. Write the first one now (the text has measured by
+  // this point), so the tooltip knows its real size before the first paint and opens in place.
+  React.useLayoutEffect(() => {
+    const el = box.current
+    if (!el) return
+    el.style.width = `${width.get()}px`
+    el.style.height = `${height.get()}px`
+  }, [width, height])
+
   const slide = mode === "slide" && !reduceMotion
   const roll = mode === "roll" && !reduceMotion
   const shift = (d: number) => (slide ? `${d * 100}%` : 0)
@@ -688,7 +735,7 @@ function Morph({
   }
 
   return (
-    <motion.div className="relative" style={{ width, height }}>
+    <motion.div ref={box} className="relative" style={{ width, height }}>
       <AnimatePresence mode="popLayout" initial={false} custom={direction}>
         <Measured key={payload.key} onSize={onSize} variants={variants} direction={direction} transition={reshape}>
           <Text payload={payload} />
@@ -905,7 +952,7 @@ const controls = {
     group: "Feel",
     type: "slider",
     label: "Bounce",
-    value: 0.2,
+    value: 0.1,
     min: 0,
     max: 0.6,
     step: 0.05,

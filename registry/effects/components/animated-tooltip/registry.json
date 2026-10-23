@@ -316,7 +316,7 @@
       "name": "bounce",
       "label": "Bounce",
       "type": "number",
-      "default": 0.2,
+      "default": 0.1,
       "description": "Springiness of the movement. Does nothing with Elastic off and Change animation set to Swap text.",
       "remixer": {
         "control": "range",
