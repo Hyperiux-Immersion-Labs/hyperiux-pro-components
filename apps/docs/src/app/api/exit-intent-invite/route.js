@@ -46,6 +46,18 @@ export async function POST(request) {
 
     const clerk = await clerkClient();
 
+    // Already has an account: point them at sign-in rather than a second
+    // invite (Clerk refuses one anyway, with an error that reads as a failure).
+    // Clerk's own sign-up form already says when an email is taken, so this
+    // tells no one anything new.
+    const existing = await clerk.users.getUserList({ emailAddress: [email], limit: 1 });
+    if (existing.totalCount > 0) {
+      return Response.json(
+        { error: "You already have an account with this email.", existingAccount: true },
+        { status: 409 }
+      );
+    }
+
     // notify:false + our own sendEmail() call below, same reasoning as the
     // admin route: one branded email, not Clerk's own generic one.
     // ignoreExisting:true means a repeat visitor re-submitting doesn't error

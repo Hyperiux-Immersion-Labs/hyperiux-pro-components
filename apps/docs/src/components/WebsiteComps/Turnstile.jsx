@@ -9,6 +9,8 @@ import { useEffect, useRef } from "react";
 //   checked   whether the form currently holds a token
 //   onChange  (verified, token) - called with a token, or (false, null) when it
 //             expires or fails
+//   onError   optional - called when the check fails or Cloudflare's script
+//             can't load (an ad / tracker blocker), as opposed to expiring
 // Tokens are single-use: when the form drops its token after a failed submit
 // (checked goes false), the widget fetches a fresh one.
 // appearance "interaction-only" keeps the widget invisible unless Cloudflare
@@ -36,17 +38,23 @@ function loadTurnstile() {
   return scriptPromise;
 }
 
-export default function Turnstile({ action, checked, onChange, appearance = "always", className = "" }) {
+export default function Turnstile({ action, checked, onChange, onError, appearance = "always", className = "" }) {
   const containerRef = useRef(null);
   const widgetRef = useRef(null);
   const onChangeRef = useRef(onChange);
+  const onErrorRef = useRef(onError);
 
   useEffect(() => {
     onChangeRef.current = onChange;
-  }, [onChange]);
+    onErrorRef.current = onError;
+  }, [onChange, onError]);
 
   useEffect(() => {
     let cancelled = false;
+    const fail = () => {
+      onChangeRef.current?.(false, null);
+      onErrorRef.current?.();
+    };
 
     loadTurnstile()
       .then((turnstile) => {
@@ -59,10 +67,10 @@ export default function Turnstile({ action, checked, onChange, appearance = "alw
           size: "flexible",
           callback: (token) => onChangeRef.current?.(true, token),
           "expired-callback": () => onChangeRef.current?.(false, null),
-          "error-callback": () => onChangeRef.current?.(false, null),
+          "error-callback": fail,
         });
       })
-      .catch(() => onChangeRef.current?.(false, null));
+      .catch(fail);
 
     return () => {
       cancelled = true;

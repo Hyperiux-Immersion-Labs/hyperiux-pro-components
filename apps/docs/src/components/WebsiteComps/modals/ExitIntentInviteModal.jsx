@@ -9,9 +9,11 @@ import { Mail } from "lucide-react";
 import Turnstile from "@/components/WebsiteComps/Turnstile";
 import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { FREE_LABEL } from "@/lib/library-counts";
+import { isLoaderWaiting } from "@/homepage/components/loader-state";
+import { useCachedClerkSession } from "@/lib/clerkSessionCache";
 
-// Site-wide exit-intent capture (except sign-in and /dashboard - see
-// isExcludedRoute below): motion/react with the MODAL_TRANSITION curve and a
+// Site-wide exit-intent capture (except the auth flows, /dashboard, the demos
+// and signed-in visitors - see isEligible below): motion/react with the MODAL_TRANSITION curve and a
 // Lenis scroll-lock, opened by local useState - it's triggered by cursor
 // behavior, not a link anyone needs to deep-link to or share.
 //
@@ -25,18 +27,44 @@ import { FREE_LABEL } from "@/lib/library-counts";
 // flow as an admin-sent waitlist invite.
 
 const SESSION_KEY = "hyperiux_exit_intent_shown";
-// A visitor who bounces early hasn't actually engaged with the page yet -
+// A visitor who bounces early hasn't actually engaged with the site yet -
 // showing an invite popup to them reads as an ambush, not an offer. It arms
-// only after 45s with the tab actually in front of them: time in a background
-// tab doesn't count (the countdown pauses while the tab is hidden and picks up
-// where it left off). Once armed, a genuine exit attempt triggers instantly.
-const ARM_DELAY_MS = 45000;
-// Was 0 - required event.clientY to be exactly <=0 at the moment
-// `mouseleave` fired, which real cursor movement (sampled, not continuous)
-// rarely lands on exactly, hence needing several attempts before one
-// happened to register. A small margin catches any leave-via-the-top
-// gesture reliably on the first try.
-const TOP_EDGE_TRIGGER_PX = 30;
+// only after 60s of actually exploring: the count pauses when the tab is
+// hidden, the window loses focus or the cursor leaves the page, and resumes on
+// their next scroll, click, key or mouse move. It also holds while the
+// homepage loader is up, so on a first visit it starts at "Enter the Vault".
+// The time so far is kept for the session, so a reload or a stop on an
+// excluded route carries on from there. Once armed, a genuine exit attempt
+// triggers instantly.
+const ARM_AFTER_MS = 60000;
+const ELAPSED_KEY = "hyperiux_exit_intent_elapsed";
+const TICK_MS = 1000;
+const ACTIVITY_EVENTS = ["pointermove", "pointerdown", "keydown", "wheel", "scroll", "touchstart"];
+// Leaving is a `mouseout` with no relatedTarget (the cursor left the page,
+// not one element for another). It's `mouseout` on document rather than
+// `mouseleave`, which browsers don't reliably send to document itself.
+// The cursor is sampled, not continuous, so a quick flick to the tab bar
+// can last register well below the top: rather than a fixed margin, it
+// counts as leaving through the top when the top is the nearest edge, within
+// the top quarter of the window.
+const TOP_EXIT_MAX_SHARE = 0.25;
+// Entering an iframe (effect stages, previews) also looks like leaving the
+// page - ignored within this distance of one.
+const IFRAME_MARGIN_PX = 24;
+
+function isTopExit(event) {
+  if (event.relatedTarget) return false;
+  const { clientX: x, clientY: y } = event;
+  const nearestOther = Math.min(x, window.innerWidth - x, window.innerHeight - y);
+  if (y > nearestOther || y > window.innerHeight * TOP_EXIT_MAX_SHARE) return false;
+  return ![...document.querySelectorAll("iframe")].some((frame) => {
+    const r = frame.getBoundingClientRect();
+    return (
+      x >= r.left - IFRAME_MARGIN_PX && x <= r.right + IFRAME_MARGIN_PX &&
+      y >= r.top - IFRAME_MARGIN_PX && y <= r.bottom + IFRAME_MARGIN_PX
+    );
+  });
+}
 
 const MODAL_TRANSITION = {
   duration: 0.5,
@@ -45,83 +73,122 @@ const MODAL_TRANSITION = {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+// Sign-in / sign-up and the CLI's auth hand-off (an invite-to-sign-up popup
+// is redundant mid-auth-flow), the signed-in /dashboard app, and the
+// full-screen demos. Each also covers everything under it.
+const EXCLUDED_ROUTES = ["/sign-in", "/sign-up", "/signup", "/cli-auth", "/dashboard", "/template-demo", "/demo"];
+
+function isExcludedRoute(pathname) {
+  return EXCLUDED_ROUTES.some((route) => pathname === route || pathname.startsWith(`${route}/`));
+}
+
+// What Tab can land on inside the dialog
+const FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])';
+
+const TURNSTILE_FAILED =
+  "We couldn't confirm you're human. If you use an ad or tracker blocker, allow challenges.cloudflare.com, then reload and try again.";
+
+// Storage is guarded: Safari private mode and hardened privacy settings throw
+function readSession(key) {
+  try {
+    return window.sessionStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function writeSession(key, value) {
+  try {
+    window.sessionStorage.setItem(key, value);
+  } catch {
+    // Storage unavailable - the count just starts over on the next load
+  }
+}
+
 export function ExitIntentInviteModal() {
   const [open, setOpen] = useState(false);
   const [armed, setArmed] = useState(false);
   const [email, setEmail] = useState("");
   const [agreed, setAgreed] = useState(true);
-  const [status, setStatus] = useState("idle"); // idle | submitting | success
+  const [status, setStatus] = useState("idle"); // idle | verifying | submitting | success
   const [error, setError] = useState("");
+  // The email already has an account - the error gets a sign-in link
+  const [existingAccount, setExistingAccount] = useState(false);
   const [sendHovered, setSendHovered] = useState(false);
   const shownRef = useRef(false);
+  const panelRef = useRef(null);
+  const emailRef = useRef(null);
   // Cloudflare Turnstile token for the bot check (see components/WebsiteComps/Turnstile.jsx)
   const [turnstileToken, setTurnstileToken] = useState(null);
+  const [turnstileFailed, setTurnstileFailed] = useState(false);
   const lenis = useLenis();
   const pathname = usePathname();
-  // Was homepage-only ("/") - now every route except sign-in (mid-auth-flow,
-  // an invite-to-sign-up popup is redundant there) and the whole /dashboard
-  // app (already-signed-in users past the point this invite is for).
-  const isExcludedRoute =
-    pathname === "/sign-in" ||
-    pathname.startsWith("/sign-in/") ||
-    pathname.startsWith("/dashboard") || pathname.startsWith("/template-demo") || pathname.startsWith("/demo")
-  const isEligibleRoute = !isExcludedRoute;
+  // No ClerkProvider on marketing pages, so a signed-in browser is read from
+  // Clerk's session cookie - they already have the account this invite is for
+  const signedIn = useCachedClerkSession();
+  const isEligible = !isExcludedRoute(pathname) && !signedIn;
 
-  // Arms after 45s of visible time (ARM_DELAY_MS) and only once per tab session -
-  // sessionStorage, not localStorage, so it's fair game again on a fresh
-  // visit later, just not spammed across repeated mouse-out flicks in one visit.
-  // Mounted globally (see the note above), so this also has to bail out on
-  // excluded routes - re-checked on every pathname change since the
-  // component no longer unmounts on navigation.
+  // Arms after 60s of exploring (ARM_AFTER_MS, see the note above) and only
+  // once per tab session - sessionStorage, not localStorage, so it's fair game
+  // again on a fresh visit later, just not spammed across repeated mouse-out
+  // flicks in one visit. Mounted globally (see the note above), so this also
+  // has to bail out on excluded routes and signed-in visitors - re-checked on
+  // every pathname change since the component no longer unmounts on navigation.
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!isEligibleRoute) return;
-    if (window.sessionStorage.getItem(SESSION_KEY) === "1") return;
+    if (!isEligible || armed) return;
+    if (readSession(SESSION_KEY) === "1") return;
 
-    // Counts only while the tab is visible: hidden pauses it, visible resumes it
-    let remaining = ARM_DELAY_MS;
-    let startedAt = 0;
-    let armTimer = 0;
-    const resume = () => {
-      if (armTimer || document.visibilityState !== "visible") return;
-      startedAt = Date.now();
-      armTimer = window.setTimeout(() => setArmed(true), remaining);
-    };
-    const pause = () => {
-      if (!armTimer) return;
-      window.clearTimeout(armTimer);
-      armTimer = 0;
-      remaining = Math.max(0, remaining - (Date.now() - startedAt));
-    };
-    const onVisibility = () => (document.visibilityState === "visible" ? resume() : pause());
+    let elapsed = Number(readSession(ELAPSED_KEY)) || 0;
+    const isHere = () => document.visibilityState === "visible" && document.hasFocus();
+    let active = isHere();
 
-    resume();
+    const pause = () => { active = false; };
+    // Coming back alone doesn't resume it - the visitor has to do something
+    const resume = () => { if (isHere()) active = true; };
+    const onVisibility = () => { if (document.visibilityState !== "visible") pause(); };
+    // No relatedTarget: the cursor left the page, not just one element for another
+    const onMouseOut = (event) => { if (!event.relatedTarget) pause(); };
+
+    const tick = window.setInterval(() => {
+      // The homepage loader is still up, waiting on "Enter the Vault"
+      if (!active || isLoaderWaiting()) return;
+      elapsed += TICK_MS;
+      writeSession(ELAPSED_KEY, String(elapsed));
+      if (elapsed >= ARM_AFTER_MS) setArmed(true);
+    }, TICK_MS);
+
     document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("blur", pause);
+    document.addEventListener("mouseout", onMouseOut);
+    ACTIVITY_EVENTS.forEach((type) => window.addEventListener(type, resume, { capture: true, passive: true }));
     return () => {
-      pause();
+      window.clearInterval(tick);
       document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("blur", pause);
+      document.removeEventListener("mouseout", onMouseOut);
+      ACTIVITY_EVENTS.forEach((type) => window.removeEventListener(type, resume, { capture: true }));
     };
-  }, [isEligibleRoute]);
+  }, [isEligible, armed]);
 
   useEffect(() => {
     if (!armed) return;
-    if (!isEligibleRoute) return;
+    if (!isEligible) return;
 
-    function handleMouseLeave(event) {
+    function handleMouseOut(event) {
       if (shownRef.current) return;
       // Only the top edge - a cursor leaving toward the browser's tab bar
       // or URL bar is a real "about to leave" signal; leaving the sides or
       // bottom of the viewport is normal scrolling/window-resizing noise.
-      if (event.clientY > TOP_EDGE_TRIGGER_PX) return;
+      if (!isTopExit(event)) return;
 
       shownRef.current = true;
-      window.sessionStorage.setItem(SESSION_KEY, "1");
+      writeSession(SESSION_KEY, "1");
       setOpen(true);
     }
 
-    document.addEventListener("mouseleave", handleMouseLeave);
-    return () => document.removeEventListener("mouseleave", handleMouseLeave);
-  }, [armed, isEligibleRoute]);
+    document.addEventListener("mouseout", handleMouseOut);
+    return () => document.removeEventListener("mouseout", handleMouseOut);
+  }, [armed, isEligible]);
 
   useEffect(() => {
     if (!open) return;
@@ -130,15 +197,42 @@ export function ExitIntentInviteModal() {
     document.body.style.overflow = "hidden";
     lenis?.stop?.();
 
+    // Straight into the email field, and back to wherever focus was on close
+    const returnFocusTo = document.activeElement;
+    const focusFrame = window.requestAnimationFrame(() => emailRef.current?.focus({ preventScroll: true }));
+
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      // Tab cycles inside the dialog instead of reaching the page behind it
+      const focusables = [...panelRef.current.querySelectorAll(FOCUSABLE)].filter(
+        (el) => el.getClientRects().length > 0
+      );
+      if (!focusables.length) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      const inside = panelRef.current.contains(document.activeElement);
+
+      if (event.shiftKey && (!inside || document.activeElement === first)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (!inside || document.activeElement === last)) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       document.body.style.overflow = originalOverflow;
       lenis?.start?.();
+      window.cancelAnimationFrame(focusFrame);
       window.removeEventListener("keydown", handleKeyDown);
+      returnFocusTo?.focus?.({ preventScroll: true });
     };
   }, [open, lenis]);
 
@@ -151,35 +245,19 @@ export function ExitIntentInviteModal() {
       setAgreed(true);
       setStatus("idle");
       setError("");
+      setExistingAccount(false);
     }, 500);
     return () => window.clearTimeout(id);
   }, [open]);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setError("");
-
-    if (!EMAIL_RE.test(email.trim())) {
-      setError("Enter a valid email address.");
-      return;
-    }
-    if (!agreed) {
-      setError("Please agree to the privacy policy first.");
-      return;
-    }
-
-    if (!turnstileToken) {
-      setError("Still checking you're human - give it a moment, then send again.");
-      return;
-    }
-
+  const send = async (token) => {
     setStatus("submitting");
 
     try {
       const res = await fetch("/api/exit-intent-invite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), turnstileToken }),
+        body: JSON.stringify({ email: email.trim(), turnstileToken: token }),
       });
       const data = await res.json();
 
@@ -188,6 +266,7 @@ export function ExitIntentInviteModal() {
         // Tokens are single-use: dropping it makes the widget fetch a fresh one
         setTurnstileToken(null);
         setError(data?.error || "Something went wrong. Please try again.");
+        setExistingAccount(Boolean(data?.existingAccount));
         return;
       }
 
@@ -200,12 +279,54 @@ export function ExitIntentInviteModal() {
     }
   };
 
-  const isSubmitting = status === "submitting";
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    setError("");
+    setExistingAccount(false);
+
+    if (!EMAIL_RE.test(email.trim())) {
+      setError("Enter a valid email address.");
+      return;
+    }
+    if (!agreed) {
+      setError("Please agree to the privacy policy first.");
+      return;
+    }
+    if (turnstileFailed) {
+      setError(TURNSTILE_FAILED);
+      return;
+    }
+
+    // Clicked before the bot check finished: it sends itself once it has
+    // (see the Turnstile callbacks below), no second click needed
+    if (!turnstileToken) {
+      setStatus("verifying");
+      return;
+    }
+
+    send(turnstileToken);
+  };
+
+  const handleTurnstileChange = (verified, token) => {
+    setTurnstileToken(verified ? token : null);
+    if (!verified) return;
+    setTurnstileFailed(false);
+    if (status === "verifying") send(token);
+  };
+
+  const handleTurnstileError = () => {
+    setTurnstileFailed(true);
+    if (status !== "verifying") return;
+    setStatus("idle");
+    setError(TURNSTILE_FAILED);
+  };
+
+  const isSubmitting = status === "submitting" || status === "verifying";
   const isSuccess = status === "success";
 
   // Safety net alongside the effect guards above: covers the moment a
   // client-side navigation fires while the modal happens to already be open.
-  if (!isEligibleRoute) return null;
+  if (!isEligible) return null;
 
   return (
     <AnimatePresence mode="wait">
@@ -220,6 +341,8 @@ export function ExitIntentInviteModal() {
           <motion.button
             type="button"
             aria-label="Close"
+            // Click-outside only - Tab skips it (the panel's own close button is in reach)
+            tabIndex={-1}
             onClick={close}
             className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-lg"
             initial={{ opacity: 0 }}
@@ -229,6 +352,7 @@ export function ExitIntentInviteModal() {
           />
 
           <motion.div
+            ref={panelRef}
             className="relative z-10 w-[36vw] max-md:w-full max-lg:w-[70%] border border-white/20 bg-background p-10 max-md:p-6 shadow-2xl"
             initial={{ opacity: 0, scale: 0.97, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -278,6 +402,7 @@ export function ExitIntentInviteModal() {
 
                 <form onSubmit={handleSubmit} noValidate className="mt-14 space-y-8">
                   <input
+                    ref={emailRef}
                     type="email"
                     value={email}
                     onChange={(e) => {
@@ -362,10 +487,23 @@ export function ExitIntentInviteModal() {
                     action="exit_intent_invite"
                     appearance="interaction-only"
                     checked={Boolean(turnstileToken)}
-                    onChange={(verified, token) => setTurnstileToken(verified ? token : null)}
+                    onChange={handleTurnstileChange}
+                    onError={handleTurnstileError}
                   />
 
-                  {error && <p className="text-xs text-red-400">{error}</p>}
+                  {error && (
+                    <p className="text-xs text-red-400">
+                      {error}
+                      {existingAccount && (
+                        <>
+                          {" "}
+                          <Link href="/sign-in" className="text-white underline underline-offset-2 hover:text-primary">
+                            Sign in instead
+                          </Link>
+                        </>
+                      )}
+                    </p>
+                  )}
 
                   {/* Same buttonClassName + ButtonChrome pair
                       TemplatePaywallModal's RazorpayButtonV3 uses - this is
@@ -389,7 +527,7 @@ export function ExitIntentInviteModal() {
                       })}
                     >
                       <ButtonChrome
-                        label={isSubmitting ? "Sending…" : "Send it to me"}
+                        label={status === "verifying" ? "Verifying…" : status === "submitting" ? "Sending…" : "Send it to me"}
                         hovered={sendHovered}
                       />
                     </button>
