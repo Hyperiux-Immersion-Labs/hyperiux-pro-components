@@ -35,6 +35,9 @@ const page = () => (
     </section>
     <section className={`${GUTTER} flex flex-col gap-14 py-[8%] max-lg:gap-11 max-lg:py-[11%] max-md:py-[20%]`}>
       <SectionHead
+        stacked
+        titleClassName='w-full'
+        textClassName="w-[40%]"
         title="Four studios, one team"
         text="Come and see us. Delhi hands over to London at lunchtime, so somebody is always awake."
       />

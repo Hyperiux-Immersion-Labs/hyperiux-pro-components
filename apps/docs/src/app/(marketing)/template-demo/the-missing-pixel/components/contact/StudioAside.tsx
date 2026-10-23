@@ -1,6 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
-import { FadeUp } from "../Animations/gsapAnim";
+import { FadeUp, RuleDraw } from "../Animations/gsapAnim";
+import UnderlineLink from "../Buttons/UnderlineLink";
 
 const StudioAside = () => (
   <aside
@@ -9,28 +10,36 @@ const StudioAside = () => (
   >
     <FadeUp className="flex flex-col items-start gap-4">
       <p className="text-22 text-[#9a9a9a]">Prefer email?</p>
-      <a
+      <UnderlineLink
         href="mailto:hello@themissingpixel.studio"
-        className="font-mpx-head text-30 break-all underline underline-offset-4 transition-colors duration-300 hover:text-[#ff5f00]"
+        className="font-mpx-head text-30 break-all transition-colors duration-300 hover:text-[#ff5f00]"
       >
         hello@themissingpixel.studio
-      </a>
+      </UnderlineLink>
     </FadeUp>
-    <FadeUp delay={0.1} className="flex flex-col gap-4">
-      <p className="font-mpx-body! text-22! tracking-normal! text-[#9a9a9a]">What happens next</p>
+    <div className="flex flex-col gap-4">
+      <FadeUp delay={0.1}>
+        <p className="font-mpx-body! text-22! tracking-normal! text-[#9a9a9a]">What happens next</p>
+      </FadeUp>
       <ol>
         {STEPS.map((step, index) => (
-          <li
-            key={step.title}
-            className="grid grid-cols-[2.5vw_1fr_auto] items-baseline gap-4 border-t border-[#f5f5f5]/15 py-4 last:border-b max-lg:grid-cols-[5vw_1fr_auto] max-md:grid-cols-[8vw_1fr]"
-          >
-            <span className="text-14 text-[#9a9a9a] tabular-nums">{String(index + 1).padStart(2, "0")}</span>
-            <span className="font-mpx-head text-24">{step.title}</span>
-            <span className="text-14 text-[#9a9a9a] max-md:col-start-2">{step.time}</span>
+          <li key={step.title} className="relative">
+            <RuleDraw syncWithFade className="absolute inset-x-0 top-0 h-px bg-[#f5f5f5]/15" />
+            {index === STEPS.length - 1 && (
+              <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-[#f5f5f5]/15" />
+            )}
+            <FadeUp
+              delay={0.1 + index * 0.1}
+              className="grid grid-cols-[2.5vw_1fr_auto] items-baseline gap-4 py-4 max-lg:grid-cols-[5vw_1fr_auto] max-md:grid-cols-[8vw_1fr]"
+            >
+              <span className="text-14 text-[#9a9a9a] tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+              <span className="font-mpx-head text-24">{step.title}</span>
+              <span className="text-14 text-[#9a9a9a] max-md:col-start-2">{step.time}</span>
+            </FadeUp>
           </li>
         ))}
       </ol>
-    </FadeUp>
+    </div>
   </aside>
 );
 

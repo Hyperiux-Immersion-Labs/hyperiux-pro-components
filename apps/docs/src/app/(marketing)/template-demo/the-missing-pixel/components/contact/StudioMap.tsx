@@ -15,9 +15,11 @@ const T = "transition-colors duration-300 delay-200 ease-out";
 const StudioMap = () => {
   const [active, setActive] = useState(0);
   const [hovered, setHovered] = useState<number | null>(null);
+  const [compact, setCompact] = useState<boolean | null>(null);
+  const [engaged, setEngaged] = useState(false);
   const [box, setBox] = useState({ top: 0, height: 0 });
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
-  const shown = hovered ?? active;
+  const shown = hovered ?? (compact === false || engaged ? active : -1);
   const [times, setTimes] = useState<string[]>(STUDIOS.map(() => ""));
 
   useEffect(() => {
@@ -28,16 +30,28 @@ const StudioMap = () => {
   }, []);
 
   useEffect(() => {
+    const query = window.matchMedia("(max-width: 767px)");
+    const sync = () => setCompact(query.matches);
+    sync();
+    query.addEventListener("change", sync);
+    return () => query.removeEventListener("change", sync);
+  }, []);
+
+  useEffect(() => {
     const measure = () => {
       const el = itemRefs.current[shown];
       if (el) setBox({ top: el.offsetTop, height: el.offsetHeight });
+      else setBox((current) => ({ ...current, height: 0 }));
     };
     measure();
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, [shown]);
 
-  const step = (direction: number) => setActive((current) => (current + direction + STUDIOS.length) % STUDIOS.length);
+  const step = (direction: number) => {
+    setEngaged(true);
+    setActive((current) => (current + direction + STUDIOS.length) % STUDIOS.length);
+  };
 
   return (
     <div className="flex items-center justify-between gap-[2vw] rounded-[2vw] border border-black/10 bg-white p-[2vw] max-lg:flex-col max-lg:items-stretch max-lg:rounded-[3vw] max-lg:p-[3vw] max-md:rounded-[5vw] max-md:p-[4vw]">
@@ -62,7 +76,10 @@ const StudioMap = () => {
                   onMouseEnter={() => setHovered(index)}
                   onFocus={() => setHovered(index)}
                   onBlur={() => setHovered(null)}
-                  onClick={() => setActive(index)}
+                  onClick={() => {
+                    setEngaged(true);
+                    setActive(index);
+                  }}
                   className={`grid w-full cursor-pointer grid-cols-[2.5vw_1fr_auto] items-baseline gap-x-4 gap-y-1 rounded-[1.2vw] px-[1.2vw] py-[1.2vw] text-left transition-colors duration-300 delay-200 ease-out max-lg:grid-cols-[6vw_1fr_auto] max-lg:rounded-[2vw] max-lg:px-[3vw] max-lg:py-[3vw] max-md:flex max-md:flex-col max-md:items-center max-md:gap-2 max-md:rounded-[3vw] max-md:px-[4vw] max-md:py-[4vw] max-md:text-center ${
                     isActive ? "text-[#fafafa]" : "text-[#0a0a0a]"
                   }`}

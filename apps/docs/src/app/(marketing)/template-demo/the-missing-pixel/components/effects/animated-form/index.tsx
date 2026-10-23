@@ -16,7 +16,7 @@ const LABEL_BASE = "text-22 font-medium";
 type ErrorLineProps = { id: string; error?: string };
 
 const ErrorLine = ({ id, error }: ErrorLineProps) => (
-  <p id={`${id}-error`} aria-live="polite" className="min-h-[1.4vh] px-[1.2vw] text-14 text-(color:--mpx-accent-deep) max-lg:px-[2.4vw] max-md:px-[4vw]">
+  <p id={`${id}-error`} aria-live="polite" className="min-h-[1.4vh] max-md:min-h-6 px-[1.2vw] text-14 text-(color:--mpx-accent-deep) max-lg:px-[2.4vw] max-md:px-[4vw]">
     {error}
   </p>
 );

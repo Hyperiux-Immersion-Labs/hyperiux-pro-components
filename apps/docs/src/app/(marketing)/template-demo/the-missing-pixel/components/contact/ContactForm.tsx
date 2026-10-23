@@ -101,24 +101,43 @@ const ContactForm = () => {
 
   useGSAP(
     () => {
-      if (!sent || !successRef.current) return;
-      successRef.current.focus();
-      if (prefersReducedMotion()) return;
-      gsap.fromTo(
-        successRef.current,
-        { opacity: 0, y: 32 },
-        { opacity: 1, y: 0, duration: 0.8, ease: "power3.out" },
-      );
+      const form = formRef.current;
+      const success = successRef.current;
+      if (!form || !success) return;
+
+      const duration = prefersReducedMotion() ? 0 : 0.6;
+
+      if (sent) {
+        gsap.to(form, { autoAlpha: 0, duration, ease: "power2.out" });
+        gsap.fromTo(
+          success,
+          { autoAlpha: 0, scale: 0.9 },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: duration * 1.4,
+            delay: duration * 0.6,
+            ease: "power3.out",
+            onComplete: () => success.focus(),
+          },
+        );
+        return;
+      }
+
+      gsap.to(success, { autoAlpha: 0, scale: 0.9, duration, ease: "power2.out" });
+      gsap.to(form, { autoAlpha: 1, duration, delay: duration * 0.6, ease: "power2.out" });
     },
     { dependencies: [sent] },
   );
 
-  if (sent) {
-    return (
+  return (
+    <div className="relative">
       <div
         ref={successRef}
         tabIndex={-1}
-        className="flex flex-col items-start gap-6 outline-none"
+        inert={!sent}
+        aria-hidden={!sent}
+        className="invisible absolute inset-0 flex flex-col items-start justify-center gap-6 opacity-0 outline-none"
       >
         <h2>Got it.</h2>
         <p className="text-28 text-mpx-muted">
@@ -126,12 +145,15 @@ const ContactForm = () => {
         </p>
         <PixelButton label="Send Another" variant="outline" onClick={reset} />
       </div>
-    );
-  }
-
-  return (
-    <form ref={formRef} onSubmit={submit} noValidate aria-describedby="form-note" className="flex flex-col gap-8">
-      <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-8">
+    <form
+      ref={formRef}
+      onSubmit={submit}
+      noValidate
+      inert={sent}
+      aria-describedby="form-note"
+      className="flex flex-col gap-8 max-md:gap-2"
+    >
+      <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-4">
         <FloatInput
           id="f-name"
           name="name"
@@ -156,7 +178,7 @@ const ContactForm = () => {
           onBlur={() => values.email && validate("email")}
         />
       </div>
-      <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-8">
+      <div className="grid grid-cols-2 gap-6 max-md:grid-cols-1 max-md:gap-4">
         <FloatInput
           id="f-company"
           name="company"
@@ -217,6 +239,7 @@ const ContactForm = () => {
         <PixelButton label="Send It" type="submit" icon />
       </div>
     </form>
+    </div>
   );
 };
 
