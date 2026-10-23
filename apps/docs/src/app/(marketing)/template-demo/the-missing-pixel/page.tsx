@@ -21,8 +21,8 @@ const page = () => {
   return (
     <>
       <Hero />
-      <ReelReveal />
       <ClientMarquee />
+      <ReelReveal />
       <Intro />
       <WorkScroll />
       <PixelProcess />

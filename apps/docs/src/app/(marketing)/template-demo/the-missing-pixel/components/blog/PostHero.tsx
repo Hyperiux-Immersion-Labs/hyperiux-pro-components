@@ -11,7 +11,12 @@ type PostHeroProps = {
   post: Post;
 };
 
-const PostHero = ({ post }: PostHeroProps) => (
+const PostHero = ({ post }: PostHeroProps) => {
+  const words = post.title.split(" ");
+  const lead = words.slice(0, -2).join(" ");
+  const tail = words.slice(-2).join(" ");
+
+  return (
   <section className="flex flex-col gap-11 px-[5vw] pb-[3vw] pt-[7%] max-lg:gap-8 max-lg:px-[6vw] max-lg:py-[12%] max-md:gap-9 max-md:px-[7vw] max-md:py-[15%]">
     <Breadcrumb
       crumbs={[
@@ -25,7 +30,8 @@ const PostHero = ({ post }: PostHeroProps) => (
         {post.category}
       </span>
       <MaskReveal as="h1" delay={PAGE_DELAY} className="w-[75%] max-lg:w-full">
-        {post.title}
+        {lead && `${lead} `}
+        <span className="text-mpx-accent">{tail}</span>
       </MaskReveal>
       <LineReveal
         delay={PAGE_DELAY + 0.3}
@@ -45,6 +51,7 @@ const PostHero = ({ post }: PostHeroProps) => (
       </FadeUp>
     </header>
   </section>
-);
+  );
+};
 
 export default PostHero;

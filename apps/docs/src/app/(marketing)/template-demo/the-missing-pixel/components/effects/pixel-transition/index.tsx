@@ -16,6 +16,8 @@ gsap.registerPlugin(useGSAP);
 
 const PIXEL_COLOR = "#ff5f00";
 
+export const COVERED_EVENT = "mpx:covered";
+
 const easeInOutQuad = (t: number) => (t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t);
 
 const drawGrid = (canvas: HTMLCanvasElement, progress: number, cover: boolean) => {
@@ -142,7 +144,8 @@ const PixelTransition = () => {
     const canvas = canvasRef.current;
     const label = labelRef.current;
     const labelText = labelTextRef.current;
-    if (!root || !canvas || !label || !labelText) return;
+    const count = countRef.current;
+    if (!root || !canvas || !label || !labelText || !count) return;
 
     const handleClick = (event: MouseEvent) => {
       if (
@@ -174,7 +177,7 @@ const PixelTransition = () => {
         PAGE_NAMES[url.pathname] ??
         (slug ? slug.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ") : "Loading");
       gsap.set(root, { display: "block", backgroundColor: "transparent" });
-      gsap.set(label, { opacity: 0 });
+      gsap.set([label, count], { opacity: 0 });
       playSound("leave");
 
       const grid = { p: 0 };
@@ -185,6 +188,7 @@ const PixelTransition = () => {
         ease: "none",
         onUpdate: () => drawGrid(canvas, grid.p, true),
         onComplete: () => {
+          window.dispatchEvent(new Event(COVERED_EVENT));
           gsap.to(label, { opacity: 1, duration: 0.2 });
           router.push(target);
           failsafeRef.current = window.setTimeout(reveal, 3500);

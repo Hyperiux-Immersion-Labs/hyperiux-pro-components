@@ -11,12 +11,21 @@ type CaseHeroProps = {
   facts: { label: string; value: string }[];
 };
 
-const CaseHero = ({ crumbs, title, text, facts }: CaseHeroProps) => (
+const CaseHero = ({ crumbs, title, text, facts }: CaseHeroProps) => {
+  const [first, ...rest] = title.split(" ");
+
+  return (
   <section className="h-screen px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] flex flex-col justify-center gap-3 pt-[7%] pb-[3vw] max-lg:gap-8 max-lg:py-[6vw] max-md:gap-9 max-md:py-[10vw]">
     <Breadcrumb crumbs={crumbs} />
-    <div className="flex flex-1 flex-col gap-8 justify-center">
+    <div className="flex flex-1 flex-col gap-18 justify-center">
       <MaskReveal as="h1" delay={PAGE_DELAY} className="w-full">
-        {title}
+        {first}
+        {rest.length > 0 && (
+          <>
+            {" "}
+            <span className="text-mpx-accent">{rest.join(" ")}</span>
+          </>
+        )}
       </MaskReveal>
       <LineReveal
         delay={PAGE_DELAY + 0.3}
@@ -27,6 +36,7 @@ const CaseHero = ({ crumbs, title, text, facts }: CaseHeroProps) => (
     </div>
     <Facts items={facts} />
   </section>
-);
+  );
+};
 
 export default CaseHero;

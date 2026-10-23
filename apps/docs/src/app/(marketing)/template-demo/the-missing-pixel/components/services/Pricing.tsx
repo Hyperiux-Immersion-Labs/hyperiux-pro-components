@@ -159,7 +159,7 @@ const Pricing = () => {
         ))}
       </ul>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6 pt-[7%]">
         <FadeUp>
           <h3 className="text-30">Add-ons</h3>
         </FadeUp>

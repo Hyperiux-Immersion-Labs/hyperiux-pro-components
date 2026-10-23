@@ -21,7 +21,11 @@ const page = () => (
     <PageHero
       containerClassName={GUTTER}
       crumbs={[{ label: "Home", href: ROUTES.home }, { label: "Contact" }]}
-      title="Tell us what’s missing."
+      title={
+        <>
+          Tell us what’s <span className="text-mpx-accent">missing.</span>
+        </>
+      }
       titleClassName="w-[50%] max-lg:w-[70%] max-md:w-full"
       text="A partner reads every message and replies within two working days. Usually sooner."
     />

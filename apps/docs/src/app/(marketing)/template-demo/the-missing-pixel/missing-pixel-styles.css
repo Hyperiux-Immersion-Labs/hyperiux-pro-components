@@ -67,8 +67,8 @@ html:has(.mpx-page) {
 
 .mpx-page h1,
 .mpx-page .text-128 {
-  font-size: 6.6vw;
-  letter-spacing: -0.4vw;
+  font-size: 6vw;
+  letter-spacing: -0.1vw;
 }
 
 .mpx-page h2 {
@@ -331,6 +331,150 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
   .mpx-page .mpx-section {
     padding-block: 20%;
   }
+}
+
+.mpx-page .mpx-hero-bg {
+  background: linear-gradient(
+    100deg,
+    color-mix(in srgb, var(--mpx-accent-deep) 25%, var(--mpx-ink)) 0%,
+    color-mix(in srgb, var(--mpx-accent-deep) 60%, var(--mpx-ink)) 30%,
+    var(--mpx-accent-deep) 58%,
+    var(--mpx-accent) 82%,
+    var(--mpx-accent-light) 100%
+  );
+}
+
+.mpx-page .mpx-hero-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: url("./assets/pictures/grain.png") repeat;
+  background-size: 240px;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+.mpx-page .mpx-hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  will-change: transform;
+  animation: mpx-blob-drift var(--dur, 40s) cubic-bezier(0.76, 0, 0.24, 1) infinite alternate;
+  animation-delay: var(--delay, 0s);
+}
+
+.mpx-page .mpx-hero-blob-glow {
+  left: calc(72% - 36vmax);
+  top: calc(30% - 36vmax);
+  width: 72vmax;
+  height: 72vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mpx-accent-light) 30%, var(--mpx-white)) 0%,
+    color-mix(in srgb, var(--mpx-accent-light) 80%, var(--mpx-white)) 26%,
+    color-mix(in srgb, var(--mpx-accent-light) 75%, transparent) 52%,
+    color-mix(in srgb, var(--mpx-accent) 0%, transparent) 100%
+  );
+  --dx: -16vw;
+  --dy: 12vh;
+  --s0: 0.88;
+  --s1: 1.14;
+  --dur: 11s;
+}
+
+.mpx-page .mpx-hero-blob-amber {
+  left: calc(30% - 32vmax);
+  top: calc(22% - 32vmax);
+  width: 64vmax;
+  height: 64vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mpx-accent-light) 75%, transparent),
+    color-mix(in srgb, var(--mpx-accent) 0%, transparent)
+  );
+  --dx: 24vw;
+  --dy: 16vh;
+  --s0: 1.08;
+  --s1: 0.82;
+  --dur: 14s;
+  --delay: -5s;
+}
+
+.mpx-page .mpx-hero-blob-fire {
+  left: calc(58% - 40vmax);
+  top: calc(80% - 40vmax);
+  width: 80vmax;
+  height: 80vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mpx-accent) 80%, transparent),
+    color-mix(in srgb, var(--mpx-accent-deep) 0%, transparent)
+  );
+  --dx: -26vw;
+  --dy: -18vh;
+  --s0: 0.86;
+  --s1: 1.12;
+  --dur: 16s;
+  --delay: -9s;
+}
+
+.mpx-page .mpx-hero-blob-shade {
+  left: calc(4% - 45vmax);
+  top: calc(75% - 45vmax);
+  width: 90vmax;
+  height: 90vmax;
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mpx-accent-deep) 12%, var(--mpx-ink) 85%),
+    color-mix(in srgb, var(--mpx-ink) 0%, transparent)
+  );
+  --dx: 12vw;
+  --dy: -14vh;
+  --s0: 0.95;
+  --s1: 1.15;
+  --dur: 13s;
+  --delay: -3s;
+}
+
+.mpx-page .mpx-hero-light {
+  background: radial-gradient(
+    closest-side,
+    color-mix(in srgb, var(--mpx-accent-light) 55%, var(--mpx-white) 40%),
+    color-mix(in srgb, var(--mpx-accent-light) 22%, transparent) 48%,
+    transparent
+  );
+}
+
+@keyframes mpx-blob-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(var(--s0, 1));
+  }
+  to {
+    transform: translate3d(var(--dx, 0), var(--dy, 0), 0) scale(var(--s1, 1));
+  }
+}
+
+@keyframes mpx-scroll-cue {
+  0%,
+  100% {
+    transform: translateY(-2px);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mpx-page .mpx-hero-blob,
+  .mpx-page .mpx-scroll-cue-arrow {
+    animation: none;
+  }
+}
+
+.mpx-page .mpx-scroll-cue-arrow {
+  animation: mpx-scroll-cue 2.4s cubic-bezier(0.76, 0, 0.24, 1) infinite;
 }
 
 @keyframes mpx-globe-ping {

@@ -15,7 +15,7 @@ const AboutHero = () => (
       <Breadcrumb crumbs={[{ label: "Home", href: ROUTES.home }, { label: "About" }]} />
       <div className="grid flex-1 grid-cols-12 content-end items-end gap-x-12 gap-y-10 max-md:gap-y-8 max-lg:gap-x-8 max-md:gap-x-0">
         <MaskReveal as="h1" delay={PAGE_DELAY} className="col-span-8 max-lg:col-span-12 w-[70%] text-[5vw]! max-lg:w-[85%] max-lg:text-[7vw]! max-md:text-[8vw]! max-md:w-full tracking-wider">
-          We noticed one missing pixel. Twelve years later, we’re still looking.
+          We noticed one <span className="text-mpx-accent">missing pixel.</span> Twelve years later, we’re still looking.
         </MaskReveal>
         <ParallaxImage
           pixel

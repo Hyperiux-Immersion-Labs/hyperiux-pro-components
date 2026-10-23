@@ -7,12 +7,12 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
-import { FadeUp, MaskReveal } from "../Animations/gsapAnim";
+import { FadeUp } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import PixelButton from "../Buttons/PixelButton";
 import UnderlineLink from "../Buttons/UnderlineLink";
 import { ArrowRight, LogoMark } from "../Buttons/icons";
-import PixelField from "./PixelField";
+import FooterParallax from "../effects/parallax-footer";
 import WordmarkPixels from "./WordmarkPixels";
 import { ROUTES } from "../../routes";
 
@@ -71,7 +71,11 @@ const Footer = () => {
       inner.style.fontSize = "100px";
       const letters = Array.from(inner.children) as HTMLElement[];
       const textWidth = letters.reduce((total, letter) => total + letter.offsetWidth, 0);
-      if (textWidth) inner.style.fontSize = `${Math.floor((inner.clientWidth / textWidth) * 85)}px`;
+      if (textWidth) {
+        const byWidth = Math.floor((inner.clientWidth / textWidth) * 85);
+        const byHeight = window.matchMedia("(min-width: 1026px)").matches ? Math.floor(window.innerHeight * 0.27) : byWidth;
+        inner.style.fontSize = `${Math.min(byWidth, byHeight)}px`;
+      }
       ScrollTrigger.refresh();
     };
 
@@ -84,7 +88,8 @@ const Footer = () => {
   useGSAP(
     () => {
       const mark = markRef.current;
-      if (!mark || prefersReducedMotion()) return;
+      const wrapper = document.getElementById("footer");
+      if (!mark || !wrapper || prefersReducedMotion()) return;
 
       gsap.fromTo(
         mark.querySelectorAll("[data-mark-letter]"),
@@ -94,8 +99,8 @@ const Footer = () => {
           ease: "power3.out",
           stagger: 0.03,
           scrollTrigger: {
-            trigger: mark,
-            start: "50% bottom",
+            trigger: wrapper,
+            start: "40% bottom",
             end: "bottom bottom",
             scrub: true,
             onUpdate: (self) => {
@@ -126,36 +131,20 @@ const Footer = () => {
   };
 
   return (
-    <footer
-      data-mpx-inert
-      className="overflow-hidden rounded-t-lg bg-(--mpx-ink) text-(color:--mpx-paper)"
-    >
-      <div className="flex flex-col px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
-        <div className="flex flex-col gap-11 border-b border-(--mpx-white)/15 py-[6vw] max-lg:gap-10 max-lg:py-[9vw] max-md:gap-8 max-md:py-[17vw]">
-          <MaskReveal as="h2" className="w-[40%] leading-none max-lg:w-[70%] max-md:w-full">
-            Got a missing pixel? Let’s find it.
-          </MaskReveal>
-          <FadeUp className="flex flex-wrap items-center justify-between gap-6 max-md:flex-col max-md:items-start">
-            <UnderlineLink href="mailto:hello@themissingpixel.studio" className="font-mpx-head text-30">
-              hello@themissingpixel.studio
-            </UnderlineLink>
-            <PixelButton label="Start A Project" href={ROUTES.contact} tone="dark" icon />
-          </FadeUp>
-          <PixelField />
-        </div>
-
-        <div className="grid grid-cols-12 gap-x-9 gap-y-9 py-[4vw] max-lg:grid-cols-6 max-lg:gap-x-8 max-lg:gap-y-12 max-lg:py-[7vw] max-md:grid-cols-2 max-md:gap-y-10 max-md:py-[14vw]">
-          <div className="col-span-4 flex flex-col gap-5 max-lg:col-span-6 max-md:col-span-2">
+    <FooterParallax data-mpx-inert footerClassName="bg-(--mpx-ink) text-(color:--mpx-paper)">
+      <div className="flex h-screen flex-col justify-between gap-[4vh] overflow-hidden max-lg:h-auto max-lg:min-h-screen max-lg:gap-[6vh] max-md:gap-[3vh] px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
+        <div className="grid grid-cols-12 gap-x-9 gap-y-12 py-[8vh] max-lg:grid-cols-6 max-lg:gap-x-8 max-lg:py-[6vh] max-md:grid-cols-2 max-md:gap-y-5 max-md:py-[3vh]">
+          <div className="col-span-5 flex flex-col gap-5 max-lg:col-span-6 max-md:col-span-2 max-md:gap-3">
             <span className="flex items-center gap-2 text-22 font-medium leading-none tracking-tight">
               <LogoMark className="size-[1.4vw] max-lg:size-[4vw] max-md:size-[6.5vw]" />
               <span className="font-mpx-head">
                 the missing <b className="font-bold">pixel</b>
               </span>
             </span>
-            <p className="w-[85%] text-24 leading-[1.3] text-(color:--mpx-white)/60 max-lg:w-[60%] max-md:w-full">
+            <p className="w-[70%] text-24 leading-[1.3] text-(color:--mpx-white)/60 max-lg:w-[60%] max-md:w-full">
               A brand and digital studio in Delhi, London, Dubai and New York. One newsletter a month. Zero filler.
             </p>
-            <form onSubmit={handleSubmit} noValidate className="flex w-[85%] gap-1 max-lg:w-[60%] max-lg:gap-2 max-md:w-full max-md:flex-col max-md:gap-3">
+            <form onSubmit={handleSubmit} noValidate className="flex w-[70%] gap-1 max-lg:w-[60%] max-lg:gap-2 max-md:w-full max-md:flex-col max-md:gap-3">
               <label htmlFor="mpx-newsletter" className="sr-only">
                 Email address
               </label>
@@ -170,82 +159,67 @@ const Footer = () => {
               />
               <PixelButton label="Subscribe" type="submit" size="sm" tone="dark" magnetic={0} />
             </form>
-            <p aria-live="polite" className="min-h-[1.6vh] text-14 max-lg:min-h-[1.4vh] max-md:min-h-[2.1vh] text-(color:--mpx-white)/60">
+            <p aria-live="polite" className="text-14 text-(color:--mpx-white)/60 empty:hidden">
               {message}
             </p>
           </div>
 
-          {COLUMNS.map((column, columnIndex) => (
-            <div key={column.title} className="col-span-2 flex flex-col gap-3 max-lg:col-span-2 max-lg:gap-4 max-md:col-span-1">
-              <h3 className="mpx-eyebrow text-14 text-(color:--mpx-white)/60">{column.title}</h3>
-              <ul className="flex flex-col gap-2 text-22">
-                {column.links.map((link, linkIndex) => (
-                  <FadeUp as="li" key={link.label} delay={columnIndex * 0.02 + linkIndex * 0.03}>
-                    <UnderlineLink href={link.href}>{link.label}</UnderlineLink>
-                  </FadeUp>
-                ))}
-              </ul>
-            </div>
-          ))}
-
-          <div className="col-span-2 flex flex-col gap-3 max-lg:col-span-6 max-lg:gap-4 max-md:col-span-2">
-            <h3 className="mpx-eyebrow text-14 text-(color:--mpx-white)/60">Studios</h3>
-            <ul className="flex flex-col gap-3 text-14 max-lg:grid max-lg:grid-cols-4 max-lg:gap-x-8 max-md:flex max-md:gap-4">
-              {STUDIOS.map((studio, studioIndex) => (
-                <FadeUp as="li" key={studio.city} delay={COLUMNS.length * 0.02 + studioIndex * 0.03} className="flex flex-col">
-                  <strong className="font-medium text-(color:--mpx-paper)">{studio.city}</strong>
-                  <span className="text-(color:--mpx-white)/60">{studio.address}</span>
-                </FadeUp>
-              ))}
-            </ul>
+          <div className="col-span-6 col-start-7 grid grid-cols-3 gap-x-9 max-lg:col-span-6 max-lg:col-start-auto max-lg:gap-x-8 max-md:col-span-2 max-md:grid-cols-2">
+            {COLUMNS.map((column, columnIndex) => (
+              <div key={column.title} className={`flex flex-col gap-4 max-md:gap-2 ${column.title === "Services" ? "max-md:hidden" : ""}`}>
+                <h3 className="mpx-eyebrow text-14 text-(color:--mpx-white)/60">{column.title}</h3>
+                <ul className="flex flex-col gap-2 text-22 max-md:gap-1">
+                  {column.links.map((link, linkIndex) => (
+                    <FadeUp as="li" key={link.label} delay={columnIndex * 0.02 + linkIndex * 0.03}>
+                      <UnderlineLink href={link.href}>{link.label}</UnderlineLink>
+                    </FadeUp>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div ref={markRef} aria-hidden className="flex flex-col gap-5 overflow-hidden max-md:gap-4">
-          <div className="h-px w-full bg-(--mpx-white)/15" />
-          <div className="relative">
-            <div
-              ref={markInnerRef}
-              className="font-mpx-head flex justify-center overflow-hidden whitespace-nowrap py-[0.8vw] text-128 font-semibold leading-[1.3] tracking-tighter text-transparent"
-            >
-              {MARK.map((letter, index) => (
-                <span key={index} data-mark-letter className="inline-block will-change-transform">
-                  {letter === " " ? "\u00A0" : letter}
+        <div className="flex flex-col">
+          <div ref={markRef} aria-hidden className="flex flex-col gap-5 overflow-hidden max-md:gap-4">
+            <div className="h-px w-full bg-(--mpx-white)/15" />
+            <div className="relative">
+              <div
+                ref={markInnerRef}
+                className="font-mpx-head flex justify-center overflow-hidden whitespace-nowrap py-[0.8vw] text-128 font-semibold leading-[1.3] tracking-tighter text-transparent"
+              >
+                {MARK.map((letter, index) => (
+                  <span key={index} data-mark-letter className="inline-block will-change-transform">
+                    {letter === " " ? "\u00A0" : letter}
+                  </span>
+                ))}
+              </div>
+              <WordmarkPixels innerRef={markInnerRef} progressRef={markProgressRef} />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-(--mpx-white)/15 py-[1.5vw] text-14 text-(color:--mpx-white)/60 max-lg:gap-6 max-lg:py-[3vw] max-md:flex-col max-md:items-start max-md:gap-2 max-md:py-[3vh]">
+            <span>© {new Date().getFullYear()} The Missing Pixel. Made with an unreasonable amount of care.</span>
+            <nav aria-label="Legal" className="flex gap-5 max-lg:gap-6">
+              {LEGAL.map((item) => (
+                <span key={item} className="cursor-pointer transition-colors duration-300 hover:text-(color:--mpx-paper)">
+                  {item}
                 </span>
               ))}
-            </div>
-            <WordmarkPixels innerRef={markInnerRef} progressRef={markProgressRef} />
+            </nav>
+            <button
+              type="button"
+              onClick={toTop}
+              className="group flex items-center gap-2 transition-colors duration-300 hover:text-(color:--mpx-paper)"
+            >
+              Back to top
+              <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[3.3vw]" />
+            </button>
           </div>
         </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-(--mpx-white)/15 py-[1.5vw] text-14 text-(color:--mpx-white)/60 max-lg:gap-6 max-lg:py-[3vw] max-md:flex-col max-md:items-start max-md:gap-5 max-md:py-[7vw]">
-          <span>© {new Date().getFullYear()} The Missing Pixel. Made with an unreasonable amount of care.</span>
-          <nav aria-label="Legal" className="flex gap-5 max-lg:gap-6">
-            {LEGAL.map((item) => (
-              <span key={item} className="cursor-pointer transition-colors duration-300 hover:text-(color:--mpx-paper)">
-                {item}
-              </span>
-            ))}
-          </nav>
-          <button
-            type="button"
-            onClick={toTop}
-            className="group flex items-center gap-2 transition-colors duration-300 hover:text-(color:--mpx-paper)"
-          >
-            Back to top
-            <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[3.3vw]" />
-          </button>
-        </div>
       </div>
-    </footer>
+    </FooterParallax>
   );
 };
 
 export default Footer;
-
-const STUDIOS = [
-  { city: "Delhi", address: "14 Hauz Khas Village, New Delhi 110016" },
-  { city: "London", address: "22 Redchurch Street, London E2 7DJ" },
-  { city: "Dubai", address: "Alserkal Avenue, Warehouse 47, Al Quoz, Dubai" },
-  { city: "New York", address: "88 Walker Street, New York, NY 10013" },
-];

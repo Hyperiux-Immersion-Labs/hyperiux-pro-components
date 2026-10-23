@@ -20,6 +20,8 @@ import journal from "../../assets/pictures/j-1.webp";
 import founder from "../../assets/pictures/founder.webp";
 import { ROUTES } from "../../routes";
 
+const menuInkVideo = new URL("../../assets/video/menu-ink.mp4", import.meta.url).toString();
+
 gsap.registerPlugin(useGSAP);
 
 const MENU_LINKS = [
@@ -47,6 +49,7 @@ const PREVIEW_EXIT = "inset(0% 0% 100% 0%)";
 type MenuProps = {
   open: boolean;
   onClose: () => void;
+  instant?: boolean;
 };
 
 const formatTime = (zone: string) =>
@@ -56,7 +59,7 @@ const formatTime = (zone: string) =>
     timeZone: zone,
   }).format(new Date());
 
-const Menu = ({ open, onClose }: MenuProps) => {
+const Menu = ({ open, onClose, instant = false }: MenuProps) => {
   const pathname = usePathname();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<(HTMLAnchorElement | null)[]>([]);
@@ -199,6 +202,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
     <ClipNav
       open={open}
       id="mpx-menu"
+      closeDuration={instant ? 0.01 : undefined}
       rootRef={rootRef}
       className="fixed inset-0 z-70 overflow-y-auto overscroll-contain bg-(--mpx-ink) text-(color:--mpx-paper)"
       innerClassName="mpx-container flex min-h-full origin-top flex-col justify-between gap-7 py-[1.3vw] max-lg:gap-16 max-lg:py-[4vw] max-md:py-[6vw]"
@@ -217,7 +221,9 @@ const Menu = ({ open, onClose }: MenuProps) => {
                     href={link.target}
                     tabIndex={open ? 0 : -1}
                     aria-current={pathname === link.target ? "page" : undefined}
-                    onClick={onClose}
+                    onClick={(event) => {
+                      if (!event.defaultPrevented) onClose();
+                    }}
                     onPointerEnter={() => {
                       rollLink(index, true);
                       showPreview(index);
@@ -257,7 +263,7 @@ const Menu = ({ open, onClose }: MenuProps) => {
                 aria-hidden="true"
                 className="h-full w-full object-cover"
               >
-                <source src="/templates/the-missing-pixel/menu-ink.mp4" type="video/mp4" />
+                <source src={menuInkVideo} type="video/mp4" />
               </video>
               {MENU_LINKS.map((link, index) => (
                 <div
@@ -280,7 +286,9 @@ const Menu = ({ open, onClose }: MenuProps) => {
                     <Link
                       href={link.target}
                       tabIndex={open ? 0 : -1}
-                      onClick={onClose}
+                      onClick={(event) => {
+                        if (!event.defaultPrevented) onClose();
+                      }}
                       className="inline-flex h-[3.2vh] items-center rounded-full border border-(--mpx-white)/20 px-[0.9vw] text-22 font-medium transition-colors duration-300 hover:border-(--mpx-paper) hover:bg-(--mpx-paper) hover:text-(color:--mpx-ink) max-lg:h-[4.4vh] max-lg:px-[2.6vw] max-md:h-[4.1vh] max-md:px-[3.5vw]"
                     >
                       {link.label}

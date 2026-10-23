@@ -15,10 +15,14 @@ import PixelButton from "../Buttons/PixelButton";
 import { LogoMark } from "../Buttons/icons";
 import SoundToggle from "../Sound/SoundToggle";
 import { playSound } from "../Sound/pixelSfx";
+import { COVERED_EVENT } from "../effects/pixel-transition";
 const Menu = dynamic(() => import("./Menu"), { ssr: false });
 import { ROUTES } from "../../routes";
 
 gsap.registerPlugin(useGSAP);
+
+const MENU_OPEN_LOCK = 1400;
+const MENU_CLOSE_LOCK = 1250;
 
 const Header = () => {
   const lenis = useLenis();
@@ -30,10 +34,13 @@ const Header = () => {
   const barBottomRef = useRef<HTMLSpanElement | null>(null);
   const pixelRef = useRef<SVGRectElement | null>(null);
   const lastYRef = useRef(0);
+  const menuLockRef = useRef(0);
   const hiddenRef = useRef(false);
   const [scrolled, setScrolled] = useState(false);
+  const [onPhoto, setOnPhoto] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuReady, setMenuReady] = useState(false);
+  const [instantClose, setInstantClose] = useState(false);
 
   useEffect(() => {
     const id = window.setTimeout(() => setMenuReady(true), 2500);
@@ -51,6 +58,8 @@ const Header = () => {
       const y = window.scrollY;
       const delta = y - lastYRef.current;
       setScrolled(y > 24);
+      const hero = document.querySelector("[data-mpx-hero]");
+      setOnPhoto(!!hero && hero.getBoundingClientRect().bottom > header.offsetHeight * 0.6);
 
       if (!document.documentElement.hasAttribute("data-mpx-menu-open") && Math.abs(delta) > 2) {
         const hide = delta > 0 && y > 400;
@@ -68,8 +77,12 @@ const Header = () => {
 
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+    window.addEventListener("resize", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -90,7 +103,8 @@ const Header = () => {
     }
 
     const handleKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape" && menuOpen) {
+      if (event.key === "Escape" && menuOpen && performance.now() >= menuLockRef.current) {
+        menuLockRef.current = performance.now() + MENU_CLOSE_LOCK;
         setMenuOpen(false);
         playSound("close");
         menuButtonRef.current?.focus();
@@ -101,9 +115,9 @@ const Header = () => {
   }, [menuOpen, lenis]);
 
   useEffect(() => {
-    const timer = window.setTimeout(() => setCtaDark(menuOpen), prefersReducedMotion() ? 0 : 700);
+    const timer = window.setTimeout(() => setCtaDark(menuOpen), prefersReducedMotion() || instantClose ? 0 : 700);
     return () => window.clearTimeout(timer);
-  }, [menuOpen]);
+  }, [menuOpen, instantClose]);
 
   useGSAP(
     () => {
@@ -112,7 +126,7 @@ const Header = () => {
       const bottom = barBottomRef.current;
       if (!icon || !top || !bottom) return;
 
-      const duration = prefersReducedMotion() ? 0 : 0.6;
+      const duration = prefersReducedMotion() || instantClose ? 0 : 0.6;
       gsap.to(icon, { rotate: menuOpen ? 180 : 0, duration, ease: "power3.out" });
       gsap.to(top, { yPercent: menuOpen ? 0 : -200, rotate: menuOpen ? 45 : 0, duration, ease: "power3.out" });
       gsap.to(bottom, { yPercent: menuOpen ? 0 : 200, rotate: menuOpen ? -45 : 0, duration, ease: "power3.out" });
@@ -125,13 +139,33 @@ const Header = () => {
     { dependencies: [menuOpen] },
   );
 
+  useEffect(() => {
+    const handleCovered = () => {
+      setInstantClose(true);
+      menuLockRef.current = 0;
+      setMenuOpen(false);
+    };
+    window.addEventListener(COVERED_EVENT, handleCovered);
+    return () => window.removeEventListener(COVERED_EVENT, handleCovered);
+  }, []);
+
+  useEffect(() => {
+    setInstantClose(true);
+    menuLockRef.current = 0;
+    setMenuOpen(false);
+  }, [pathname]);
+
   const toggleMenu = () => {
+    if (performance.now() < menuLockRef.current) return;
+    menuLockRef.current = performance.now() + (menuOpen ? MENU_CLOSE_LOCK : MENU_OPEN_LOCK);
+    setInstantClose(false);
     playSound(menuOpen ? "close" : "open");
     setMenuOpen((open) => !open);
   };
 
   const closeMenu = () => {
     if (!menuOpen) return;
+    menuLockRef.current = performance.now() + MENU_CLOSE_LOCK;
     setMenuOpen(false);
     playSound("close");
   };
@@ -154,15 +188,21 @@ const Header = () => {
     });
   };
 
-  const solid = scrolled && !menuOpen;
+  const sync = instantClose ? "duration-0 delay-0" : "duration-300 delay-700";
+  const syncChild = instantClose
+    ? "[&_[data-sound-toggle]]:delay-0 [&_[data-sound-toggle]]:duration-0"
+    : "[&_[data-sound-toggle]]:delay-700";
+  const rollDuration = instantClose ? "duration-0" : "duration-1150";
+  const light = menuOpen || onPhoto;
+  const solid = scrolled && !menuOpen && !onPhoto;
 
   return (
     <>
       <header
         ref={headerRef}
-        className={`fixed inset-x-0 top-0 z-80 border-b transition-[background-color,border-color,color] duration-300 delay-700 motion-reduce:transition-none [&_[data-sound-toggle]]:delay-700 motion-reduce:[&_[data-sound-toggle]]:transition-none ${
+        className={`fixed inset-x-0 top-0 z-80 border-b transition-[background-color,border-color,color] ${sync} motion-reduce:transition-none ${syncChild} motion-reduce:[&_[data-sound-toggle]]:transition-none ${
           solid ? "border-(--mpx-ink)/10 bg-(--mpx-paper)" : "border-transparent bg-transparent"
-        } ${menuOpen ? "text-(color:--mpx-paper)" : "text-(color:--mpx-ink)"}`}
+        } ${light ? "text-(color:--mpx-paper)" : "text-(color:--mpx-ink)"}`}
       >
         <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[7vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
           <Link
@@ -185,13 +225,13 @@ const Header = () => {
           </Link>
 
           <div className="flex items-center gap-2 max-lg:gap-3 max-md:gap-2">
-            <SoundToggle inverted={menuOpen} />
+            <SoundToggle inverted={light} />
             <div className="max-lg:hidden">
               <PixelButton
                 label="Start A Project"
                 href={ROUTES.contact}
                 size="sm"
-                tone={ctaDark ? "dark" : "light"}
+                tone={ctaDark ? "dark" : onPhoto ? "media" : "light"}
               />
             </div>
             <button
@@ -201,14 +241,14 @@ const Header = () => {
               onClick={toggleMenu}
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
-              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] duration-300 delay-700 motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
-                menuOpen ? "border-(--mpx-accent)/60" : "border-(--mpx-ink)/30"
+              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] ${sync} motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
+                menuOpen ? "border-(--mpx-accent)/60" : onPhoto ? "border-(--mpx-white)/35" : "border-(--mpx-ink)/30"
               }`}
             >
               <span className="grid min-w-[4.4vw] overflow-hidden px-[1vw] text-left max-lg:min-w-[10vw] max-lg:px-[2.4vw] max-md:hidden">
                 <span
                   aria-hidden={menuOpen}
-                  className={`col-start-1 row-start-1 transition-transform duration-1150 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
+                  className={`col-start-1 row-start-1 transition-transform ${rollDuration} ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
                     menuOpen ? "-translate-y-full delay-100" : "translate-y-0 delay-0"
                   }`}
                 >
@@ -216,7 +256,7 @@ const Header = () => {
                 </span>
                 <span
                   aria-hidden={!menuOpen}
-                  className={`col-start-1 row-start-1 transition-transform duration-1150 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
+                  className={`col-start-1 row-start-1 transition-transform ${rollDuration} ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
                     menuOpen ? "translate-y-0 delay-100" : "translate-y-full delay-0"
                   }`}
                 >
@@ -226,8 +266,8 @@ const Header = () => {
               <span
                 ref={iconRef}
                 aria-hidden
-                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors duration-300 delay-700 motion-reduce:transition-none max-lg:h-[4vh] max-md:h-full ${
-                  menuOpen ? "bg-(--mpx-accent) text-(color:--mpx-ink)" : "bg-(--mpx-ink) text-(color:--mpx-paper)"
+                className={`relative flex aspect-square h-[3.7vh] items-center justify-center rounded-full transition-colors ${sync} motion-reduce:transition-none max-lg:h-[4vh] max-md:h-full ${
+                  menuOpen ? "bg-(--mpx-accent) text-(color:--mpx-ink)" : onPhoto ? "bg-(--mpx-white) text-(color:--mpx-ink)" : "bg-(--mpx-ink) text-(color:--mpx-paper)"
                 }`}
               >
                 <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
@@ -237,7 +277,7 @@ const Header = () => {
           </div>
         </div>
       </header>
-      {(menuReady || menuOpen) && <Menu open={menuOpen} onClose={closeMenu} />}
+      {(menuReady || menuOpen) && <Menu open={menuOpen} onClose={closeMenu} instant={instantClose} />}
     </>
   );
 };

@@ -24,7 +24,7 @@ const page = () => (
         <>
           Six disciplines.
           <br />
-          Zero hand offs.
+          <span className="text-mpx-accent">Zero</span> hand-offs.
         </>
         
       }

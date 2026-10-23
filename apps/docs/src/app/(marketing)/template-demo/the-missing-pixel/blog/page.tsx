@@ -15,7 +15,7 @@ const page = () => (
   <>
     <PageHero
       crumbs={[{ label: "Home", href: ROUTES.home }, { label: "Journal" }]}
-      title="Journal"
+      title={<span className="text-mpx-accent">Journal</span>}
       text="Opinions, process and the occasional confession from four studios. New essay every other Thursday."
     />
     <div className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">

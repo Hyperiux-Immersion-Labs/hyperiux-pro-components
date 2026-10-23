@@ -3,9 +3,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { playSound } from "../Sound/pixelSfx";
 import UnderlineLink from "../Buttons/UnderlineLink";
+import RollText from "./RollText";
+
+gsap.registerPlugin(useGSAP);
 
 const VERTEX_SHADER = `
   attribute vec2 a_pos; attribute float a_kind; attribute float a_seed;
@@ -75,6 +80,33 @@ const PixelField = () => {
   const [hint, setHint] = useState(DEFAULT_HINT);
   const [found, setFound] = useState(false);
   const [flash, setFlash] = useState(false);
+  const hintRef = useRef<HTMLParagraphElement | null>(null);
+  const linkRef = useRef<HTMLDivElement | null>(null);
+
+  useGSAP(
+    () => {
+      const hintEl = hintRef.current;
+      const linkEl = linkRef.current;
+      if (!hintEl || !linkEl) return;
+
+      if (!found) {
+        gsap.set(hintEl, { autoAlpha: 1, yPercent: 0 });
+        gsap.set(linkEl, { autoAlpha: 0, yPercent: 110 });
+        return;
+      }
+
+      if (prefersReducedMotion()) {
+        gsap.set(hintEl, { autoAlpha: 0 });
+        gsap.set(linkEl, { autoAlpha: 1, yPercent: 0 });
+        return;
+      }
+
+      gsap.to(hintEl, { yPercent: -110, duration: 0.7, ease: "expo.out", onComplete: () => gsap.set(hintEl, { autoAlpha: 0 }) });
+      gsap.set(linkEl, { autoAlpha: 1 });
+      gsap.fromTo(linkEl, { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: "expo.out", delay: 0.1 });
+    },
+    { dependencies: [found] },
+  );
 
   useEffect(() => {
     const host = hostRef.current;
@@ -125,7 +157,8 @@ const PixelField = () => {
       canvas.width = Math.round(width * dpr);
       canvas.height = Math.round(height * dpr);
       gl.viewport(0, 0, canvas.width, canvas.height);
-      size = Math.max(6, Math.round(width / (width < 700 ? 70 : 160)));
+      const narrow = width < 700;
+      size = Math.max(narrow ? 4 : 6, Math.round(width / (narrow ? 80 : 160)));
 
       const offscreen = document.createElement("canvas");
       offscreen.width = width;
@@ -133,8 +166,11 @@ const PixelField = () => {
       const ctx = offscreen.getContext("2d");
       if (!ctx) return;
       const family = getComputedStyle(host).fontFamily;
-      const lines = ["Find the", "missing pixel."];
-      let fontSize = Math.min(width * 0.14, height * 0.3);
+      const centreY = height * (narrow ? 0.38 : 0.42);
+      const lines = narrow ? ["Find the", "missing", "pixel."] : ["Find the", "missing pixel."];
+      const pixelLine = lines.length - 1;
+      const lineY = (index: number) => centreY + (index - (lines.length - 1) / 2) * fontSize * 1.04;
+      let fontSize = narrow ? Math.min(width * 0.2, height * 0.17) : Math.min(width * 0.14, height * 0.3);
       ctx.font = `600 ${fontSize}px ${family}`;
       const widest = Math.max(...lines.map((line) => ctx.measureText(line).width));
       fontSize *= Math.min(1, (width * 0.84) / widest);
@@ -142,9 +178,7 @@ const PixelField = () => {
       ctx.fillStyle = "#ffffff";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      const centreY = height * 0.42;
-      ctx.fillText(lines[0], width / 2, centreY - fontSize * 0.52);
-      ctx.fillText(lines[1], width / 2, centreY + fontSize * 0.52);
+      lines.forEach((line, index) => ctx.fillText(line, width / 2, lineY(index)));
 
       const data = ctx.getImageData(0, 0, width, height).data;
       const points: number[] = [];
@@ -165,12 +199,12 @@ const PixelField = () => {
       }
       if (!ink.length) return;
 
-      const secondLine = lines[1];
+      const secondLine = lines[pixelLine];
       const letterIndex = secondLine.indexOf("pixel");
       const lineLeft = width / 2 - ctx.measureText(secondLine).width / 2;
       const glyphWidth = ctx.measureText("p").width;
       const dotX = lineLeft + ctx.measureText(secondLine.slice(0, letterIndex)).width + glyphWidth / 2;
-      const dotY = centreY + fontSize * 0.45;
+      const dotY = lineY(pixelLine) - fontSize * 0.07;
       let best = 0;
       let bestDistance = Infinity;
       ink.forEach(([x, y], index) => {
@@ -237,7 +271,7 @@ const PixelField = () => {
       const point = local(event);
       const now = (performance.now() - start) / 1000;
       const distance = Math.hypot(point.x - missing.x, point.y - missing.y);
-      if (!foundTarget && distance < size * 2.4) {
+      if (!foundTarget && distance < Math.max(size * 2.4, 16)) {
         foundTarget = 1;
         focusTarget = 1;
         focusTimer = window.setTimeout(() => {
@@ -248,7 +282,6 @@ const PixelField = () => {
         setFlash(true);
         window.setTimeout(() => setFlash(false), 80);
         setTitle("Found it. Now imagine what we’d find in your brand.");
-        setHint("");
         playSound("found");
         return;
       }
@@ -356,13 +389,20 @@ const PixelField = () => {
         >
           {title}
         </p>
-        {found ? (
-          <UnderlineLink href="mailto:hello@themissingpixel.studio" className="font-mpx-body pointer-events-auto text-22">
-            Start a project
-          </UnderlineLink>
-        ) : (
-          <p className="font-mpx-body text-right text-14 text-(color:--mpx-white)/60 max-md:text-left">{hint}</p>
-        )}
+        <div className="grid justify-items-end overflow-hidden max-md:justify-items-start">
+          <p
+            ref={hintRef}
+            aria-hidden={found}
+            className="font-mpx-body col-start-1 row-start-1 text-right text-14 text-(color:--mpx-white)/60 max-md:text-left"
+          >
+            <RollText text={hint} className="justify-items-end max-md:justify-items-start" />
+          </p>
+          <div ref={linkRef} className={`col-start-1 row-start-1 ${found ? "pointer-events-auto" : "invisible"}`}>
+            <UnderlineLink href="mailto:hello@themissingpixel.studio" className="font-mpx-body text-22" tabIndex={found ? 0 : -1}>
+              Start a project
+            </UnderlineLink>
+          </div>
+        </div>
       </div>
     </div>
   );

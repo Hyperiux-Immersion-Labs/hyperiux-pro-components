@@ -15,7 +15,7 @@ type SectionHeadProps = {
 const SectionHead = ({
   title,
   text,
-  stacked = false,
+  stacked = true,
   titleClassName,
   textClassName = "w-[32%]",
   children,

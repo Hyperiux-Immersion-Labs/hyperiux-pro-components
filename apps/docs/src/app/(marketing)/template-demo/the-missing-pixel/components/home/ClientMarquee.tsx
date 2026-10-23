@@ -49,10 +49,11 @@ const ClientMarquee = () => {
   return (
     <section
       ref={sectionRef}
+      id="brands"
       aria-label="Some of the brands we work with"
       onPointerEnter={() => setSpeed(0)}
       onPointerLeave={() => setSpeed(1)}
-      className="overflow-hidden pt-[7%] [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] max-lg:py-[12%] max-md:pt-[15%]"
+      className="overflow-hidden py-[7%] [mask-image:linear-gradient(90deg,transparent,#000_12%,#000_88%,transparent)] max-lg:py-[12%] max-md:py-[15%]"
     >
       <div ref={trackRef} className="flex w-max">
         {[0, 1].map((group) => (

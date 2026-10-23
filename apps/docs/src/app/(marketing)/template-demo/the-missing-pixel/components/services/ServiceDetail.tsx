@@ -22,6 +22,17 @@ import danielCho from "../../assets/pictures/q-1.webp";
 const PX = "px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]";
 const SECTION = `${PX} flex flex-col gap-14 py-[7%] max-lg:gap-11 max-lg:py-[12%] max-md:py-[15%]`;
 
+const AccentLast = ({ text }: { text: string }) => {
+  const words = text.split(" ");
+  const last = words.pop();
+  return (
+    <>
+      {words.length > 0 && `${words.join(" ")} `}
+      <span className="text-mpx-accent">{last}</span>
+    </>
+  );
+};
+
 const ServiceDetail = ({ service }: { service: Service }) => (
   <>
     <PageHero
@@ -31,7 +42,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
         { label: "Services", href: ROUTES.services },
         { label: service.title },
       ]}
-      title={service.title}
+      title={<AccentLast text={service.title} />}
       text={service.description}
     >
       <div className="flex flex-wrap gap-3">

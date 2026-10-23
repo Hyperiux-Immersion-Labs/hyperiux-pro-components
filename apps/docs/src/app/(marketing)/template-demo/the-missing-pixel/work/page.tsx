@@ -17,7 +17,7 @@ const page = () => (
       crumbs={[{ label: "Home", href: ROUTES.home }, { label: "Work" }]}
       title={
         <>
-          Proof,
+          <span className="text-mpx-accent">Proof,</span>
           <br />
           not promises.
         </>

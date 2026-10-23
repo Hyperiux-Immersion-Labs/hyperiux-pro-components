@@ -190,13 +190,11 @@ const WorkScroll = () => {
   return (
     <section ref={sectionRef} id="work" aria-label="Selected work" className="relative">
       <div className="sticky top-0 flex h-screen flex-col justify-center gap-[6vw] overflow-hidden max-lg:relative max-lg:h-auto max-lg:gap-[10vw] max-lg:py-[12%] max-md:gap-14 max-md:py-[15%]">
-        <div className="grid grid-cols-[1fr_31%] items-end gap-x-[2vw] gap-y-[1vw] px-[5vw] max-lg:grid-cols-1 max-lg:gap-y-4 max-lg:px-[6vw] max-md:px-[7vw]">
-          <MaskReveal
-            as="h2"
-          >
+        <div className="flex flex-col items-start gap-4 px-[5vw] max-lg:gap-4 max-lg:px-[6vw] max-md:px-[7vw]">
+          <MaskReveal as="h2" className="w-full leading-[1.2]">
             Work we’d put on the fridge
           </MaskReveal>
-          <LineReveal className="w-[83%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] ] max-md:w-full ">
+          <LineReveal className="w-[30%] text-24 leading-[1.55] text-mpx-muted max-lg:w-[70%] max-md:w-full">
             Keep scrolling. The work moves sideways, which is how good ideas tend to arrive.
           </LineReveal>
           <FadeUp>
