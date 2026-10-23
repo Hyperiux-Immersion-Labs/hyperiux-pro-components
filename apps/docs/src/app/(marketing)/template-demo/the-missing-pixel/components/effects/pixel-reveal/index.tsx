@@ -10,6 +10,7 @@ import {
   useRef,
   type ReactNode,
 } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -214,8 +215,8 @@ const PixelReveal = forwardRef<PixelRevealHandle, PixelRevealProps>(function Pix
 
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`.trim()}>
-      <div ref={contentRef} className="h-full w-full [clip-path:inset(50%)]">
-        {imageSrc ? <img src={imageSrc} alt={alt} className="h-full w-full object-cover" /> : null}
+      <div ref={contentRef} className="relative h-full w-full [clip-path:inset(50%)]">
+        {imageSrc ? <Image src={imageSrc} alt={alt} fill sizes="100vw" className="h-full w-full object-cover" /> : null}
         {children}
       </div>
     </div>

@@ -3,6 +3,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import Link from "next/link";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
 import { Check, Link as LinkIcon, Mail } from "lucide-react";
@@ -95,7 +96,7 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
             <span ref={markerRef} aria-hidden className="absolute -left-px top-0 h-0 w-px bg-(--mpx-accent)" />
             {links.map((link) => (
               <li key={link.id} data-id={link.id}>
-                <a
+                <Link
                   href={`#${link.id}`}
                   onClick={(event) => go(event, link.id)}
                   aria-current={active === link.id ? "true" : undefined}
@@ -104,7 +105,7 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
                   }`}
                 >
                   {link.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ol>
@@ -115,9 +116,9 @@ const ArticleAside = ({ links, subject }: ArticleAsideProps) => {
             <button type="button" onClick={copy} aria-label="Copy link to this article" className={ICON_BUTTON}>
               {copied ? <Check className={ICON} /> : <LinkIcon className={ICON} />}
             </button>
-            <a href={`mailto:?subject=${encodeURIComponent(subject)}`} aria-label="Share by email" className={ICON_BUTTON}>
+            <Link href={`mailto:?subject=${encodeURIComponent(subject)}`} aria-label="Share by email" className={ICON_BUTTON}>
               <Mail className={ICON} />
-            </a>
+            </Link>
           </div>
         </div>
       </div>

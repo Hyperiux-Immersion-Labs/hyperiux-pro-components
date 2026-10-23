@@ -3,6 +3,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type MouseEvent } from "react";
+import Link from "next/link";
 import { useLenis } from "lenis/react";
 
 type SubNavProps = {
@@ -54,7 +55,7 @@ const SubNav = ({ links }: SubNavProps) => {
       <ul ref={railRef} className="flex gap-2 overflow-x-auto px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] py-[1.2vh] [scrollbar-width:none] max-lg:py-[1.4vh] max-md:py-[1.6vh]">
         {links.map((link) => (
           <li key={link.id} ref={(el) => { itemRefs.current[link.id] = el; }} className="shrink-0">
-            <a
+            <Link
               href={`#${link.id}`}
               onClick={(event) => go(event, link.id)}
               aria-current={active === link.id ? "true" : undefined}
@@ -65,7 +66,7 @@ const SubNav = ({ links }: SubNavProps) => {
               }`}
             >
               {link.label}
-            </a>
+            </Link>
           </li>
         ))}
       </ul>

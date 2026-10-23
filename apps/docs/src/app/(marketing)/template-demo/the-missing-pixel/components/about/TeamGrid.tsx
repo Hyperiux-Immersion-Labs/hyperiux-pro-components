@@ -42,12 +42,12 @@ const TeamGrid = () => (
             }
           >
             <div className="absolute inset-x-[5%] bottom-[4%] z-2 flex gap-2">
-              <a href="https://www.linkedin.com/" rel="noopener" aria-label={`${member.name} on LinkedIn`} className={LINK_CLASSES}>
+              <Link href="https://www.linkedin.com/" rel="noopener" aria-label={`${member.name} on LinkedIn`} className={LINK_CLASSES}>
                 LinkedIn
-              </a>
-              <a href="mailto:hello@themissingpixel.studio" aria-label={`Email ${member.name}`} className={`${LINK_CLASSES} delay-50`}>
+              </Link>
+              <Link href="mailto:hello@themissingpixel.studio" aria-label={`Email ${member.name}`} className={`${LINK_CLASSES} delay-50`}>
                 Email
-              </a>
+              </Link>
             </div>
           </SpotlightEffect>
         </article>
