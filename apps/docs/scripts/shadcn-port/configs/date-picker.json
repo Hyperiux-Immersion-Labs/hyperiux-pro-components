@@ -182,6 +182,18 @@
     [
       "            ref={calendarBox}\n            className=\"relative overflow-hidden\"",
       "            ref={calendarBox}\n            className=\"relative flex overflow-hidden\""
+    ],
+    [
+      "                \"hover:bg-(--hx-background)\",\n                fromBehind",
+      "                \"hover:bg-(--hx-background) aria-expanded:bg-(--hx-background)\",\n                fromBehind"
+    ],
+    [
+      "\"data-[side=bottom]:data-starting-style:-translate-y-12 data-closed:data-[side=bottom]:data-ending-style:-translate-y-12\"",
+      "\"data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4\""
+    ],
+    [
+      "\"data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4\"\n          )}",
+      "\"data-[side=bottom]:data-starting-style:-translate-y-2 data-closed:data-[side=bottom]:data-ending-style:-translate-y-2\"\n          )}"
     ]
   ],
   "defaultTheme": "vscode"

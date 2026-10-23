@@ -770,7 +770,7 @@ function SkeletonDemo(props: Partial<ControlValues>) {
           {content}
         </SkeletonSwap>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground)">
+      <p className="text-center text-sm text-(--hx-muted-foreground)">
         Tip: the placeholders leave before the content arrives, so the card never shows both.
       </p>
 

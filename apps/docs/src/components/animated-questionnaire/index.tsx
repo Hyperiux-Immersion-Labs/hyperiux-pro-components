@@ -2816,7 +2816,7 @@ function QuestionnaireDemo(props: Partial<ControlValues>) {
           </Questionnaire>
         )}
       </div>
-      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: press a choice&apos;s letter to pick it, Enter to continue, and ← to go back.
       </p>
 

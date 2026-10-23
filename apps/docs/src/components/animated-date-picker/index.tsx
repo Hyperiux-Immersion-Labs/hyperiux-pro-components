@@ -1515,7 +1515,7 @@ function DatePicker({
               onPointerEnter={animateTrigger}
               className={cn(
                 "group/trigger h-11 w-fit max-w-full justify-start gap-2.5 px-3.5 text-left text-base font-normal data-[empty=true]:text-(--hx-muted-foreground)",
-                "hover:bg-(--hx-background)",
+                "hover:bg-(--hx-background) aria-expanded:bg-(--hx-background)",
                 fromBehind && "relative z-45",
                 "in-data-[theme=dark]:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-background) in-data-[theme=dark]:bg-[linear-gradient(color-mix(in_oklch,var(--hx-input)_30%,transparent),color-mix(in_oklch,var(--hx-input)_30%,transparent))]",
                 className
@@ -1553,8 +1553,8 @@ function DatePicker({
             "max-w-[calc(100vw-2rem)] p-0",
             "duration-300 ease-out data-open:data-starting-style:scale-100 data-closed:data-ending-style:scale-100 data-closed:delay-150 motion-reduce:animate-none!",
             fromBehind
-              ? "data-[side=bottom]:data-starting-style:-translate-y-12 data-closed:data-[side=bottom]:data-ending-style:-translate-y-12"
-              : "data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4"
+              ? "data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4"
+              : "data-[side=bottom]:data-starting-style:-translate-y-2 data-closed:data-[side=bottom]:data-ending-style:-translate-y-2"
           )}
         >
           <div

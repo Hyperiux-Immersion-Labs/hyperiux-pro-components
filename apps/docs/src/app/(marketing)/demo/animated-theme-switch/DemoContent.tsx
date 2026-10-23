@@ -9,7 +9,7 @@ import LocalRemixerDemo from "@/components/local-remixer/LocalRemixerDemo";
 
 export default function DemoContent() {
   // The switch owns the mode, so the whole page follows it and the reveal spreads over the page, not a box
-  const [mode, setMode] = useState<AnimatedThemeSwitchMode>("light");
+  const [mode, setMode] = useState<AnimatedThemeSwitchMode>("dark");
 
   return (
     <LocalRemixerDemo

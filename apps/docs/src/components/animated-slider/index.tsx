@@ -1289,7 +1289,7 @@ function SliderDemo(props: Partial<ControlValues>) {
           </p>
         </div>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: drag an edge, or click straight to a spot on the track to see the fill spring across.
       </p>
 

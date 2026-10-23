@@ -724,7 +724,7 @@ function SwitchDemo(props: Partial<ControlValues>) {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex min-h-96 max-md:min-h-72 items-center justify-center px-4 py-8">
+      <div className="flex min-h-64 max-md:min-h-72 items-center justify-center px-4 py-8">
         <Switch
           checked={on}
           onCheckedChange={setOn}

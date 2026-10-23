@@ -281,7 +281,7 @@ function Tabs({
   smoothHeight = true,
   hoverHighlight = false,
   divider = true,
-  listBorder = false,
+  listBorder = true,
   panelBorder = false,
   rounded = "lg",
   value: valueProp,
@@ -658,7 +658,7 @@ const controls = {
   },
   hoverHighlight: { group: "Tabs", type: "checkbox", label: "Hover highlight", value: true },
   divider: { group: "Tabs", type: "checkbox", label: "Line under tabs", value: true },
-  listBorder: { group: "Tabs", type: "checkbox", label: "Border on tabs", value: false },
+  listBorder: { group: "Tabs", type: "checkbox", label: "Border on tabs", value: true },
   panelBorder: { group: "Content", type: "checkbox", label: "Border on content", value: false },
   rounded: {
     group: "Tabs",
@@ -782,7 +782,7 @@ function TabsDemo(props: Partial<ControlValues>) {
           </TabsPanels>
         </Tabs>
       </div>
-      <p className="text-sm text-(--hx-muted-foreground) max-lg:hidden">
+      <p className="text-center text-sm text-(--hx-muted-foreground) max-lg:hidden">
         Tip: click tabs left and right to see the content travel the way you moved. Arrow keys switch tabs too.
       </p>
 

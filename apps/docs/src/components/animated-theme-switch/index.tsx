@@ -697,7 +697,7 @@ export interface AnimatedThemeSwitchProps extends Partial<ControlValues> {
   onModeChange?: (mode: AnimatedThemeSwitchMode) => void;
 }
 
-export default function AnimatedThemeSwitch({ theme = "spotify", mode = "light", className, onModeChange, ...props }: AnimatedThemeSwitchProps) {
+export default function AnimatedThemeSwitch({ theme = "spotify", mode = "dark", className, onModeChange, ...props }: AnimatedThemeSwitchProps) {
   const [liveMode, setLiveMode] = React.useState(mode);
   const [seenMode, setSeenMode] = React.useState(mode);
   if (seenMode !== mode) {

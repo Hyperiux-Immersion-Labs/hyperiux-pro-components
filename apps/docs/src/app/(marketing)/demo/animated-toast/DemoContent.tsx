@@ -12,7 +12,7 @@ export default function DemoContent() {
       name="animated-toast"
       category="components"
       render={(values) => (
-        <AnimatedToast {...values} className="p-[2vw] max-md:p-[5vw]" />
+        <AnimatedToast {...values} className=" max-md:p-[5vw]" />
       )}
       props={[
         { name: "theme", label: "Theme", type: "string", default: "claude", description: "Colour palette, toasts included. Any theme but Default also tints the timer bar.", remixer: { control: "select", group: "theme", groupTitle: "Theme", options: [{ label: "Default", value: "default" }, { label: "Caffeine", value: "caffeine" }, { label: "Claude", value: "claude" }, { label: "Ghibli", value: "ghibli" }, { label: "Spotify", value: "spotify" }, { label: "Valorant", value: "valorant" }, { label: "Vscode", value: "vscode" }] } },
@@ -40,7 +40,7 @@ export default function DemoContent() {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedToastTheme, values.mode as AnimatedToastMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] pt-[12%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>
