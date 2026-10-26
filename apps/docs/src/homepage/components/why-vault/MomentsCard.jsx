@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 import Link from "next/link";
+import { usePrefetchFor } from "@/lib/prefetch";
 import CursorDemo from "./CursorDemo";
 import ScrollDemo from "./ScrollDemo";
 import TextDemo from "./TextDemo";
@@ -42,6 +43,7 @@ export default function MomentsCard() {
     }, []);
 
     const current = TABS.find((t) => t.id === tab);
+    const effectPrefetch = usePrefetchFor(current.href);
     const needsWebGL = tab !== "text";
 
     useLayoutEffect(() => {
@@ -99,6 +101,7 @@ export default function MomentsCard() {
             </div>
             <Link
                 href={current.href}
+                prefetch={effectPrefetch}
                 className="absolute bottom-4 left-4 z-10 type-label text-foreground after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-700 after:ease-[cubic-bezier(.16,1,.3,1)] hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100"
             >
                 {current.effect}

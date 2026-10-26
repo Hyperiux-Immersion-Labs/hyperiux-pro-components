@@ -1,6 +1,6 @@
 "use client";
 
-import { prefetchFor } from "@/lib/prefetch";
+import { usePrefetchFor } from "@/lib/prefetch";
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -143,11 +143,12 @@ function useSweepHover(rootRef) {
 }
 
 function FooterBlockLink({ href, children }) {
+  const linkPrefetch = usePrefetchFor(href);
   const isExternal = href?.startsWith("http");
   return (
     <Link
       href={href}
-      prefetch={prefetchFor(href)}
+      prefetch={linkPrefetch}
       target={isExternal ? "_blank" : "_self"}
       rel={isExternal ? "noopener noreferrer" : undefined}
       data-sweep-link

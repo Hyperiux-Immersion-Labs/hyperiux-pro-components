@@ -230,7 +230,7 @@ export default function CliTokenManager({ plan, hasToken = false }) {
       {mounted &&
         createPortal(
           <Modal open={tokenDialog} onClose={() => setTokenDialog(false)} title="Copy this token now">
-            It won&apos;t be shown again. Keep it somewhere safe, like your password manager or your project&apos;s .env file.
+            It won&apos;t be shown again. Keep it somewhere safe, like your project&apos;s .env file.
             <div className="flex w-full items-center gap-3 bg-foreground/5 px-4 py-3 ring-1 ring-inset ring-foreground/15">
               <code className="type-small min-w-0 flex-1 break-all text-left font-code text-foreground">{token}</code>
               <button

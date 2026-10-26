@@ -1,7 +1,6 @@
 import SectionOverlay from "@/components/Animations/SectionOverlay";
 import dynamic from "next/dynamic";
 import VaultShell from "@/Layouts/VaultShell";
-import { getSearchIndexEffects } from "@/lib/search-index";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import CommunityCrowd from "@/components/Community/CommunityCrowd";
@@ -47,14 +46,12 @@ export const metadata = createPageMetadata({
   image: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/community.jpg",
 });
 
-export default async function CommunityPage() {
-  const effects = await getSearchIndexEffects();
-
+export default function CommunityPage() {
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={COMMUNITY_FAQ} />
-      <VaultShell effects={effects}>
+      <VaultShell>
         <main id="main-content" className="cm-x relative isolate z-1 bg-transparent font-avenir text-white [&_[id]]:scroll-mt-24">
           <CommunityCrowd />
           <CommunityHero />

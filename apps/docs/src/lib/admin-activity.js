@@ -96,6 +96,34 @@ function parseUTCDateParam(value) {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+function isValidTimeZone(timeZone) {
+  if (!timeZone) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+// Midnight of a UTC-parsed YYYY-MM-DD in `timeZone`, as an instant: shifted by the
+// zone's offset on that day (IST +5:30 -> 18:30Z the day before)
+function zonedDayStart(utcMidnight, timeZone) {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    hourCycle: "h23",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+  }).formatToParts(utcMidnight);
+  const get = (type) => Number(parts.find((part) => part.type === type).value);
+  const wallClockAsUTC = Date.UTC(get("year"), get("month") - 1, get("day"), get("hour"), get("minute"), get("second"));
+  return new Date(utcMidnight.getTime() - (wallClockAsUTC - utcMidnight.getTime()));
+}
+
 // One bounds resolver shared by every admin endpoint exposing the "Today /
 // 7d / 30d / 90d / All time / Custom range" picker - explicit `from`/`to`
 // (plain YYYY-MM-DD strings, as sent by an <input type="date">) take
@@ -104,9 +132,13 @@ function parseUTCDateParam(value) {
 // need: ISO timestamps (start inclusive, end EXCLUSIVE - for timestamptz
 // columns) and plain date strings (both ends inclusive - for a DATE column
 // like install_unlocks.usage_date, where "the whole day" is the unit).
-export function resolveDateBounds({ range, from, to } = {}) {
+// `timeZone` (an IANA name from the viewer's browser, optional): the custom from/to
+// days are that zone's days, not UTC ones - so a table that shows dates in local time
+// filters by the same dates it shows. The DATE-column strings stay as picked.
+export function resolveDateBounds({ range, from, to, timeZone } = {}) {
   const customFrom = parseUTCDateParam(from);
   const customTo = parseUTCDateParam(to);
+  const zone = isValidTimeZone(timeZone) ? timeZone : null;
 
   const start = customFrom || resolveRangeStart(range);
 
@@ -116,9 +148,12 @@ export function resolveDateBounds({ range, from, to } = {}) {
     endExclusive.setUTCDate(endExclusive.getUTCDate() + 1);
   }
 
+  const startInstant = start && customFrom && zone ? zonedDayStart(start, zone) : start;
+  const endInstant = endExclusive && zone ? zonedDayStart(endExclusive, zone) : endExclusive;
+
   return {
-    startISO: start ? start.toISOString() : null,
-    endISO: endExclusive ? endExclusive.toISOString() : null,
+    startISO: startInstant ? startInstant.toISOString() : null,
+    endISO: endInstant ? endInstant.toISOString() : null,
     startDateString: start ? start.toISOString().slice(0, 10) : null,
     endDateString: customTo ? customTo.toISOString().slice(0, 10) : null,
   };

@@ -16,6 +16,7 @@ import { unlockScroll, useScrollLockLenis } from "../components/scroll-lock";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { MEDIA } from "@/lib/breakpoints";
 import { EasterEggDot } from "../components/easter-egg/EasterEgg";
+import { takeIntroGate } from "@/lib/intro-gate";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, SplitText);
@@ -30,7 +31,6 @@ const AT_ACTIONS = 2.75;
 // Scroll (the shared Lenis lock from the loader) resumes while the heading is still rising
 const AT_UNLOCK = AT_HEADING + 0.5;
 
-const INTRO_HIDDEN = { visibility: "hidden" };
 function revealIntroTargets(...els) {
     gsap.set(els.filter(Boolean), { autoAlpha: 1, visibility: "visible" });
 }
@@ -60,13 +60,20 @@ function shouldBypassHeroIntroForAudit() {
     return isLighthouseOrHeadless() || isSoftwareRenderer();
 }
 
+// On a full load the head script has already decided (and hidden the intro's targets with
+// CSS, or not); a later client-side visit decides here
+function shouldSkipHeroIntro() {
+    const gate = takeIntroGate("hero");
+    if (gate !== null) return !gate;
+    return shouldBypassHeroIntroForAudit() || prefersReducedMotion();
+}
+
 export default function Hero() {
     const rootRef = useRef(null);
     const canvasRef = useRef(null);
     const headingRef = useRef(null);
     const copyRef = useRef(null);
     const actionsRef = useRef(null);
-    const coverRef = useRef(null);
     const loaderComplete = useLoaderComplete();
     const [playIntro, setPlayIntro] = useState(false);
     const [skipGPU, setSkipGPU] = useState(true);
@@ -90,16 +97,13 @@ export default function Hero() {
     const introRef = useRef(0);
 
     useLayoutEffect(() => {
-        const dropCover = () => gsap.set(coverRef.current, { display: "none" });
-
-        if (shouldBypassHeroIntroForAudit() || prefersReducedMotion()) {
+        if (shouldSkipHeroIntro()) {
             introRef.current = 1;
             revealIntroTargets(
                 headingRef.current,
                 copyRef.current,
                 actionsRef.current
             );
-            dropCover();
             unlockScroll();
             return;
         }
@@ -108,8 +112,7 @@ export default function Hero() {
             copyRef.current,
             actionsRef.current
         );
-        dropCover();
-        // Intentional: the intro can only start after this mount-time setup (cover dropped, targets hidden)
+        // Intentional: the intro can only start after this mount-time setup (targets hidden)
         // eslint-disable-next-line react-hooks/set-state-in-effect
         setSkipGPU(shouldSkipRealtimeGPU());
         setPlayIntro(true);
@@ -207,7 +210,8 @@ export default function Hero() {
         { dependencies: [playIntro && loaderComplete], scope: rootRef }
     );
 
-    useFadeUp()
+    // Scoped to the hero (the tools strip): every other section fades its own .fadeup
+    useFadeUp(rootRef);
 
     return (
         <main ref={rootRef} id="hero-v3" className="relative w-full overflow-x-clip">
@@ -247,7 +251,11 @@ export default function Hero() {
                     <Image
                         {...POSTER}
                         alt="hero"
-                        priority
+                        // Not `priority`/`preload`: that adds a second, unconditional preload, so
+                        // desktops (which show the ribbons) downloaded a poster they never show. The
+                        // <link> above preloads it for tablet and mobile only.
+                        loading="eager"
+                        fetchPriority="high"
                         className="pointer-events-none hidden object-cover object-center select-none max-lg:block"
                     />
                 )}
@@ -255,18 +263,18 @@ export default function Hero() {
             <div className="pointer-events-none relative z-10 mx-auto flex min-h-svh w-full max-w-384 flex-col justify-end px-[calc(var(--cvw)*4.5)] pt-[calc(var(--cvw)*8)] max-lg:px-[calc(var(--cvw)*7)] max-md:px-5! pb-[calc(var(--cvw)*5)] max-lg:pt-32 max-lg:pb-[12vw] max-md:pt-32 max-md:pb-10">
                 <div className="flex items-end justify-between gap-[calc(var(--cvw)*6)] max-lg:flex-col max-lg:items-stretch max-lg:gap-[6vw] max-md:items-stretch max-md:gap-5">
                    
-                    <h1 ref={headingRef} className="relative min-w-0 flex-[1.5] type-display leading-[1.12] max-w-[calc(var(--cvw)*53)] max-lg:max-w-full max-md:max-w-full text-white">
+                    <h1 ref={headingRef} data-hero-intro className="relative min-w-0 flex-[1.5] type-display leading-[1.12] max-w-[calc(var(--cvw)*53)] max-lg:max-w-full max-md:max-w-full text-white">
                         The Interaction Layer Your Website Is <span className="gradient-text-animate">Missing</span><EasterEggDot className="pointer-events-auto" />
                     </h1>
 
                     <div className="flex min-w-0 flex-[0.7] flex-col gap-[calc(var(--cvw)*2)] pb-[calc(var(--cvw)*0.6)] max-lg:pb-0 max-lg:gap-[3vw] max-md:pb-0 max-md:gap-5">
-                        <p ref={copyRef} style={INTRO_HIDDEN} className="type-body-lg text-foreground max-w-[calc(var(--cvw)*30)] max-lg:max-w-full max-lg:w-full max-lg:text-left max-md:max-w-full max-md:w-full max-md:text-left">
+                        <p ref={copyRef} data-hero-intro className="type-body-lg text-foreground max-w-[calc(var(--cvw)*30)] max-lg:max-w-full max-lg:w-full max-lg:text-left max-md:max-w-full max-md:w-full max-md:text-left">
                             Source-first scroll systems, cursor effects, text reveals, page transitions, loaders, backgrounds, and WebGL scenes for React and Next.js. Installed as real files in your project, not a dependency you rent.
                         </p>
 
                         <div
                             ref={actionsRef}
-                            style={INTRO_HIDDEN}
+                            data-hero-intro
                             className="pointer-events-auto flex w-fit gap-[calc(var(--cvw)*1)] max-lg:w-full max-lg:flex-col max-lg:gap-5 max-md:pt-4"
                         >
                             <Button
@@ -289,11 +297,6 @@ export default function Hero() {
                 </div>
             </div>
             <HeroToolsStrip />
-            <div
-                ref={coverRef}
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 z-30 bg-background"
-            />
         </main>
     );
 }

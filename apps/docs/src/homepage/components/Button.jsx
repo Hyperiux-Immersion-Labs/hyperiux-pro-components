@@ -1,6 +1,6 @@
 "use client";
 
-import { prefetchFor } from "@/lib/prefetch";
+import { usePrefetchFor } from "@/lib/prefetch";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
@@ -239,6 +239,7 @@ export default function Button({
   scrollOffset = 0,
   icon = null,
 }) {
+  const linkPrefetch = usePrefetchFor(href);
   const lenis = useLenis();
   const [hovered, setHovered] = useState(false);
 
@@ -298,7 +299,7 @@ export default function Button({
 
   return (
     <Link
-      prefetch={prefetchFor(href)}
+      prefetch={linkPrefetch}
       href={href}
       // no id="" when it has none
       id={id || undefined}

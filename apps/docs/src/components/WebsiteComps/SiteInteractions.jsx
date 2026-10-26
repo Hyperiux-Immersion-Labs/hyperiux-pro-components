@@ -9,12 +9,20 @@ import InteractionProvider, {
 import { readSoundPreference } from "@/homepage/components/SoundToggle";
 import { EasterEggProvider } from "@/homepage/components/easter-egg/EasterEgg";
 import SiteCursor from "@/components/WebsiteComps/SiteCursor";
+import { useIdle } from "@/lib/when-idle";
 
 
 const SiteBackground = dynamic(
     () => import("@/homepage/components/SiteBackground"),
     { ssr: false },
 );
+
+// The fluid background is decoration: it starts once the page has loaded, so its first
+// allocation and frames don't compete with the hero's paint and hydration. Its own
+// component, so only it re-renders when the page goes idle.
+function IdleSiteBackground() {
+    return useIdle() ? <SiteBackground /> : null;
+}
 
 const SHOWCASE_PREFIXES = ["/demo", "/template-demo"];
 
@@ -57,7 +65,7 @@ export default function SiteInteractions({ children }) {
 
     return (
         <InteractionProvider uiSounds={!isShowcase}>
-            {!isShowcase && <SiteBackground />}
+            {!isShowcase && <IdleSiteBackground />}
             {!isShowcase && <ResumeSavedSound />}
             {!isShowcase && <SiteCursor />}
             {isShowcase ? children : <EasterEggProvider>{children}</EasterEggProvider>}

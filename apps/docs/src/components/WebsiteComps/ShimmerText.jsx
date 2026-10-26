@@ -36,7 +36,17 @@ export default function ShimmerText({
             .to(shimmerEl, { backgroundPosition: "-150% 0%", duration: 2, ease: "none" })
             .to({}, { duration: 2 });
 
+        // Only shimmer while on screen: an endless loop otherwise restyles the text every
+        // frame for the whole visit (e.g. the footer's, far below the fold)
+        shimmerTimeline.pause();
+        const io = new IntersectionObserver(([entry]) => {
+            if (entry.isIntersecting) shimmerTimeline.resume();
+            else shimmerTimeline.pause();
+        });
+        io.observe(shimmerEl);
+
         return () => {
+            io.disconnect();
             shimmerTimeline.kill();
             gsap.set(shimmerEl, {
                 clearProps: "color,backgroundImage,backgroundSize,backgroundPosition,backgroundClip,WebkitBackgroundClip,WebkitTextFillColor,willChange",

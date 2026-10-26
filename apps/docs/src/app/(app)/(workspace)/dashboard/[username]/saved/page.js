@@ -13,7 +13,7 @@ import { CARD_LAYOUT_TRANSITION, EffectCard } from "@/app/(app)/(workspace)/effe
 import { FilterMenu } from "@/app/(app)/(workspace)/effects/FilterMenu";
 import { useEffectCardActions } from "@/app/(app)/(workspace)/effects/useEffectCardActions";
 import { EFFECT_GRID, EFFECT_GRID_COLS } from "@/app/(app)/(workspace)/templates/tokens";
-import { effectCategories, getEffectHref, getQuickCategoryLabel, resolveEffectCategoryId } from "@/lib/categories";
+import { categoryRoutes, getEffectHref, getQuickCategoryLabel, resolveEffectCategoryId } from "@/lib/category-routes";
 import { getDashboardPreview } from "@/lib/dev/dashboardPreview";
 import { WISHLIST_CHANGED_EVENT } from "@/lib/wishlistEvents";
 import { useGridColumns } from "@/hooks/useGridColumns";
@@ -79,7 +79,7 @@ export default function SavedEffectsPage() {
       const id = resolveEffectCategoryId(effect);
       if (id) counts.set(id, (counts.get(id) || 0) + 1);
     });
-    const ordered = effectCategories.map((c) => c.id).filter((id) => counts.has(id));
+    const ordered = categoryRoutes.map((c) => c.id).filter((id) => counts.has(id));
     return [...ordered, ...[...counts.keys()].filter((id) => !ordered.includes(id))].map((id) => ({ id, count: counts.get(id) }));
   }, [saved]);
 

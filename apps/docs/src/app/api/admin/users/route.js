@@ -122,6 +122,7 @@ export async function GET(request) {
       range: searchParams.get("joined") || "all",
       from: searchParams.get("joinedFrom"),
       to: searchParams.get("joinedTo"),
+      timeZone: searchParams.get("tz"),
     });
 
     // The whole filtered list (Clerk accounts, cached), so every filter, sort and

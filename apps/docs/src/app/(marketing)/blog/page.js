@@ -6,7 +6,6 @@ import {
   getSanityFeaturedBlogPost,
   getAllSanityBlogCategories,
 } from "@/lib/sanity";
-import { getSearchIndexEffects } from "@/lib/search-index";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import { WebpageJsonLd } from "@/lib/json-ld";
 import BlogHero from "./BlogHero";
@@ -46,11 +45,10 @@ export default async function BlogIndexPage({ searchParams }) {
   // retires it, so it doesn't reappear stacked above page 2+.
   const showFeatured = page === 1;
 
-  const [{ posts, total }, categories, featuredPost, effects] = await Promise.all([
+  const [{ posts, total }, categories, featuredPost] = await Promise.all([
     getSanityBlogEntries({ category, page, pageSize: POSTS_PER_PAGE }),
     getAllSanityBlogCategories(),
     showFeatured ? getSanityFeaturedBlogPost() : Promise.resolve(null),
-    getSearchIndexEffects(),
   ]);
 
   // The featured post is pulled out of the regular grid so it isn't shown
@@ -61,7 +59,7 @@ export default async function BlogIndexPage({ searchParams }) {
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
-      <Navbar effects={effects} />
+      <Navbar />
       <LenisSmoothScroll />
       <BlogHero />
      

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { SidebarPlanCard } from "./SidebarPlanCard";
 import { ChevronRight, PanelLeft } from "lucide-react";
-import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { categoryRoutes, getEffectCategoryHref } from "@/lib/category-routes";
 import { getFeaturedEffects } from "@/lib/featured-effects";
 import { useVaultLayout } from "./VaultLayout";
 import { Tooltip } from "@/components/ui/Tooltip";
@@ -209,7 +209,7 @@ export function Sidebar({
   const categoryNavigationItems = useMemo(
     () => [
       ...TIER_CATEGORY_LINKS,
-      ...effectCategories.filter((category) => category.id !== "featured"),
+      ...categoryRoutes.filter((category) => category.id !== "featured"),
     ],
     []
   );
@@ -696,7 +696,7 @@ export function Sidebar({
                       className={`relative flex w-full items-center justify-between gap-3  py-1 text-left text-sm transition-colors cursor-pointer ${
                         id === 0 ? "mt-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
-                        id === effectCategories.length - 1 ? "mb-[calc(var(--hx-vw,1vw)*0.7)]" : ""
+                        id === categoryRoutes.length - 1 ? "mb-[calc(var(--hx-vw,1vw)*0.7)]" : ""
                       } ${
                         isActive
                           ? "text-white"

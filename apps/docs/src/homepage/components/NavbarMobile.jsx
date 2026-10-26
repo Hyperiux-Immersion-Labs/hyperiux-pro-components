@@ -454,6 +454,9 @@ export default function NavbarMobile({
                 id="navbar-mobile-go-to-dashboard"
                 text="Go to Dashboard"
                 href="/dashboard"
+                // A full page load so Clerk can refresh the stale session (see Navbar's account icon)
+                preventDefault
+                onClick={() => window.location.assign("/dashboard")}
                 className="w-full max-lg:py-3 max-lg:text-[clamp(15px,1.8vw,17px)] max-md:py-[1.5vw] max-md:text-[4vw]"
               />
             ) : (

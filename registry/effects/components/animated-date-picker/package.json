@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-date-picker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A button that opens a calendar to pick a single date.",
   "main": "index.tsx",
   "files": [

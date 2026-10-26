@@ -2,9 +2,7 @@
 
 import {
   Suspense,
-  createContext,
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -16,6 +14,7 @@ import PhoneInput from "@/components/WebsiteComps/form/PhoneInput";
 import { GlobalError, StepHeading, SubmitButton } from "@/components/auth/AuthFormPrimitives";
 import Turnstile from "@/components/WebsiteComps/Turnstile";
 import { validateForm } from "@/lib/form-validation";
+import { useCustomAnimationFormModal } from "./CustomAnimationForm";
 
 const MODAL_TRANSITION = {
   duration: 0.5,
@@ -58,32 +57,6 @@ const CUSTOM_ANIMATION_COUNTRIES = [
   { code: "SG", dial: "+65", flag: "🇸🇬", name: "Singapore" },
 ];
 
-// Open/close state used to live in the URL (a ?custom-animation-form=open
-// query param toggled via router.push), so triggering this globally-mounted
-// modal from a heavy page (the effects vault, an effect detail page) forced
-// a real Next.js navigation - re-running every useSearchParams() consumer
-// on that page and, on routes that read searchParams server-side, a fresh
-// RSC fetch - before the modal even started animating. Plain Context state
-// makes open/close an instant local re-render instead, with no router
-// involvement at all. Nothing else in the app reads or links to that query
-// param (checked), so there's no deep-linking behavior being given up here.
-const CustomAnimationFormContext = createContext(null);
-
-export function CustomAnimationFormProvider({ children }) {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const open = useCallback(() => setIsOpen(true), []);
-  const close = useCallback(() => setIsOpen(false), []);
-
-  const value = useMemo(() => ({ isOpen, open, close }), [isOpen, open, close]);
-
-  return (
-    <CustomAnimationFormContext.Provider value={value}>
-      {children}
-    </CustomAnimationFormContext.Provider>
-  );
-}
-
 // Fields match the sign-in page (components/auth/AuthFormPrimitives TextField):
 // Geist Mono label and a quiet white/5 box.
 const FIELD_CLASS =
@@ -107,55 +80,9 @@ function Field({ id, label, error, children }) {
   );
 }
 
-function useCustomAnimationFormModalInner() {
-  const context = useContext(CustomAnimationFormContext);
-
-  if (!context) {
-    throw new Error(
-      "CustomAnimationFormTrigger/Modal must be rendered within a CustomAnimationFormProvider"
-    );
-  }
-
-  return {
-    isOpen: context.isOpen,
-    openCustomAnimationForm: context.open,
-    closeCustomAnimationForm: context.close,
-  };
-}
-
-export function useCustomAnimationFormModal() {
-  return useCustomAnimationFormModalInner();
-}
-
-function CustomAnimationFormTriggerInner({
-  children = "Request Custom Animation",
-  className = "",
-}) {
-  const { openCustomAnimationForm } = useCustomAnimationFormModalInner();
-
-  return (
-    <button
-      id="custom-animation-form-modal-open-custom-animation-form"
-      type="button"
-      onClick={openCustomAnimationForm}
-      className={className}
-    >
-      {children}
-    </button>
-  );
-}
-
-export function CustomAnimationFormTrigger(props) {
-  return (
-    <Suspense fallback={null}>
-      <CustomAnimationFormTriggerInner {...props} />
-    </Suspense>
-  );
-}
-
 function CustomAnimationFormModalInner() {
   const { isOpen, closeCustomAnimationForm } =
-    useCustomAnimationFormModalInner();
+    useCustomAnimationFormModal();
 
   const lenis = useLenis();
 

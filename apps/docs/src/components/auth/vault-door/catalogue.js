@@ -1,6 +1,6 @@
 import "server-only";
 import { getPublicEffectBySlug, getRegistryIndex } from "@/lib/registry";
-import { getQuickCategoryLabel } from "@/lib/categories";
+import { getQuickCategoryLabel } from "@/lib/category-routes";
 
 // Read once per server instance: the per-effect files also carry source code
 let cachedCatalogue = null;

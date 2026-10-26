@@ -282,11 +282,12 @@ export function wireSoundUI(sound, { root = document, hover = 'a,button,[role=ta
   // No swish over still, light sections: data-sound-flow="off"; a quieter one under an instrument
   // (the signal wave's theremin): data-sound-flow="soft". Nearest marker wins, so "on" re-enables inside.
   const SOFT_FLOW = 0.35;
-  const onMove = (e) => { const f = e.target.closest && e.target.closest('[data-sound-flow]'); const mode = f ? f.dataset.soundFlow : 'on'; if (mode === 'off') { lx = e.clientX; ly = e.clientY; return; } if (lx >= 0) speed = Math.max(speed, Math.hypot(e.clientX - lx, e.clientY - ly) * (mode === 'soft' ? SOFT_FLOW : 1)); lx = e.clientX; ly = e.clientY; };
-  const tick = () => { raf = requestAnimationFrame(tick); sound.flow(speed / 55); speed *= 0.8; };
+  const onMove = (e) => { const f = e.target.closest && e.target.closest('[data-sound-flow]'); const mode = f ? f.dataset.soundFlow : 'on'; if (mode === 'off') { lx = e.clientX; ly = e.clientY; return; } if (lx >= 0) speed = Math.max(speed, Math.hypot(e.clientX - lx, e.clientY - ly) * (mode === 'soft' ? SOFT_FLOW : 1)); lx = e.clientX; ly = e.clientY; if (!raf && speed > 0.05) raf = requestAnimationFrame(tick); };
+  // Runs only while the swish is fading: once the pointer is still it settles at 0 and sleeps
+  // until the next move, rather than calling flow() every frame for the life of the page
+  const tick = () => { sound.flow(speed / 55); speed *= 0.8; if (speed > 0.05) raf = requestAnimationFrame(tick); else { speed = 0; sound.flow(0); raf = 0; } };
   root.addEventListener('pointerover', onOver);
   root.addEventListener('click', onClick, true);
   addEventListener('pointermove', onMove, { passive: true });
-  raf = requestAnimationFrame(tick);
   return () => { root.removeEventListener('pointerover', onOver); root.removeEventListener('click', onClick, true); removeEventListener('pointermove', onMove); cancelAnimationFrame(raf); };
 }

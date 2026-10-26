@@ -35,7 +35,7 @@ import {
   FAQTitle,
   FAQWrapper,
 } from "@/components/animated-faq";
-import { getEffectHref, getEffectPreviewHref } from "@/lib/categories";
+import { getEffectHref, getEffectPreviewHref } from "@/lib/category-routes";
 import { resolveEffectVideoUrl} from "@/lib/media";
 import HeadAnim from "@/components/Animations/HeadAnim";
 import Copy from "@/components/Animations/Copy";

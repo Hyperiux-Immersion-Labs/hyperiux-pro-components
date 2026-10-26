@@ -11,7 +11,7 @@ import Button from './Button'
 import NavLinks from './navbar/NavLinks'
 import { useNavbarLoader } from './navbar/useNavbarLoader'
 import { getPageScrollProgress } from './navbar/utils'
-import { GlobalSearch } from '../layout/SearchBar'
+import LazyGlobalSearch from '../layout/LazyGlobalSearch'
 
 export default function Navbar({ effects = [] }) {
     const navbarRef = useRef(null)
@@ -147,7 +147,7 @@ export default function Navbar({ effects = [] }) {
             </div>
             </nav>
 
-            <GlobalSearch effects={effects} externalOpen={openTrigger} />
+            <LazyGlobalSearch effects={effects} externalOpen={openTrigger} />
         </>
     )
 }

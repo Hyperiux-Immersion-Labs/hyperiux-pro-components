@@ -3,7 +3,6 @@ import AuthShell from "@/components/auth/AuthShell";
 import { createPageMetadata } from "@/lib/seo-metadata";
 import Navbar from "@/components/WebsiteComps/Navbar";
 import NavbarMobile from "@/components/WebsiteComps/NavbarMobile";
-import { getSearchIndexEffects } from "@/lib/search-index";
 
 export const metadata = createPageMetadata({
   title: "Continue Sign Up | Hyperiux Vault",
@@ -16,12 +15,10 @@ export const metadata = createPageMetadata({
   },
 });
 
-export default async function SignUpContinuePage() {
-  const effects = await getSearchIndexEffects();
-
+export default function SignUpContinuePage() {
   return (
     <>
-      <Navbar effects={effects} />
+      <Navbar />
       <NavbarMobile />
 
       <AuthShell>

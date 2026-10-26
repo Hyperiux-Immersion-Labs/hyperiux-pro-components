@@ -7,7 +7,7 @@ import Button from "./Button";
 import HoverLink from "./HoverLink";
 import { PlusIcon, User } from "lucide-react";
 import { useLenis } from "lenis/react";
-import { GlobalSearch } from "@/components/layout/SearchBar";
+import LazyGlobalSearch from "@/components/layout/LazyGlobalSearch";
 import { useCachedClerkSession } from "@/lib/clerkSessionCache";
 import { useLoaderComplete, useLoaderHandoff } from "./loader-state";
 import NavDropdown from "./NavDropdown";
@@ -267,13 +267,19 @@ export default function Navbar({
             </button>
           )}
           {isSignedIn || cachedSignedIn ? (
-            <Link
+            // A full page load, not a client-side <Link>: marketing pages run no Clerk JS,
+            // so the session token here is usually stale. Clerk can only refresh it
+            // (handshake) on a document request - an RSC fetch reads as signed out and
+            // the proxy bounced signed-in visitors to /sign-in.
+            // eslint-disable-next-line @next/next/no-html-link-for-pages
+            <a
               href="/dashboard"
               aria-label="Account"
+              data-no-page-transition
               className="group flex size-(--vault-ctl-h) items-center justify-center rounded-full border border-primary bg-dark-card text-white/80 transition-colors hover:bg-dark-card hover:text-foreground"
             >
               <User className="size-4" />
-            </Link>
+            </a>
           ) : (
             // leading-normal: the header line height (1.5), so it matches VaultHeader's Sign In
             !hideSignIn && <Button id="navbar-sign-in" href="/sign-in" text="Sign In" className="leading-normal" />
@@ -291,7 +297,7 @@ export default function Navbar({
         hideSignIn={hideSignIn}
       />
 
-      <GlobalSearch effects={effects} externalOpen={openTrigger} />
+      <LazyGlobalSearch effects={effects} externalOpen={openTrigger} />
       <TutorialVideoHost />
     </>
   );

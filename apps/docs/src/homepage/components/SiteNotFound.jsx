@@ -3,8 +3,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import Matter from "matter-js";
-import { createFellOver } from "../lib/fell-over";
 import { suggestPages } from "../lib/suggest-pages";
 import { useInteraction } from "./InteractionProvider";
 import Button from "./Button";
@@ -65,21 +63,31 @@ export default function SiteNotFound({ pages = [] }) {
 
     useEffect(() => {
         document.documentElement.style.overflow = "hidden";
-        const fell = createFellOver(canvasRef.current, {
-            Matter,
-            onFirstGrab: () => setGrabbed(true),
-            onGrab: (x) => sound?.hover?.(x),
-            onSnap: (i) => sound?.note?.(i + 2),
-            onHit: () => sound?.tap?.(),
-            onQuip: showQuip,
-            onDone: () => { sound?.reform?.(); setStanding(true); setRevealed(true); },
-            onUndone: () => setStanding(false),
-            ...aeonikOptions(),
-        });
-        fellRef.current = fell;
+        // The physics engine loads with the page that uses it. As the root not-found
+        // boundary this module ships with every route, so a static import would put
+        // matter-js (~80 KB) on all of them.
+        let cancelled = false;
+        Promise.all([import("matter-js"), import("../lib/fell-over")]).then(
+            ([{ default: Matter }, { createFellOver }]) => {
+                if (cancelled) return;
+                const fell = createFellOver(canvasRef.current, {
+                    Matter,
+                    onFirstGrab: () => setGrabbed(true),
+                    onGrab: (x) => sound?.hover?.(x),
+                    onSnap: (i) => sound?.note?.(i + 2),
+                    onHit: () => sound?.tap?.(),
+                    onQuip: showQuip,
+                    onDone: () => { sound?.reform?.(); setStanding(true); setRevealed(true); },
+                    onUndone: () => setStanding(false),
+                    ...aeonikOptions(),
+                });
+                fellRef.current = fell;
+            },
+        );
         return () => {
+            cancelled = true;
             clearTimeout(quipTimerRef.current);
-            fell.destroy();
+            fellRef.current?.destroy();
             fellRef.current = null;
             document.documentElement.style.overflow = "";
         };

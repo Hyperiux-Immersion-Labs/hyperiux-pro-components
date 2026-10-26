@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
+import { whenIdle } from "@/lib/when-idle";
 
 const GTM_ID = "GTM-NCDH9PHF";
 
@@ -14,16 +15,20 @@ export default function DeferredGTM() {
     if (isLighthouseOrHeadless() || isSoftwareRenderer()) return;
     if (window.google_tag_manager?.[GTM_ID]) return;
 
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push({
-      "gtm.start": new Date().getTime(),
-      event: "gtm.js",
-    });
+    // Started once the page is idle rather than during hydration, so the container and the
+    // tags it pulls in don't compete with the page loading. The visit is still recorded.
+    return whenIdle(() => {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({
+        "gtm.start": new Date().getTime(),
+        event: "gtm.js",
+      });
 
-    const script = document.createElement("script");
-    script.async = true;
-    script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
-    document.head.appendChild(script);
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = `https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`;
+      document.head.appendChild(script);
+    }).cancel;
   }, []);
 
   return null;

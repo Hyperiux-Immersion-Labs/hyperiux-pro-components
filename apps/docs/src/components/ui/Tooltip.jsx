@@ -1,9 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "motion/react";
-import { usePathname } from "next/navigation";
+import { useEffect, useId, useRef } from "react";
 
 // Gap between the trigger and the tooltip.
 const GAP = 10;
@@ -11,21 +8,22 @@ const GAP = 10;
 const CLOSE_DELAY = 90;
 
 // One shared tooltip for the whole page: triggers only report which one is hovered, and
-// <TooltipHost /> (mounted once in the root layout) draws it, sliding between triggers.
+// <TooltipHost /> (./TooltipHost, mounted once in the root layout) draws it, sliding
+// between triggers. This file is the light half every page with a tooltip loads.
 let state = null; // { id, label, position, rect } | null
 let closeTimer = 0;
 const listeners = new Set();
 
-function setState(next) {
+function setTooltipState(next) {
   state = next;
   listeners.forEach((fn) => fn());
 }
-function subscribe(fn) {
+export function subscribeTooltip(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
-const getSnapshot = () => state;
-const getServerSnapshot = () => null;
+export const getTooltipSnapshot = () => state;
+export const getTooltipServerSnapshot = () => null;
 
 let lastCenter = 0;
 function open(next) {
@@ -36,7 +34,7 @@ function open(next) {
   // Which way the tooltip travels, so its text slides in from that side.
   const dir = center >= lastCenter ? 1 : -1;
   lastCenter = center;
-  setState({ ...next, dir, vertical });
+  setTooltipState({ ...next, dir, vertical });
 }
 // Only the trigger whose tooltip is showing may close it. (The timer is shared: a close
 // from any other trigger - e.g. a whole grid of cards unmounting on navigation - used to
@@ -45,18 +43,24 @@ function close(id) {
   if (id !== undefined && state?.id !== id) return;
   clearTimeout(closeTimer);
   closeTimer = setTimeout(() => {
-    if (state && (id === undefined || state.id === id)) setState(null);
+    if (state && (id === undefined || state.id === id)) setTooltipState(null);
   }, CLOSE_DELAY);
+}
+
+// Hides the tooltip now, cancelling any pending close (the host: page change, resize)
+export function clearTooltip() {
+  clearTimeout(closeTimer);
+  setTooltipState(null);
 }
 
 // A trigger leaving the page takes its tooltip with it, straight away.
 function closeNow(id) {
   if (state?.id !== id) return;
   clearTimeout(closeTimer);
-  setState(null);
+  setTooltipState(null);
 }
 
-function anchorFor(rect, position) {
+export function anchorFor(rect, position) {
   if (position === "right") return { x: rect.right + GAP, y: rect.top + rect.height / 2, shift: "translate(0, -50%)", origin: "left center" };
   if (position === "bottom") return { x: rect.left + rect.width / 2, y: rect.bottom + GAP, shift: "translate(-50%, 0)", origin: "top center" };
   return { x: rect.left + rect.width / 2, y: rect.top - GAP, shift: "translate(-50%, -100%)", origin: "bottom center" };
@@ -70,7 +74,7 @@ export function Tooltip({ label, children, className = "", position = "top", hid
   // Keep a live label (e.g. "Copy" -> "Copied") flowing into the open tooltip.
   useEffect(() => {
     labelRef.current = label;
-    if (state?.id === id && state.label !== label) setState({ ...state, label });
+    if (state?.id === id && state.label !== label) setTooltipState({ ...state, label });
   }, [label, id]);
 
   useEffect(() => () => closeNow(id), [id]);
@@ -92,91 +96,11 @@ export function Tooltip({ label, children, className = "", position = "top", hid
       onClickCapture={() => {
         if (hideOnClick) {
           clearTimeout(closeTimer);
-          if (state?.id === id) setState(null);
+          if (state?.id === id) setTooltipState(null);
         }
       }}
     >
       {children}
     </span>
-  );
-}
-
-export function TooltipHost() {
-  const tip = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const pathname = usePathname();
-
-  // A page change always clears the tooltip (its trigger belonged to the old page).
-  useEffect(() => {
-    clearTimeout(closeTimer);
-    setState(null);
-  }, [pathname]);
-  const mounted = typeof document !== "undefined";
-
-  // Dismiss on resize: the stored rect would be stale.
-  useEffect(() => {
-    if (!tip) return undefined;
-    const hide = () => setState(null);
-    window.addEventListener("resize", hide);
-    return () => window.removeEventListener("resize", hide);
-  }, [tip]);
-
-  if (!mounted) return null;
-
-  let anchor = null;
-  if (tip) {
-    anchor = anchorFor(tip.rect, tip.position);
-  }
-  const fromBelow = tip?.position === "bottom" ? -6 : 6;
-
-  return createPortal(
-    <AnimatePresence>
-      {tip && anchor && (
-        <motion.div
-          key="tooltip-host"
-          // Position glides between triggers; only the very first open pops in at the spot.
-          initial={{ x: anchor.x, y: anchor.y }}
-          animate={{ x: anchor.x, y: anchor.y }}
-          transition={{ type: "spring", stiffness: 500, damping: 36, mass: 0.7 }}
-          className="pointer-events-none fixed left-0 top-0 z-9999 max-md:hidden max-lg:hidden"
-        >
-          <div style={{ transform: anchor.shift }}>
-            <motion.div
-              role="tooltip"
-              initial={{ opacity: 0, scale: 0.85, y: fromBelow }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: fromBelow / 2, transition: { duration: 0.12 } }}
-              transition={{ type: "spring", stiffness: 400, damping: 26, mass: 0.6 }}
-              style={{ transformOrigin: anchor.origin }}
-              // w-max: size to the label, not to the space left before the viewport edge; max-w still wraps long ones.
-              className="relative w-max max-w-[20vw] max-h-30 overflow-hidden bg-grey px-3 py-1.5 text-center text-xs font-medium text-white shadow-lg"
-            >
-              <AnimatePresence mode="popLayout" initial={false}>
-                <motion.div
-                  key={`${tip.id}`}
-                  initial={{ opacity: 0, [tip.vertical ? "y" : "x"]: tip.dir * 16 }}
-                  animate={{ opacity: 1, x: 0, y: 0 }}
-                  exit={{ opacity: 0, [tip.vertical ? "y" : "x"]: tip.dir * -16 }}
-                  transition={{ duration: 0.2, ease: "easeOut" }}
-                >
-                  {/* Same trigger, new label (Copy -> Copied): roll vertically instead. */}
-                  <AnimatePresence mode="popLayout" initial={false}>
-                    <motion.div
-                      key={typeof tip.label === "string" ? tip.label : "label"}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                    >
-                      {tip.label}
-                    </motion.div>
-                  </AnimatePresence>
-                </motion.div>
-              </AnimatePresence>
-            </motion.div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>,
-    document.body
   );
 }

@@ -1,9 +1,15 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { useLenis } from "lenis/react";
 import { useInteraction } from "../InteractionProvider";
-import SpotTheJank from "./SpotTheJank";
+import { whenIdle } from "@/lib/when-idle";
+
+// The game is only rendered once someone finds it: its code loads in the background after
+// the page is idle (below), so it is there by the time the dot or the Konami code opens it
+const loadSpotTheJank = () => import("./SpotTheJank");
+const SpotTheJank = dynamic(loadSpotTheJank, { ssr: false });
 
 const KONAMI = ["ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown", "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight", "b", "a"];
 const TOAST_MS = 3600;
@@ -83,6 +89,8 @@ export function EasterEggProvider({ children, realHref = "/effects" }) {
     }, [open, openGame]);
 
     useEffect(() => () => clearTimeout(toastTimerRef.current), []);
+
+    useEffect(() => whenIdle(loadSpotTheJank).cancel, []);
 
     const value = useMemo(() => ({ openGame, toast }), [openGame, toast]);
 

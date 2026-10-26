@@ -1,0 +1,7 @@
+/* Everything: the site plus every effect and template, as Tailwind finds it across the
+   project. Loaded by the demo and template-demo layouts only, after site.css, so on those
+   pages its rules (a superset of site.css's, in the same order) decide the cascade. */
+@layer theme, base, clerk, components, utilities;
+
+@import "tailwindcss";
+@import "./globals.css";

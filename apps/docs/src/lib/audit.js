@@ -1,7 +1,7 @@
-const AUDIT_UA_PATTERN =
+export const AUDIT_UA_PATTERN =
   /Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome|bot|crawler|spider/i;
 
-const SOFTWARE_RENDERER_PATTERN =
+export const SOFTWARE_RENDERER_PATTERN =
   /SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i;
 
 // Server-safe: matches a raw User-Agent string (e.g. a request header), so it
@@ -40,6 +40,12 @@ export function isSoftwareRenderer() {
   if (typeof document === "undefined") return false;
 
   if (softwareRendererResult !== null) return softwareRendererResult;
+
+  // The homepage's head script already probed it (lib/intro-gate.js)
+  if (typeof window.__HX_SOFTWARE_GL__ === "boolean") {
+    softwareRendererResult = window.__HX_SOFTWARE_GL__;
+    return softwareRendererResult;
+  }
 
   try {
     const probe = document.createElement("canvas");

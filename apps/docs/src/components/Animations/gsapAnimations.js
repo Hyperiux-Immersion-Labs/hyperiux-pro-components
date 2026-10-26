@@ -71,10 +71,24 @@ export function useFadeUp(containerRef, deps = []) {
 
     const reduceMotion = prefersReducedMotion();
 
-    gsap.set(content, {
-      opacity: 0,
-      y: reduceMotion ? 0 : 50,
+    // The hidden start state. Elements GSAP hasn't touched yet (the first run, during
+    // hydration) get plain style writes: gsap.set reads each element's computed style
+    // first, and with other sections writing styles in the same commit every such read
+    // forced a style recalculation of the whole page. The tween picks y: 50 up from the
+    // transform when it starts. Elements GSAP already tracks (a re-run) keep gsap.set,
+    // so its cached values stay in step.
+    const tracked = content.filter((element) => element._gsap);
+    content.forEach((element) => {
+      if (element._gsap) return;
+      element.style.opacity = "0";
+      if (!reduceMotion) element.style.transform = "translate(0px, 50px)";
     });
+    if (tracked.length) {
+      gsap.set(tracked, {
+        opacity: 0,
+        y: reduceMotion ? 0 : 50,
+      });
+    }
 
     const ctx = gsap.context(() => {
       content.forEach((element) => {

@@ -12,7 +12,7 @@ import { Bar, ButtonBar, SkeletonCard, useAccountHint } from "@/components/Dashb
 import { useDashboardData } from "@/components/Dashboard/useDashboardData";
 import Button from "@/homepage/components/Button";
 import { TierBadge, effectCategoryLabel, resolveCover } from "@/app/(app)/(workspace)/effects/EffectCard";
-import { getEffectHref } from "@/lib/categories";
+import { getEffectHref } from "@/lib/category-routes";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import { getDashboardPreview, sampleDashboard } from "@/lib/dev/dashboardPreview";
 import { PLANS, getCreditsPerYear } from "@/lib/plans";

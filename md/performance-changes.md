@@ -1,0 +1,111 @@
+# Performance changes (PageSpeed work, October 2026)
+
+What changed in the staged work, why, and what each change does. The goal was a PageSpeed score of
+80+ on mobile and 90+ on desktop without changing how any animation or effect looks.
+
+**Results (local production build, Lighthouse with PageSpeed's mobile settings, median of 3 runs)**
+
+| Point | Mobile | Desktop |
+|---|---|---|
+| Live site at the start | 53 | – |
+| Local, before these changes | 68–69 | 98 |
+| After the head intro gate | 76 | 98 |
+| After the JS and CSS cuts | 80 | 99 |
+| After the main-thread work (now) | 80 | 99 |
+
+Live PageSpeed runs on slower machines over a real network, so expect it a few points lower than these.
+
+Paths below are relative to `apps/docs/` unless they start with `registry/`, `codegen/` or `md/`.
+
+---
+
+## 1. Homepage first paint and intro
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/lib/intro-gate.js` (new), `src/app/layout.js`, `src/app/globals.css` | The homepage HTML was painted under a full-screen cover, and the hero text was hidden until React loaded and decided whether to play the loader and the hero intro. On a phone that decision came several seconds after the HTML arrived. | A small inline script in `<head>` makes the same decision before the first paint: loader or not (first visit in the tab), hero intro or not (reduced motion, audit tools, software-only graphics). It records the result as `data-hx-loader` / `data-hx-hero-intro` attributes on `<html>`, and CSS hides only what has to be hidden. | Return visits and audits paint the hero straight from the server HTML. First visits still get the full loader and intro, exactly as before. | This was the single biggest cause of the slow mobile LCP (the hero text is the LCP element). |
+| `src/homepage/components/Loader.jsx`, `src/homepage/components/loader-state.js` | The loader had its own first-visit check, which could disagree with the head script. A session that started on another page and then navigated to the homepage could leave the loader hidden but still "playing", so the page stayed stuck behind it. | The loader reads the head script's decision (`takeIntroGate`). When it does play, it sets `data-hx-loader` itself, so CSS can never hide a loader that is running. The server renders a plain backdrop in its place until it hydrates. The "loader played" storage key moved into `intro-gate.js` so both use the same one. | One source of truth for whether the loader plays, and no stuck loader. | Fixes the "stuck forever" loader reported during testing, and removes the flash of the page before the loader's backdrop appeared. |
+| `src/homepage/sections/Hero.jsx` | The hero hid its heading, copy and buttons behind an extra cover element plus inline hidden styles until its intro ran. | The cover is removed. The intro targets carry `data-hero-intro`, and they are hidden by CSS only when the head script decided the intro will play. | The intro animation is unchanged. When there is no intro, the hero is visible from the first paint. | Needed for the head-script approach above. |
+| `src/components/layout/PageLoadOverlay.jsx` | After client-side navigation to the homepage, the page-load cover could get stuck on screen. | The overlay decides once, on mount, whether the page started on the homepage, and does nothing in that case. | No stuck cover after navigation. | Bug found while testing the intro changes. |
+| `src/lib/audit.js` | Audit and software-renderer checks were done separately in several places, sometimes with an expensive WebGL probe each time. | Shared patterns, and the software-renderer check reuses the head script's result (`window.__HX_SOFTWARE_GL__`). | One WebGL probe per page load instead of several. | Less work on load, and consistent decisions. |
+
+## 2. Stylesheet split
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/app/site.css` (new), `src/app/globals.css` | Tailwind scanned the whole repo, including 100+ effect demos and template demos, so every page downloaded one huge stylesheet before it could render anything. | The site now loads `site.css`, which builds Tailwind only from site code (pages, homepage, layouts and the component folders the site actually uses). `globals.css` holds the shared custom CSS and is imported by both stylesheets. | The site's render-blocking CSS is much smaller (about 46 KB gzipped). | Render-blocking CSS was a large part of the mobile FCP and LCP. |
+| `src/app/full.css` (new), `src/app/(marketing)/demo/layout.js`, `src/app/(marketing)/template-demo/layout.js` (new) | Demo and template pages use classes from every effect, which the slimmer site stylesheet doesn't include. | Those two route groups also load `full.css` (Tailwind over everything). It is a superset of `site.css`, so it can safely load on top. | Demo and template pages look exactly as before. | Keeps the CSS cut from breaking any demo. |
+| `scripts/check-site-css-sources.mjs` (new) | With a hand-listed set of scanned folders, a new component used by a site page could end up unstyled in production without anyone noticing. | A script follows the imports from all site pages and fails if they reach a component folder that `site.css` doesn't scan. | Run `node scripts/check-site-css-sources.mjs` before shipping (it passes now). | A guard so the CSS split can't silently break styling later. |
+
+## 3. Less JavaScript and data on first load
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/app/(marketing)/page.js`, `src/homepage/Homepage.jsx`, `src/app/(marketing)/blog/page.js`, `src/app/(marketing)/blog/[slug]/page.js`, `src/app/(app)/pricing/page.js`, `src/app/(app)/community/page.js`, `src/app/(app)/signup/continue/[[...continue]]/page.js` | Each of these pages embedded the whole search list (all 173 effects, about 130 KB) in its HTML, just in case someone opened search. | The pages no longer pass the list down. | Smaller HTML on six pages. | The HTML document is on the critical path for every metric. |
+| `src/components/layout/SearchBar.jsx` | (Same as above.) | Search fetches the list once from `/api/effects/search-index` after the page is idle, or straight away if search is opened first. | Search results are the same, and opening search is still instant. | Pairs with the change above. |
+| `src/components/layout/LazyGlobalSearch.jsx` (new), `src/homepage/components/Navbar.jsx`, `src/components/WebsiteComps/Navbar.jsx`, `src/components/layout/VaultHeader.jsx` | The search dialog's code (about 15 KB) loaded with every page, although nobody can use it before pressing ⌘K or the search button. | All three headers render a lazy wrapper. The dialog loads after idle; a ⌘K or search press before then loads it immediately and opens it. | Search behaves the same; its code just isn't in the first load. | Less JS before the first paint. |
+| `src/lib/category-routes.js` (new), `src/lib/categories.js`, and the client files that now import it: dashboard pages (main, saved, usage, admin activity), `effects/EffectCard.jsx`, `effects/PreviewDrawer.jsx`, `effects/[slug]/effect-detail.jsx`, `components/layout/Sidebar.jsx`, `components/layout/VaultLayout.jsx`, `components/layout/VaultHeader.jsx`, `components/ui/EffectCardNew.jsx`, `components/auth/vault-door/catalogue.js` | Client components imported `categories.js`, which carries every category's SEO copy and FAQs (about 55 KB), only to get names, slugs and links. | The light part (ids, names, slugs, aliases and the link helpers) moved to `category-routes.js`. `categories.js` builds on it and re-exports the same functions, so server code is unchanged. | The SEO copy stays on the server. A test confirmed every helper returns exactly what it did before. | About 55 KB of text no longer ships to the browser. |
+| `src/components/WebsiteComps/modals/CustomAnimationForm.jsx` (new), `src/components/WebsiteComps/modals/CustomAnimationFormModal.jsx`, `src/app/(app)/(workspace)/effects/CustomAnimationCta.jsx` | The custom-animation request form (with the motion library and zod) loaded on every page through the root layout. | The context, provider, hook and trigger live in the small new file. The modal loads in the background once the page is idle and is mounted on first open. | The form opens and works as before. | Took the motion library and zod (about 75 KB together with the next two rows) out of the homepage's first load. |
+| `src/components/ui/Tooltip.jsx`, `src/components/ui/TooltipHost.jsx` (new), `src/components/WebsiteComps/DeferredGlobals.jsx` (new), `src/app/layout.js` | The tooltip layer and the exit-intent modal were mounted on load for every page. | The tooltip store and trigger stay light. The animated tooltip host, and the exit-intent modal, mount once the page is idle. | Tooltips and the exit-intent invite work the same. | Same as above. |
+| `src/components/Payments/PlanCheckoutButton.jsx` | The pricing sign-in modal's code loaded with the pricing page. | It loads the first time a signed-out visitor clicks a plan. | The "Welcome Back" modal opens as before. | Same as above. |
+| `src/homepage/components/SiteNotFound.jsx` | The 404 page's physics library (matter-js) was in a chunk every page downloaded. | It is loaded with `import()` only when a 404 actually renders. | The falling-digits 404 works as before. | Removed a large library from every page. |
+| `src/homepage/components/easter-egg/EasterEgg.jsx` | The "Spot the Jank" game (about 7 KB) was in every page's first load. | The game's code loads in the background after idle. | The orange dot and the Konami code still open it. | Less JS before the first paint. |
+| `next.config.mjs` | Code mixed `gsap/...` and `gsap/dist/...` imports, so webpack bundled two copies of GSAP's plugins. ScrollTrigger and SplitText each shipped twice, and two ScrollTrigger instances did the same scroll work. | A webpack alias points both import styles at one copy. No effect files were edited. | One GSAP, one ScrollTrigger. | Smaller JS and less scroll work. |
+| `src/lib/prefetch.js`, `src/homepage/sections/Footer.jsx`, `src/components/WebsiteComps/LinkButton.jsx`, `src/homepage/components/HoverLink.jsx`, `src/homepage/components/Button.jsx`, `src/components/WebsiteComps/Button.jsx`, `src/components/WebsiteComps/CookieConsentNudge.jsx`, `src/homepage/components/why-vault/MomentsCard.jsx` | Next.js prefetched every visible link's page during load (including the dashboard's Clerk bundle), competing with the page's own downloads. | A `usePrefetchFor` hook keeps prefetch off until the page is idle, then prefetches as before. | Navigation is still instant; prefetching just starts a moment later. | Fewer requests while the page loads. |
+| `src/lib/when-idle.js` (new) | Each deferred feature would otherwise need its own idle logic. | Shared `whenIdle()` (run after load, when the main thread is free) and `useIdle()` (a single page-wide idle flag). | Used by everything above. | One idle signal for the whole page, so a page full of links doesn't schedule hundreds of callbacks. |
+
+## 4. Main-thread work and animation loops
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/homepage/lib/fluid-field.js`, `src/homepage/components/SiteBackground.jsx`, `src/components/WebsiteComps/SiteInteractions.jsx` | The fluid background ran a frame loop with pointer and scroll listeners on every page, phones included, where nobody can stir it. On desktop it started during hydration, competing with the hero. | On touch devices (and with reduced motion) it draws the dotted grid once, with no ink layer, frame loop or listeners. The small card fluids use the same code, so they get this too. On desktop it starts once the page is idle and fades in. | Phones show the same dotted grid, still. Desktop keeps the full fluid. | Requested ("remove the fluid on mobile"), and it saves continuous work on phones. |
+| `src/components/Audio/AudioCanvas.jsx` | The sound-toggle wave redrew every frame on every page, even with sound off and the line flat, and read the button's computed colour each frame (a forced style recalculation 60 times a second). | The colour is read once per wake. The loop stops when the line is flat and wakes when sound is toggled. | The wave animation looks the same. | Removed a permanent per-frame cost on every page. |
+| `src/homepage/lib/sound.js` | The UI-sound "swish" loop called the audio engine every frame for the whole visit, even with the pointer still. | It runs only while the swish is fading, and wakes on pointer movement. | Sounds the same. | Removed another permanent per-frame loop. |
+| `src/components/WebsiteComps/ShimmerText.jsx`, `src/components/WebsiteComps/LinkButton.jsx` | Shimmer text animations looped forever, including the footer's "free, forever" line far below the fold, restyling text every frame. | Shimmers pause while off-screen (LinkButton keeps its existing hover pause too). | They look the same when visible. | An idle page now does no style work at all. |
+| `src/components/Animations/gsapAnimations.js`, `src/homepage/sections/Hero.jsx`, `src/homepage/sections/ExplainVault.jsx` | The hero and ExplainVault each ran a fade-up sweep over the whole page, so every `.fadeup` element got two or three animations. Setting their hidden start state with `gsap.set` also made the browser recalculate styles for the whole page several times during hydration. | The hero's fade-up is scoped to the hero, and ExplainVault's (it has no `.fadeup` of its own) is removed. The first-run hidden start state is written as plain styles, so nothing is read back. | Each element fades up once, with the same timing and distance. | Less work during hydration, and no duplicate animations. |
+
+### Scroll smoothness (homepage)
+
+Measured by wheel-scrolling the whole homepage in Chrome on the GPU, with the CPU slowed 4× to stand in for an average laptop. Before this work (clean `master`): median frame 33ms, 304–325 frames over 33ms. Now: median 16.7ms, 225–263 frames over 33ms. With Microsoft Clarity blocked it drops to 149, so Clarity's session recording accounts for about 40% of the remaining slow frames (see Notes).
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/components/SmoothScroll/LenisScroll.jsx` | Lenis set the scroll position after other animations had already written styles in the same frame, so its `scrollTo` forced a full style recalculation every frame (the largest native cost during scroll). | Lenis's update is added first in GSAP's ticker (`prioritize`). | Same smooth scroll. Its cost during a full-page scroll dropped from about 760ms to about 230ms. | Smoother scrolling on slower machines. |
+| `src/components/WebsiteComps/SiteCursor.jsx` | On every scroll event the cursor ran a page-wide `querySelectorAll` just to forget its cached text positions. | The cache is invalidated with a counter instead. | Same cursor behaviour. | Removes about 150ms of work per full scroll. |
+| `src/homepage/lib/fluid-field.js` | Each frame the fluid built a colour string and filled every grid dot separately. It also read `window.scrollY` mid-frame, which forced another style recalculation. | Plain dots are drawn as one path in one fill (warm dots under the ink still drawn individually, on top). The scroll position is taken from the scroll event. | Pixel-identical output, less work per frame. | Cheaper fluid frames while scrolling. |
+
+## 5. Images, third-party scripts and shared chunks
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/homepage/sections/Hero.jsx` | The mobile hero poster had `priority`, which adds a second preload with no screen-size condition, so desktops (which show the WebGL ribbons, not the poster) downloaded it too. `priority` is also deprecated in Next 16. | `loading="eager"` with `fetchPriority="high"` instead. The existing tablet/mobile-only `<link rel="preload">` stays. | Phones still get the poster at high priority; desktops no longer download it. | A wasted request on desktop, plus a deprecated API. |
+| `src/components/WebsiteComps/DeferredGTM.jsx` | Google Tag Manager started during hydration for real visitors and pulled its tags in while the page was still loading. (It was already skipped for audit tools.) | GTM starts once the page is idle. | Visits and events are still recorded, a moment later. Clicks before then queue in `dataLayer` and are sent when GTM loads. | Smoother loading for real users (INP and TBT). |
+| `src/components/WebsiteComps/DeferredAnalytics.jsx` | Microsoft Clarity loaded `afterInteractive`, during hydration. | `lazyOnload`: after the page's load event. | Same recordings, started slightly later. | Same as above. |
+| `src/homepage/Homepage.jsx` | Next merges client-component manifests by route with the `(groups)` stripped, so the homepage (`app/(marketing)/page`) and the workspace layout (`app/(app)/(workspace)/layout`) shared one. The homepage's records for shared components (Lenis, Navbar, Footer, FAQ…) overwrote the workspace's, so /effects, /docs and every effect page downloaded the homepage's own chunk (28 KB gzipped of hero, loader and section code). | `Homepage.jsx` is marked `"use client"` (all its sections already were), so the homepage registers only that one module. | Workspace pages no longer load homepage code. The homepage renders exactly as before. | /effects mobile score 70 → 72 and LCP 8.3s → 6.1s. |
+
+## 6. Other staged changes (not part of the performance work)
+
+| Files | Problem | What changed | What it does now | Why it was needed |
+|---|---|---|---|---|
+| `src/components/animated-date-picker/index.tsx`, `scripts/shadcn-port/configs/date-picker.json`, `public/r/animated-date-picker.json`, `public/r/index.json`, `registry/effects/components/animated-date-picker/*`, `registry/index.json`, `registry/dist/registry-index.json`, `registry/dist/hyperiux-animated-date-picker-1.0.1.tgz` (new) | The date picker read today's date while rendering, which breaks prerendering with `cacheComponents`. | The calendar months are worked out only while the picker is open. The port config, registry entries and npm tarball are synced, and the version bumped to 1.0.1. | The picker behaves the same and prerenders cleanly. | Fixes a build and prerender problem for anyone installing the component. |
+| `src/lib/admin-activity.js`, `src/app/api/admin/users/route.js`, `src/app/api/admin/users/export/route.js`, `src/app/(app)/(workspace)/dashboard/[username]/admin/users/page.js` | The admin Users table shows "Joined" dates in the viewer's local time, but the custom date filter used UTC days. Near midnight, users appeared on one day and filtered under another. | The page sends the browser's time zone, and the API converts the picked days to that zone's midnights. | The filter matches the dates shown, in the table and in the CSV export. | Correct admin filtering. |
+| `scripts/component-ship.mjs`, `md/new-component-workflow.md`, `.gitignore`, `codegen/animated-tooltip/*` (deleted) | The shipping script wrote a `codegen/` folder of JSX copies for pasting into Sanity, and those files could get committed by mistake. | That step was removed from the script and the workflow doc, `codegen/` is ignored, and the leftover tooltip output is deleted. | Shipping no longer writes outside the registry. | Removes a manual step and stray files. |
+| `src/homepage/components/NavbarMobile.jsx` (and the account icon in `src/homepage/components/Navbar.jsx`) | Going to the dashboard by client navigation could reuse a stale Clerk session. | "Go to Dashboard" does a full page load. | Clerk refreshes the session on arrival. | Avoids signed-in users landing on a broken or signed-out dashboard. |
+| `src/components/Dashboard/CliTokenManager.jsx` | The token dialog copy suggested a password manager. | The copy was shortened to point at the project's `.env` file. | – | Copy edit. |
+| `src/components/ui/SignInRequiredModal.jsx` | The modal text wrapped awkwardly. | Text width 80% → 85%. | – | Visual polish. |
+| `src/homepage/components/why-vault/CodeCard.jsx` | On mobile the code card could collapse too short. | A minimum height on mobile. | – | Mobile layout fix. |
+
+---
+
+## Notes
+
+- **`public/sitemap.xml`:** rewritten by every `npm run build` (the `prebuild` step), so a local build always changes it. Commit it only on purpose, or consider ignoring it.
+- **Fonts:** kept exactly as they are (Aeonik Pro, Avenir Next Cyr, IBM Plex Mono), by decision.
+- **Microsoft Clarity:** its session recording calls `caretPositionFromPoint` and more on every scroll. It is the biggest single cost while scrolling (about 40% of the slow frames on a 4×-slowed CPU). Whether to keep it, sample it, or disable recording is a product decision.
+- **Verification (before push):**
+  - **Build:** production build passes.
+  - **Lint:** ESLint is clean on every changed file.
+  - **Unit tests:** 714 pass. The 8 that fail are in `registry-effects.render.test.jsx`, and they fail identically on clean `master`.
+  - **Styles:** computed styles on 17 pages (desktop and mobile) match the full stylesheet.
+  - **Flows:** 31/31 browser flow checks pass, covering loader, intro, client navigation, reduced motion, search, drawer, tooltip, custom form, pricing sign-in, detail, category, blog, docs, 404 and the mobile menu.
+- **Why mobile is still near 80:** the real first paint happens at about 0.1s. PageSpeed's simulated LCP (about 4.5s) charges for everything the page downloads before that paint: about 300 KB of JS, the 46 KB stylesheet and 124 KB of fonts.

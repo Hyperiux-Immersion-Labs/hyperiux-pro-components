@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useUser } from "@clerk/nextjs";
 import Button from "@/homepage/components/Button";
 import RazorpayButtonV3 from "./RazorpayButtonV3";
-import { SignInRequiredModal } from "@/components/ui/SignInRequiredModal";
+// The sign-in form (and the animation library it uses) loads the first time a signed-out
+// visitor picks a plan, not with every page that lists the plans (the homepage included)
+const SignInRequiredModal = dynamic(
+  () => import("@/components/ui/SignInRequiredModal").then((m) => m.SignInRequiredModal),
+  { ssr: false }
+);
 import { PLANS, formatPrice, getUpgradeKind } from "@/lib/plans";
 import { savePendingCheckout } from "@/lib/pendingCheckout";
 import { buttonId } from "@/lib/button-id";
@@ -41,6 +47,9 @@ export default function PlanCheckoutButton({
   const { isLoaded, isSignedIn, user } = useUser();
   // Signed out: the sign-in modal, which lands on /checkout/<plan> once signed in
   const [signInOpen, setSignInOpen] = useState(false);
+  // Mounted from the first open on, so it can animate out
+  const [signInWanted, setSignInWanted] = useState(false);
+  if (signInOpen && !signInWanted) setSignInWanted(true);
 
   const meta = user?.publicMetadata || {};
   // Subscribers from before Pro+ have no tier and count as Pro+
@@ -82,12 +91,12 @@ export default function PlanCheckoutButton({
           text={label}
           className={className}
         />
-        <SignInRequiredModal
+        {signInWanted && <SignInRequiredModal
           open={signInOpen}
           onClose={() => setSignInOpen(false)}
           redirect={`/checkout/${planKey}`}
           action={`get ${PLANS[tier]?.name || "Pro"}`}
-        />
+        />}
       </>
     );
   }

@@ -8,7 +8,6 @@ import {
   getRelatedBlogPosts,
   getSanityBlogAuthorForSlug,
 } from "@/lib/sanity";
-import { getSearchIndexEffects } from "@/lib/search-index";
 import { getReadingTime } from "@/lib/blog-content";
 import { createPageMetadata, getCanonicalUrl } from "@/lib/seo-metadata";
 import { BreadcrumbsJSONLD, WebpageJsonLd, BlogPostingJsonLd, FAQJSONLD } from "@/lib/json-ld";
@@ -75,8 +74,7 @@ export default async function BlogPostPage({ params }) {
 
   if (!post) notFound();
 
-  const [effects, relatedPosts, resolvedAuthor] = await Promise.all([
-    getSearchIndexEffects(),
+  const [relatedPosts, resolvedAuthor] = await Promise.all([
     getRelatedBlogPosts(slug, post, 5),
     post.author?.name ? Promise.resolve(post.author) : getSanityBlogAuthorForSlug(slug),
   ]);
@@ -100,7 +98,7 @@ export default async function BlogPostPage({ params }) {
       <BreadcrumbsJSONLD pathname={url} />
       <BlogPostingJsonLd post={postWithAuthor} url={url} />
       {faqs.length > 0 && <FAQJSONLD faqs={faqs} />}
-      <Navbar effects={effects} />
+      <Navbar />
       <LenisSmoothScroll allowNestedScroll />
 
       <main className="relative flex w-full flex-col gap-[calc(var(--cvw)*5.5)] pt-25 max-lg:pt-32 max-md:gap-[15vw] max-md:pt-28">

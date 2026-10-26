@@ -1,6 +1,6 @@
 "use client";
 
-import { prefetchFor } from "@/lib/prefetch";
+import { usePrefetchFor } from "@/lib/prefetch";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -173,6 +173,7 @@ export default function HoverLink({
   leading,
   children,
 }) {
+  const linkPrefetch = usePrefetchFor(href);
   const [run, setRun] = useState({ active: false, id: 0 });
   const activeRef = useRef(false);
 
@@ -191,7 +192,7 @@ export default function HoverLink({
 
   return (
     <Link
-      prefetch={prefetchFor(href)}
+      prefetch={linkPrefetch}
       href={href}
       onClick={onClick}
       onPointerEnter={start}

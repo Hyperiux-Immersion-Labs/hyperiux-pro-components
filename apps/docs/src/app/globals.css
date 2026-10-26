@@ -1,6 +1,4 @@
-@layer theme, base, clerk, components, utilities;
-
-@import "tailwindcss";
+/* Shared by site.css and full.css: tokens, theme and site-wide CSS. Import those, not this. */
 @import "../styles/blog.css";
 
 :root {
@@ -738,9 +736,14 @@ input:-webkit-autofill:active {
   }
 }
 
-html.loader-first-visit body {
+/* Homepage first paint, decided by the head script in lib/intro-gate.js: the loader's
+   backdrop only exists on a visit that plays it, and what the hero intro animates in is
+   hidden from the first frame (GSAP's inline styles take over once it hydrates). */
+html:not([data-hx-loader]) [data-hx-loader-root] {
+  display: none;
+}
+html[data-hx-hero-intro] [data-hero-intro] {
   visibility: hidden;
-  background: #ffffff;
 }
 
 .self-padd {

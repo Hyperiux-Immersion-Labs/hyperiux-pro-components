@@ -14,7 +14,7 @@ import dynamic from "next/dynamic";
 import { useLenis } from "lenis/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { GlobalSearch } from "./SearchBar";
+import LazyGlobalSearch from "./LazyGlobalSearch";
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
@@ -28,7 +28,7 @@ const ProfileDropdown = dynamic(() => import("./ProfileDropDown"), {
 import Image from "next/image";
 import { ChevronRight, User as UserIcon } from "lucide-react";
 import { HyperiuxLogo } from "@/utils/Icons";
-import { effectCategories, getEffectCategoryHref } from "@/lib/categories";
+import { categoryRoutes, getEffectCategoryHref } from "@/lib/category-routes";
 import { prefersReducedMotion } from "@/lib/motion";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import Button from "@/homepage/components/Button";
@@ -617,7 +617,7 @@ export function VaultHeader({
 
               <MobileNavAccordion open={section === "categories"}>
                 <div className="flex flex-col">
-                  {effectCategories.map((category) => (
+                  {categoryRoutes.map((category) => (
                     <Link
                       key={category.id}
                       href={getEffectCategoryHref(category.id)}
@@ -722,7 +722,7 @@ export function VaultHeader({
         </div>
       </div>
 
-      <GlobalSearch effects={effects} externalOpen={openTrigger} />
+      <LazyGlobalSearch effects={effects} externalOpen={openTrigger} />
     </>
   );
 }

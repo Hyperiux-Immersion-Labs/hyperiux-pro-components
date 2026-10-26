@@ -1,8 +1,7 @@
 import "@/lib/progress-event-polyfill";
 import localFont from "next/font/local";
 import { IBM_Plex_Mono } from "next/font/google";
-import { Suspense } from "react";
-import "./globals.css";
+import "./site.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import DeferredAnalytics from "@/components/WebsiteComps/DeferredAnalytics";
@@ -16,17 +15,17 @@ import {
   WebsiteJsonLd,
 } from "@/lib/json-ld";
 import { createRootMetadata } from "@/lib/seo-metadata";
-import CustomAnimationFormModal, {
+import {
   CustomAnimationFormProvider,
-} from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
-import { ExitIntentInviteModal } from "@/components/WebsiteComps/modals/ExitIntentInviteModal";
+  LazyCustomAnimationFormModal,
+} from "@/components/WebsiteComps/modals/CustomAnimationForm";
+import DeferredGlobals from "@/components/WebsiteComps/DeferredGlobals";
 import { CookieConsentNudge } from "@/components/WebsiteComps/CookieConsentNudge";
 import PixelPageTransition from "@/components/PageTransition/PixelPageTransition";
-import { TooltipHost } from "@/components/ui/Tooltip";
 import SiteInteractions from "@/components/WebsiteComps/SiteInteractions";
 import ReducedMotionConfig from "@/components/WebsiteComps/ReducedMotionConfig";
 import { PageLoadOverlay } from "@/components/layout/PageLoadOverlay";
-import { BREAKPOINTS } from "@/lib/breakpoints";
+import { INTRO_GATE_SCRIPT } from "@/lib/intro-gate";
 
 // The site's two faces: Aeonik Pro (headings / display) and Avenir Next (text),
 // exposed to Tailwind as font-aeonik and font-avenir (globals.css @theme).
@@ -66,12 +65,6 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata = createRootMetadata();
 
-// Runs synchronously before any HTML is painted - adds a class when loader hasn't run yet
-// so the CSS below can hide body content, preventing a flash of hero content before the loader canvas appears.
-// Skips audit agents: UA/webdriver, plus software WebGL (PSI desktop often has a
-// plain Chrome UA and no navigator.webdriver - see lib/audit.js).
-const LOADER_FIRST_VISIT_BLOCK = `(function(){try{if(sessionStorage.getItem('hyperiux-loader-has-run')==='true')return;if(window.location.pathname!=='/')return;if(window.innerWidth<${BREAKPOINTS.lg})return;if(navigator.webdriver||/Lighthouse|Chrome-Lighthouse|Google Page Speed|PTST|HeadlessChrome/i.test(navigator.userAgent||''))return;var c=document.createElement('canvas');var gl=c.getContext('webgl')||c.getContext('experimental-webgl');if(gl){var di=gl.getExtension('WEBGL_debug_renderer_info');var r=di?gl.getParameter(di.UNMASKED_RENDERER_WEBGL):(gl.getParameter(gl.RENDERER)||'');if(/SwiftShader|llvmpipe|Software Rasterizer|Mesa OffScreen/i.test(String(r||'')))return;}document.documentElement.classList.add('loader-first-visit');}catch(e){}})();`;
-
 const CLEAR_STALE_CLERK_COOKIES = `(function(){
   var hasUat=document.cookie.indexOf('__client_uat=')!==-1;
   var hasSession=document.cookie.indexOf('__session=')!==-1;
@@ -109,10 +102,9 @@ export default function RootLayout({ children }) {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="manifest" href="/site.webmanifest" />
 
-        {/* <script
-          id="loader-first-visit-block"
-          dangerouslySetInnerHTML={{ __html: LOADER_FIRST_VISIT_BLOCK }}
-        /> */}
+        {/* Homepage only: decides the loader / hero intro before the first paint, so the
+            page paints from the server HTML instead of waiting under a cover for React */}
+        <script id="intro-gate" dangerouslySetInnerHTML={{ __html: INTRO_GATE_SCRIPT }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
       <body className="min-h-svh text-foreground">
@@ -146,15 +138,10 @@ export default function RootLayout({ children }) {
             
             <CustomAnimationFormProvider>
               {children}
-              <Suspense>
-                <CustomAnimationFormModal />
-              </Suspense>
-              <Suspense>
-              </Suspense>
-              <ExitIntentInviteModal />
+              <LazyCustomAnimationFormModal />
+              <DeferredGlobals />
             </CustomAnimationFormProvider>
           </SiteInteractions>
-          <TooltipHost />
         </ReducedMotionConfig>
         <Analytics />
         <SpeedInsights />

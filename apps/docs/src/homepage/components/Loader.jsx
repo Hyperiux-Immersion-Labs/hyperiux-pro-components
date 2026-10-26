@@ -22,6 +22,7 @@ import {
 } from "./loader-scene";
 import { lockScroll, resetScrollTop, useScrollLockLenis } from "./scroll-lock";
 import { MEDIA } from "@/lib/breakpoints";
+import { takeIntroGate } from "@/lib/intro-gate";
 import Button from "./Button";
 import { useInteraction } from "./InteractionProvider";
 import { writeSoundPreference } from "./SoundToggle";
@@ -83,6 +84,9 @@ const cellOf = (char) => (char === "0" ? CELLS.length - 1 : Number(char));
 // nothing left to introduce. Don't hold the page for any of them.
 function shouldSkipLoader() {
   if (typeof window === "undefined") return false;
+  // On a full load the head script has already decided (and drawn the backdrop or not)
+  const gate = takeIntroGate("loader");
+  if (gate !== null) return !gate;
   return (
     hasLoaderPlayed() ||
     prefersReducedMotion() ||
@@ -157,6 +161,9 @@ export default function Loader() {
       setDone(true);
       return;
     }
+    // globals.css only shows the loader when <html> says it plays. The head script sets
+    // that on a full load; a client-side visit to the homepage decides here instead
+    document.documentElement.setAttribute("data-hx-loader", "");
     // Header / hero fallback timers hold while the loader is still up
     setLoaderWaiting(true);
     const start = () => {
@@ -402,10 +409,14 @@ export default function Loader() {
     { scope: rootRef, dependencies: [run, mobile] }
   );
 
-  if (done || !run) return null;
+  if (done) return null;
+  // Before it runs (server HTML, hydration): just the backdrop the loader opens on, so a
+  // visit that plays it is covered from the first paint. globals.css only shows it when
+  // the head script has decided the loader plays (lib/intro-gate.js).
+  if (!run) return <div data-hx-loader-root aria-hidden="true" className="fixed inset-0 z-1000 bg-background" />;
 
   return (
-    <div ref={rootRef} data-cursor-off className="fixed inset-0 z-1000 overflow-hidden">
+    <div ref={rootRef} data-cursor-off data-hx-loader-root className="fixed inset-0 z-1000 overflow-hidden">
       <div ref={backdropRef} className="absolute inset-0 bg-background" />
       {mobile && (
         // The hero's own still (same file, so it is one download), faded in as the counter leaves

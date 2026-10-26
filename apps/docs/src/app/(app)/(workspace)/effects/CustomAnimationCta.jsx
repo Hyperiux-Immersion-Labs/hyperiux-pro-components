@@ -2,7 +2,7 @@
 
 import { motion } from "motion/react";
 import Button from "@/homepage/components/Button";
-import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationFormModal";
+import { CustomAnimationFormTrigger } from "@/components/WebsiteComps/modals/CustomAnimationForm";
 
 /**
  * "Request a custom animation" block - one component for the effects listing and the

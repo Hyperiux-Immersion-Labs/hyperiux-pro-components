@@ -1,6 +1,18 @@
-import { getEffectRouteSlug } from "./effect-slugs";
+import { CATEGORY_SLUG_ALIASES, getEffectCategoryHref, getEffectCategoryRoute } from "./category-routes";
 import { createPageMetadata } from "./seo-metadata";
 import { FREE_LABEL, TOTAL_LABEL } from "./library-counts";
+
+// The category copy below is for the server (category pages, metadata, llms). Client code
+// that only links to categories or effects imports ./category-routes instead, so none of
+// this ships to the browser. Its link helpers are re-exported here for existing imports.
+export {
+  getEffectCategoryHref,
+  getEffectHref,
+  getEffectPreviewHref,
+  getEffectPrimaryCategory,
+  getQuickCategoryLabel,
+  resolveEffectCategoryId,
+} from "./category-routes";
 
 export const effectsOverviewContent = {
   name: "Hyperiux Vault Effects",
@@ -157,9 +169,7 @@ export const proEffectsContent = {
 
 export const effectCategories = [
   {
-    id: "featured",
-    name: "Featured Components",
-    slug: "featured",
+    ...getEffectCategoryRoute("featured"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-featured.jpg",
     metadata: {
       title: "Featured Components | Hyperiux Vault",
@@ -210,11 +220,8 @@ export const effectCategories = [
     ],
   },
   {
-    id: "text",
-    name: "Text Animations",
-    slug: "text-animations",
+    ...getEffectCategoryRoute("text"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-text-animations.jpg",
-    aliases: ["text-effects"],
     metadata: {
       title: "Text Animations for React & Next.js | Hyperiux Vault",
       description: "React text animations for real HTML text: scramble, mask, overflow, blur, fill, spotlight, and reveal effects for headlines, launch copy, and short statements.",
@@ -262,9 +269,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "backgrounds",
-    name: "Animated Backgrounds",
-    slug: "backgrounds",
+    ...getEffectCategoryRoute("backgrounds"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-backgrounds.jpg",
     metadata: {
       title: "Animated Backgrounds for React & Next.js | Hyperiux Vault",
@@ -314,9 +319,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "buttons",
-    name: "Animated Buttons",
-    slug: "buttons",
+    ...getEffectCategoryRoute("buttons"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-buttons.jpg",
     metadata: {
       title: "Animated Buttons for React & Next.js | Hyperiux Vault",
@@ -361,9 +364,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "carousels",
-    name: "Carousel Effects",
-    slug: "carousels",
+    ...getEffectCategoryRoute("carousels"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-carousels.jpg",
     metadata: {
       title: "Carousel Effects for React & Next.js | Hyperiux Vault",
@@ -418,9 +419,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "scroll",
-    name: "Scroll Effects",
-    slug: "scroll-effects",
+    ...getEffectCategoryRoute("scroll"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-scroll.jpg",
     metadata: {
       title: "Scroll Animations for React & Next.js | Hyperiux Vault",
@@ -473,9 +472,7 @@ export const effectCategories = [
     ]
   },
   {
-    id: "components",
-    name: "Creative Components",
-    slug: "components",
+    ...getEffectCategoryRoute("components"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-components.jpg",
     metadata: {
       title: "Creative Components for React & Next.js | Hyperiux Vault",
@@ -520,9 +517,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "navigation",
-    name: "Navigations",
-    slug: "navigation",
+    ...getEffectCategoryRoute("navigation"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-navigation.jpg",
     metadata: {
       title: "Navigations for React & Next.js | Hyperiux Vault",
@@ -567,9 +562,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "cursor",
-    name: "Cursor Effects",
-    slug: "cursor-effects",
+    ...getEffectCategoryRoute("cursor"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-cursor.jpg",
     metadata: {
       title: "Cursor Effects for React & Next.js | Hyperiux Vault",
@@ -614,9 +607,7 @@ export const effectCategories = [
     ],
   },
   {
-    id: "transitions",
-    name: "Page Transitions",
-    slug: "page-transitions",
+    ...getEffectCategoryRoute("transitions"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-page-transitions.jpg",
     metadata: {
       title: "Page Transitions for React & Next.js | Hyperiux Vault",
@@ -665,11 +656,8 @@ export const effectCategories = [
     ],
   },
   {
-    id: "loaders",
-    name: "Loaders",
-    slug: "loaders",
+    ...getEffectCategoryRoute("loaders"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-loaders.jpg",
-    aliases: ["website-loaders"],
     metadata: {
       title: "Loaders & Preloaders for React & Next.js | Hyperiux Vault",
       description: "React loaders and preloaders for real wait states: numeric progress, line, and stack loaders tied to actual latency, with aria-busy and skeleton guidance.",
@@ -714,11 +702,8 @@ export const effectCategories = [
     ],
   },
   {
-    id: "webgl",
-    name: "WebGL & 3D Effects",
-    slug: "webgl-effects",
+    ...getEffectCategoryRoute("webgl"),
     ogImage: "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/effects-webgl.jpg",
-    aliases: ["webgl"],
     metadata: {
       title: "WebGL and 3D Effects for React & Next.js | Hyperiux Vault",
       description: "WebGL and 3D React effects for shader-led heroes: bloom, glass, tunnels, and interactive canvas scenes, with device-tier GPU budgets and poster fallbacks.",
@@ -784,31 +769,9 @@ export const effectCategories = [
 ];
 
 const categoriesById = new Map(effectCategories.map((category) => [category.id, category]));
-const categorySlugAliases = {
-  featured: "featured",
-  "featured-effects": "featured",
-  text: "text",
-  "text-effects": "text",
-  "text-animations": "text",
-  transitions: "transitions",
-  "page-transitions": "transitions",
-  loader: "loaders",
-  loaders: "loaders",
-  "website-loader": "loaders",
-  "website-loaders": "loaders",
-  webgl: "webgl",
-  "webgl-effects": "webgl",
-  scroll: "scroll",
-  "scroll-effects": "scroll",
-  "scroll-animations": "scroll",
-  cursor: "cursor",
-  "cursor-effects": "cursor",
-  other: "components",
-  others: "components",
-};
 const categoriesBySlug = new Map([
   ...effectCategories.map((category) => [category.slug, category]),
-  ...Object.entries(categorySlugAliases).map(([slug, id]) => [
+  ...Object.entries(CATEGORY_SLUG_ALIASES).map(([slug, id]) => [
     slug,
     categoriesById.get(id),
   ]),
@@ -816,36 +779,6 @@ const categoriesBySlug = new Map([
 
 export function getEffectCategory(id) {
   return categoriesById.get(id) || null;
-}
-
-// Effects sourced from Sanity carry `categorySlug`, which is Sanity's own
-// slug field and does NOT always match the canonical short `id` used
-// everywhere else (e.g. Sanity's categorySlug is "text-animations" while
-// the site-wide id is "text") - resolve through categorySlug first so
-// callers always get back the canonical id instead of a raw Sanity slug
-// (which would otherwise render as an ugly label like "Scroll-effects").
-export function resolveEffectCategoryId(effect) {
-  if (effect?.categorySlug) {
-    return getEffectCategoryBySlug(effect.categorySlug)?.id || effect.category;
-  }
-
-  return effect?.categories?.[0] || effect?.category;
-}
-
-// Single source of truth for how a category/filter id reads as a chip label -
-// used by the vault listing's category chips + featured/free/pro dropdown,
-// and by the Saved Effects / Usage dashboard tabs so the same id never
-// renders under two different names. Deliberately a plain capitalize rather
-// than each category's full `.name` (e.g. "text" -> "Text", not "Text
-// Animations") to keep filter chips compact.
-export function getQuickCategoryLabel(id) {
-  if (id === "all") return "All";
-  if (id === "free") return "Free";
-  if (id === "pro") return "Pro";
-  if (id === "featured") return "Featured";
-  if (id === "webgl") return "WebGL";
-
-  return id.charAt(0).toUpperCase() + id.slice(1);
 }
 
 export function getEffectCategoryBySlug(slug) {
@@ -865,14 +798,6 @@ export function getEffectCategorySlugAliases(slug) {
     normalizedSlug,
     slug,
   ].filter((value, index, values) => value && values.indexOf(value) === index);
-}
-
-export function getEffectCategoryHref(id) {
-  if (id === "all") return "/effects";
-  if (id === "pro") return "/effects/pro";
-
-  const category = getEffectCategory(id);
-  return `/effects/${category?.slug || id}`;
 }
 
 function getCategoryDescriptionText(category) {
@@ -935,37 +860,3 @@ export function getEffectCategoryContent(categoryOrId) {
   );
 }
 
-export function getEffectPrimaryCategory(effect) {
-  const categories = effect?.categories?.length
-    ? effect.categories
-    : [effect?.category || "components"];
-
-  return categories[0] || "components";
-}
-
-export function getEffectHref(effect) {
-  const effectSlug = getEffectRouteSlug(effect?.effectSlug || effect?.slug || effect?.name);
-
-  if (!effectSlug) return "/effects";
-
-  if (effect?.categorySlug) {
-    const category = getEffectCategoryBySlug(effect.categorySlug);
-    const categorySlug = category?.slug || effect.categorySlug;
-
-    return `/effects/${categorySlug}/${effectSlug}`;
-  }
-
-  const categoryId = effect.categories?.[0] || effect.category || "components";
-
-  const category = getEffectCategory(categoryId);
-
-  const categorySlug = category?.slug || categoryId;
-
-  return `/effects/${categorySlug}/${effectSlug}`;
-}
-
-export function getEffectPreviewHref(effect) {
-  const effectSlug = getEffectRouteSlug(effect?.effectSlug || effect?.slug || effect?.name);
-
-  return effectSlug ? `/demo/${effectSlug}` : "/effects";
-}

@@ -25,10 +25,16 @@ function isLowQualityDevice() {
 // content, so no page needs a z-index to sit on top. Dark sections are
 // transparent and show it; light or opaque sections simply cover it.
 export default function SiteBackground() {
+    const rootRef = useRef(null);
     const dotsRef = useRef(null);
     const inkRef = useRef(null);
 
     useEffect(() => {
+        // It mounts after load (SiteInteractions), so ease the grid in rather than pop it
+        if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            rootRef.current.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, easing: "ease-out" });
+        }
+
         const fluid = createFluidField({
             ink: inkRef.current,
             dots: dotsRef.current,
@@ -42,7 +48,7 @@ export default function SiteBackground() {
         // h-lvh, not inset-0: a fixed layer pinned to the bottom edge grows and shrinks
         // with a phone's address bar, and every size change reallocates the dot field
         // (a visible jump mid-scroll). The bars-hidden height never changes.
-        <div className="pointer-events-none fixed inset-x-0 top-0 h-lvh -z-1" aria-hidden="true">
+        <div ref={rootRef} className="pointer-events-none fixed inset-x-0 top-0 h-lvh -z-1" aria-hidden="true">
             <canvas ref={dotsRef} className="absolute inset-0 block size-full" />
             {/* The fluid is simulated at ~16px cells; the blur makes it silky */}
             <canvas

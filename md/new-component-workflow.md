@@ -27,10 +27,9 @@ Phase 2  Codegen                  for ONE named effect only, in one step since b
    |                              finalized props/values; (b) re-syncs the registry-side files
    |                              (index.tsx, registry.json, package.json, and every other
    |                              distributable file) in registry/effects/{category}/{slug}/ so
-   |                              they reflect the just-rewired demo/component; (c) writes the
-   |                              type-stripped JSX version of each of those registry files into a
-   |                              LOCAL (non-registry) folder, one subfolder per effect, for the
-   |                              developer to paste into Sanity Studio by hand - then delete
+   |                              they reflect the just-rewired demo/component. (The old step (c),
+   |                              a JSX copy in a local codegen/ folder for Sanity, was removed on
+   |                              2026-10-26 - nothing is written outside the registry any more.)
 Phase 3  Rollback-on-failure      auto-revert if a later phase fails after Phase 1 already wrote
 ```
 
@@ -136,28 +135,10 @@ that would each re-sync the same files:
    changes something that affects them (e.g. a new/changed prop, a new
    dependency, a different export) - not unconditionally regenerated every
    `codegen` run.
-3. **Local JSX handoff folder (not inside `registry/`).** Writes a
-   type-stripped JSX version of each of that effect's registry code files
-   into a dedicated local folder outside the registry tree, e.g.
-   `codegen/{slug}/` at the repo root - one subfolder per effect, so every
-   effect's handoff files live in predictable, separate places instead of
-   scattered through `registry/effects/**`. `.tsx`/`.ts` files get a
-   `jsx: "preserve"`-transpiled, type-stripped JSX version written
-   alongside; `.css`/`.json` pass through unchanged. The
-   `// Built using Hyperiux Vault: https://vault.hyperiux.com` header
-   carries over from the registry source into these generated JSX files
-   too, so what the developer pastes into Sanity already has it.
-   - **Only files that actually changed are (re)written.** Each candidate
-     file's freshly generated output is diffed against whatever's already
-     in `codegen/{slug}/` for that path; a file whose source hasn't
-     changed since the last `codegen`/`update` run is left untouched.
-   - The developer opens `codegen/{slug}/`, copies the code into the
-     matching `effectCodeBlock`s in Sanity Studio by hand, and publishes
-     there when ready.
-   - Once Sanity is updated, **the developer deletes `codegen/{slug}/`**
-     themselves - because it's a dedicated per-effect folder (not mixed in
-     with anything else), there's nothing else to check for before
-     deleting it; no separate command is needed to find leftover output.
+3. **No codegen/ folder (removed 2026-10-26).** This step used to write a
+   type-stripped JSX copy of each registry file into `codegen/{slug}/` for
+   pasting into Sanity. It was taken out of `component-ship.mjs`; nothing is
+   written there any more, and `codegen/` is in `.gitignore`.
 
 ---
 
@@ -178,9 +159,8 @@ registry re-sync + codegen) together for that one effect, in one call.
 - Only touches what actually changed: the registry-sync half only rewrites
   `registry.json`/`package.json` fields that differ (new/changed props, a
   new changelog entry when the version bumped, updated file list) rather
-  than blindly rewriting the whole file; the codegen half only regenerates
-  the specific file(s) under `codegen/{slug}/` whose source changed since
-  the last run.
+  than blindly rewriting the whole file; the codegen half only re-syncs the
+  registry copy when the source changed. It writes no `codegen/` folder.
 
 ---
 
@@ -207,7 +187,7 @@ All commands are `node scripts/component-ship.mjs <command> --slug {slug} [flags
 | Command | What it does |
 |---|---|
 | `registry` | Phase 1: create (`new`) or update (`sync`) the registry entry - props table, remixer sub-blocks, changelog; rebuilds only this effect's `public/r/{slug}.json` and this effect's entry in `public/r/index.json`. |
-| `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise), then writes only the changed type-stripped JSX file(s) into `codegen/{slug}/` for manual copy into Sanity. Never touches any other slug. |
+| `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise). Writes no `codegen/` folder. Never touches any other slug. |
 | `update` | Re-runs `registry` + `codegen` together for one already-shipped `--slug` whose demo/component changed again. Diff-scoped like `codegen`. |
 | `revert` | Standalone Phase 3: `git restore` the tracked distribution paths for a slug. |
 | `ship` | Runs Phase 1 (`registry`) then Phase 2 (`codegen`) for a slug end to end, stopping on failure, offering `revert` on failure. |
@@ -241,8 +221,5 @@ a component intentionally has no props).
   automated swap just needs to replace the `LocalRemixerDemo` import/JSX
   with `RegistryRemixerDemo` reading from the real `registry.json`,
   carrying over the same `props`/`render`/`children`/`component` values.
-- `codegen`'s local output folder (`codegen/{slug}/` at repo root, one
-  subfolder per effect) is intentionally outside `registry/` and outside
-  version control cleanup logic - since it's already partitioned per
-  effect, there's no `list`-style command; the developer just looks in the
-  one subfolder for the effect they're working on and deletes it once done.
+- There is no `codegen/` output folder any more (removed 2026-10-26); the
+  folder name is in `.gitignore` in case an old copy of the script recreates it.

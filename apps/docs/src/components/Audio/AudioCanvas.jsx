@@ -21,6 +21,8 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
     const canvasRef = useRef(null);
     const buttonRef = useRef(null);
     const stateRef = useRef({ phase: 0, morph: 0, isOn });
+    // Starts the draw loop if it is asleep (see below)
+    const wakeRef = useRef(null);
     const [fitSize, setFitSize] = useState(null);
 
     useEffect(() => {
@@ -38,6 +40,7 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
     // Latest on/off for the draw loop, without restarting it
     useEffect(() => {
         stateRef.current.isOn = isOn;
+        wakeRef.current?.();
     }, [isOn]);
 
     // One loop draws the wave.
@@ -60,9 +63,10 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
         const maxAmp = drawSize * MAX_AMPLITUDE_RATIO;
         const steps = Math.floor(width * 2.5);
         let raf = 0;
+        let color = "#ffffff";
 
         const draw = () => {
-            raf = requestAnimationFrame(draw);
+            raf = 0;
 
             // Morph: elastic toward the wave when on, a fast snap to a line when off
             if (reduced) S.morph = S.isOn ? 1 : 0;
@@ -70,12 +74,12 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
                 const distance = Math.abs(1 - S.morph);
                 S.morph += (1 - S.morph) * MORPH_ON_ELASTICITY * (1 - Math.pow(1 - distance, 3));
             } else S.morph += (0 - S.morph) * MORPH_OFF_RATE;
+            if (!S.isOn && S.morph < 0.001) S.morph = 0;
             if (S.isOn && !reduced) S.phase += PHASE_SPEED;
 
             ctx.clearRect(0, 0, drawSize, drawSize);
             ctx.beginPath();
-            // The wave takes the button's text colour (white unless a header sets it)
-            ctx.strokeStyle = buttonRef.current ? getComputedStyle(buttonRef.current).color : "#ffffff";
+            ctx.strokeStyle = color;
             ctx.lineWidth = LINE_WIDTH;
             ctx.lineCap = "round";
             ctx.lineJoin = "round";
@@ -89,9 +93,24 @@ export default function AudioCanvas({ isOn = false, onToggle, onHover, size = 44
                 else ctx.lineTo(padding + t * width, y);
             }
             ctx.stroke();
+
+            // Off and flat: the line is drawn, so sleep until sound is toggled again
+            // (it used to redraw the same line every frame on every page)
+            if (S.isOn || S.morph > 0) raf = requestAnimationFrame(draw);
         };
-        raf = requestAnimationFrame(draw);
-        return () => cancelAnimationFrame(raf);
+        const wake = () => {
+            if (raf) return;
+            // The wave takes the button's text colour (white unless a header sets it), read
+            // once per wake rather than every frame (each read forces a style recalc)
+            if (buttonRef.current) color = getComputedStyle(buttonRef.current).color;
+            raf = requestAnimationFrame(draw);
+        };
+        wakeRef.current = wake;
+        wake();
+        return () => {
+            cancelAnimationFrame(raf);
+            wakeRef.current = null;
+        };
     }, [drawSize]);
 
     return (

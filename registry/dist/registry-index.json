@@ -790,11 +790,6 @@
     "tarball": "registry/dist/hyperiux-animated-data-table-1.0.0.tgz"
   },
   {
-    "name": "@hyperiux/animated-date-picker",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-animated-date-picker-1.0.0.tgz"
-  },
-  {
     "name": "@hyperiux/animated-dialog",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-animated-dialog-1.0.0.tgz"
@@ -873,5 +868,10 @@
     "name": "@hyperiux/animated-tooltip",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-animated-tooltip-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-date-picker",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-animated-date-picker-1.0.1.tgz"
   }
 ]

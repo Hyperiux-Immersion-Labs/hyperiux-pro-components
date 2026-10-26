@@ -1,3 +1,5 @@
+import { useIdle } from "./when-idle";
+
 /**
  * The `prefetch` value for a <Link> by where it points.
  *
@@ -17,4 +19,16 @@ const SSR_ROUTES = [
 export function prefetchFor(href) {
   if (typeof href !== "string" || !href.startsWith("/") || href.startsWith("//")) return false;
   return SSR_ROUTES.some((re) => re.test(href)) ? false : undefined;
+}
+
+/**
+ * prefetchFor(href), held back until the page is idle. Next prefetches every link that is
+ * on screen as soon as the page hydrates; on first load that fetched other routes' code
+ * (including the account pages' auth library) alongside the page's own, slowing it down.
+ * After that it is the usual behaviour (null = Next's default prefetching).
+ */
+export function usePrefetchFor(href) {
+  const idle = useIdle();
+  if (!idle) return false;
+  return prefetchFor(href) ?? null;
 }

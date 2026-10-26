@@ -8,7 +8,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 import { MEDIA } from "@/lib/breakpoints";
-import { getEffectCategoryHref } from "@/lib/categories";
+import { getEffectCategoryHref } from "@/lib/category-routes";
 import { RouteLoading, isRouteLoading } from "@/components/ui/RouteLoading";
 
 const VaultLayoutContext = createContext({

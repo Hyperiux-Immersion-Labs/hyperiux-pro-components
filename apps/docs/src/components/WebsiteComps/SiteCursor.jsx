@@ -64,16 +64,20 @@ const TEXT_IN_ZONE = "h1,h2,h3,h4,p,li,blockquote,figcaption,[data-cursor-text]"
 const HOLD_DELAY = 0.2;
 const HOLD_DURATION = 1.9;
 
+// Each zone's text rects, measured on demand and dropped on scroll / resize. Dropping is a
+// generation bump (it runs on every scroll frame), not a page-wide querySelectorAll.
 const textRects = new WeakMap();
+let textRectsGeneration = 0;
 const overText = (zone, x, y) => {
-  let rects = textRects.get(zone);
-  if (!rects) {
-    rects = [...zone.querySelectorAll(TEXT_IN_ZONE)].map((el) => el.getBoundingClientRect()).filter((r) => r.width);
-    textRects.set(zone, rects);
+  let cached = textRects.get(zone);
+  if (!cached || cached.generation !== textRectsGeneration) {
+    const rects = [...zone.querySelectorAll(TEXT_IN_ZONE)].map((el) => el.getBoundingClientRect()).filter((r) => r.width);
+    cached = { generation: textRectsGeneration, rects };
+    textRects.set(zone, cached);
   }
-  return rects.some((r) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
+  return cached.rects.some((r) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom);
 };
-const clearTextRects = () => document.querySelectorAll(HOLD_ZONES).forEach((zone) => textRects.delete(zone));
+const clearTextRects = () => { textRectsGeneration += 1; };
 
 function isPageNavigation(e) {
   const anchor = e.target.closest?.("a");

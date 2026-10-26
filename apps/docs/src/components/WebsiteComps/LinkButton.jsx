@@ -1,6 +1,6 @@
 "use client";
 
-import { prefetchFor } from "@/lib/prefetch";
+import { usePrefetchFor } from "@/lib/prefetch";
 import React, { useRef, useEffect } from "react";
 import Link from "next/link";
 import gsap from "gsap";
@@ -49,11 +49,15 @@ export default function LinkButton({
   underlineClassName = "mt-1",
   ...props
 }) {
+  const linkPrefetch = usePrefetchFor(href);
   const underlineRef = useRef(null);
   const isAnimating = useRef(false);
   const labelRef = useRef(null);
   const labelShadowRef = useRef(null);
   const shimmerTl = useRef(null);
+  // The shimmer runs only while the button is on screen and not hovered
+  const shimmerVisible = useRef(false);
+  const shimmerHovered = useRef(false);
 
   const isExternal = href?.startsWith("http");
   const resolvedTarget = target ?? (isExternal ? "_blank" : "_self");
@@ -89,7 +93,17 @@ export default function LinkButton({
       .to({}, { duration: 1 });
     shimmerTl.current = tl;
 
+    // Off screen it would otherwise restyle the label every frame for the whole visit
+    tl.pause();
+    const io = new IntersectionObserver(([entry]) => {
+      shimmerVisible.current = entry.isIntersecting;
+      if (entry.isIntersecting && !shimmerHovered.current) tl.resume();
+      else tl.pause();
+    });
+    io.observe(els[0]);
+
     return () => {
+      io.disconnect();
       shimmerTl.current = null;
       tl.kill();
       gsap.set(els, {
@@ -103,12 +117,13 @@ export default function LinkButton({
     if (!shimmer || !shimmerTl.current) return;
     const els = [labelRef.current, labelShadowRef.current].filter(Boolean);
     if (!els.length) return;
+    shimmerHovered.current = paused;
     if (paused) {
       shimmerTl.current?.pause();
       gsap.set(els, { color: "currentColor", WebkitTextFillColor: "currentColor" });
     } else {
       gsap.set(els, { color: "transparent", WebkitTextFillColor: "transparent" });
-      shimmerTl.current?.resume();
+      if (shimmerVisible.current) shimmerTl.current?.resume();
     }
   };
 
@@ -214,7 +229,7 @@ export default function LinkButton({
       {...props}
       id={id ?? autoId}
       href={href}
-      prefetch={props.prefetch ?? prefetchFor(href)}
+      prefetch={props.prefetch ?? linkPrefetch}
       target={resolvedTarget}
       rel={isExternal ? "noopener noreferrer" : undefined}
       className={`relative ${colorClassName} group w-fit inline-block pb-1 ${className}`}

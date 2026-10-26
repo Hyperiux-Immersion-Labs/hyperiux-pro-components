@@ -216,6 +216,19 @@ const nextConfig = {
       test: /\.(glb|gltf)$/,
       type: "asset/resource",
     });
+    // One copy of each GSAP plugin. Code imports both "gsap/ScrollTrigger" (ES module) and
+    // "gsap/dist/ScrollTrigger" (UMD build), which webpack bundles as two separate plugins:
+    // twice the bytes, and two ScrollTrigger instances each with their own scroll listeners
+    // and refreshes. Point the dist paths at the ES modules.
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "gsap/dist/gsap$": "gsap",
+      ...Object.fromEntries(
+        ["ScrollTrigger", "SplitText", "CustomEase", "Flip", "Draggable", "Observer", "ScrollToPlugin", "MotionPathPlugin", "InertiaPlugin", "DrawSVGPlugin", "MorphSVGPlugin", "ScrambleTextPlugin", "TextPlugin"].map(
+          (plugin) => [`gsap/dist/${plugin}$`, `gsap/${plugin}`]
+        )
+      ),
+    };
     return config;
   },
 };

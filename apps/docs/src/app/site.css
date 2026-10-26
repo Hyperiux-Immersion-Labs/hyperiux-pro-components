@@ -1,0 +1,41 @@
+/* The site's stylesheet: every page loads it (root layout). Tailwind only scans the site's
+   own code here: app (minus the effect demos and template demos), the homepage, lib, and
+   the component folders site pages import. The ~190 effect folders and the demos get
+   their classes from full.css, which only the demo layouts load. Before, one stylesheet
+   with every effect's classes (~750 KB) blocked rendering on every page.
+
+   scripts/check-site-css-sources.mjs checks the component folders below against what site
+   pages import; run it after adding an import. */
+@layer theme, base, clerk, components, utilities;
+
+@import "tailwindcss" source(none);
+@import "./globals.css";
+
+@source "./";
+@source not "./(marketing)/demo";
+@source not "./(marketing)/template-demo";
+@source "../homepage";
+@source "../lib";
+@source "../hooks";
+@source "../utils";
+@source "../Layouts";
+@source "../components/Animations";
+@source "../components/Audio";
+@source "../components/Community";
+@source "../components/Dashboard";
+@source "../components/DocsContent";
+@source "../components/PageTransition";
+@source "../components/Payments";
+@source "../components/Pricing";
+@source "../components/SmoothScroll";
+@source "../components/WebsiteComps";
+@source "../components/admin";
+@source "../components/animated-faq";
+@source "../components/auth";
+@source "../components/blog";
+@source "../components/grid-dots";
+@source "../components/layout";
+@source "../components/preview-chrome";
+@source "../components/rectangular-text-reveal";
+@source "../components/remixer-panel";
+@source "../components/ui";

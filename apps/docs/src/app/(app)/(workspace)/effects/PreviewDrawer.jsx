@@ -12,7 +12,7 @@ import { Heart, Lock } from "lucide-react";
 import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { SignInRequiredModal } from "@/components/ui/SignInRequiredModal";
 import Button from "@/homepage/components/Button";
-import { getEffectHref, getEffectPreviewHref, getEffectCategory, resolveEffectCategoryId } from "@/lib/categories";
+import { getEffectHref, getEffectPreviewHref, getEffectCategoryRoute, resolveEffectCategoryId } from "@/lib/category-routes";
 import { resolveEffectVideoUrl } from "@/lib/media";
 import {
   EffectCard,
@@ -170,7 +170,7 @@ export function PreviewDrawer({
   useEffect(() => () => tlRef.current?.kill(), []);
 
   const categoryId = shown ? resolveEffectCategoryId(shown) : null;
-  const categoryName = getEffectCategory(categoryId)?.name || categoryId;
+  const categoryName = getEffectCategoryRoute(categoryId)?.name || categoryId;
   const videoUrl = useMemo(() => (shown ? resolveEffectVideoUrl(shown) : null), [shown]);
   const cover = useMemo(() => (shown ? resolveCover(shown) : null), [shown]);
   const related = useMemo(

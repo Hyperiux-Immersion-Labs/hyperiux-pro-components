@@ -1,3 +1,10 @@
+"use client";
+
+// A client component on purpose (every section is one anyway). Next merges client manifests
+// by route with the (groups) stripped, so this page and the workspace layout share one; as a
+// server component, the homepage's records for shared components (Lenis, Navbar, Footer...)
+// overwrote the workspace's, and /effects, /docs and the effect pages loaded the homepage's
+// own chunk. As a client component, only this file is recorded.
 import WhyVault from "@/homepage/sections/WhyVault";
 import dynamic from "next/dynamic";
 import LenisSmoothScroll from "@/components/SmoothScroll/LenisScroll";
@@ -17,11 +24,11 @@ const PricingPlansHome = dynamic(() => import("@/homepage/sections/PricingPlansH
 const FAQ = dynamic(() => import("@/homepage/sections/FAQ"));
 const Footer = dynamic(() => import("@/homepage/sections/Footer"));
 
-export default function Homepage({ faqItems, effects = [] }) {
+export default function Homepage({ faqItems }) {
   return (
     <div className="home-type">
       <Loader />
-      <Navbar effects={effects} introOnLoader />
+      <Navbar introOnLoader />
       <LenisSmoothScroll lerp={0.065} wheelMultiplier={0.85} syncTouchLerp={0.12} touchMultiplier={1.6} />
       <ScrollTopOnLoad />
       {/* Sections (not the header) cap Button's vw sizing at the 1536px container */}

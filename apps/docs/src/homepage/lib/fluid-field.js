@@ -24,9 +24,10 @@ const DEFAULTS = {
   pointerForce: 0.55,      // how hard pointer movement pushes the fluid
   pointerInk: 0.018,       // ink per px of pointer movement
   scrollDrift: true,       // scrolling drags the fluid vertically
-  getScroll: null,         // () => number. Default: window.scrollY. Pass () => lenis.scroll with Lenis
+  getScroll: null,         // () => number. Default: window.scrollY, as of the last scroll event. Pass () => lenis.scroll with Lenis
   pauseOffscreen: true,
   respectReducedMotion: true, // reduced motion: static dot grid, no simulation
+  interactive: null,       // false: static dot grid, no ink and no frame loop. Default: off on touch-first devices (nobody drags a finger across the page to stir it)
 };
 
 export function createFluidField({ ink, dots, ...options }) {
@@ -35,10 +36,16 @@ export function createFluidField({ ink, dots, ...options }) {
   const mq = (q) => typeof matchMedia === 'function' && matchMedia(q).matches;
   const small = mq('(max-width: 760px)') || (navigator.hardwareConcurrency || 8) <= 4;
   const reduced = o.respectReducedMotion && mq('(prefers-reduced-motion: reduce)');
+  const interactive = o.interactive ?? !mq('(hover: none), (pointer: coarse)');
+  /* still: the dots are drawn once (and again on resize); nothing listens or animates */
+  const still = reduced || !interactive;
   const S = o.cell || (small ? 22 : 16);
-  const getScroll = o.getScroll || (() => window.scrollY);
+  /* default: the position from the last scroll event. Reading window.scrollY inside the frame,
+     after other animations have written styles, forced a style recalculation every frame */
+  let scrollYAtEvent = typeof window !== 'undefined' ? window.scrollY : 0;
+  const getScroll = o.getScroll || (() => scrollYAtEvent);
 
-  let C, R, u, v, u0, v0, pp, dv, dye, dye0, img, W, H, pr = 1;
+  let C, R, u, v, u0, v0, pp, dv, dye, dye0, img, warm, W, H, pr = 1;
   const vortex = { a: 0, x: 0, y: 0 };
   const m = { x: -1, y: -1, px: -1, py: -1 };
 
@@ -48,6 +55,7 @@ export function createFluidField({ ink, dots, ...options }) {
     u = new Float32Array(n); v = new Float32Array(n); u0 = new Float32Array(n); v0 = new Float32Array(n);
     pp = new Float32Array(n); dv = new Float32Array(n); dye = new Float32Array(n); dye0 = new Float32Array(n);
     ink.width = C; ink.height = R; img = gi.createImageData(C, R);
+    warm = new Float32Array(Math.ceil(W / o.dotSpacing + 1) * Math.ceil(H / o.dotSpacing + 1) * 4);
     dots.width = W * pr; dots.height = H * pr;
     dirty = true;
   }
@@ -105,11 +113,22 @@ export function createFluidField({ ink, dots, ...options }) {
     /* dots: displaced by the local velocity, warmer and bigger where there is ink */
     gd.setTransform(pr, 0, 0, pr, 0, 0); gd.clearRect(0, 0, W, H);
     const sp = o.dotSpacing, ox = (W % sp) / 2, hc = o.dotHotColor;
+    /* plain dots share one colour: collected into one path and filled once; only the warm
+       dots (under ink) are coloured one by one */
+    let nw = 0;
+    gd.beginPath();
     for (let y = sp / 2; y < H; y += sp) for (let x = ox; x < W; x += sp) {
       const gx = x / S + 1, gy = y / S + 1, du = smp(u, gx, gy), dvv = smp(v, gx, gy), q = smp(dye, gx, gy);
-      gd.fillStyle = q > 0.08 ? 'rgba(' + hc[0] + ',' + hc[1] + ',' + hc[2] + ',' + Math.min(0.9, 0.2 + q * 0.6) + ')' : o.dotColor;
       const s = 1.4 + Math.min(1, q) * 1.6;
-      gd.fillRect(x + du * S * 0.8 - s / 2, y + dvv * S * 0.8 - s / 2, s, s);
+      const dx = x + du * S * 0.8 - s / 2, dy = y + dvv * S * 0.8 - s / 2;
+      if (q > 0.08) { warm[nw++] = dx; warm[nw++] = dy; warm[nw++] = s; warm[nw++] = q; }
+      else gd.rect(dx, dy, s, s);
+    }
+    gd.fillStyle = o.dotColor;
+    gd.fill();
+    for (let i = 0; i < nw; i += 4) {
+      gd.fillStyle = 'rgba(' + hc[0] + ',' + hc[1] + ',' + hc[2] + ',' + Math.min(0.9, 0.2 + warm[i + 3] * 0.6) + ')';
+      gd.fillRect(warm[i], warm[i + 1], warm[i + 2], warm[i + 2]);
     }
   }
 
@@ -125,7 +144,7 @@ export function createFluidField({ ink, dots, ...options }) {
   /* calm: no ink, no flow and no input. The last frame is kept and nothing is
      simulated until the pointer, scroll or an effect (splash / burst / vortex) stirs it */
   let calm = false, dirty = true, kicked = false, scrolled = false;
-  const onScroll = () => { scrolled = true; };
+  const onScroll = () => { scrolled = true; if (!o.getScroll) scrollYAtEvent = window.scrollY; };
   function settled() {
     if (vortex.a > 0.01) return false;
     for (let i = 0; i < C * R; i++) if (dye[i] > 0.004 || Math.abs(u[i]) > 0.01 || Math.abs(v[i]) > 0.01) return false;
@@ -143,14 +162,21 @@ export function createFluidField({ ink, dots, ...options }) {
       /* wake without a scroll jump; m.px stays so the pointer move that woke us still pushes the ink */
       calm = kicked = scrolled = false; lastSY = getScroll();
     }
-    if (!reduced) step();
+    step();
     draw();
     dirty = false;
-    calm = reduced || settled();
+    calm = settled();
   }
+  const redraw = () => { alloc(); draw(); dirty = false; };
   function start() {
     if (running) return api;
-    running = true; alloc(); lastSY = getScroll();
+    running = true;
+    if (still) {
+      ink.style.display = 'none'; redraw();
+      if (typeof ResizeObserver !== 'undefined') { ro = new ResizeObserver(redraw); ro.observe(dots); } else addEventListener('resize', redraw);
+      return api;
+    }
+    alloc(); lastSY = getScroll();
     addEventListener('pointermove', onMove, { passive: true });
     addEventListener('scroll', onScroll, { passive: true });
     if (typeof ResizeObserver !== 'undefined') { ro = new ResizeObserver(alloc); ro.observe(dots); } else addEventListener('resize', alloc);
@@ -160,7 +186,7 @@ export function createFluidField({ ink, dots, ...options }) {
   }
   function stop() {
     running = false; cancelAnimationFrame(raf);
-    removeEventListener('pointermove', onMove); removeEventListener('scroll', onScroll); removeEventListener('resize', alloc);
+    removeEventListener('pointermove', onMove); removeEventListener('scroll', onScroll); removeEventListener('resize', alloc); removeEventListener('resize', redraw);
     ro && ro.disconnect(); io && io.disconnect(); ro = io = null;
     return api;
   }

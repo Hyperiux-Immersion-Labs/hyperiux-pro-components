@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { usePrefetchFor } from "@/lib/prefetch";
 import { usePathname } from "next/navigation";
 const STORAGE_KEY = "hyperiux_cookie_notice_acknowledged";
 
 export function CookieConsentNudge() {
   const [visible, setVisible] = useState(false);
+  const policyPrefetch = usePrefetchFor("/legal/privacy-policy");
   const pathname = usePathname();
   const isExcludedRoute =
     pathname.startsWith("/demo") || pathname.startsWith("/template-demo");
@@ -49,6 +51,7 @@ export function CookieConsentNudge() {
         This website uses cookies to improve your experience.{" "}
         <Link
           href="/legal/privacy-policy"
+          prefetch={policyPrefetch}
           className="text-white underline underline-offset-2 transition-colors hover:text-primary"
         >
           Learn More

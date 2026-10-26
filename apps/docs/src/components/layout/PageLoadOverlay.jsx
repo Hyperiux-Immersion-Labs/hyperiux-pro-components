@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { usePathname } from "next/navigation";
 import { GridDots } from "@/components/grid-dots";
@@ -25,15 +25,18 @@ const SIDEBAR_WAIT_MS = 3000;
  */
 export function PageLoadOverlay() {
   const ref = useRef(null);
-  // The homepage has its own loader, so the cover there stays plain (no grid).
   // "/index" too: Vercel regenerates the cached homepage (ISR) with that path, so
   // the server renders "/index" where the browser has "/" - treating only "/" as
   // home made the two disagree, failing hydration and re-rendering the whole page
   // (which also duplicated every JSON-LD script in <body>).
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname === "/index";
+  // Only the page a visit starts on is ever covered (the cover stays mounted across
+  // client navigation), so a visit that starts on the homepage never draws it
+  const [startedHome] = useState(isHome);
 
   useLayoutEffect(() => {
+    if (!ref.current) return undefined;
     const hide = () => gsap.set(ref.current, { opacity: 0 });
     if (!document.querySelector("[data-vault-sidebar]") || window.__vaultSidebarReady) {
       hide();
@@ -50,6 +53,10 @@ export function PageLoadOverlay() {
       window.removeEventListener("vault:sidebar-ready", onReady);
     };
   }, []);
+
+  // The homepage paints straight from the server HTML: its loader and hero intro decide
+  // before the first paint what to hide (lib/intro-gate.js), so no cover waits for React
+  if (startedHome) return null;
 
   return (
     <>
@@ -68,7 +75,7 @@ export function PageLoadOverlay() {
           justifyContent: "center",
         }}
       >
-        {!isHome && <GridDots
+        <GridDots
           size={56}
           squareSize={8}
           color="var(--primary)"
@@ -78,7 +85,7 @@ export function PageLoadOverlay() {
             alignItems: "center",
             justifyContent: "center",
           }}
-        />}
+        />
       </div>
       {/* No JavaScript, no hydration: never leave the page covered */}
       <noscript>

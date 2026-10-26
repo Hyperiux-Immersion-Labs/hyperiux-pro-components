@@ -1,7 +1,6 @@
 import Homepage from "@/homepage/Homepage";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
-import { getSearchIndexEffects } from "@/lib/search-index";
 import ReferralRocketTracking from "@/components/WebsiteComps/ReferralRocketTracking";
 import { FREE_LABEL, TOTAL_LABEL } from "@/lib/library-counts";
 
@@ -98,15 +97,13 @@ export const metadata = createPageMetadata({
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/homepage.jpg",
 });
 
-export default async function page() {
-  const effects = await getSearchIndexEffects();
-
+export default function page() {
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
       <ReferralRocketTracking />
-      <Homepage faqItems={faqItems} effects={effects} />
+      <Homepage faqItems={faqItems} />
     </>
   );
 }

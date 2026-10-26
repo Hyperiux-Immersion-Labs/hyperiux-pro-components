@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { LOADER_PLAYED_KEY } from "@/lib/intro-gate";
 
 export const LOADER_COMPLETE_EVENT = "hyperiux-v3:loader-complete";
 export const LOADER_HANDOFF_EVENT = "hyperiux-v3:loader-handoff";
@@ -130,7 +131,6 @@ function useLoaderFlag(event, isSet, fallbackMs) {
 // homepage after that. `sessionStorage` is the right scope for that - it is
 // per-tab and clears when the tab closes, so a fresh visit still gets the full
 // intro while a return trip inside the same session goes straight to the hero.
-const LOADER_PLAYED_KEY = "hyperiux-v3:loader-played";
 
 /**
  * True if the loader has already run in this tab's session. Storage access is

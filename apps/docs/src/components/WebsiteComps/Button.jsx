@@ -1,6 +1,6 @@
 "use client";
 
-import { prefetchFor } from "@/lib/prefetch";
+import { usePrefetchFor } from "@/lib/prefetch";
 import Link from "next/link";
 import { useLenis } from "lenis/react";
 import { BtnArrow } from "../WebsiteComps/Icons";
@@ -74,6 +74,7 @@ export default function Button({
   scrollOffset = 0,
   id,
 }) {
+  const linkPrefetch = usePrefetchFor(href);
   const lenis = useLenis();
   const styles = buttonTv({ variant, className });
 
@@ -145,7 +146,7 @@ export default function Button({
   return (
     <Link
       id={id ?? autoId}
-      prefetch={prefetchFor(href)}
+      prefetch={linkPrefetch}
       href={href}
       onClick={handleClick}
       target={target_blank ? "_blank" : undefined}

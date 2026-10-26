@@ -1,6 +1,5 @@
 import dynamic from "next/dynamic";
 import VaultShell from "@/Layouts/VaultShell";
-import { getSearchIndexEffects } from "@/lib/search-index";
 import PricingHero from "@/components/Pricing/pricing-hero/PricingHero";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
@@ -25,17 +24,14 @@ export const metadata = createPageMetadata({
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/seo/pricing.jpg",
 });
 
-// Static: plans are defined in code and the page is the same for everyone. Its
-// only fetch is the navbar's effect search list (Sanity), so it rebuilds only
-// when an effect is published. INR / USD is chosen in the browser (useCurrency).
-export default async function PricingPage() {
-  const effects = await getSearchIndexEffects();
-
+// Static: plans are defined in code and the page is the same for everyone. INR / USD
+// is chosen in the browser (useCurrency); the search fetches its effect list itself.
+export default function PricingPage() {
   return (
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <VaultShell effects={effects}>
+      <VaultShell>
         <main id="main-content">
           <PricingHero />
           {/* Plans through FAQ are one sheet that scales in after the hero, like the homepage */}

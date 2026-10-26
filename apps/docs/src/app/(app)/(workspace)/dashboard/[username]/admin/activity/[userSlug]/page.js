@@ -15,7 +15,7 @@ import { EffectCard } from "@/app/(app)/(workspace)/effects/EffectCard";
 import { SliderArrowButton } from "@/components/ui/SliderArrowButton";
 import { useGlideRow } from "@/hooks/useGlideRow";
 import { TemplateCard } from "@/app/(app)/(workspace)/templates/TemplateCard";
-import { getEffectHref } from "@/lib/categories";
+import { getEffectHref } from "@/lib/category-routes";
 import { getDashboardPreview, sampleAdminUser } from "@/lib/dev/dashboardPreview";
 
 // One user's activity, for admins: who they are, their numbers, installs by day, the

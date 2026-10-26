@@ -271,8 +271,8 @@ export function TemplatePreviewDrawer({ template, templates = [], isWishlisted, 
                   <Heart className="size-full" aria-hidden="true" />
                 </span>
               </button>
-              <Button id="template-preview-drawer-demo" text="Demo" href={shown.previewHref || href}  variant="outline" className={`tracking-normal! bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
-              <Button id="template-preview-drawer-view-template" text="View Template" href={href} target_blank className={`tracking-normal! border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
+              <Button id="template-preview-drawer-demo" text="Demo" href={shown.previewHref || href} variant="outline" target_blank className={`tracking-normal! bg-transparent! border-foreground/20 max-md:order-2 ${MOBILE_FIT_BTN}`} />
+              <Button id="template-preview-drawer-view-template" text="View Template" href={href} className={`tracking-normal! border border-primary max-md:order-1 ${MOBILE_ROW_BTN} ${MOBILE_OUTLINE}`} />
                 {/* Buy opens the "Get this template" popup; once it's yours it downloads. */}
                 <button
                   id="template-preview-drawer-buy"

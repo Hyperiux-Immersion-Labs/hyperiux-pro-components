@@ -70,7 +70,7 @@ export function Modal({ open, onClose, title, children }) {
           <X className="size-4 transition-transform duration-300 ease-out group-hover:rotate-90 motion-reduce:transition-none" aria-hidden="true" />
         </button>
         <h2 className={`${T24} text-white`}>{title}</h2>
-        <p className={`w-[80%] ${T14} text-white/60 max-lg:w-full`}>{text}</p>
+        <p className={`w-[85%] ${T14} text-white/60 max-lg:w-full`}>{text}</p>
         {action}
       </div>
     </div>

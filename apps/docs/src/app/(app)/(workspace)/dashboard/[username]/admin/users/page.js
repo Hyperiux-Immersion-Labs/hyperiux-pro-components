@@ -588,6 +588,8 @@ export default function AdminPage() {
       if (dateRange === "custom") {
         if (customFrom) params.set("joinedFrom", customFrom);
         if (customTo) params.set("joinedTo", customTo);
+        // The picked days are the viewer's days, as the Joined column shows them
+        params.set("tz", Intl.DateTimeFormat().resolvedOptions().timeZone);
       } else if (dateRange !== "all") {
         params.set("joined", dateRange);
       }

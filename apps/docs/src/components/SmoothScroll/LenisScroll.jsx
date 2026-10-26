@@ -27,7 +27,9 @@ const LenisSmoothScroll = ({
       lenisRef.current?.lenis?.raf(time * 1000);
     }
 
-    gsap.ticker.add(update);
+    // First in the frame (prioritize): Lenis sets the scroll position before other
+    // animations write styles, so its scrollTo doesn't force a style recalc each frame
+    gsap.ticker.add(update, false, true);
     // As on the Theremin homepage: no lag smoothing, so a slow frame never
     // makes the smoothed scroll jump, and ScrollTrigger reads every smoothed
     // position straight from Lenis.

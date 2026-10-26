@@ -15,7 +15,7 @@ import { SlidingSegment } from "@/components/ui/SlidingSegment";
 import Button from "@/homepage/components/Button";
 import { resolveCover } from "@/app/(app)/(workspace)/effects/EffectCard";
 import { useEffectCardActions } from "@/app/(app)/(workspace)/effects/useEffectCardActions";
-import { getEffectHref } from "@/lib/categories";
+import { getEffectHref } from "@/lib/category-routes";
 import { markScrollToPricingCards } from "@/lib/pricingScrollIntent";
 import { PLANS } from "@/lib/plans";
 import { getDashboardPreview, sampleUsage } from "@/lib/dev/dashboardPreview";

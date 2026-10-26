@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowUpRight, Download, Eye, Heart, Lock } from "lucide-react";
-import { getEffectHref, getEffectPreviewHref, getQuickCategoryLabel, resolveEffectCategoryId } from "@/lib/categories";
+import { getEffectHref, getEffectPreviewHref, getQuickCategoryLabel, resolveEffectCategoryId } from "@/lib/category-routes";
 import { Tooltip } from "@/components/ui/Tooltip";
 import { CopyButtonContent } from "@/components/ui/CodeBlock";
 import { LISTING_IMAGE, resolveEffectVideoUrl, resolveMediaUrl } from "@/lib/media";

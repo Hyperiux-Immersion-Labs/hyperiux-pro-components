@@ -8,7 +8,8 @@ import { isRouteLoading } from "@/components/ui/RouteLoading";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
-import { getEffectHref } from "@/lib/categories";
+import { getEffectHref } from "@/lib/category-routes";
+import { whenIdle } from "@/lib/when-idle";
 import { prefersReducedMotion } from "@/lib/motion";
 import { navCategoryColumns, navDocsItems } from "@/utils/Links";
 import { useButtonId } from "@/components/ui/ButtonIds";
@@ -251,7 +252,24 @@ export function SearchBar({
   );
 }
 
-export function GlobalSearch({ effects = [], externalOpen = 0 }) {
+// One request per page load, shared by every search on the page
+let searchIndexRequest = null;
+function loadSearchIndex() {
+  searchIndexRequest ??= fetch("/api/effects/search-index", { method: "GET", cache: "force-cache" })
+    .then((response) => {
+      if (!response.ok) throw new Error(`Search index failed with ${response.status}`);
+      return response.json();
+    })
+    .then((data) => (Array.isArray(data?.effects) ? data.effects : []))
+    .catch((error) => {
+      console.warn("Failed to load global search index:", error);
+      searchIndexRequest = null;
+      return [];
+    });
+  return searchIndexRequest;
+}
+
+export function GlobalSearch({ effects = [], externalOpen = 0, openOnMount = false }) {
   const bid = useButtonId();
   const [isOpen, setIsOpen] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
@@ -291,56 +309,34 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
     return [];
   }, [globalEffects, normalizedPassedEffects]);
 
+  // Pages don't send the effect list with their HTML (it was ~130 KB on every page); the
+  // search fetches it once the page is idle, or straight away if opened before that.
   useEffect(() => {
-    if (!isOpen) return;
-    if (normalizedPassedEffects.length > 0) return;
-    if (hasTriedGlobalFetch || isLoadingGlobalEffects) return;
+    if (normalizedPassedEffects.length > 0 || hasTriedGlobalFetch) return;
 
     let cancelled = false;
-
-    async function loadGlobalEffects() {
+    const load = () => {
       setIsLoadingGlobalEffects(true);
+      loadSearchIndex().then((list) => {
+        if (cancelled) return;
+        setGlobalEffects(list);
+        setHasTriedGlobalFetch(true);
+        setIsLoadingGlobalEffects(false);
+      });
+    };
 
-      try {
-        const response = await fetch("/api/effects/search-index", {
-          method: "GET",
-          cache: "force-cache",
-        });
-
-        if (!response.ok) {
-          throw new Error(`Search index failed with ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (!cancelled) {
-          setGlobalEffects(Array.isArray(data?.effects) ? data.effects : []);
-        }
-      } catch (error) {
-        console.warn("Failed to load global search index:", error);
-
-        if (!cancelled) {
-          setGlobalEffects([]);
-        }
-      } finally {
-        if (!cancelled) {
-          setHasTriedGlobalFetch(true);
-          setIsLoadingGlobalEffects(false);
-        }
-      }
+    if (isOpen) {
+      load();
+      return () => {
+        cancelled = true;
+      };
     }
-
-    loadGlobalEffects();
-
+    const idle = whenIdle(load);
     return () => {
       cancelled = true;
+      idle.cancel();
     };
-  }, [
-    hasTriedGlobalFetch,
-    isLoadingGlobalEffects,
-    isOpen,
-    normalizedPassedEffects.length,
-  ]);
+  }, [hasTriedGlobalFetch, isOpen, normalizedPassedEffects.length]);
 
   useGSAP(
     () => {
@@ -437,6 +433,12 @@ export function GlobalSearch({ effects = [], externalOpen = 0 }) {
       document.body.style.overflow = previousOverflow;
     };
   }, [isOpen]);
+
+  // Mounted by a ⌘K / search press made before it loaded (LazyGlobalSearch)
+  useEffect(() => {
+    if (openOnMount) requestAnimationFrame(openSearch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (externalOpenRef.current === externalOpen) return;
