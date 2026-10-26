@@ -56,14 +56,18 @@
       "name": "dragSensitivity",
       "type": "number",
       "default": 0.1,
-      "description": "How much drag movement translates to velocity.",
+      "description": "How much drag movement translates to velocity. Needs Draggable on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
         "max": 1,
-        "step": 0.02
+        "step": 0.02,
+        "disabledWhen": {
+          "prop": "draggable",
+          "equals": false
+        }
       }
     },
     {

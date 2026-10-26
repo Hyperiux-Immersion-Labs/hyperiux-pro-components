@@ -56,7 +56,8 @@
         "groupTitle": "Strips",
         "min": 0.2,
         "max": 1.5,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -70,7 +71,8 @@
         "groupTitle": "Strips",
         "min": 0,
         "max": 0.15,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -84,7 +86,8 @@
         "groupTitle": "Image",
         "min": 1,
         "max": 1.6,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -98,7 +101,8 @@
         "groupTitle": "Image",
         "min": 0.3,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -109,7 +113,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "playback",
-        "groupTitle": "Playback"
+        "groupTitle": "Playback",
+        "hideWhenReducedMotion": true
       }
     },
     {

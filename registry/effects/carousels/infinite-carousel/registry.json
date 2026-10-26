@@ -91,21 +91,27 @@
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "autoPlayInterval",
       "type": "number",
       "default": 3000,
-      "description": "Milliseconds between automatic slide advances.",
+      "description": "Milliseconds between automatic slide advances. Needs Auto Play on.",
       "remixer": {
         "control": "range",
         "group": "behavior",
         "groupTitle": "Behavior",
         "min": 1000,
         "max": 8000,
-        "step": 100
+        "step": 100,
+        "disabledWhen": {
+          "prop": "autoPlay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -116,21 +122,27 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "tiltStrength",
       "type": "number",
       "default": 4.2,
-      "description": "How far the cards lean when tilt on scroll is enabled.",
+      "description": "How far the cards lean when tilt on scroll is enabled. Needs Tilt On Scroll on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
         "max": 10,
-        "step": 0.1
+        "step": 0.1,
+        "disabledWhen": {
+          "prop": "tiltOnScroll",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -144,35 +156,45 @@
         "groupTitle": "Motion",
         "min": 0.02,
         "max": 0.6,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "dragSensitivity",
       "type": "number",
       "default": 0.005,
-      "description": "How far the track moves per pixel of drag.",
+      "description": "How far the track moves per pixel of drag. Needs Draggable on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.001,
         "max": 0.02,
-        "step": 0.001
+        "step": 0.001,
+        "disabledWhen": {
+          "prop": "draggable",
+          "equals": false
+        }
       }
     },
     {
       "name": "snapStrength",
       "type": "number",
       "default": 0.1,
-      "description": "How firmly the track is pulled towards the nearest card.",
+      "description": "How firmly the track is pulled towards the nearest card. Needs Snap on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.02,
         "max": 0.5,
-        "step": 0.01
+        "step": 0.01,
+        "disabledWhen": {
+          "prop": "snap",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

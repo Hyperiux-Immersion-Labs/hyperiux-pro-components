@@ -91,7 +91,8 @@
         "groupTitle": "Trail",
         "min": 30,
         "max": 200,
-        "step": 5
+        "step": 5,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -105,7 +106,8 @@
         "groupTitle": "Trail",
         "min": 80,
         "max": 600,
-        "step": 10
+        "step": 10,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -119,7 +121,8 @@
         "groupTitle": "Trail",
         "min": 0.02,
         "max": 1,
-        "step": 0.02
+        "step": 0.02,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -133,7 +136,8 @@
         "groupTitle": "Trail",
         "min": 2,
         "max": 48,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -144,35 +148,46 @@
       "remixer": {
         "control": "checkbox",
         "group": "idle",
-        "groupTitle": "Idle"
+        "groupTitle": "Idle",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "idleDelay",
       "type": "number",
       "default": 100,
-      "description": "Stillness before the fade starts, ms.",
+      "description": "Stillness before the fade starts, ms. Needs Fade On Idle on.",
       "remixer": {
         "control": "range",
         "group": "idle",
         "groupTitle": "Idle",
         "min": 0,
         "max": 3000,
-        "step": 50
+        "step": 50,
+        "disabledWhen": {
+          "prop": "fadeOnIdle",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "idleFade",
       "type": "number",
       "default": 1100,
-      "description": "How long the fade takes, ms.",
+      "description": "How long the fade takes, ms. Needs Fade On Idle on.",
       "remixer": {
         "control": "range",
         "group": "idle",
         "groupTitle": "Idle",
         "min": 100,
         "max": 4000,
-        "step": 50
+        "step": 50,
+        "disabledWhen": {
+          "prop": "fadeOnIdle",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -186,7 +201,8 @@
         "groupTitle": "Blend",
         "min": 0.2,
         "max": 3.5,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -200,7 +216,8 @@
         "groupTitle": "Blend",
         "min": 0.1,
         "max": 3,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -214,7 +231,8 @@
         "groupTitle": "Blend",
         "min": 0,
         "max": 1,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -228,7 +246,8 @@
         "groupTitle": "Blend",
         "min": 0.2,
         "max": 3.5,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -242,7 +261,8 @@
         "groupTitle": "Blend",
         "min": 0,
         "max": 1,
-        "step": 0.02
+        "step": 0.02,
+        "hideWhenReducedMotion": true
       }
     },
     {

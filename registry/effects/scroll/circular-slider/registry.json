@@ -154,7 +154,7 @@
       "label": "Card Color 2",
       "type": "string",
       "default": "#AB92BF",
-      "description": "Card background color 2.",
+      "description": "Card background color 2. Not used when Card Color Count is 1.",
       "remixer": {
         "control": "color",
         "group": "cardColors",
@@ -162,6 +162,12 @@
         "visibleWhen": {
           "name": "cardColorCount",
           "gte": 2
+        },
+        "disabledWhen": {
+          "prop": "cardColorCount",
+          "in": [
+            1
+          ]
         }
       }
     },
@@ -170,7 +176,7 @@
       "label": "Card Color 3",
       "type": "string",
       "default": "#AFC1D6",
-      "description": "Card background color 3.",
+      "description": "Card background color 3. Not used when Card Color Count is 1 or 2.",
       "remixer": {
         "control": "color",
         "group": "cardColors",
@@ -178,6 +184,13 @@
         "visibleWhen": {
           "name": "cardColorCount",
           "gte": 3
+        },
+        "disabledWhen": {
+          "prop": "cardColorCount",
+          "in": [
+            1,
+            2
+          ]
         }
       }
     },
@@ -186,7 +199,7 @@
       "label": "Card Color 4",
       "type": "string",
       "default": "#CEF9F2",
-      "description": "Card background color 4.",
+      "description": "Card background color 4. Not used when Card Color Count is 1 or 2 or 3.",
       "remixer": {
         "control": "color",
         "group": "cardColors",
@@ -194,6 +207,14 @@
         "visibleWhen": {
           "name": "cardColorCount",
           "gte": 4
+        },
+        "disabledWhen": {
+          "prop": "cardColorCount",
+          "in": [
+            1,
+            2,
+            3
+          ]
         }
       }
     },
@@ -202,7 +223,7 @@
       "label": "Card Color 5",
       "type": "string",
       "default": "#D6CA98",
-      "description": "Card background color 5.",
+      "description": "Card background color 5. Not used when Card Color Count is 1 or 2 or 3 or 4.",
       "remixer": {
         "control": "color",
         "group": "cardColors",
@@ -210,6 +231,15 @@
         "visibleWhen": {
           "name": "cardColorCount",
           "gte": 5
+        },
+        "disabledWhen": {
+          "prop": "cardColorCount",
+          "in": [
+            1,
+            2,
+            3,
+            4
+          ]
         }
       }
     },
@@ -218,7 +248,7 @@
       "label": "Card Color 6",
       "type": "string",
       "default": "#F2B5A7",
-      "description": "Card background color 6.",
+      "description": "Card background color 6. Not used when Card Color Count is 1 or 2 or 3 or 4 or 5.",
       "remixer": {
         "control": "color",
         "group": "cardColors",
@@ -226,6 +256,16 @@
         "visibleWhen": {
           "name": "cardColorCount",
           "gte": 6
+        },
+        "disabledWhen": {
+          "prop": "cardColorCount",
+          "in": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
         }
       }
     },
@@ -260,7 +300,7 @@
       "label": "Text Color 2",
       "type": "string",
       "default": "#3D2E50",
-      "description": "Card text color 2.",
+      "description": "Card text color 2. Not used when Text Color Count is 1.",
       "remixer": {
         "control": "color",
         "group": "textColors",
@@ -268,6 +308,12 @@
         "visibleWhen": {
           "name": "textColorCount",
           "gte": 2
+        },
+        "disabledWhen": {
+          "prop": "textColorCount",
+          "in": [
+            1
+          ]
         }
       }
     },
@@ -276,7 +322,7 @@
       "label": "Text Color 3",
       "type": "string",
       "default": "#2C3E52",
-      "description": "Card text color 3.",
+      "description": "Card text color 3. Not used when Text Color Count is 1 or 2.",
       "remixer": {
         "control": "color",
         "group": "textColors",
@@ -284,6 +330,13 @@
         "visibleWhen": {
           "name": "textColorCount",
           "gte": 3
+        },
+        "disabledWhen": {
+          "prop": "textColorCount",
+          "in": [
+            1,
+            2
+          ]
         }
       }
     },
@@ -292,7 +345,7 @@
       "label": "Text Color 4",
       "type": "string",
       "default": "#1A5C53",
-      "description": "Card text color 4.",
+      "description": "Card text color 4. Not used when Text Color Count is 1 or 2 or 3.",
       "remixer": {
         "control": "color",
         "group": "textColors",
@@ -300,6 +353,14 @@
         "visibleWhen": {
           "name": "textColorCount",
           "gte": 4
+        },
+        "disabledWhen": {
+          "prop": "textColorCount",
+          "in": [
+            1,
+            2,
+            3
+          ]
         }
       }
     },
@@ -308,7 +369,7 @@
       "label": "Text Color 5",
       "type": "string",
       "default": "#4A3F1A",
-      "description": "Card text color 5.",
+      "description": "Card text color 5. Not used when Text Color Count is 1 or 2 or 3 or 4.",
       "remixer": {
         "control": "color",
         "group": "textColors",
@@ -316,6 +377,15 @@
         "visibleWhen": {
           "name": "textColorCount",
           "gte": 5
+        },
+        "disabledWhen": {
+          "prop": "textColorCount",
+          "in": [
+            1,
+            2,
+            3,
+            4
+          ]
         }
       }
     },
@@ -324,7 +394,7 @@
       "label": "Text Color 6",
       "type": "string",
       "default": "#5C2A1F",
-      "description": "Card text color 6.",
+      "description": "Card text color 6. Not used when Text Color Count is 1 or 2 or 3 or 4 or 5.",
       "remixer": {
         "control": "color",
         "group": "textColors",
@@ -332,6 +402,16 @@
         "visibleWhen": {
           "name": "textColorCount",
           "gte": 6
+        },
+        "disabledWhen": {
+          "prop": "textColorCount",
+          "in": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
         }
       }
     }

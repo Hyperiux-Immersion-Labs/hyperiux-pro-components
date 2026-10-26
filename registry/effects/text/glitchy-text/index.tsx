@@ -83,13 +83,13 @@ const GlitchyText = ({
     ]);
 
     if (prefersReducedMotion) {
-      gsap.set(splitText.chars, { yPercent: 100 });
+      gsap.set(splitText.chars, { opacity: 0 });
 
       const tl = gsap.timeline({ delay });
       animationTimelineRef.current = tl;
 
       tl.to(splitText.chars, {
-        yPercent: 0,
+        opacity: 1,
         duration: 0.6,
         ease: "power2.out",
       });
@@ -194,7 +194,7 @@ const GlitchyText = ({
     };
 
     if (prefersReducedMotion) {
-      gsap.set(splitText.chars, { yPercent: 100 });
+      gsap.set(splitText.chars, { opacity: 0 });
     } else {
       resetSplitPositions({
         splitText,

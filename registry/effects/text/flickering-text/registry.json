@@ -53,11 +53,15 @@
       "name": "glowColor",
       "type": "string",
       "default": "#ffffff",
-      "description": "Glow color when bloom is enabled.",
+      "description": "Glow color when bloom is enabled. Needs Glow on.",
       "remixer": {
         "control": "color",
         "group": "colors",
-        "groupTitle": "Colors"
+        "groupTitle": "Colors",
+        "disabledWhen": {
+          "prop": "glow",
+          "equals": false
+        }
       }
     },
     {
@@ -71,7 +75,8 @@
         "groupTitle": "Motion",
         "min": 0.2,
         "max": 8,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -85,7 +90,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -99,7 +105,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -113,7 +120,8 @@
         "groupTitle": "Motion",
         "min": -1,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -127,35 +135,46 @@
         "groupTitle": "Motion",
         "min": -1,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "glowIntensity",
       "type": "number",
       "default": 1,
-      "description": "Glow strength when bloom is enabled.",
+      "description": "Glow strength when bloom is enabled. Needs Glow on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "glow",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "glowRadius",
       "type": "number",
       "default": 1,
-      "description": "Glow spread multiplier.",
+      "description": "Glow spread multiplier. Needs Glow on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.25,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "glow",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -193,7 +212,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     }
   ],

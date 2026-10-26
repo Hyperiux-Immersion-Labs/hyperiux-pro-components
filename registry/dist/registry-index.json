@@ -305,6 +305,11 @@
     "tarball": "registry/dist/hyperiux-pixelated-image-effect-1.1.0.tgz"
   },
   {
+    "name": "@hyperiux/portal-carousel",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-portal-carousel-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/rope-cursor",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-rope-cursor-1.0.1.tgz"
@@ -725,6 +730,11 @@
     "tarball": "registry/dist/hyperiux-hyperiux-glitter-1.0.1.tgz"
   },
   {
+    "name": "@hyperiux/image-pixel-reveal",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-image-pixel-reveal-1.0.0.tgz"
+  },
+  {
     "name": "@hyperiux/interactive-blur-reveal",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-interactive-blur-reveal-1.0.1.tgz"
@@ -753,11 +763,6 @@
     "name": "@hyperiux/animated-form",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-animated-form-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/animated-accordion",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-animated-accordion-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/animated-attachment",
@@ -818,11 +823,6 @@
     "name": "@hyperiux/animated-switch",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-animated-switch-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/animated-tabs-bar",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-animated-tabs-bar-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/animated-theme-switch",

@@ -48,7 +48,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 20,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -59,7 +60,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -73,7 +75,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 8,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -87,7 +90,8 @@
         "groupTitle": "Motion",
         "min": 0.8,
         "max": 0.999,
-        "step": 0.001
+        "step": 0.001,
+        "hideWhenReducedMotion": true
       }
     }
   ],

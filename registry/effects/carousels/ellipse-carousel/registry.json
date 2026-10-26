@@ -137,46 +137,62 @@
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "holdDuration",
       "type": "number",
       "default": 1,
-      "description": "Seconds to hold on the active card before advancing.",
+      "description": "Seconds to hold on the active card before advancing. Needs Auto Play on.",
       "remixer": {
         "control": "range",
         "group": "behavior",
         "groupTitle": "Behavior",
         "min": 0,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "autoPlay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "stepDuration",
       "type": "number",
       "default": 0.7,
-      "description": "Seconds for the snap transition between cards.",
+      "description": "Seconds for the snap transition between cards. Needs Auto Play on.",
       "remixer": {
         "control": "range",
         "group": "behavior",
         "groupTitle": "Behavior",
         "min": 0.1,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "autoPlay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "pauseOnHover",
       "type": "boolean",
       "default": true,
-      "description": "Pauses autoplay while hovering a card.",
+      "description": "Pauses autoplay while hovering a card. Needs Auto Play on.",
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "disabledWhen": {
+          "prop": "autoPlay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -194,14 +210,18 @@
       "name": "dragSensitivity",
       "type": "number",
       "default": 1,
-      "description": "Multiplier on the carousel's angular drag response.",
+      "description": "Multiplier on the carousel's angular drag response. Needs Draggable on.",
       "remixer": {
         "control": "range",
         "group": "behavior",
         "groupTitle": "Behavior",
         "min": 0.2,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "disabledWhen": {
+          "prop": "draggable",
+          "equals": false
+        }
       }
     }
   ],

@@ -96,42 +96,53 @@
       "remixer": {
         "control": "checkbox",
         "group": "general",
-        "groupTitle": "General"
+        "groupTitle": "General",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "hoverMoveY",
       "type": "number",
       "default": -8,
-      "description": "Vertical movement applied to the image card on hover, in pixels.",
+      "description": "Vertical movement applied to the image card on hover, in pixels. Needs Enable Hover Movement on.",
       "remixer": {
         "control": "range",
         "group": "general",
         "groupTitle": "General",
         "min": -80,
         "max": 80,
-        "step": 1
+        "step": 1,
+        "disabledWhen": {
+          "prop": "enableHoverMovement",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "perspectiveRotateValue",
       "type": "number",
       "default": 180,
-      "description": "How far each card rotates on hover, in degrees.",
+      "description": "How far each card rotates on hover, in degrees. Needs Enable Hover Movement on.",
       "remixer": {
         "control": "range",
         "group": "general",
         "groupTitle": "General",
         "min": 0,
         "max": 180,
-        "step": 1
+        "step": 1,
+        "disabledWhen": {
+          "prop": "enableHoverMovement",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "perspectiveRotateDirection",
       "type": "string",
       "default": "right",
-      "description": "Direction each card rotates on hover.",
+      "description": "Direction each card rotates on hover. Needs Enable Hover Movement on.",
       "remixer": {
         "control": "select",
         "group": "general",
@@ -139,7 +150,12 @@
         "options": [
           "left",
           "right"
-        ]
+        ],
+        "disabledWhen": {
+          "prop": "enableHoverMovement",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -150,32 +166,43 @@
       "remixer": {
         "control": "checkbox",
         "group": "general",
-        "groupTitle": "General"
+        "groupTitle": "General",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "rotateSpeed",
       "type": "number",
       "default": 4,
-      "description": "Speed of the automatic rotation, in degrees per second.",
+      "description": "Speed of the automatic rotation, in degrees per second. Needs Rotate on.",
       "remixer": {
         "control": "range",
         "group": "general",
         "groupTitle": "General",
         "min": 0.5,
         "max": 30,
-        "step": 0.5
+        "step": 0.5,
+        "disabledWhen": {
+          "prop": "rotate",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "stopRotationOnHover",
       "type": "boolean",
       "default": true,
-      "description": "Pauses the automatic rotation while the pointer is hovering the slider.",
+      "description": "Pauses the automatic rotation while the pointer is hovering the slider. Needs Rotate on.",
       "remixer": {
         "control": "checkbox",
         "group": "general",
-        "groupTitle": "General"
+        "groupTitle": "General",
+        "disabledWhen": {
+          "prop": "rotate",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

@@ -57,10 +57,14 @@ describe("registry effects - render contract", () => {
 
     it(title, async () => {
       const Component = await importEffect(effect);
+      // forwardRef/memo components are objects with a $$typeof tag
+      const isComponent =
+        typeof Component === "function" ||
+        (typeof Component === "object" && Component !== null && "$$typeof" in Component);
       expect(
-        typeof Component,
-        `${effect.name}: default export should be a component function`
-      ).toBe("function");
+        isComponent,
+        `${effect.name}: default export should be a component`
+      ).toBe(true);
 
       if (skipRender) return;
 

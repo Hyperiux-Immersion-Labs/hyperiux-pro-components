@@ -14,20 +14,20 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
-export type PixelRevealDirection = "up" | "down" | "left" | "right";
+export type ImagePixelRevealDirection = "up" | "down" | "left" | "right";
 
-export type PixelRevealHandle = {
+export type ImagePixelRevealHandle = {
   element: HTMLDivElement | null;
   setProgress: (value: number) => void;
   play: () => void;
 };
 
-export type PixelRevealProps = {
+export type ImagePixelRevealProps = {
   imageSrc?: string;
   alt?: string;
   gridSize?: number;
   edgeHeight?: number;
-  direction?: PixelRevealDirection;
+  direction?: ImagePixelRevealDirection;
   scrub?: boolean;
   autoScrub?: boolean;
   start?: string;
@@ -40,7 +40,7 @@ export type PixelRevealProps = {
 
 const clamp = (value: number) => Math.min(1, Math.max(0, value));
 
-const PixelReveal = forwardRef<PixelRevealHandle, PixelRevealProps>(function PixelReveal(
+const ImagePixelReveal = forwardRef<ImagePixelRevealHandle, ImagePixelRevealProps>(function ImagePixelReveal(
   {
     imageSrc = "",
     alt = "",
@@ -211,6 +211,7 @@ const PixelReveal = forwardRef<PixelRevealHandle, PixelRevealProps>(function Pix
   return (
     <div ref={containerRef} className={`relative overflow-hidden ${className}`.trim()}>
       <div ref={contentRef} className="h-full w-full [clip-path:inset(50%)]">
+        {/* eslint-disable-next-line @next/next/no-img-element -- shipped outside Next.js too */}
         {imageSrc ? <img src={imageSrc} alt={alt} className="h-full w-full object-cover" /> : null}
         {children}
       </div>
@@ -218,4 +219,4 @@ const PixelReveal = forwardRef<PixelRevealHandle, PixelRevealProps>(function Pix
   );
 });
 
-export default PixelReveal;
+export default ImagePixelReveal;

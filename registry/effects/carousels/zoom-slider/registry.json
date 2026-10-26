@@ -41,7 +41,8 @@
         "control": "checkbox",
         "group": "hover",
         "groupTitle": "Hover",
-        "groupCollapsible": false
+        "groupCollapsible": false,
+        "hideWhenReducedMotion": true
       }
     },
     {

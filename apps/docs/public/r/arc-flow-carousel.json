@@ -32,7 +32,8 @@
         "groupTitle": "Motion",
         "min": 1,
         "max": 12,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -46,7 +47,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -74,18 +76,24 @@
         "groupTitle": "Motion",
         "min": -1,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "pauseOnHover",
       "type": "boolean",
       "default": true,
-      "description": "Pauses the idle drift while a pointer hovers the carousel.",
+      "description": "Pauses the idle drift while a pointer hovers the carousel. Not used when Auto Rotate Speed is 0.",
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "disabledWhen": {
+          "prop": "autoRotateSpeed",
+          "equals": 0
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

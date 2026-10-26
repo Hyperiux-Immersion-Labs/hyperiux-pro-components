@@ -2456,24 +2456,6 @@
       "tier": "pro"
     },
     {
-      "name": "animated-accordion",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "@base-ui/react",
-        "motion",
-        "tailwind-merge"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedAccordion",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
-    },
-    {
       "name": "animated-attachment",
       "type": "registry:component",
       "category": "components",
@@ -2844,24 +2826,6 @@
       "tier": "free"
     },
     {
-      "name": "animated-tabs-bar",
-      "type": "registry:component",
-      "category": "components",
-      "categories": [
-        "components"
-      ],
-      "dependencies": [
-        "@base-ui/react",
-        "motion",
-        "tailwind-merge"
-      ],
-      "registryDependencies": [],
-      "exportName": "AnimatedTabsBar",
-      "exportKind": "default",
-      "version": "1.0.0",
-      "tier": "free"
-    },
-    {
       "name": "animated-theme-switch",
       "type": "registry:component",
       "category": "components",
@@ -2919,6 +2883,39 @@
       "exportKind": "default",
       "version": "1.0.0",
       "tier": "pro"
+    },
+    {
+      "name": "portal-carousel",
+      "type": "registry:component",
+      "category": "carousels",
+      "categories": [
+        "carousels"
+      ],
+      "dependencies": [
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "PortalCarousel",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "image-pixel-reveal",
+      "type": "registry:component",
+      "category": "scroll",
+      "categories": [
+        "scroll"
+      ],
+      "dependencies": [
+        "@gsap/react",
+        "gsap"
+      ],
+      "registryDependencies": [],
+      "exportName": "ImagePixelReveal",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     }
   ]
 }

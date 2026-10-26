@@ -6,8 +6,8 @@
 // Plain constants rather than a registry read, so client components can import them
 // without pulling the whole effect index into the browser bundle.
 
-export const FREE_EFFECTS = 80;
-export const PRO_EFFECTS = 95;
+export const FREE_EFFECTS = 70;
+export const PRO_EFFECTS = 105;
 export const TOTAL_EFFECTS = FREE_EFFECTS + PRO_EFFECTS;
 
 // Rounded down to the nearest ten for marketing copy: 56 -> "50+", 150 -> "150+".

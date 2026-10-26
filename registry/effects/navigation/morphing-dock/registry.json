@@ -40,7 +40,8 @@
         "groupTitle": "Motion",
         "min": 0.2,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -54,7 +55,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 0.1,
-        "step": 0.005
+        "step": 0.005,
+        "hideWhenReducedMotion": true
       }
     },
     {

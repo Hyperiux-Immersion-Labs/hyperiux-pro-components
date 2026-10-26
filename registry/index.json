@@ -54,401 +54,6 @@
     ]
   },
   {
-    "name": "animated-accordion",
-    "version": "1.0.0",
-    "changelog": [
-      {
-        "version": "1.0.0",
-        "date": "2026-10-23",
-        "summary": "Initial release",
-        "breaking": false
-      }
-    ],
-    "type": "registry:component",
-    "title": "Animated Accordion",
-    "description": "Expandable sections that reveal their answers with a staggered fade.",
-    "category": "components",
-    "dependencies": [
-      "@base-ui/react",
-      "motion",
-      "tailwind-merge"
-    ],
-    "registryDependencies": [],
-    "previewUrl": "/demo/animated-accordion",
-    "tier": "free",
-    "subfolder": true,
-    "main": "index.tsx",
-    "exportName": "AnimatedAccordion",
-    "exportKind": "default",
-    "importPath": "@/components/effects/animated-accordion",
-    "target": "src/components/effects/animated-accordion",
-    "files": [
-      {
-        "path": "index.tsx",
-        "target": "src/components/effects/animated-accordion/index.tsx"
-      }
-    ],
-    "props": [
-      {
-        "name": "theme",
-        "label": "Theme",
-        "type": "string",
-        "default": "caffeine",
-        "description": "Colour palette. Any theme but Default also tints the questions, icon and hover line.",
-        "remixer": {
-          "control": "select",
-          "group": "theme",
-          "groupTitle": "Theme",
-          "options": [
-            {
-              "label": "Default",
-              "value": "default"
-            },
-            {
-              "label": "Caffeine",
-              "value": "caffeine"
-            },
-            {
-              "label": "Claude",
-              "value": "claude"
-            },
-            {
-              "label": "Ghibli",
-              "value": "ghibli"
-            },
-            {
-              "label": "Spotify",
-              "value": "spotify"
-            },
-            {
-              "label": "Valorant",
-              "value": "valorant"
-            },
-            {
-              "label": "Vscode",
-              "value": "vscode"
-            }
-          ]
-        }
-      },
-      {
-        "name": "mode",
-        "label": "Mode",
-        "type": "string",
-        "default": "dark",
-        "description": "Light or dark version of the chosen palette.",
-        "remixer": {
-          "control": "select",
-          "group": "theme",
-          "groupTitle": "Theme",
-          "options": [
-            {
-              "label": "Light",
-              "value": "light"
-            },
-            {
-              "label": "Dark",
-              "value": "dark"
-            }
-          ]
-        }
-      },
-      {
-        "name": "multiple",
-        "label": "Multiple open",
-        "type": "boolean",
-        "default": false,
-        "description": "Lets more than one item stay open at a time. Off while Open on hover is on.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "accordion",
-          "groupTitle": "Accordion",
-          "disabledWhen": {
-            "prop": "openOnHover",
-            "equals": true
-          }
-        }
-      },
-      {
-        "name": "openOnHover",
-        "label": "Open on hover",
-        "type": "boolean",
-        "default": false,
-        "description": "Opens an item when the pointer rests on it, and closes it on leave.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "accordion",
-          "groupTitle": "Accordion"
-        }
-      },
-      {
-        "name": "bordered",
-        "label": "Border",
-        "type": "boolean",
-        "default": false,
-        "description": "Draws a rounded border around the whole accordion.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "accordion",
-          "groupTitle": "Accordion"
-        }
-      },
-      {
-        "name": "borderRounded",
-        "label": "Border roundness",
-        "type": "string",
-        "default": "rounded-lg",
-        "description": "Corner radius of the outer border. Needs Border on.",
-        "remixer": {
-          "control": "select",
-          "group": "accordion",
-          "groupTitle": "Accordion",
-          "disabledWhen": {
-            "prop": "bordered",
-            "equals": false
-          },
-          "options": [
-            {
-              "label": "None",
-              "value": "rounded-none"
-            },
-            {
-              "label": "Small",
-              "value": "rounded-sm"
-            },
-            {
-              "label": "Medium",
-              "value": "rounded-md"
-            },
-            {
-              "label": "Large",
-              "value": "rounded-lg"
-            },
-            {
-              "label": "xl",
-              "value": "rounded-xl"
-            },
-            {
-              "label": "2xl",
-              "value": "rounded-2xl"
-            },
-            {
-              "label": "3xl",
-              "value": "rounded-3xl"
-            }
-          ]
-        }
-      },
-      {
-        "name": "elastic",
-        "label": "Elastic",
-        "type": "boolean",
-        "default": true,
-        "description": "Uses springs for opening, so panels and the fill overshoot slightly.",
-        "remixer": {
-          "control": "checkbox",
-          "hideWhenReducedMotion": true,
-          "group": "accordion",
-          "groupTitle": "Accordion"
-        }
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "number",
-        "default": 0.3,
-        "description": "How long opening and closing take, in seconds.",
-        "remixer": {
-          "control": "range",
-          "hideWhenReducedMotion": true,
-          "group": "timing",
-          "groupTitle": "Timing",
-          "min": 0.1,
-          "max": 1.5,
-          "step": 0.05
-        }
-      },
-      {
-        "name": "bounce",
-        "label": "Bounce",
-        "type": "number",
-        "default": 0.4,
-        "description": "How much the springs overshoot. Needs Elastic on.",
-        "remixer": {
-          "control": "range",
-          "hideWhenReducedMotion": true,
-          "group": "timing",
-          "groupTitle": "Timing",
-          "min": 0,
-          "max": 0.8,
-          "step": 0.05,
-          "disabledWhen": {
-            "prop": "elastic",
-            "equals": false
-          }
-        }
-      },
-      {
-        "name": "delay",
-        "label": "Delay",
-        "type": "number",
-        "default": 0.2,
-        "description": "Wait before the answer's paragraphs start fading in, in seconds.",
-        "remixer": {
-          "control": "range",
-          "hideWhenReducedMotion": true,
-          "group": "timing",
-          "groupTitle": "Timing",
-          "min": 0,
-          "max": 1,
-          "step": 0.05
-        }
-      },
-      {
-        "name": "stagger",
-        "label": "Stagger",
-        "type": "number",
-        "default": 0.05,
-        "description": "Gap between each paragraph's fade-in, in seconds.",
-        "remixer": {
-          "control": "range",
-          "hideWhenReducedMotion": true,
-          "group": "timing",
-          "groupTitle": "Timing",
-          "min": 0,
-          "max": 0.3,
-          "step": 0.01
-        }
-      },
-      {
-        "name": "fill",
-        "label": "Fill",
-        "type": "boolean",
-        "default": true,
-        "description": "Fills an open item's background with a colour.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "item",
-          "groupTitle": "Item"
-        }
-      },
-      {
-        "name": "fillColor",
-        "label": "Fill colour",
-        "type": "string",
-        "default": "primary",
-        "description": "Background colour of an open item. Needs Fill on.",
-        "remixer": {
-          "control": "select",
-          "group": "item",
-          "groupTitle": "Item",
-          "disabledWhen": {
-            "prop": "fill",
-            "equals": false
-          },
-          "options": [
-            {
-              "label": "Muted",
-              "value": "muted"
-            },
-            {
-              "label": "Primary",
-              "value": "primary"
-            }
-          ]
-        }
-      },
-      {
-        "name": "rounded",
-        "label": "Fill roundness",
-        "type": "string",
-        "default": "rounded-none",
-        "description": "Corner radius of an open item's fill. Needs Fill on.",
-        "remixer": {
-          "control": "select",
-          "group": "item",
-          "groupTitle": "Item",
-          "disabledWhen": {
-            "prop": "fill",
-            "equals": false
-          },
-          "options": [
-            {
-              "label": "None",
-              "value": "rounded-none"
-            },
-            {
-              "label": "Small",
-              "value": "rounded-sm"
-            },
-            {
-              "label": "Medium",
-              "value": "rounded-md"
-            },
-            {
-              "label": "Large",
-              "value": "rounded-lg"
-            },
-            {
-              "label": "xl",
-              "value": "rounded-xl"
-            },
-            {
-              "label": "2xl",
-              "value": "rounded-2xl"
-            },
-            {
-              "label": "3xl",
-              "value": "rounded-3xl"
-            }
-          ]
-        }
-      },
-      {
-        "name": "showLine",
-        "label": "Hover line",
-        "type": "boolean",
-        "default": true,
-        "description": "Draws a line under an item on hover and while it's open.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "item",
-          "groupTitle": "Item"
-        }
-      },
-      {
-        "name": "icon",
-        "label": "Icon",
-        "type": "string",
-        "default": "plus",
-        "description": "Plus that turns into a minus, or a chevron that flips.",
-        "remixer": {
-          "control": "select",
-          "group": "icon",
-          "groupTitle": "Icon",
-          "options": [
-            {
-              "label": "Plus / minus",
-              "value": "plus"
-            },
-            {
-              "label": "Chevron",
-              "value": "chevron"
-            }
-          ]
-        }
-      }
-    ],
-    "remixer": {
-      "enabled": true,
-      "layout": "panel",
-      "copyCode": {
-        "includeOnlyPublicProps": true
-      }
-    },
-    "registryPath": "registry/effects/components/animated-accordion/registry.json"
-  },
-  {
     "name": "animated-attachment",
     "version": "1.0.0",
     "changelog": [
@@ -8610,366 +8215,6 @@
     "registryPath": "registry/effects/components/animated-tabs/registry.json"
   },
   {
-    "name": "animated-tabs-bar",
-    "version": "1.0.0",
-    "changelog": [
-      {
-        "version": "1.0.0",
-        "date": "2026-10-23",
-        "summary": "Initial release",
-        "breaking": false
-      }
-    ],
-    "type": "registry:component",
-    "title": "Animated Tabs Bar",
-    "description": "Switch between views; the highlight glides to the active tab.",
-    "category": "components",
-    "dependencies": [
-      "@base-ui/react",
-      "motion",
-      "tailwind-merge"
-    ],
-    "registryDependencies": [],
-    "previewUrl": "/demo/animated-tabs-bar",
-    "tier": "free",
-    "subfolder": true,
-    "main": "index.tsx",
-    "exportName": "AnimatedTabsBar",
-    "exportKind": "default",
-    "importPath": "@/components/effects/animated-tabs-bar",
-    "target": "src/components/effects/animated-tabs-bar",
-    "files": [
-      {
-        "path": "index.tsx",
-        "target": "src/components/effects/animated-tabs-bar/index.tsx"
-      }
-    ],
-    "props": [
-      {
-        "name": "theme",
-        "label": "Theme",
-        "type": "string",
-        "default": "ghibli",
-        "description": "Colour palette. The Primary pill and the underlines use its primary colour; any theme but Default also tints the active tab's text with the underline styles.",
-        "remixer": {
-          "control": "select",
-          "group": "theme",
-          "groupTitle": "Theme",
-          "options": [
-            {
-              "label": "Default",
-              "value": "default"
-            },
-            {
-              "label": "Caffeine",
-              "value": "caffeine"
-            },
-            {
-              "label": "Claude",
-              "value": "claude"
-            },
-            {
-              "label": "Ghibli",
-              "value": "ghibli"
-            },
-            {
-              "label": "Spotify",
-              "value": "spotify"
-            },
-            {
-              "label": "Valorant",
-              "value": "valorant"
-            },
-            {
-              "label": "Vscode",
-              "value": "vscode"
-            }
-          ]
-        }
-      },
-      {
-        "name": "mode",
-        "label": "Mode",
-        "type": "string",
-        "default": "light",
-        "description": "Light or dark version of the palette.",
-        "remixer": {
-          "control": "select",
-          "group": "theme",
-          "groupTitle": "Theme",
-          "options": [
-            {
-              "label": "Light",
-              "value": "light"
-            },
-            {
-              "label": "Dark",
-              "value": "dark"
-            }
-          ]
-        }
-      },
-      {
-        "name": "activeIndicator",
-        "label": "Active indicator",
-        "type": "string",
-        "default": "glide",
-        "description": "How the active tab is marked: a pill or underline that glides to it, or an underline that fades in.",
-        "remixer": {
-          "control": "select",
-          "group": "tabs",
-          "groupTitle": "Tabs",
-          "options": [
-            {
-              "label": "Glide pill",
-              "value": "glide"
-            },
-            {
-              "label": "Slide underline",
-              "value": "underline"
-            },
-            {
-              "label": "Fade underline",
-              "value": "fade"
-            }
-          ]
-        }
-      },
-      {
-        "name": "activeColor",
-        "label": "Active tab colour",
-        "type": "string",
-        "default": "primary",
-        "description": "Colour of the gliding pill. Only used by Glide pill.",
-        "remixer": {
-          "control": "select",
-          "group": "tabs",
-          "groupTitle": "Tabs",
-          "options": [
-            {
-              "label": "Primary",
-              "value": "primary"
-            },
-            {
-              "label": "Muted",
-              "value": "muted"
-            }
-          ],
-          "disabledWhen": {
-            "prop": "activeIndicator",
-            "notEquals": "glide"
-          }
-        }
-      },
-      {
-        "name": "hoverHighlight",
-        "label": "Hover highlight",
-        "type": "boolean",
-        "default": true,
-        "description": "Highlights the tab under the pointer.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "tabs",
-          "groupTitle": "Tabs"
-        }
-      },
-      {
-        "name": "divider",
-        "label": "Line under tabs",
-        "type": "boolean",
-        "default": true,
-        "description": "Draws a line under the row of tabs.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "tabs",
-          "groupTitle": "Tabs"
-        }
-      },
-      {
-        "name": "listBorder",
-        "label": "Border on tabs",
-        "type": "boolean",
-        "default": true,
-        "description": "Draws a border around the row of tabs.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "tabs",
-          "groupTitle": "Tabs"
-        }
-      },
-      {
-        "name": "panelBorder",
-        "label": "Border on content",
-        "type": "boolean",
-        "default": false,
-        "description": "Draws a border around the tab content.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "content",
-          "groupTitle": "Content"
-        }
-      },
-      {
-        "name": "rounded",
-        "label": "Roundness",
-        "type": "string",
-        "default": "md",
-        "description": "Corner radius of the tabs, the pill and the borders.",
-        "remixer": {
-          "control": "select",
-          "group": "tabs",
-          "groupTitle": "Tabs",
-          "options": [
-            {
-              "label": "None",
-              "value": "none"
-            },
-            {
-              "label": "sm",
-              "value": "sm"
-            },
-            {
-              "label": "md",
-              "value": "md"
-            },
-            {
-              "label": "lg",
-              "value": "lg"
-            },
-            {
-              "label": "xl",
-              "value": "xl"
-            },
-            {
-              "label": "Full",
-              "value": "full"
-            }
-          ]
-        }
-      },
-      {
-        "name": "contentAnimation",
-        "label": "Content animation",
-        "type": "string",
-        "default": "slide",
-        "description": "How content changes when you switch tabs.",
-        "remixer": {
-          "control": "select",
-          "group": "content",
-          "groupTitle": "Content",
-          "options": [
-            {
-              "label": "Slide",
-              "value": "slide"
-            },
-            {
-              "label": "Fade in / out",
-              "value": "fade"
-            },
-            {
-              "label": "None",
-              "value": "none"
-            }
-          ],
-          "hideWhenReducedMotion": true
-        }
-      },
-      {
-        "name": "slideDistance",
-        "label": "Slide distance",
-        "type": "number",
-        "default": 40,
-        "description": "How far content slides when switching tabs, in pixels. Needs Content animation set to Slide.",
-        "remixer": {
-          "control": "range",
-          "group": "content",
-          "groupTitle": "Content",
-          "min": 0,
-          "max": 120,
-          "step": 4,
-          "disabledWhen": {
-            "prop": "contentAnimation",
-            "notEquals": "slide"
-          },
-          "hideWhenReducedMotion": true
-        }
-      },
-      {
-        "name": "smoothHeight",
-        "label": "Smooth panel height",
-        "type": "boolean",
-        "default": false,
-        "description": "The content area animates to each tab's height instead of jumping.",
-        "remixer": {
-          "control": "checkbox",
-          "group": "content",
-          "groupTitle": "Content",
-          "hideWhenReducedMotion": true
-        }
-      },
-      {
-        "name": "fadeDuration",
-        "label": "Fade duration",
-        "type": "number",
-        "default": 0.35,
-        "description": "How long the fade takes, in seconds. Needs Content animation set to Fade in / out.",
-        "remixer": {
-          "control": "range",
-          "group": "content",
-          "groupTitle": "Content",
-          "min": 0.1,
-          "max": 1.2,
-          "step": 0.05,
-          "disabledWhen": {
-            "prop": "contentAnimation",
-            "notEquals": "fade"
-          },
-          "hideWhenReducedMotion": true
-        }
-      },
-      {
-        "name": "duration",
-        "label": "Duration",
-        "type": "number",
-        "default": 0.3,
-        "description": "How long the indicator and content take to move, in seconds.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 0.1,
-          "max": 1,
-          "step": 0.05,
-          "hideWhenReducedMotion": true
-        }
-      },
-      {
-        "name": "bounce",
-        "label": "Bounce",
-        "type": "number",
-        "default": 0.15,
-        "description": "Springiness of the indicator and slide. Does nothing with Fade underline unless Content animation is Slide.",
-        "remixer": {
-          "control": "range",
-          "group": "motion",
-          "groupTitle": "Motion",
-          "min": 0,
-          "max": 0.6,
-          "step": 0.05,
-          "hideWhenReducedMotion": true
-        }
-      }
-    ],
-    "remixer": {
-      "enabled": true,
-      "layout": "panel",
-      "copyCode": {
-        "includeOnlyPublicProps": true
-      }
-    },
-    "registryPath": "registry/effects/components/animated-tabs-bar/registry.json"
-  },
-  {
     "name": "animated-theme-switch",
     "version": "1.0.0",
     "changelog": [
@@ -16310,6 +15555,179 @@
     ]
   },
   {
+    "name": "image-pixel-reveal",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-10-26",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Image Pixel Reveal",
+    "description": "Scroll-driven reveal that builds an image out of square pixels along a scattered edge.",
+    "category": "scroll",
+    "dependencies": [
+      "@gsap/react",
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/image-pixel-reveal",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ImagePixelReveal",
+    "exportKind": "default",
+    "importPath": "@/components/effects/image-pixel-reveal",
+    "target": "src/components/effects/image-pixel-reveal",
+    "props": [
+      {
+        "name": "imageSrc",
+        "type": "string",
+        "default": "",
+        "description": "Image to reveal. Or pass your own content as children.",
+        "copyable": false
+      },
+      {
+        "name": "gridSize",
+        "type": "number",
+        "default": 24,
+        "description": "Size of each pixel cell, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "pixels",
+          "groupTitle": "Pixels",
+          "min": 6,
+          "max": 60,
+          "step": 1
+        },
+        "demoDefault": 14
+      },
+      {
+        "name": "edgeHeight",
+        "type": "number",
+        "default": 0.3,
+        "description": "How wide the scattered pixel edge is, from 0 (clean line) to 1.",
+        "remixer": {
+          "control": "range",
+          "group": "pixels",
+          "groupTitle": "Pixels",
+          "min": 0,
+          "max": 1,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        },
+        "demoDefault": 0.35
+      },
+      {
+        "name": "direction",
+        "type": "string",
+        "default": "down",
+        "description": "Which way the reveal travels across the image.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "label": "Down",
+              "value": "down"
+            },
+            {
+              "label": "Up",
+              "value": "up"
+            },
+            {
+              "label": "Left",
+              "value": "left"
+            },
+            {
+              "label": "Right",
+              "value": "right"
+            }
+          ],
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "parallax",
+        "type": "number",
+        "default": 0.5,
+        "description": "Demo only: strength of the scroll parallax on each image. 0 turns it off.",
+        "copyable": false,
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.1,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "scrub",
+        "type": "boolean",
+        "default": false,
+        "description": "Tie the reveal to scroll position. Off plays it once on enter.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "hideWhenReducedMotion": true
+        },
+        "demoDefault": true
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1.4,
+        "description": "Length of the reveal in seconds when not scrubbing.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.3,
+          "max": 4,
+          "step": 0.1,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "start",
+        "type": "string",
+        "default": "top 90%",
+        "description": "ScrollTrigger start position."
+      },
+      {
+        "name": "end",
+        "type": "string",
+        "default": "top 40%",
+        "description": "ScrollTrigger end position, used when scrubbing."
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Extra classes on the wrapper."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": {},
+      "panel": {}
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/image-pixel-reveal/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/scroll/image-pixel-reveal/registry.json"
+  },
+  {
     "name": "immersive-full-screen-nav",
     "version": "1.1.0",
     "changelog": [
@@ -19956,6 +19374,154 @@
         "target": "src/components/effects/pixelated-image-effect/index.tsx"
       }
     ]
+  },
+  {
+    "name": "portal-carousel",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-10-26",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Portal Carousel",
+    "description": "Fullscreen carousel where a cursor-following preview expands into the next image on click.",
+    "category": "carousels",
+    "dependencies": [
+      "gsap"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/portal-carousel",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "PortalCarousel",
+    "exportKind": "default",
+    "importPath": "@/components/effects/portal-carousel",
+    "target": "src/components/effects/portal-carousel",
+    "props": [
+      {
+        "name": "images",
+        "type": "array",
+        "default": "5 built-in images",
+        "description": "Images shown in order and looping: { src, alt?, title? }. Needs at least two.",
+        "copyable": false
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "default": "Next",
+        "description": "Text on the tag that sits at the cursor.",
+        "remixer": {
+          "control": "text",
+          "group": "preview",
+          "groupTitle": "Preview"
+        }
+      },
+      {
+        "name": "thumbWidth",
+        "type": "number",
+        "default": 200,
+        "description": "Size of the square preview, in px. Capped at 42vw.",
+        "remixer": {
+          "control": "range",
+          "group": "preview",
+          "groupTitle": "Preview",
+          "min": 80,
+          "max": 400,
+          "step": 10
+        }
+      },
+      {
+        "name": "followSpeed",
+        "type": "number",
+        "default": 0.14,
+        "description": "How quickly the preview chases the cursor, from 0.02 (lazy) to 1 (locked on).",
+        "remixer": {
+          "control": "range",
+          "group": "preview",
+          "groupTitle": "Preview",
+          "min": 0.02,
+          "max": 1,
+          "step": 0.01,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1.2,
+        "description": "Time for the preview to expand to fullscreen, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.1,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "expo.out",
+        "description": "GSAP ease for the expansion.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "label": "expo.out",
+              "value": "expo.out"
+            },
+            {
+              "label": "power4.out",
+              "value": "power4.out"
+            },
+            {
+              "label": "power2.inOut",
+              "value": "power2.inOut"
+            },
+            {
+              "label": "circ.out",
+              "value": "circ.out"
+            },
+            {
+              "label": "back.out(1.4)",
+              "value": "back.out(1.4)"
+            },
+            {
+              "label": "none",
+              "value": "none"
+            }
+          ],
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "className",
+        "type": "string",
+        "default": "",
+        "description": "Extra classes on the carousel root."
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": {},
+      "panel": {}
+    },
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/portal-carousel/index.tsx"
+      }
+    ],
+    "registryPath": "registry/effects/carousels/portal-carousel/registry.json"
   },
   {
     "name": "progressive-bloom-valley",

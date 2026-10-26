@@ -58,21 +58,27 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "autoplayDelay",
       "type": "number",
       "default": 4500,
-      "description": "Delay between testimonial changes in milliseconds.",
+      "description": "Delay between testimonial changes in milliseconds. Needs Autoplay on.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 1000,
         "max": 9000,
-        "step": 250
+        "step": 250,
+        "disabledWhen": {
+          "prop": "autoplay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

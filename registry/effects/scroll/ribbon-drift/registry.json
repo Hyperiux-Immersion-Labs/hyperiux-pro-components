@@ -81,7 +81,7 @@
     {
       "name": "textColor",
       "type": "color",
-      "description": "Color of the project name revealed inside a card block on hover.",
+      "description": "Color of the project name revealed inside a card block on hover. Needs Show Names on.",
       "default": "#ffffff",
       "remixer": {
         "control": "color",
@@ -90,6 +90,10 @@
         "visibleWhen": {
           "name": "showNames",
           "eq": true
+        },
+        "disabledWhen": {
+          "prop": "showNames",
+          "equals": false
         }
       }
     },

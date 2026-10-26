@@ -1,0 +1,143 @@
+{
+  "name": "portal-carousel",
+  "type": "registry:component",
+  "title": "Portal Carousel",
+  "description": "Fullscreen carousel where a cursor-following preview expands into the next image on click.",
+  "dependencies": [
+    "gsap"
+  ],
+  "registryDependencies": [],
+  "exportName": "PortalCarousel",
+  "exportKind": "default",
+  "tier": "free",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-10-26",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "images",
+      "type": "array",
+      "default": "5 built-in images",
+      "description": "Images shown in order and looping: { src, alt?, title? }. Needs at least two.",
+      "copyable": false
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "default": "Next",
+      "description": "Text on the tag that sits at the cursor.",
+      "remixer": {
+        "control": "text",
+        "group": "preview",
+        "groupTitle": "Preview"
+      }
+    },
+    {
+      "name": "thumbWidth",
+      "type": "number",
+      "default": 200,
+      "description": "Size of the square preview, in px. Capped at 42vw.",
+      "remixer": {
+        "control": "range",
+        "group": "preview",
+        "groupTitle": "Preview",
+        "min": 80,
+        "max": 400,
+        "step": 10
+      }
+    },
+    {
+      "name": "followSpeed",
+      "type": "number",
+      "default": 0.14,
+      "description": "How quickly the preview chases the cursor, from 0.02 (lazy) to 1 (locked on).",
+      "remixer": {
+        "control": "range",
+        "group": "preview",
+        "groupTitle": "Preview",
+        "min": 0.02,
+        "max": 1,
+        "step": 0.01,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "duration",
+      "type": "number",
+      "default": 1.2,
+      "description": "Time for the preview to expand to fullscreen, in seconds.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.3,
+        "max": 3,
+        "step": 0.1,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "ease",
+      "type": "string",
+      "default": "expo.out",
+      "description": "GSAP ease for the expansion.",
+      "remixer": {
+        "control": "select",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "options": [
+          {
+            "label": "expo.out",
+            "value": "expo.out"
+          },
+          {
+            "label": "power4.out",
+            "value": "power4.out"
+          },
+          {
+            "label": "power2.inOut",
+            "value": "power2.inOut"
+          },
+          {
+            "label": "circ.out",
+            "value": "circ.out"
+          },
+          {
+            "label": "back.out(1.4)",
+            "value": "back.out(1.4)"
+          },
+          {
+            "label": "none",
+            "value": "none"
+          }
+        ],
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "className",
+      "type": "string",
+      "default": "",
+      "description": "Extra classes on the carousel root."
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": {},
+    "panel": {}
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/portal-carousel/index.tsx",
+      "content": "// Built using Hyperiux Vault: https://vault.hyperiux.com\n'use client'\n/* eslint-disable @next/next/no-img-element -- shipped outside Next.js too, so next/image isn't available */\n\nimport {\n  useEffect,\n  useLayoutEffect,\n  useRef,\n  useState,\n  type MouseEvent,\n  type ReactNode,\n} from 'react'\nimport gsap from 'gsap'\n\nconst prefersReducedMotion = () =>\n  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches\n\nconst useIsomorphicLayoutEffect =\n  typeof window !== 'undefined' ? useLayoutEffect : useEffect\n\n// Parked preview inset from the bottom-right corner, px\nconst PARK_INSET = 28\n// Preview top-left corner sits on the cursor (fraction of its size)\nconst CURSOR_ANCHOR_X = 0\nconst CURSOR_ANCHOR_Y = 0\n// Tag offset from the cursor tip, px\nconst TAG_OFFSET_X = 14\nconst TAG_OFFSET_Y = 10\n\nexport interface PortalCarouselImage {\n  src: string\n  alt?: string\n  /** Short title shown on the left while this image is up. */\n  title?: string\n}\n\nconst DEFAULT_IMAGES: PortalCarouselImage[] = [\n  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/crimson-drift.jpg', title: 'Crimson Drift', alt: 'Woman tossing her hair in red and amber light, motion-blurred' },\n  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/night-rider.jpg', title: 'Night Rider', alt: 'Cyclist in an orange jacket panning past city lights at night' },\n  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/light-trails.jpg', title: 'Light Trails', alt: 'Dark SUV streaking past with headlight trails' },\n  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/ember-motion.jpg', title: 'Ember Motion', alt: 'Dancers blurred mid-movement in an orange-lit room' },\n  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/platform-wind.jpg', title: 'Platform Wind', alt: 'Woman on a subway platform, hair swept by a passing train' },\n]\n\nexport interface PortalCarouselProps {\n  /** Images, shown in order and looping. Needs at least two. */\n  images?: PortalCarouselImage[]\n  /** Text on the cursor tag. */\n  label?: string\n  /** Preview size, px (square, capped at 42vw). */\n  thumbWidth?: number\n  /** How quickly the preview chases the cursor, 0.02-1. */\n  followSpeed?: number\n  /** Preview-to-fullscreen expansion time, s. */\n  duration?: number\n  /** GSAP ease for the expansion. Fast start, slow finish by default. */\n  ease?: string\n  className?: string\n  /** Overlay content (header, copy). Non-interactive unless it opts in with pointer-events-auto. */\n  children?: ReactNode\n}\n\ninterface Rect {\n  left: number\n  top: number\n  width: number\n  height: number\n}\n\ninterface Layer {\n  id: number\n  index: number\n  origin: Rect\n}\n\n// Old value slides up and out while the new one rises in, through a mask\nfunction RollingText({ value, className = '' }: { value: string; className?: string }) {\n  const [state, setState] = useState<{ current: string; previous: string | null }>({\n    current: value,\n    previous: null,\n  })\n  if (state.current !== value) {\n    setState({ current: value, previous: state.current })\n  }\n\n  const currentRef = useRef<HTMLSpanElement>(null)\n  const previousRef = useRef<HTMLSpanElement>(null)\n\n  useIsomorphicLayoutEffect(() => {\n    if (state.previous === null) return\n    const incoming = currentRef.current\n    const outgoing = previousRef.current\n    const reduced = prefersReducedMotion()\n\n    const tweens = [\n      reduced\n        ? gsap.fromTo(incoming, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: 'power1.out' })\n        : gsap.fromTo(incoming, { yPercent: 110 }, { yPercent: 0, duration: 0.8, ease: 'expo.out' }),\n      reduced\n        ? gsap.to(outgoing, { opacity: 0, duration: 0.2, ease: 'power1.out' })\n        : gsap.fromTo(outgoing, { yPercent: 0 }, { yPercent: -110, duration: 0.8, ease: 'expo.out' }),\n    ]\n    return () => {\n      tweens.forEach((tween) => tween.kill())\n    }\n  }, [state])\n\n  return (\n    <span className={`relative -mb-[0.2em] inline-block overflow-y-clip whitespace-nowrap pb-[0.2em] align-bottom ${className}`}>\n      <span ref={currentRef} className=\"block\">\n        {state.current}\n      </span>\n      {state.previous !== null && (\n        <span ref={previousRef} aria-hidden=\"true\" className=\"absolute inset-x-0 top-0 block\">\n          {state.previous}\n        </span>\n      )}\n    </span>\n  )\n}\n\nfunction ExpandingLayer({\n  layer,\n  image,\n  duration,\n  ease,\n  onDone,\n}: {\n  layer: Layer\n  image: PortalCarouselImage\n  duration: number\n  ease: string\n  onDone: (id: number) => void\n}) {\n  const ref = useRef<HTMLDivElement>(null)\n  const onDoneRef = useRef(onDone)\n  useIsomorphicLayoutEffect(() => {\n    onDoneRef.current = onDone\n  })\n\n  useIsomorphicLayoutEffect(() => {\n    const element = ref.current\n    const parent = element?.parentElement\n    if (!element || !parent) return\n\n    const { width, height } = parent.getBoundingClientRect()\n    const done = () => onDoneRef.current(layer.id)\n\n    const tween = prefersReducedMotion()\n      ? gsap.fromTo(\n          element,\n          { left: 0, top: 0, width, height, opacity: 0 },\n          { opacity: 1, duration: 0.3, ease: 'power1.out', onComplete: done }\n        )\n      : gsap.to(element, { left: 0, top: 0, width, height, duration, ease, onComplete: done })\n\n    return () => {\n      tween.kill()\n    }\n  }, [])\n\n  return (\n    <div\n      ref={ref}\n      className=\"absolute overflow-hidden\"\n      style={{ ...layer.origin, zIndex: 10 + layer.id }}\n    >\n      <img src={image.src} alt=\"\" draggable={false} className=\"h-full w-full object-cover\" />\n    </div>\n  )\n}\n\nexport default function PortalCarousel({\n  images = DEFAULT_IMAGES,\n  label = 'Next',\n  thumbWidth = 200,\n  followSpeed = 0.14,\n  duration = 1.2,\n  ease = 'expo.out',\n  className = '',\n  children,\n}: PortalCarouselProps) {\n  const rootRef = useRef<HTMLDivElement>(null)\n  const followerRef = useRef<HTMLDivElement>(null)\n  const thumbRef = useRef<HTMLButtonElement>(null)\n  const tagRef = useRef<HTMLSpanElement>(null)\n  const layerIdRef = useRef(0)\n  const followSpeedRef = useRef(followSpeed)\n  useIsomorphicLayoutEffect(() => {\n    followSpeedRef.current = followSpeed\n  })\n\n  const [current, setCurrent] = useState(0)\n  const [layers, setLayers] = useState<Layer[]>([])\n\n  const count = images.length\n  const wrap = (index: number) => ((index % count) + count) % count\n  // Newest image on its way in, or the one on screen\n  const head = layers.length ? layers[layers.length - 1].index : current\n  const thumbIndex = wrap(head + 1)\n  const headTitle = count ? images[wrap(head)].title : undefined\n\n\n  // Warm the cache so swaps never flash\n  useEffect(() => {\n    images.forEach(({ src }) => {\n      const image = new Image()\n      image.src = src\n    })\n  }, [images])\n\n  // Tag sticks to the cursor; the preview trails it, or parks bottom-right\n  useEffect(() => {\n    const root = rootRef.current\n    const follower = followerRef.current\n    const tag = tagRef.current\n    if (!root || !follower || !tag) return\n\n    const pointer = { x: 0, y: 0, active: false }\n    const position = { x: 0, y: 0 }\n    let frame = 0\n    let placed = false\n\n    const tick = () => {\n      frame = requestAnimationFrame(tick)\n      const { width, height } = root.getBoundingClientRect()\n      const thumbW = follower.offsetWidth\n      const thumbH = follower.offsetHeight\n\n      const goal = pointer.active\n        ? { x: pointer.x - thumbW * CURSOR_ANCHOR_X, y: pointer.y - thumbH * CURSOR_ANCHOR_Y }\n        : { x: width - thumbW - PARK_INSET, y: height - thumbH - PARK_INSET }\n\n      const ease = prefersReducedMotion()\n        ? 1\n        : Math.min(Math.max(followSpeedRef.current, 0.02), 1)\n\n      if (!placed) {\n        position.x = goal.x\n        position.y = goal.y\n        placed = true\n      } else {\n        position.x += (goal.x - position.x) * ease\n        position.y += (goal.y - position.y) * ease\n      }\n      follower.style.transform = `translate3d(${position.x}px, ${position.y}px, 0)`\n\n      // No lag on the tag: it is the cursor\n      const tagX = pointer.active ? pointer.x + TAG_OFFSET_X : position.x + 8\n      const tagY = pointer.active ? pointer.y + TAG_OFFSET_Y : position.y + 8\n      tag.style.transform = `translate3d(${tagX}px, ${tagY}px, 0)`\n    }\n\n    const onMove = (event: PointerEvent) => {\n      if (event.pointerType === 'touch') return\n      const rect = root.getBoundingClientRect()\n      pointer.x = event.clientX - rect.left\n      pointer.y = event.clientY - rect.top\n      pointer.active = true\n    }\n    const onLeave = () => {\n      pointer.active = false\n    }\n\n    root.addEventListener('pointermove', onMove)\n    root.addEventListener('pointerleave', onLeave)\n    frame = requestAnimationFrame(tick)\n\n    return () => {\n      cancelAnimationFrame(frame)\n      root.removeEventListener('pointermove', onMove)\n      root.removeEventListener('pointerleave', onLeave)\n    }\n  }, [])\n\n  // Every click launches its own layer, so rapid clicks stack frames\n  const advance = () => {\n    const root = rootRef.current\n    const thumb = thumbRef.current\n    if (!root || !thumb || count < 2) return\n\n    const rootRect = root.getBoundingClientRect()\n    const thumbRect = thumb.getBoundingClientRect()\n    layerIdRef.current += 1\n\n    setLayers((previous) => [\n      ...previous,\n      {\n        id: layerIdRef.current,\n        index: thumbIndex,\n        origin: {\n          left: thumbRect.left - rootRect.left,\n          top: thumbRect.top - rootRect.top,\n          width: thumbRect.width,\n          height: thumbRect.height,\n        },\n      },\n    ])\n\n    // The following preview grows in at the cursor\n    if (!prefersReducedMotion()) {\n      gsap.fromTo(thumb, { scale: 0.2 }, { scale: 1, duration: 0.45, ease: 'expo.out', overwrite: true })\n    }\n  }\n\n  // A finished layer becomes the background; anything beneath it goes\n  const onLayerDone = (id: number) => {\n    setLayers((previous) => {\n      const finished = previous.find((layer) => layer.id === id)\n      if (finished) setCurrent(finished.index)\n      return previous.filter((layer) => layer.id > id)\n    })\n  }\n\n  // Clicks on overlay links/buttons stay theirs\n  const onRootClick = (event: MouseEvent<HTMLDivElement>) => {\n    const target = event.target as HTMLElement\n    const interactive = target.closest('a, button, input, select, textarea, [role=\"button\"]')\n    if (interactive && interactive !== thumbRef.current) return\n    advance()\n  }\n\n  if (count === 0) return null\n\n  const currentImage = images[wrap(current)]\n  const thumbImage = images[thumbIndex]\n\n  return (\n    <div\n      ref={rootRef}\n      onClick={onRootClick}\n      aria-roledescription=\"gallery\"\n      // isolate: the overlays' z-indexes stay inside the carousel instead of climbing over the page\n      className={`relative isolate h-screen w-full cursor-pointer select-none overflow-hidden bg-black ${className}`}\n    >\n      <img\n        src={currentImage.src}\n        alt={currentImage.alt ?? ''}\n        draggable={false}\n        className=\"absolute inset-0 h-full w-full object-cover\"\n      />\n\n      {/* Own stacking context: layer z-order never climbs over the overlays */}\n      <div className=\"absolute inset-0 z-[1]\">\n        {layers.map((layer) => (\n          <ExpandingLayer\n            key={layer.id}\n            layer={layer}\n            image={images[layer.index]}\n            duration={duration}\n            ease={ease}\n            onDone={onLayerDone}\n          />\n        ))}\n      </div>\n\n      <div className=\"pointer-events-none absolute inset-0 z-[1000]\">{children}</div>\n\n      {count > 1 && (\n        <>\n          <div\n            ref={followerRef}\n            className=\"pointer-events-none absolute left-0 top-0 z-[1001] aspect-square will-change-transform\"\n            style={{ width: `min(${thumbWidth}px, 42vw)` }}\n          >\n            <button\n              ref={thumbRef}\n              type=\"button\"\n              aria-label={`Show next image${thumbImage.alt ? `: ${thumbImage.alt}` : ''}`}\n              className=\"pointer-events-auto relative block h-full w-full overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black\"\n            >\n              <img src={thumbImage.src} alt=\"\" draggable={false} className=\"h-full w-full object-cover\" />\n            </button>\n          </div>\n\n          <span\n            ref={tagRef}\n            aria-hidden=\"true\"\n            className=\"pointer-events-none absolute left-0 top-0 z-[1002] bg-black px-2 py-1 text-[0.625rem] font-medium uppercase leading-none tracking-[0.2em] text-white will-change-transform\"\n          >\n            {label}\n          </span>\n        </>\n      )}\n\n      <div className=\"pointer-events-none absolute left-[10%] top-1/2 z-[999] flex -translate-y-1/2 flex-col gap-3 text-white\">\n        <span className=\"flex items-baseline gap-1 text-sm font-medium tabular-nums tracking-wide text-white/70\">\n          <RollingText value={String(wrap(head) + 1)} />\n          <span>/ {count}</span>\n        </span>\n        {headTitle && (\n          <RollingText\n            value={headTitle}\n            className=\"text-[clamp(1.5rem,2.6vw,2.75rem)] font-medium leading-[1.1] tracking-tight\"\n          />\n        )}\n      </div>\n\n      <p className=\"sr-only\" aria-live=\"polite\">\n        {`Image ${wrap(current) + 1} of ${count}${currentImage.alt ? `: ${currentImage.alt}` : ''}`}\n      </p>\n    </div>\n  )\n}\n"
+    }
+  ]
+}

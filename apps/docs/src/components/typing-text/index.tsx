@@ -414,6 +414,27 @@ export default function TypingText({
           }
         }
 
+        [data-pc-rm] .typing-text-line {
+          width: auto !important;
+          max-width: 100%;
+          opacity: 1 !important;
+          filter: none !important;
+          transform: none !important;
+          animation: none !important;
+        }
+
+        [data-pc-rm] .typing-text-line::after,
+        [data-pc-rm] .typing-text-line[data-cursor-style]::after,
+        [data-pc-rm] .typing-text-line[data-cursor-style] .typing-text-char::before {
+          content: none !important;
+          animation: none !important;
+        }
+
+        [data-pc-rm] .typing-text-char {
+          opacity: 1 !important;
+          animation: none !important;
+        }
+
         @keyframes typing-text-char-in {
           from {
             opacity: 0;

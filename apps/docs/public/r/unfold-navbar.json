@@ -80,7 +80,8 @@
         "groupTitle": "Links",
         "min": 0,
         "max": 0.06,
-        "step": 0.005
+        "step": 0.005,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -113,7 +114,8 @@
       "remixer": {
         "control": "toggle",
         "group": "links",
-        "groupTitle": "Links"
+        "groupTitle": "Links",
+        "hideWhenReducedMotion": true
       }
     },
     {

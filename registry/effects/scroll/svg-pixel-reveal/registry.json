@@ -60,7 +60,7 @@
       "name": "duration",
       "type": "number",
       "default": 1.5,
-      "description": "Reveal duration in seconds when scrub is off.",
+      "description": "Reveal duration in seconds when scrub is off. Needs Scrub off.",
       "remixer": {
         "control": "range",
         "group": "motion",
@@ -71,6 +71,10 @@
         "visibleWhen": {
           "name": "scrub",
           "eq": false
+        },
+        "disabledWhen": {
+          "prop": "scrub",
+          "equals": true
         }
       }
     },

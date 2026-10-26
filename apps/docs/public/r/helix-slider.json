@@ -46,7 +46,8 @@
         "groupCollapsible": false,
         "min": 0,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -121,7 +122,8 @@
         "groupCollapsible": false,
         "min": 0,
         "max": 5,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {

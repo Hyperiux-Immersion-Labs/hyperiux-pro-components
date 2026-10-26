@@ -69,7 +69,7 @@
       "name": "crosshairVariant",
       "type": "string",
       "default": "solid",
-      "description": "Crosshair line style.",
+      "description": "Crosshair line style. Needs Show Crosshair on.",
       "remixer": {
         "control": "select",
         "group": "crosshair",
@@ -87,7 +87,11 @@
             "label": "Dashed",
             "value": "dashed"
           }
-        ]
+        ],
+        "disabledWhen": {
+          "prop": "showCrosshair",
+          "equals": false
+        }
       }
     },
     {
@@ -105,22 +109,30 @@
       "name": "crosshairColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Crosshair line color (drawn at 20% strength).",
+      "description": "Crosshair line color (drawn at 20% strength). Needs Show Crosshair on.",
       "remixer": {
         "control": "color",
         "group": "crosshair",
-        "groupTitle": "Crosshair"
+        "groupTitle": "Crosshair",
+        "disabledWhen": {
+          "prop": "showCrosshair",
+          "equals": false
+        }
       }
     },
     {
       "name": "cursorDotColor",
       "type": "color",
       "default": "#f97316",
-      "description": "Color of the small cursor dot.",
+      "description": "Color of the small cursor dot. Needs Show Cursor Dot on.",
       "remixer": {
         "control": "color",
         "group": "crosshair",
-        "groupTitle": "Crosshair"
+        "groupTitle": "Crosshair",
+        "disabledWhen": {
+          "prop": "showCursorDot",
+          "equals": false
+        }
       }
     },
     {

@@ -217,6 +217,18 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 
 `items` was removed - it duplicated `cards` (both described as "the content rendered in the loop"), predating the real `cards` prop that shipped in 1.2.0.
 
+### Portal Carousel (`portal-carousel`, free)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `images` | 5 built-in images | array | none | Images shown in order and looping: { src, alt?, title? }. Needs at least two. |
+| `label` | `"Next"` | string | text | Text on the tag that sits at the cursor. |
+| `thumbWidth` | `200` | number | range | Size of the square preview, in px. Capped at 42vw. |
+| `followSpeed` | `0.14` | number | range | How quickly the preview chases the cursor, 0.02-1. |
+| `duration` | `1.2` | number | range | Time for the preview to expand to fullscreen, in seconds. |
+| `ease` | `"expo.out"` | string | select | GSAP ease for the expansion. |
+| `className` | `""` | string | none | Extra classes on the carousel root. |
+
 ### Ring Carousel (`ring-carousel`, pro)
 
 | Prop | Default | Type | Remixer control | Short description |
@@ -811,6 +823,20 @@ The previous `items`/`columns`/`scaleAmount`/`gap`/`duration` "suggested" props 
 | `maxYRotation` | `0` | number | range | Max card tilt (degrees) around the vertical axis - 0 disables the tilt entirely (matches the previous hardcoded value). |
 
 These are all real props already accepted by `HelixSliderComp` - the wrapper just never threaded them through (2026-07-29 fix). The previous `slides`/`radius`/`depth`/`rotationSpeed`/`showControls` were phantom "suggested" props never wired into the component. The remaining props share a single `"motion"` group with `groupCollapsible: false` (2026-07-29) - the panel renders every slider directly, no accordion/dropdown to open first. `scrollDistance` was added then removed again (2026-07-29) - fixed at the original hardcoded `360`.
+
+### Image Pixel Reveal (`image-pixel-reveal`, free)
+
+| Prop | Default | Type | Remixer control | Short description |
+|---|---|---|---|---|
+| `imageSrc` | `""` | string | none | Image to reveal. Or pass your own content as children. |
+| `gridSize` | `24` | number | range | Size of each pixel cell, in px. |
+| `edgeHeight` | `0.3` | number | range | How wide the scattered pixel edge is, from 0 to 1. |
+| `direction` | `"down"` | string | select | Which way the reveal travels across the image. |
+| `scrub` | `false` | boolean | checkbox | Tie the reveal to scroll position. Off plays it once on enter. |
+| `duration` | `1.4` | number | range | Length of the reveal in seconds when not scrubbing. |
+| `start` | `"top 90%"` | string | none | ScrollTrigger start position. |
+| `end` | `"top 40%"` | string | none | ScrollTrigger end position, used when scrubbing. |
+| `className` | `""` | string | none | Extra classes on the wrapper. |
 
 ### Horizontal Feature Reveal (`horizontal-feature-reveal`, free)
 

@@ -36,7 +36,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -75,7 +76,8 @@
         "groupTitle": "Motion",
         "min": 0.25,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     }
   ],

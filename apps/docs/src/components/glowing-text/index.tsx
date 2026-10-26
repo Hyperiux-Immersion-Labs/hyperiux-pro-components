@@ -245,6 +245,13 @@ export default function GlowingText({
           }
         }
 
+        [data-pc-rm] .glowing-text-char {
+          color: var(--glow-text-dim-end);
+          font-weight: var(--glow-settled-weight);
+          text-shadow: none;
+          animation: glowing-char-fade-in 0.4s ease-out forwards;
+        }
+
         @keyframes glowing-char-fade-in {
           from {
             opacity: 0;

@@ -7,7 +7,7 @@
 
 **A collection of high-quality animation effects and interactive components for Next.js - designed by [Hyperiux](https://hyperiux.com).**
 
-Hyperiux Vault includes 151 effects total: 56 free effects are open source (MPL 2.0) and install with a free Hyperiux account, and 95 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
+Hyperiux Vault includes 175 effects total: 70 free effects are open source (MPL 2.0) and install with a free Hyperiux account, and 105 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
 
 ---
 

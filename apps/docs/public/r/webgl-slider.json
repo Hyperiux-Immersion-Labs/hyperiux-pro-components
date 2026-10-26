@@ -40,7 +40,8 @@
         "groupTitle": "Controls",
         "min": 0,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -54,7 +55,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 5,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -65,7 +67,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {

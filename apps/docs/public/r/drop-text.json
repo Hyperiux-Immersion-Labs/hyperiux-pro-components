@@ -39,7 +39,8 @@
             "value": "perspective",
             "label": "Perspective"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -64,7 +65,8 @@
             "value": "lines",
             "label": "Lines"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -93,7 +95,8 @@
             "value": "random",
             "label": "Random"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -107,7 +110,8 @@
         "groupTitle": "Motion",
         "min": -240,
         "max": 240,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -121,7 +125,8 @@
         "groupTitle": "Motion",
         "min": -240,
         "max": 240,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -135,7 +140,8 @@
         "groupTitle": "Motion",
         "min": -90,
         "max": 90,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -149,7 +155,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 24,
-        "step": 0.5
+        "step": 0.5,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -163,7 +170,8 @@
         "groupTitle": "Motion",
         "min": 0.2,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -177,7 +185,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 1,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -191,7 +200,8 @@
         "groupTitle": "Motion",
         "min": 0.1,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -205,7 +215,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 0.2,
-        "step": 0.005
+        "step": 0.005,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -246,7 +257,8 @@
             "value": "expo.out",
             "label": "Expo"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {

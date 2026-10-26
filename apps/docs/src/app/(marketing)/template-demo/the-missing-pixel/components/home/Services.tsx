@@ -118,10 +118,13 @@ const Services = () => {
   };
 
   const showRef = useRef(show);
-  showRef.current = show;
+  useEffect(() => {
+    showRef.current = show;
+  });
 
   useEffect(() => {
     const layers = layerRefs.current;
+    const pics = picRefs.current;
     layers.forEach((layer, n) => {
       if (!layer) return;
       layer.style.clipPath = n === 0 ? SHOWN : HIDDEN_DOWN;
@@ -176,7 +179,7 @@ const Services = () => {
       window.removeEventListener("resize", onScroll);
       window.removeEventListener("pageshow", clearOverlays);
       clearOverlays();
-      gsap.killTweensOf([...layers, ...picRefs.current]);
+      gsap.killTweensOf([...layers, ...pics]);
     };
   }, []);
 

@@ -52,18 +52,24 @@
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "pauseOnHover",
       "type": "boolean",
       "default": true,
-      "description": "Pauses autoplay while the carousel is hovered.",
+      "description": "Pauses autoplay while the carousel is hovered. Needs Auto Play on.",
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "disabledWhen": {
+          "prop": "autoPlay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

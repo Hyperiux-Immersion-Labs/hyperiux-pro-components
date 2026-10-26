@@ -45,7 +45,8 @@
         "groupTitle": "Shader",
         "min": 0,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -59,7 +60,8 @@
         "groupTitle": "Shader",
         "min": 0,
         "max": 0.3,
-        "step": 0.005
+        "step": 0.005,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -73,7 +75,8 @@
         "groupTitle": "Shader",
         "min": 0,
         "max": 0.6,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {

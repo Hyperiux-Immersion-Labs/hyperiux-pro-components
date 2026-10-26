@@ -41,6 +41,14 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuReady, setMenuReady] = useState(false);
   const [instantClose, setInstantClose] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
+
+  // Route change: close the menu instantly (state adjusted during render, not in an effect)
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setInstantClose(true);
+    setMenuOpen(false);
+  }
 
   useEffect(() => {
     const id = window.setTimeout(() => setMenuReady(true), 2500);
@@ -150,9 +158,7 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    setInstantClose(true);
     menuLockRef.current = 0;
-    setMenuOpen(false);
   }, [pathname]);
 
   const toggleMenu = () => {

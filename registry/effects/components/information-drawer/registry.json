@@ -30,7 +30,8 @@
         "groupTitle": "Timing",
         "min": 0.1,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -44,7 +45,8 @@
         "groupTitle": "Timing",
         "min": 0.05,
         "max": 1,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -58,7 +60,8 @@
         "groupTitle": "Timing",
         "min": 0,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -81,7 +84,8 @@
         "groupTitle": "Timing",
         "min": 0,
         "max": 1,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {

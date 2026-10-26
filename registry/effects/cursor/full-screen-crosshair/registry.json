@@ -124,14 +124,18 @@
       "type": "number",
       "default": 0.14,
       "demoDefault": 0.1,
-      "description": "Controls cursor smoothing speed.",
+      "description": "Controls cursor smoothing speed. Needs Smooth on.",
       "remixer": {
         "control": "range",
         "group": "interaction",
         "groupTitle": "Interaction",
         "min": 0.02,
         "max": 0.5,
-        "step": 0.01
+        "step": 0.01,
+        "disabledWhen": {
+          "prop": "smooth",
+          "equals": false
+        }
       }
     }
   ],

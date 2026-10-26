@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useRef, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -37,7 +37,9 @@ const SquareTranslate = ({
   const squareRef = useRef<HTMLSpanElement | null>(null);
   const activeRef = useRef(onActiveChange);
 
-  activeRef.current = onActiveChange;
+  useEffect(() => {
+    activeRef.current = onActiveChange;
+  }, [onActiveChange]);
 
   useGSAP(
     () => {

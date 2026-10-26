@@ -1,4 +1,6 @@
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 'use client'
+/* eslint-disable @next/next/no-img-element -- shipped outside Next.js too, so next/image isn't available */
 
 import {
   useEffect,
@@ -9,7 +11,9 @@ import {
   type ReactNode,
 } from 'react'
 import gsap from 'gsap'
-import { prefersReducedMotion } from '@/lib/motion'
+
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
 const useIsomorphicLayoutEffect =
   typeof window !== 'undefined' ? useLayoutEffect : useEffect
@@ -23,16 +27,24 @@ const CURSOR_ANCHOR_Y = 0
 const TAG_OFFSET_X = 14
 const TAG_OFFSET_Y = 10
 
-export interface PortalGalleryImage {
+export interface PortalCarouselImage {
   src: string
   alt?: string
   /** Short title shown on the left while this image is up. */
   title?: string
 }
 
-export interface PortalGalleryProps {
+const DEFAULT_IMAGES: PortalCarouselImage[] = [
+  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/crimson-drift.jpg', title: 'Crimson Drift', alt: 'Woman tossing her hair in red and amber light, motion-blurred' },
+  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/night-rider.jpg', title: 'Night Rider', alt: 'Cyclist in an orange jacket panning past city lights at night' },
+  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/light-trails.jpg', title: 'Light Trails', alt: 'Dark SUV streaking past with headlight trails' },
+  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/ember-motion.jpg', title: 'Ember Motion', alt: 'Dancers blurred mid-movement in an orange-lit room' },
+  { src: 'https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portal-carousel/platform-wind.jpg', title: 'Platform Wind', alt: 'Woman on a subway platform, hair swept by a passing train' },
+]
+
+export interface PortalCarouselProps {
   /** Images, shown in order and looping. Needs at least two. */
-  images: PortalGalleryImage[]
+  images?: PortalCarouselImage[]
   /** Text on the cursor tag. */
   label?: string
   /** Preview size, px (square, capped at 42vw). */
@@ -115,14 +127,16 @@ function ExpandingLayer({
   onDone,
 }: {
   layer: Layer
-  image: PortalGalleryImage
+  image: PortalCarouselImage
   duration: number
   ease: string
   onDone: (id: number) => void
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const onDoneRef = useRef(onDone)
-  onDoneRef.current = onDone
+  useIsomorphicLayoutEffect(() => {
+    onDoneRef.current = onDone
+  })
 
   useIsomorphicLayoutEffect(() => {
     const element = ref.current
@@ -156,8 +170,8 @@ function ExpandingLayer({
   )
 }
 
-export default function PortalGallery({
-  images,
+export default function PortalCarousel({
+  images = DEFAULT_IMAGES,
   label = 'Next',
   thumbWidth = 200,
   followSpeed = 0.14,
@@ -165,14 +179,16 @@ export default function PortalGallery({
   ease = 'expo.out',
   className = '',
   children,
-}: PortalGalleryProps) {
+}: PortalCarouselProps) {
   const rootRef = useRef<HTMLDivElement>(null)
   const followerRef = useRef<HTMLDivElement>(null)
   const thumbRef = useRef<HTMLButtonElement>(null)
   const tagRef = useRef<HTMLSpanElement>(null)
   const layerIdRef = useRef(0)
   const followSpeedRef = useRef(followSpeed)
-  followSpeedRef.current = followSpeed
+  useIsomorphicLayoutEffect(() => {
+    followSpeedRef.current = followSpeed
+  })
 
   const [current, setCurrent] = useState(0)
   const [layers, setLayers] = useState<Layer[]>([])
@@ -314,7 +330,8 @@ export default function PortalGallery({
       ref={rootRef}
       onClick={onRootClick}
       aria-roledescription="gallery"
-      className={`relative h-screen w-full cursor-pointer select-none overflow-hidden bg-black ${className}`}
+      // isolate: the overlays' z-indexes stay inside the carousel instead of climbing over the page
+      className={`relative isolate h-screen w-full cursor-pointer select-none overflow-hidden bg-black ${className}`}
     >
       <img
         src={currentImage.src}

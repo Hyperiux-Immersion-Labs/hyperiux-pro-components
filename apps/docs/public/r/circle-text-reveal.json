@@ -71,7 +71,8 @@
         "groupTitle": "Motion",
         "min": 0.01,
         "max": 1,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -85,7 +86,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {

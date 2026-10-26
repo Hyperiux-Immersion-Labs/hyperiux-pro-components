@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/portal-carousel",
+  "version": "1.0.0",
+  "description": "Fullscreen carousel where a cursor-following preview expands into the next image on click.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "carousels",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "gsap": "*"
+  }
+}

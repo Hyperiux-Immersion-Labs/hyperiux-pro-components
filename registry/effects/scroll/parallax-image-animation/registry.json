@@ -42,7 +42,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 60,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -53,14 +54,15 @@
       "remixer": {
         "control": "checkbox",
         "group": "scale",
-        "groupTitle": "Scale"
+        "groupTitle": "Scale",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "scaleFrom",
       "type": "number",
       "default": 1.6,
-      "description": "Initial image scale.",
+      "description": "Initial image scale. Needs Enable Scale on.",
       "remixer": {
         "control": "range",
         "group": "scale",
@@ -71,14 +73,19 @@
         "visibleWhen": {
           "name": "enableScale",
           "eq": true
-        }
+        },
+        "disabledWhen": {
+          "prop": "enableScale",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "scaleTo",
       "type": "number",
       "default": 1.2,
-      "description": "Final image scale.",
+      "description": "Final image scale. Needs Enable Scale on.",
       "remixer": {
         "control": "range",
         "group": "scale",
@@ -89,7 +96,12 @@
         "visibleWhen": {
           "name": "enableScale",
           "eq": true
-        }
+        },
+        "disabledWhen": {
+          "prop": "enableScale",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     }
   ],

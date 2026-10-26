@@ -36,7 +36,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -47,7 +48,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "motion",
-        "groupTitle": "Motion"
+        "groupTitle": "Motion",
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -79,7 +81,8 @@
         "visibleWhen": {
           "name": "tiltEnabled",
           "eq": true
-        }
+        },
+        "hideWhenReducedMotion": true
       }
     }
   ],

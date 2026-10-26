@@ -1,6 +1,6 @@
 import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import animatedAccordionRegistry from "../../../../../../../registry/effects/components/animated-accordion/registry.json";
+import animatedAccordionRegistry from "./registry.json";
 
 export default function Page() {
   return <DemoContent registry={animatedAccordionRegistry} />;

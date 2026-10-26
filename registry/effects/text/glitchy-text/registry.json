@@ -62,7 +62,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 0.15,
-        "step": 0.005
+        "step": 0.005,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -76,7 +77,8 @@
         "groupTitle": "Motion",
         "min": 0.1,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -213,7 +215,8 @@
             "value": "bounce.inOut",
             "label": "bounce.inOut"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     }
   ],

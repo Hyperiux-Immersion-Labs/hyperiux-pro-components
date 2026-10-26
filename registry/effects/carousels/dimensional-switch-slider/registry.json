@@ -79,21 +79,27 @@
       "remixer": {
         "control": "checkbox",
         "group": "behavior",
-        "groupTitle": "Behavior"
+        "groupTitle": "Behavior",
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "autoplayDelay",
       "type": "number",
       "default": 2600,
-      "description": "Time between automatic slide changes in milliseconds.",
+      "description": "Time between automatic slide changes in milliseconds. Needs Autoplay on.",
       "remixer": {
         "control": "range",
         "group": "behavior",
         "groupTitle": "Behavior",
         "min": 1200,
         "max": 6000,
-        "step": 100
+        "step": 100,
+        "disabledWhen": {
+          "prop": "autoplay",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {

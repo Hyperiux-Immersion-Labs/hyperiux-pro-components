@@ -112,11 +112,15 @@
       "name": "webColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Colors the cursor connection lines.",
+      "description": "Colors the cursor connection lines. Needs Show Web on.",
       "remixer": {
         "control": "color",
         "group": "appearance",
-        "groupTitle": "Appearance"
+        "groupTitle": "Appearance",
+        "disabledWhen": {
+          "prop": "showWeb",
+          "equals": false
+        }
       }
     },
     {
@@ -156,11 +160,15 @@
       "name": "glowColor",
       "type": "color",
       "default": "#ffffff",
-      "description": "Glow color used when particle glow is enabled.",
+      "description": "Glow color used when particle glow is enabled. Needs Particles Glow on.",
       "remixer": {
         "control": "color",
         "group": "appearance",
-        "groupTitle": "Appearance"
+        "groupTitle": "Appearance",
+        "disabledWhen": {
+          "prop": "particlesGlow",
+          "equals": false
+        }
       }
     }
   ],

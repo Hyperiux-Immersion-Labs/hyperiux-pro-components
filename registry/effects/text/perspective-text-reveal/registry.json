@@ -66,7 +66,8 @@
         "groupTitle": "Timing",
         "min": 0.1,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -80,7 +81,8 @@
         "groupTitle": "Timing",
         "min": 0,
         "max": 0.5,
-        "step": 0.01
+        "step": 0.01,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -106,7 +108,8 @@
         "groupTitle": "Style",
         "min": 0,
         "max": 1,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -127,7 +130,8 @@
             "value": "bottom",
             "label": "Bottom"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -152,7 +156,8 @@
             "value": "lines",
             "label": "Lines"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -166,7 +171,8 @@
         "groupTitle": "Style",
         "min": 0,
         "max": 90,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -303,7 +309,8 @@
             "value": "bounce.inOut",
             "label": "bounce.inOut"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -317,7 +324,8 @@
         "groupTitle": "Style",
         "min": 200,
         "max": 2000,
-        "step": 10
+        "step": 10,
+        "hideWhenReducedMotion": true
       }
     }
   ],

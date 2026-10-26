@@ -164,7 +164,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 3,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -178,7 +179,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 4,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -192,7 +194,8 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 6,
-        "step": 0.1
+        "step": 0.1,
+        "hideWhenReducedMotion": true
       }
     }
   ],

@@ -46,7 +46,8 @@
             "value": "loop",
             "label": "Loop"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -64,11 +65,15 @@
       "name": "cursorColor",
       "type": "string",
       "default": "#f59e0b",
-      "description": "Cursor color.",
+      "description": "Cursor color. Needs Show Cursor on.",
       "remixer": {
         "control": "color",
         "group": "cursor",
-        "groupTitle": "Cursor"
+        "groupTitle": "Cursor",
+        "disabledWhen": {
+          "prop": "showCursor",
+          "equals": false
+        }
       }
     },
     {
@@ -174,7 +179,8 @@
         "groupTitle": "Motion",
         "min": 6,
         "max": 42,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -188,7 +194,8 @@
         "groupTitle": "Motion",
         "min": 0.2,
         "max": 3,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -202,21 +209,27 @@
         "groupTitle": "Motion",
         "min": 0,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "holdDuration",
       "type": "number",
       "default": 1.4,
-      "description": "Hold time before loop reset.",
+      "description": "Hold time before loop reset. Only used when Variant is Loop.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.2,
         "max": 4,
-        "step": 0.1
+        "step": 0.1,
+        "disabledWhen": {
+          "prop": "variant",
+          "notEquals": "loop"
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -251,7 +264,8 @@
         "groupTitle": "Appearance",
         "min": 0,
         "max": 20,
-        "step": 0.5
+        "step": 0.5,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -265,7 +279,8 @@
         "groupTitle": "Appearance",
         "min": -90,
         "max": 90,
-        "step": 1
+        "step": 1,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -279,7 +294,8 @@
         "groupTitle": "Appearance",
         "min": 0.2,
         "max": 2,
-        "step": 0.05
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -293,14 +309,15 @@
         "groupTitle": "Appearance",
         "min": 120,
         "max": 2000,
-        "step": 20
+        "step": 20,
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "cursorStyle",
       "type": "string",
       "default": "bar",
-      "description": "Cursor visual style.",
+      "description": "Cursor visual style. Needs Show Cursor on.",
       "remixer": {
         "control": "select",
         "group": "cursor",
@@ -326,21 +343,31 @@
             "value": "dot",
             "label": "Dot"
           }
-        ]
+        ],
+        "disabledWhen": {
+          "prop": "showCursor",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "cursorWidth",
       "type": "number",
       "default": 3,
-      "description": "Cursor thickness in pixels.",
+      "description": "Cursor thickness in pixels. Needs Show Cursor on.",
       "remixer": {
         "control": "range",
         "group": "cursor",
         "groupTitle": "Cursor",
         "min": 1,
         "max": 10,
-        "step": 1
+        "step": 1,
+        "disabledWhen": {
+          "prop": "showCursor",
+          "equals": false
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
@@ -351,7 +378,8 @@
       "remixer": {
         "control": "checkbox",
         "group": "cursor",
-        "groupTitle": "Cursor"
+        "groupTitle": "Cursor",
+        "hideWhenReducedMotion": true
       }
     },
     {
