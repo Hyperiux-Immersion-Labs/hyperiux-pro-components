@@ -199,7 +199,7 @@
 }
 
 .blog-content li::marker {
-  color: var(--blog-text-muted);
+  color: var(--blog-text-color);
 }
 
 .blog-content li > ul,
@@ -1039,10 +1039,6 @@
   border-top: 0;
 }
 
-.docs-sheet .blog-content li::marker {
-  color: var(--primary);
-}
-
 /* Print Styles */
 @media print {
   .blog-content {
@@ -1188,4 +1184,12 @@
   border-color: rgba(29, 29, 29, 0.12);
   color: #3a3a3a;
 }
+}
+
+/* Override content wrappers' space-y utilities for headings followed by prose or lists.
+   Heading top margins and heading-to-code spacing stay as they are. */
+@layer utilities {
+  .blog-content :is(h2, h3, h4, h5):has(+ :is(p, ul, ol)) {
+    margin-block-end: calc(var(--spacing) * 3);
+  }
 }

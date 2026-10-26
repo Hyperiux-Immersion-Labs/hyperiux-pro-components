@@ -23,7 +23,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-theme-switch",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedThemeSwitch",

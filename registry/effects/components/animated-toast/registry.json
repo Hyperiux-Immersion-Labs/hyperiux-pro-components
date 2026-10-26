@@ -22,7 +22,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-toast",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedToast",

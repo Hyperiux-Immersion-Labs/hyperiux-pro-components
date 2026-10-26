@@ -2493,7 +2493,7 @@
       "exportName": "AnimatedAttachment",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-button",
@@ -2531,7 +2531,7 @@
       "exportName": "AnimatedChatBubble",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-checkbox-group",
@@ -2568,7 +2568,7 @@
       "exportName": "AnimatedCommandMenu",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-data-table",
@@ -2589,7 +2589,7 @@
       "exportName": "AnimatedDataTable",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-date-picker",
@@ -2690,7 +2690,7 @@
       "exportName": "AnimatedHoverCard",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-input-otp",
@@ -2749,7 +2749,7 @@
       "exportName": "AnimatedQuestionnaire",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-radio-group",
@@ -2823,7 +2823,7 @@
       "exportName": "AnimatedSlider",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-switch",
@@ -2880,7 +2880,7 @@
       "exportName": "AnimatedThemeSwitch",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-toast",
@@ -2900,7 +2900,7 @@
       "exportName": "AnimatedToast",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     },
     {
       "name": "animated-tooltip",
@@ -2918,7 +2918,7 @@
       "exportName": "AnimatedTooltip",
       "exportKind": "default",
       "version": "1.0.0",
-      "tier": "free"
+      "tier": "pro"
     }
   ]
 }

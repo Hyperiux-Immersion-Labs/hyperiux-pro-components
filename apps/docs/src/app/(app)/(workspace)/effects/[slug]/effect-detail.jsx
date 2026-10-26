@@ -591,6 +591,7 @@ function EffectChangelogSection({ changelog = [] }) {
                 <FAQWrapper
                   itemId={itemId}
                   className="blog-changelog-card"
+                  toggleOn="title"
                   iconSize={18}
                   iconStrokeWidth={1.8}
                 >

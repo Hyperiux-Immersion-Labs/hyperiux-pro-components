@@ -20,7 +20,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-slider",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedSlider",

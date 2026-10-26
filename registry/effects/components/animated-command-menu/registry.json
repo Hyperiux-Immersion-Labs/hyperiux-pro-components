@@ -23,7 +23,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-command-menu",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedCommandMenu",

@@ -22,7 +22,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-hover-card",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedHoverCard",

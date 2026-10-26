@@ -25,6 +25,9 @@ interface FAQContextValue {
   iconClassName: string;
   iconSize: number;
   iconStrokeWidth: number;
+  toggleOnTitle: boolean;
+  onToggle: () => void;
+  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const FAQContext = createContext<FAQContextValue | null>(null);
@@ -112,6 +115,8 @@ export interface FAQWrapperProps {
   controlledOpen?: boolean;
   onToggle?: (next: boolean) => void;
   itemId?: string;
+  /** "title" makes only FAQTitle the click/keyboard trigger instead of the whole wrapper. */
+  toggleOn?: "wrapper" | "title";
 }
 
 export function FAQWrapper({
@@ -127,6 +132,7 @@ export function FAQWrapper({
   controlledOpen,
   onToggle,
   itemId,
+  toggleOn = "wrapper",
 }: FAQWrapperProps) {
   const group = useContext(FAQGroupContext);
 
@@ -261,7 +267,18 @@ export function FAQWrapper({
     iconClassName,
     iconSize,
     iconStrokeWidth,
+    toggleOnTitle: toggleOn === "title",
+    onToggle: handleToggle,
+    onKeyDown: handleKeyDown,
   };
+
+  if (toggleOn === "title") {
+    return (
+      <FAQContext.Provider value={value}>
+        <div className={className}>{children}</div>
+      </FAQContext.Provider>
+    );
+  }
 
   return (
     <FAQContext.Provider value={value}>
@@ -302,7 +319,24 @@ export function FAQTitle({
     iconClassName,
     iconSize,
     iconStrokeWidth,
+    contentId,
+    buttonId,
+    toggleOnTitle,
+    onToggle,
+    onKeyDown,
   } = useFAQContext();
+
+  const triggerProps = toggleOnTitle
+    ? {
+        role: "button",
+        tabIndex: 0,
+        "aria-expanded": isOpen,
+        "aria-controls": contentId,
+        id: buttonId,
+        onClick: onToggle,
+        onKeyDown,
+      }
+    : {};
 
   const icon = showIcon ? (
     <div className={`shrink-0 ${iconClassName}`}>
@@ -330,7 +364,8 @@ export function FAQTitle({
 
   return (
     <div
-      className={`flex w-full items-center justify-between gap-6 ${titleClassName} ${className}`}
+      className={`flex w-full items-center justify-between gap-6 ${toggleOnTitle ? "cursor-pointer" : ""} ${titleClassName} ${className}`}
+      {...triggerProps}
     >
       {iconPosition === "left" ? (
         <>

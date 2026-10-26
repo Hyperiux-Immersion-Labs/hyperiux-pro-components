@@ -21,7 +21,7 @@
   ],
   "registryDependencies": [],
   "previewUrl": "/demo/animated-questionnaire",
-  "tier": "free",
+  "tier": "pro",
   "subfolder": true,
   "main": "index.tsx",
   "exportName": "AnimatedQuestionnaire",
