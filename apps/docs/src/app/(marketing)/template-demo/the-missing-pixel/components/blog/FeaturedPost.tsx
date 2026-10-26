@@ -44,8 +44,8 @@ const FeaturedPost = () => (
           The longer the rulebook, the less your brand looks like itself. How we write guidelines people open on purpose.
         </LineReveal>
         <FadeUp delay={0.2}>
-          <UnderlineLink href={postPath(FEATURED_POST.slug)} className="font-mpx-head text-22 font-medium text-mpx-ink">
-            Read The Essay
+          <UnderlineLink href={postPath(FEATURED_POST.slug)} persistent arrow className="font-mpx-head text-22 font-medium text-mpx-ink">
+            Read the Essay
           </UnderlineLink>
         </FadeUp>
       </div>

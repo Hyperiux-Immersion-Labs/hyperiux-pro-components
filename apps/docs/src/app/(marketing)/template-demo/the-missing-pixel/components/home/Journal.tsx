@@ -99,9 +99,11 @@ const Journal = () => (
       <FadeUp>
         <UnderlineLink
           href={ROUTES.blog}
+          persistent
+          arrow
           className="font-mpx-head text-24 font-medium text-mpx-ink"
         >
-          Read the journal
+          Read the Journal
         </UnderlineLink>
       </FadeUp>
     </div>

@@ -121,7 +121,7 @@ const PostBody = ({ post }: PostBodyProps) => {
       <div className="flex flex-col items-start gap-[2vw] max-lg:gap-4">
         <MaskReveal as="h2">Keep reading</MaskReveal>
         <FadeUp>
-          <UnderlineLink href={ROUTES.blog} className="font-mpx-head text-24 font-medium text-mpx-ink">
+          <UnderlineLink href={ROUTES.blog} persistent arrow className="font-mpx-head text-24 font-medium text-mpx-ink">
             All Essays
           </UnderlineLink>
         </FadeUp>

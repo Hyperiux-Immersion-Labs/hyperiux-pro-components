@@ -68,6 +68,17 @@ const FILL_CLASSES: Record<Tone, Record<Variant, string>> = {
   media: { primary: "bg-mpx-grad", outline: "bg-mpx-grad" },
 };
 
+// Light buttons keep their border; the others lose it while hovered
+const BORDER_FADE = "transition-[border-color] duration-500 ease-out motion-reduce:transition-none";
+const BORDER_HIDE: Record<Tone, string> = {
+  light: "",
+  dark: `${BORDER_FADE} data-[hover]:border-transparent`,
+  media: `${BORDER_FADE} data-[hover]:border-transparent`,
+};
+
+const CURVED = "50% 50% 0 0 / 60% 60% 0 0";
+const FLAT = "0% 0% 0 0 / 0% 0% 0 0";
+
 const PixelButton = ({
   label,
   href,
@@ -84,77 +95,71 @@ const PixelButton = ({
   const fillRef = useRef<HTMLSpanElement | null>(null);
   const textRef = useRef<HTMLSpanElement | null>(null);
   const trackRef = useRef<HTMLSpanElement | null>(null);
-  const timelineRef = useRef<gsap.core.Timeline | null>(null);
   const lenis = useLenis();
   useMagnetic(ref, magnetic);
 
   useGSAP(() => {
     const el = ref.current;
     const fill = fillRef.current;
+    if (!el || !fill) return;
+    gsap.set(fill, { yPercent: 2, borderRadius: CURVED });
+    // The second arrow waits off to the bottom-left, ready to slide in on hover
+    const arrows = trackRef.current?.querySelectorAll<SVGElement>("[data-arrow]");
+    if (arrows && arrows.length === 2) gsap.set(arrows[1], { xPercent: -100, yPercent: 100 });
+    // The tone can change under the button (the header's turns dark while the menu is
+    // open): drop any colour a hover left inline, so the new tone's classes apply
+    gsap.killTweensOf(el, "color");
+    gsap.set(el, { clearProps: "color" });
+  }, [tone, variant, label]);
+
+  // Hover in and out are each their own tween from wherever things are now, both with
+  // ease-out curves. Out used to be the hover timeline reversed, which runs its
+  // ease-outs backwards - slow to start, then a sudden stop at rest.
+  const animate = (hovered: boolean) => {
+    const el = ref.current;
+    const fill = fillRef.current;
     const text = textRef.current;
     if (!el || !fill || !text) return;
 
-    const chars = Array.from(text.querySelectorAll<HTMLElement>("[data-char]"));
-    const baseColor = REST_TEXT[tone][variant];
+    const instant = prefersReducedMotion();
+    // The border fades in CSS (see BORDER_FADE): the outline tones' border colour is
+    // Tailwind's color-mix(), which the browser reports as oklab() - GSAP can't read
+    // that, so tweening it flashed through yellow and orange on the way back
+    el.toggleAttribute("data-hover", hovered);
+    const time = (seconds: number) => (instant ? 0 : seconds);
 
-    gsap.set(fill, { yPercent: 2, borderRadius: "50% 50% 0 0 / 60% 60% 0 0" });
-
-    const timeline = gsap.timeline({ paused: true });
-
-    timeline
-      .fromTo(
-        fill,
-        { yPercent: 2, borderRadius: "50% 50% 0 0 / 60% 60% 0 0" },
-        { yPercent: -100, borderRadius: "0% 0% 0 0 / 0% 0% 0 0", duration: 0.6, ease: "power3.out" },
-        0,
-      )
-      .fromTo(el, { color: baseColor }, { color: HOVER_TEXT[tone][variant], duration: 0.5, ease: "power3.out" }, 0)
-      .fromTo(
-        chars,
-        { yPercent: 0 },
-        { yPercent: -100, duration: 0.6, ease: "expo.out", stagger: 0.012 },
-        0,
-      );
-
-    if (tone !== "light") {
-      timeline.to(el, { borderColor: "transparent", duration: 0.6, ease: "power3.out" }, 0);
-    }
+    gsap.to(fill, {
+      yPercent: hovered ? -100 : 2,
+      borderRadius: hovered ? FLAT : CURVED,
+      duration: time(hovered ? 0.6 : 0.7),
+      ease: "power3.out",
+      overwrite: "auto",
+    });
+    gsap.to(el, {
+      color: hovered ? HOVER_TEXT[tone][variant] : REST_TEXT[tone][variant],
+      duration: time(0.5),
+      ease: "power3.out",
+      overwrite: "auto",
+      // Back at rest the tone's classes take over again (they show the same colours)
+      onComplete: hovered ? undefined : () => gsap.set(el, { clearProps: "color" }),
+    });
+    gsap.to(text.querySelectorAll<HTMLElement>("[data-char]"), {
+      yPercent: hovered ? -100 : 0,
+      duration: time(0.6),
+      ease: "expo.out",
+      stagger: instant ? 0 : 0.012,
+      overwrite: "auto",
+    });
 
     const arrows = trackRef.current?.querySelectorAll<SVGElement>("[data-arrow]");
     if (arrows && arrows.length === 2) {
-      timeline
-        .fromTo(
-          arrows[0],
-          { xPercent: 0, yPercent: 0 },
-          { xPercent: 100, yPercent: -100, duration: 0.5, ease: "expo.out" },
-          0,
-        )
-        .fromTo(
-          arrows[1],
-          { xPercent: -100, yPercent: 100 },
-          { xPercent: 0, yPercent: 0, duration: 0.5, ease: "expo.out" },
-          0,
-        );
+      gsap.to(arrows[0], { xPercent: hovered ? 100 : 0, yPercent: hovered ? -100 : 0, duration: time(0.5), ease: "expo.out", overwrite: "auto" });
+      gsap.to(arrows[1], { xPercent: hovered ? 0 : -100, yPercent: hovered ? 0 : 100, duration: time(0.5), ease: "expo.out", overwrite: "auto" });
     }
-
-    timelineRef.current = timeline;
-
-    return () => timeline.kill();
-  }, [tone, variant, label]);
-
-  const play = () => {
-    const timeline = timelineRef.current;
-    if (!timeline) return;
-    if (prefersReducedMotion()) timeline.progress(1);
-    else timeline.play();
   };
 
-  const reverse = () => {
-    const timeline = timelineRef.current;
-    if (!timeline) return;
-    if (prefersReducedMotion()) timeline.progress(0);
-    else timeline.reverse();
-  };
+  const play = () => animate(true);
+  const reverse = () => animate(false);
 
   const handleClick = (event: MouseEvent<HTMLElement>) => {
     onClick?.(event);
@@ -166,7 +171,7 @@ const PixelButton = ({
     else target.scrollIntoView({ behavior: "smooth" });
   };
 
-  const classes = `relative isolate inline-flex shrink-0 items-center justify-center gap-3 overflow-hidden max-lg:gap-2 whitespace-nowrap rounded-full border font-mpx-head font-medium leading-none ${SIZE_CLASSES[size]} ${BASE_CLASSES[tone][variant]} ${className}`.trim();
+  const classes = `relative isolate inline-flex shrink-0 items-center justify-center gap-3 overflow-hidden max-lg:gap-2 whitespace-nowrap rounded-full border font-mpx-head font-medium leading-none ${SIZE_CLASSES[size]} ${BASE_CLASSES[tone][variant]} ${BORDER_HIDE[tone]} ${className}`.trim();
 
   const content = (
     <>

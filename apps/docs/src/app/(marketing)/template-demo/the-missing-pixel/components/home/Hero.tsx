@@ -225,8 +225,8 @@ const Hero = () => {
             big thing work.
           </LineReveal>
           <FadeUp delay={INTRO_DELAY + 0.75} className="flex flex-wrap gap-3 max-lg:grid max-lg:w-fit max-lg:gap-4">
-            <PixelButton label="See The Work" href={ROUTES.work} tone="media" icon />
-            <PixelButton label="Start A Project" href={ROUTES.contact} tone="media" variant="outline" />
+            <PixelButton label="See the Work" href={ROUTES.work} tone="media" icon />
+            <PixelButton label="Start a Project" href={ROUTES.contact} tone="media" variant="outline" />
           </FadeUp>
         </div>
       </div>

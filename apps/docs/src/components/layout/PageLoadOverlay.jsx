@@ -4,6 +4,7 @@ import { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { usePathname } from "next/navigation";
 import { GridDots } from "@/components/grid-dots";
+import { hasOwnLoader } from "./ownLoaderRoutes";
 
 // Longest a vault page waits for its sidebar before the cover lifts anyway - generous,
 // since a slow first load (a dev compile) can take a few seconds to hydrate
@@ -32,8 +33,9 @@ export function PageLoadOverlay() {
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname === "/index";
   // Only the page a visit starts on is ever covered (the cover stays mounted across
-  // client navigation), so a visit that starts on the homepage never draws it
-  const [startedHome] = useState(isHome);
+  // client navigation), so a visit that starts on the homepage, or on a template demo
+  // (/template-demo/*, which brings its own loader), never draws it
+  const [noCover] = useState(isHome || hasOwnLoader(pathname));
 
   useLayoutEffect(() => {
     if (!ref.current) return undefined;
@@ -56,7 +58,7 @@ export function PageLoadOverlay() {
 
   // The homepage paints straight from the server HTML: its loader and hero intro decide
   // before the first paint what to hide (lib/intro-gate.js), so no cover waits for React
-  if (startedHome) return null;
+  if (noCover) return null;
 
   return (
     <>

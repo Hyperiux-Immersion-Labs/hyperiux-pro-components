@@ -10,7 +10,7 @@ import studio2 from "../../assets/pictures/studio-2.webp";
 
 const AboutHero = () => (
   <>
-    <section className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] flex h-screen flex-col gap-11 py-[7%] max-lg:h-auto max-lg:min-h-screen max-lg:gap-8 max-lg:py-[12%] max-md:gap-9 max-md:py-[15%]">
+    <section className="px-[5vw] max-lg:px-[6vw] max-md:px-[7vw] flex h-screen flex-col gap-11 py-[7%] max-lg:h-auto max-lg:min-h-screen max-lg:gap-8 max-lg:py-[12%] max-md:gap-9 max-md:py-[15%] max-md:pt-[30vw]">
      
       <Breadcrumb crumbs={[{ label: "Home", href: ROUTES.home }, { label: "About" }]} />
       <div className="grid flex-1 grid-cols-12 content-end items-end gap-x-12 gap-y-10 max-md:gap-y-8 max-lg:gap-x-8 max-md:gap-x-0">

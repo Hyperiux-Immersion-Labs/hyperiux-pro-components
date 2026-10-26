@@ -6,12 +6,15 @@ import { useRef, type ReactNode } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
+import { ArrowUpRight } from "./icons";
 
 type UnderlineLinkProps = {
   href: string;
   children: ReactNode;
   className?: string;
   persistent?: boolean;
+  /** Arrow after the text (turns on hover) - for standalone link buttons. */
+  arrow?: boolean;
   tabIndex?: number;
 };
 
@@ -20,6 +23,7 @@ const UnderlineLink = ({
   children,
   className = "",
   persistent = false,
+  arrow = false,
   tabIndex,
 }: UnderlineLinkProps) => {
   const lineRef = useRef<HTMLSpanElement | null>(null);
@@ -64,13 +68,20 @@ const UnderlineLink = ({
       onMouseLeave={leave}
       onFocus={enter}
       onBlur={leave}
-      className={`relative inline-block w-fit py-[0.2vw] max-lg:py-[0.4vw] max-md:py-[0.8vw] ${className}`.trim()}
+      className={`group/underline relative inline-block w-fit py-[0.2vw] max-lg:py-[0.4vw] max-md:py-[0.8vw] ${className}`.trim()}
     >
-      {children}
+      {arrow ? (
+        <span className="inline-flex items-center gap-[0.4em]">
+          {children}
+          <ArrowUpRight className="size-[0.9em] transition-transform duration-500 group-hover/underline:rotate-45" />
+        </span>
+      ) : (
+        children
+      )}
       <span
         ref={lineRef}
         aria-hidden
-        className={`absolute bottom-0 left-0 h-px w-full bg-current ${persistent ? "" : "[transform:scaleX(0)]"}`}
+        className={`absolute bottom-1 left-0 h-px w-full bg-current ${persistent ? "" : "[transform:scaleX(0)]"}`}
       />
     </Link>
   );

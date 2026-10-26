@@ -399,7 +399,7 @@ const PixelField = () => {
           </p>
           <div ref={linkRef} className={`col-start-1 row-start-1 ${found ? "pointer-events-auto" : "invisible"}`}>
             <UnderlineLink href="mailto:hello@themissingpixel.studio" className="font-mpx-body text-22" tabIndex={found ? 0 : -1}>
-              Start a project
+              Start a Project
             </UnderlineLink>
           </div>
         </div>

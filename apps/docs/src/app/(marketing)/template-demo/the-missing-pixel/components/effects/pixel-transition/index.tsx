@@ -88,6 +88,24 @@ const PixelTransition = () => {
     });
   };
 
+  // The canvas matches the screen on every page. This used to happen only when the
+  // homepage loader ran, so landing on any other page left it at the browser's default
+  // 300x150, stretched to full screen - every transition block drawn several times too big.
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const size = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.ceil(window.innerWidth * dpr);
+      canvas.height = Math.ceil(window.innerHeight * dpr);
+      canvas.getContext("2d")?.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+    size();
+    window.addEventListener("resize", size);
+    return () => window.removeEventListener("resize", size);
+  }, []);
+
   useGSAP(() => {
     const root = rootRef.current;
     const canvas = canvasRef.current;
@@ -99,15 +117,6 @@ const PixelTransition = () => {
       gsap.set(root, { display: "none" });
       return;
     }
-
-    const size = () => {
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.ceil(window.innerWidth * dpr);
-      canvas.height = Math.ceil(window.innerHeight * dpr);
-      canvas.getContext("2d")?.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    size();
-    window.addEventListener("resize", size);
 
     const grid = { p: 0 };
 
@@ -133,10 +142,7 @@ const PixelTransition = () => {
         "<",
       );
 
-    return () => {
-      timeline.kill();
-      window.removeEventListener("resize", size);
-    };
+    return () => timeline.kill();
   }, []);
 
   useEffect(() => {

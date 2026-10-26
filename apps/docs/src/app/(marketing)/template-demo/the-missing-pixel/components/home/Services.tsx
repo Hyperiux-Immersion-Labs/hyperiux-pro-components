@@ -237,9 +237,11 @@ const Services = () => {
         <FadeUp>
           <UnderlineLink
             href={ROUTES.services}
+            persistent
+            arrow
             className="font-mpx-head text-24 font-medium text-mpx-ink "
           >
-            All services
+            All Services
           </UnderlineLink>
         </FadeUp>
       </div>

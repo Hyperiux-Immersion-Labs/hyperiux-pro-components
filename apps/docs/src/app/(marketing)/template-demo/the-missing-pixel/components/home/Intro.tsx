@@ -19,7 +19,7 @@ const Intro = () => (
           as="p"
           scrub
           data-cursor-fill
-          className="font-mpx-head w-[62%] text-64 font-normal leading-[1.2] tracking-tight text-mpx-muted max-lg:w-[85%] max-md:w-full"
+          className="font-mpx-head w-[62%] text-64 font-normal leading-[1.2] tracking-tight text-mpx-muted max-lg:w-[85%] max-md:w-full max-md:text-[8vw]! max-md:tracking-[-0.25vw]!"
         >
           <span className="text-mpx-ink">
             Sixty strategists, designers, writers and engineers in four cities,
@@ -27,8 +27,8 @@ const Intro = () => (
           obsessed with the one detail people remember.
         </MaskReveal>
         <FadeUp>
-          <UnderlineLink href={ROUTES.about} className="font-mpx-head text-24 font-medium text-mpx-ink">
-            Meet the studio
+          <UnderlineLink href={ROUTES.about} persistent arrow className="font-mpx-head text-24 font-medium text-mpx-ink">
+            Meet the Studio
           </UnderlineLink>
         </FadeUp>
       </div>

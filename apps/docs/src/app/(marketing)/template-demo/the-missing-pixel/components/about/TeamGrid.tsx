@@ -4,6 +4,7 @@ import Link from "next/link";
 import { FadeUp } from "../Animations/gsapAnim";
 import { ArrowUpRight } from "../Buttons/icons";
 import SpotlightEffect from "../effects/spotlight-effect";
+import ScrollHint from "../shared/ScrollHint";
 import member1 from "../../assets/pictures/member-1.webp";
 import member1Lit from "../../assets/pictures/member-1-lit.webp";
 import member2 from "../../assets/pictures/member-2.webp";
@@ -24,9 +25,10 @@ const LINK_CLASSES =
   "translate-y-[250%] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-focus-within:translate-y-0 group-hover:translate-y-0 max-lg:translate-y-0 inline-flex h-[3.2vh] items-center rounded-full bg-(--mpx-paper) px-[0.9vw] text-14 text-(color:--mpx-ink) max-lg:h-[2.8vh] max-lg:px-[1.8vw] max-md:h-[3.8vh] max-md:px-[3.5vw]";
 
 const TeamGrid = () => (
-  <ul className="grid grid-cols-4 gap-x-9  gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:flex max-md:w-full max-md:max-w-full max-md:snap-x max-md:snap-mandatory max-md:gap-x-4 max-md:overflow-x-scroll max-md:pb-4 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden">
+  <>
+  <ul className="grid grid-cols-4 gap-x-9  gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:flex max-md:w-full max-md:max-w-full max-md:snap-x max-md:snap-mandatory max-md:gap-x-4 max-md:overflow-x-scroll max-md:pb-4 max-md:px-[7vw] max-md:scroll-px-[7vw] max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden">
     {TEAM.map((member, index) => (
-      <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08} className="max-md:w-full max-md:shrink-0 max-md:snap-start max-md:px-[7vw]">
+      <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08} className="max-md:w-[78vw] max-md:shrink-0 max-md:snap-start">
         <article className="h-full">
           <SpotlightEffect
             image={member.image}
@@ -53,7 +55,7 @@ const TeamGrid = () => (
         </article>
       </FadeUp>
     ))}
-    <FadeUp as="li" delay={0.24} className="max-md:w-full max-md:shrink-0 max-md:snap-start max-md:px-[7vw]">
+    <FadeUp as="li" delay={0.24} className="max-md:w-[78vw] max-md:shrink-0 max-md:snap-start">
       <Link
         href={ROUTES.contact}
         data-cursor="Apply"
@@ -71,6 +73,9 @@ const TeamGrid = () => (
       </Link>
     </FadeUp>
   </ul>
+  {/* Phones only: the row scrolls sideways there */}
+  <ScrollHint className="mx-[7vw] md:hidden" />
+  </>
 );
 
 export default TeamGrid;

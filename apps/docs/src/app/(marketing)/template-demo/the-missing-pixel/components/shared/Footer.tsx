@@ -85,6 +85,32 @@ const Footer = () => {
     return () => window.removeEventListener("resize", fit);
   }, []);
 
+  // The footer lives in the layout, so it stays mounted from page to page, but its
+  // scroll trigger was measured against the first page's height. After navigating to
+  // a page of another length it still pointed at the old footer position, so the
+  // mark's progress never moved and the pixel wordmark never drew. Re-measure
+  // whenever the page content changes height (a new page, images arriving late).
+  useEffect(() => {
+    const main = document.querySelector(".mpx-page > main");
+    if (!main) return;
+
+    let timer = 0;
+    let lastHeight = main.getBoundingClientRect().height;
+    const observer = new ResizeObserver(([entry]) => {
+      const height = entry.contentRect.height;
+      if (Math.abs(height - lastHeight) < 1) return;
+      lastHeight = height;
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    });
+    observer.observe(main);
+
+    return () => {
+      window.clearTimeout(timer);
+      observer.disconnect();
+    };
+  }, []);
+
   useGSAP(
     () => {
       const mark = markRef.current;
@@ -133,7 +159,7 @@ const Footer = () => {
   return (
     <FooterParallax data-mpx-inert footerClassName="bg-(--mpx-ink) text-(color:--mpx-paper)">
       <div className="flex h-screen flex-col justify-between gap-[4vh] overflow-hidden max-lg:h-auto max-lg:min-h-screen max-lg:gap-[6vh] max-md:gap-[3vh] px-[5vw] max-lg:px-[6vw] max-md:px-[7vw]">
-        <div className="grid grid-cols-12 gap-x-9 gap-y-12 py-[8vh] max-lg:grid-cols-6 max-lg:gap-x-8 max-lg:py-[6vh] max-md:grid-cols-2 max-md:gap-y-5 max-md:py-[3vh]">
+        <div className="grid grid-cols-12 gap-x-9 gap-y-12 py-[8vh] max-lg:grid-cols-6 max-lg:gap-x-8 max-lg:py-[6vh] max-md:grid-cols-2 max-md:gap-y-12 max-md:pt-[8vh] max-md:pb-[3vh]">
           <div className="col-span-5 flex flex-col gap-5 max-lg:col-span-6 max-md:col-span-2 max-md:gap-3">
             <span className="flex items-center gap-2 text-22 font-medium leading-none tracking-tight">
               <LogoMark className="size-[1.4vw] max-lg:size-[4vw] max-md:size-[6.5vw]" />
@@ -198,7 +224,7 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-(--mpx-white)/15 py-[1.5vw] text-14 text-(color:--mpx-white)/60 max-lg:gap-6 max-lg:py-[3vw] max-md:flex-col max-md:items-start max-md:gap-2 max-md:py-[3vh]">
+          <div className="relative flex flex-wrap items-center justify-between gap-4 border-t border-(--mpx-white)/15 py-[1.5vw] text-14 text-(color:--mpx-white)/60 max-lg:gap-6 max-lg:py-[3vw] max-md:flex-col max-md:items-start max-md:gap-2 max-md:py-[3vh] max-md:pr-[16vw]">
             <span>© {new Date().getFullYear()} The Missing Pixel. Made with an unreasonable amount of care.</span>
             <nav aria-label="Legal" className="flex gap-5 max-lg:gap-6">
               {LEGAL.map((item) => (
@@ -207,13 +233,15 @@ const Footer = () => {
                 </span>
               ))}
             </nav>
+            {/* Phones: a round white button with just the arrow, pinned to the bar's
+                bottom-right corner (the label stays for screen readers) */}
             <button
               type="button"
               onClick={toTop}
-              className="group flex items-center gap-2 transition-colors duration-300 hover:text-(color:--mpx-paper)"
+              className="group flex items-center gap-2 transition-colors duration-300 hover:text-(color:--mpx-paper) max-md:absolute max-md:bottom-[3vh] max-md:right-0 max-md:size-[12vw] max-md:justify-center max-md:rounded-full max-md:bg-(--mpx-white) max-md:text-(color:--mpx-ink) max-md:hover:text-(color:--mpx-ink)"
             >
-              Back to top
-              <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[3.3vw]" />
+              <span className="max-md:sr-only">Back to Top</span>
+              <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[5vw]" />
             </button>
           </div>
         </div>

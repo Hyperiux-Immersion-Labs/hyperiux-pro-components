@@ -210,7 +210,7 @@ const Header = () => {
           solid ? "border-(--mpx-ink)/10 bg-(--mpx-paper)" : "border-transparent bg-transparent"
         } ${light ? "text-(color:--mpx-paper)" : "text-(color:--mpx-ink)"}`}
       >
-        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[7vh] max-lg:px-[6vw] max-md:h-[7.4vh] max-md:px-[7vw]">
+        <div className="flex h-[9vh]  items-center justify-between gap-5 px-[5vw] max-lg:h-[7vh] max-lg:px-[6vw] max-md:h-auto max-md:py-[3.5vw] max-md:px-[7vw]">
           <Link
             href={ROUTES.home}
             onClick={handleLogo}
@@ -234,7 +234,7 @@ const Header = () => {
             <SoundToggle inverted={light} />
             <div className="max-lg:hidden">
               <PixelButton
-                label="Start A Project"
+                label="Start a Project"
                 href={ROUTES.contact}
                 size="sm"
                 tone={ctaDark ? "dark" : onPhoto ? "media" : "light"}

@@ -7,6 +7,15 @@ import UnderlineLink from "../Buttons/UnderlineLink";
 import { servicePath } from "../../routes";
 import { SERVICES } from "./services";
 
+// Link text is title case like the site's other buttons ("Explore Brand Strategy");
+// the service names stay sentence case everywhere else
+const SMALL_WORDS = new Set(["a", "an", "and", "the", "of", "to", "in", "for"]);
+const titleCase = (text: string) =>
+  text
+    .split(" ")
+    .map((word, index) => (index > 0 && SMALL_WORDS.has(word) ? word : word[0].toUpperCase() + word.slice(1)))
+    .join(" ");
+
 const ServiceList = () => (
   <ul className="flex flex-col">
     {SERVICES.map((service, index) => (
@@ -39,9 +48,11 @@ const ServiceList = () => (
             </ul>
             <UnderlineLink
               href={servicePath(service.slug)}
+              persistent
+              arrow
               className="font-mpx-head text-22 font-medium text-(color:--mpx-ink)"
             >
-              Explore {service.title}
+              {titleCase(`Explore ${service.title}`)}
             </UnderlineLink>
           </div>
           <div className="col-span-3 aspect-[4/3] overflow-hidden rounded-lg max-lg:col-span-12 max-lg:w-[60%] max-md:w-full">

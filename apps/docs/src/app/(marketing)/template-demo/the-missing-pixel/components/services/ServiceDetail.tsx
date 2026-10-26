@@ -46,7 +46,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
       text={service.description}
     >
       <div className="flex flex-wrap gap-3">
-        <PixelButton label="Book An Intro Call" href={ROUTES.contact} icon />
+        <PixelButton label="Book an Intro Call" href={ROUTES.contact} icon />
         <PixelButton label="See Pricing" href="#pricing" variant="outline" />
       </div>
     </PageHero>
@@ -217,9 +217,10 @@ const ServiceDetail = ({ service }: { service: Service }) => (
         <UnderlineLink
           href={ROUTES.work}
           persistent
+          arrow
           className="font-mpx-head text-22 font-medium"
         >
-          All projects
+          All Projects
         </UnderlineLink>
       </SectionHead>
       <ul className="grid grid-cols-2 gap-9 max-lg:gap-6 max-md:grid-cols-1 max-md:gap-12">

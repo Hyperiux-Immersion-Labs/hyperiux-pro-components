@@ -71,16 +71,19 @@ const FooterParallax = ({
   }, [fits, height]);
 
   return (
+    // Phones (max-md): no reveal - the footer sits in the page like any other block.
+    // Done in CSS (the !-marked overrides beat the inline height and transform), so the
+    // server HTML is already right and nothing flashes before hydration.
     <div
       ref={outerRef}
       id={id}
-      className={`relative z-1 w-full [clip-path:rect(0px,100%,100%,0px)] ${outerClassName}`.trim()}
+      className={`relative z-1 w-full [clip-path:rect(0px,100%,100%,0px)] max-md:h-auto! max-md:[clip-path:none] ${outerClassName}`.trim()}
       style={height ? { height } : undefined}
       {...props}
     >
       <footer
         ref={footerRef}
-        className={`fixed inset-x-0 ${fits ? "bottom-0" : "top-0 will-change-transform"} ${footerClassName}`.trim()}
+        className={`fixed inset-x-0 ${fits ? "bottom-0" : "top-0 will-change-transform"} max-md:static max-md:transform-none! ${footerClassName}`.trim()}
       >
         {children}
       </footer>

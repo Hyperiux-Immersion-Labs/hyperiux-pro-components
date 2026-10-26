@@ -44,6 +44,7 @@ const Cursor = () => {
     let lastCheck = 0;
     let lastLoaderCheck = 0;
     let loaderOn = false;
+    let blendOff = false;
 
     const setState = (target: Element | null) => {
       let fill = false;
@@ -56,8 +57,10 @@ const Cursor = () => {
         scale.ringTarget = 0;
         scale.dotTarget = 0;
       } else if (target.closest("[data-cursor]")) {
-        label.textContent =
-          target.closest<HTMLElement>("[data-cursor]")?.dataset.cursor ?? "";
+        // Only when it changes: rewriting it on every move (moving content under a still
+        // cursor fires them constantly) dirtied layout each frame
+        const text = target.closest<HTMLElement>("[data-cursor]")?.dataset.cursor ?? "";
+        if (label.textContent !== text) label.textContent = text;
         scale.ringTarget = 0;
         scale.dotTarget = 0;
         scale.labelTarget = 1;
@@ -127,6 +130,16 @@ const Cursor = () => {
       scale.ring += (scale.ringTarget - scale.ring) * 0.2;
       scale.dot += (scale.dotTarget - scale.dot) * 0.3;
       scale.label += (scale.labelTarget - scale.label) * 0.2;
+
+      // The ring and dot blend (mix-blend-difference), which makes the browser
+      // re-composite whatever is under them every frame - costly over the moving,
+      // scaling work cards. Once both have shrunk away (the label is showing
+      // instead), take them out of rendering altogether.
+      const shrunk = scale.ring < 0.01 && scale.dot < 0.01;
+      if (shrunk !== blendOff) {
+        blendOff = shrunk;
+        wrap.style.display = shrunk ? "none" : "";
+      }
 
       dot.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0) translate(-50%, -50%) scale(${scale.dot.toFixed(3)})`;
       ring.style.transform = `translate3d(${ringPos.x}px, ${ringPos.y}px, 0) translate(-50%, -50%) scale(${scale.ring.toFixed(3)})`;

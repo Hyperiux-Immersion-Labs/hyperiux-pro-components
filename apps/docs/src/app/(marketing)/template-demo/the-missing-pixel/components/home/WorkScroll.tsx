@@ -12,6 +12,7 @@ import { FadeUp, MaskReveal, LineReveal } from "../Animations/gsapAnim";
 import { prefersReducedMotion } from "../Animations/reducedMotion";
 import { ArrowUpRight } from "../Buttons/icons";
 import UnderlineLink from "../Buttons/UnderlineLink";
+import ScrollHint from "../shared/ScrollHint";
 import PixelReveal, { type PixelRevealHandle } from "../effects/pixel-reveal";
 import cloudline from "../../assets/pictures/w-cloudline.webp";
 import kickflip from "../../assets/pictures/w-kickflip.webp";
@@ -60,7 +61,7 @@ const WorkCard = ({ project, revealRef, autoScrub }: WorkCardProps) => {
         gridSize={28}
         edgeHeight={0.4}
         direction="down"
-        className="h-[24vw] w-full shrink-0 rounded-lg max-lg:h-[36vw] max-md:h-[62vw]"
+        className="h-[min(24vw,42vh)] w-full shrink-0 rounded-lg max-lg:h-[36vw] max-md:h-[62vw]"
       >
         <div data-work-scale className="h-full w-full will-change-transform">
           <div ref={zoomRef} className="h-full w-full">
@@ -122,6 +123,23 @@ const WorkScroll = () => {
         setHeight();
         ScrollTrigger.addEventListener("refreshInit", setHeight);
 
+        // The cards wait far off to the right until the row slides them in, so lazy
+        // loading only fetched (and decoded) each image as it arrived - mid-scroll, a
+        // 150-200ms freeze per card. Load and decode them all while the section is
+        // still a screen or so away instead.
+        const preload = new IntersectionObserver(
+          (entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            preload.disconnect();
+            track.querySelectorAll("img").forEach((img) => {
+              img.loading = "eager";
+              img.decode().catch(() => {});
+            });
+          },
+          { rootMargin: "150% 0px" },
+        );
+        preload.observe(section);
+
         let entry = 0;
         const played = new Set<number>();
         const updateReveals = () => {
@@ -176,6 +194,7 @@ const WorkScroll = () => {
         );
 
         return () => {
+          preload.disconnect();
           entryTrigger.kill();
           ScrollTrigger.removeEventListener("refreshInit", setHeight);
           section.style.removeProperty("height");
@@ -189,7 +208,10 @@ const WorkScroll = () => {
 
   return (
     <section ref={sectionRef} id="work" aria-label="Selected work" className="relative">
-      <div className="sticky top-0 flex h-screen flex-col justify-center gap-[6vw] overflow-hidden max-lg:relative max-lg:h-auto max-lg:gap-[10vw] max-lg:py-[12%] max-md:gap-14 max-md:py-[15%]">
+      {/* justify-center-safe: on a screen shorter than the content, the panel starts at
+          the top instead of centring the overflow (which cut the heading off above it).
+          The gaps and card heights also scale down with the screen's height. */}
+      <div className="sticky top-0 flex h-screen flex-col justify-center-safe gap-[min(6vw,7vh)] overflow-hidden max-lg:relative max-lg:h-auto max-lg:gap-[10vw] max-lg:py-[12%] max-md:gap-14 max-md:py-[15%]">
         <div className="flex flex-col items-start gap-4 px-[5vw] max-lg:gap-4 max-lg:px-[6vw] max-md:px-[7vw]">
           <MaskReveal as="h2" className="w-full leading-[1.2]">
             Work we’d put on the fridge
@@ -200,9 +222,11 @@ const WorkScroll = () => {
           <FadeUp>
             <UnderlineLink
               href={ROUTES.work}
-              className="font-mpx-head text-24 font-medium text-mpx-ink  "
+              persistent
+              arrow
+              className="font-mpx-head text-24 font-medium text-mpx-ink"
             >
-              All eight projects
+              View All Projects
             </UnderlineLink>
           </FadeUp>
         </div>
@@ -224,7 +248,7 @@ const WorkScroll = () => {
             ))}
             <Link
               href={ROUTES.work}
-              className={`group font-mpx-head relative flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start overflow-hidden rounded-lg bg-mpx-ink p-[1.7vw] h-[24vw] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-mpx-paper transition-colors duration-500 hover:text-mpx-ink max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
+              className={`group font-mpx-head relative flex shrink-0 snap-start flex-col items-start justify-center gap-4 self-start overflow-hidden rounded-lg bg-mpx-ink p-[1.7vw] h-[min(24vw,42vh)] max-lg:h-[36vw] max-md:h-[62vw] text-30 font-medium text-mpx-paper transition-colors duration-500 hover:text-mpx-ink max-lg:p-[4vw] max-md:p-[7vw] ${CARD_WIDTH}`}
             >
               <span
                 aria-hidden
@@ -235,6 +259,9 @@ const WorkScroll = () => {
             </Link>
           </div>
         </div>
+        {/* Tablet and phones swipe the row natively, so they get their own progress hint
+            (desktop has the scroll-driven bar below) */}
+        <ScrollHint className="mx-[6vw] -mt-[4vw] max-md:mx-[7vw] lg:hidden" />
 
         <div className="px-[5vw] max-lg:hidden">
           <div className="h-0.5 w-full overflow-hidden rounded-full bg-(--mpx-ink)/10">

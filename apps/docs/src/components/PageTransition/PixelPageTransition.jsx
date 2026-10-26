@@ -7,6 +7,7 @@ import { useLenis } from 'lenis/react'
 import { prefersReducedMotion } from '@/lib/motion'
 import { useInteraction } from '@/homepage/components/InteractionProvider'
 import { GridDots } from '@/components/grid-dots'
+import { hasOwnLoader } from '@/components/layout/ownLoaderRoutes'
 import { BREAKPOINTS } from "@/lib/breakpoints";
 import { cssVar } from "@/lib/useCssVar";
 
@@ -106,6 +107,10 @@ function shouldSkipTransition(prevPath, targetPath) {
     return true
   }
   if (isInternalWorkspaceRoute(prevPath) && isInternalWorkspaceRoute(targetPath)) {
+    return true
+  }
+  // Template demos (/template-demo/*) run only their own transitions
+  if (hasOwnLoader(prevPath) || hasOwnLoader(targetPath)) {
     return true
   }
   return false

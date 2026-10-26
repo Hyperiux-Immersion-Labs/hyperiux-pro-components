@@ -73,10 +73,11 @@ const Engage = () => (
       </p>
       <UnderlineLink
         href={ROUTES.contact}
-        
+        persistent
+        arrow
         className="font-mpx-head text-22 font-medium"
       >
-        Start a project
+        Start a Project
       </UnderlineLink>
     </FadeUp>
   </div>

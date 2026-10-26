@@ -136,7 +136,7 @@ const ReelReveal = () => {
           <p className="font-mpx-head w-[30%] text-40 leading-[1.2] tracking-tight max-lg:w-[80%] max-md:w-full">
             Twelve years of noticing what everyone else scrolled past.
           </p>
-          <PixelButton label="Watch The Work" href={ROUTES.work} variant="outline" tone="media" size="sm" icon />
+          <PixelButton label="Watch the Work" href={ROUTES.work} variant="outline" tone="media" size="sm" icon />
         </div>
       </div>
     </section>
