@@ -1,7 +1,13 @@
 {
   "name": "animated-attachment",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-26",
+      "summary": "On tablets and phones, wrapped cards share each row evenly instead of leaving space at the end; image cards tighten on phones so names stay whole.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-23",

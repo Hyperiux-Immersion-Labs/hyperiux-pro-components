@@ -1711,32 +1711,87 @@ function Button({
 
 /** Classes for a button that carries the hover fill: the fill sits under its label. */
 const HOVER_FILL_CLASSES =
-  "relative isolate overflow-hidden transition-[border-color] duration-400 ease-in-out hover:border-(--hx-primary) hover:bg-(--hx-background) in-data-[theme=dark]:hover:bg-(--hx-input)/30"
+  "relative isolate overflow-hidden transition-[border-color,color] duration-(--flip) delay-(--flip-delay) ease-in-out hover:border-(--hx-primary) hover:bg-(--hx-background) data-[fill=on]:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30 motion-reduce:transition-none motion-reduce:delay-0"
+
+/** Fill time, as on Animated Button: quick enough to keep up with the pointer. */
+const FILL_DURATION = 0.38
 
 /**
- * A hover fill that grows as a circle from where the pointer came in, and shrinks back
- * towards where it left. Put `circle` inside the button, wrap its content in `label`, and
- * call `place` on enter and leave.
+ * The hover fill from Animated Button: a dot grows from where the pointer came in and always
+ * finishes growing, then sweeps out towards where it left while it shrinks. Put `circle`
+ * inside the button, wrap its content in `label`, call `place` on enter and leave, and spread
+ * `attrs` on the button so the label flips colour as the dot passes under it.
  */
-function useHoverFill() {
-  const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })
+function useHoverFill(dotClass = "bg-(--hx-primary)") {
+  const reduceMotion = usePrefersReducedMotion()
+  const [dot, setDot] = React.useState({ left: "50%", top: "50%", on: false })
+  const growing = React.useRef(false)
+  const shrinking = React.useRef(false)
+  const pendingOut = React.useRef<{ left: string; top: string } | null>(null)
+
   const place = (event: React.PointerEvent<HTMLElement>, on: boolean) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    setFill({ x: event.clientX - rect.left, y: event.clientY - rect.top, on })
+    const box = event.currentTarget.getBoundingClientRect()
+    const spot = {
+      left: `${((event.clientX - box.left) / box.width) * 100}%`,
+      top: `${((event.clientY - box.top) / box.height) * 100}%`,
+    }
+    if (on) {
+      pendingOut.current = null
+      growing.current = true
+      // Re-entering mid-shrink keeps the dot where it is
+      if (shrinking.current) {
+        shrinking.current = false
+        return setDot((d) => ({ ...d, on: true }))
+      }
+      return setDot({ ...spot, on: true })
+    }
+    // Leaving mid-grow: finish growing first, then sweep out
+    if (growing.current) {
+      pendingOut.current = spot
+      return
+    }
+    shrinking.current = true
+    setDot({ ...spot, on: false })
   }
+
+  const settle = () => {
+    if (dot.on) {
+      growing.current = false
+      const out = pendingOut.current
+      if (out) {
+        pendingOut.current = null
+        shrinking.current = true
+        setDot({ ...out, on: false })
+      }
+    } else {
+      shrinking.current = false
+    }
+  }
+
+  const timing = { duration: reduceMotion ? 0 : FILL_DURATION, ease: [0.65, 0, 0.35, 1] as [number, number, number, number] }
   const circle = (
     // Wide enough to cover the button from any corner once fully grown.
     <motion.span
       aria-hidden
-      className="pointer-events-none absolute -z-10 aspect-square w-[250%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-(--hx-primary)"
-      style={{ left: fill.x, top: fill.y }}
       initial={false}
-      animate={{ scale: fill.on ? 1 : 0 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      style={{ x: "-50%", y: "-50%" }}
+      animate={{ scale: dot.on ? 1 : 0, left: dot.left, top: dot.top }}
+      onAnimationComplete={settle}
+      // Snap to the entry point, then grow; slide out with the shrink
+      transition={{
+        scale: timing,
+        left: dot.on ? { duration: 0 } : timing,
+        top: dot.on ? { duration: 0 } : timing,
+      }}
+      className={cn("pointer-events-none absolute -z-10 aspect-square w-[220%] rounded-full", dotClass)}
     />
   )
   const label = (children: React.ReactNode) => <span className="relative">{children}</span>
-  return { place, circle, label }
+  const attrs = {
+    "data-fill": dot.on ? "on" : "off",
+    style: { "--flip": `${FILL_DURATION * 0.4}s`, "--flip-delay": `${FILL_DURATION * 0.3}s` } as React.CSSProperties,
+  }
+  return { place, circle, label, attrs }
 }
 
 /** An outlined button with the hover fill. */
@@ -1747,11 +1802,12 @@ function FillButton({
   onPointerLeave,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { place, circle, label } = useHoverFill()
+  const { place, circle, label, attrs } = useHoverFill()
 
   return (
     <Button
       variant="outline"
+      {...attrs}
       onPointerEnter={(event) => {
         onPointerEnter?.(event)
         place(event, true)
@@ -2381,24 +2437,23 @@ function QuestionnaireActions({
 type ActionVariant = React.ComponentProps<typeof Button>["variant"]
 type ActionPointerHandler = (event: React.PointerEvent<HTMLButtonElement>) => void
 
-// The hover fill grows from where the pointer came in
+// The hover fill from Animated Button: grows from where the pointer came in, sweeps out where it left
 function useActionHover(
   variant: ActionVariant,
   onPointerEnter?: ActionPointerHandler,
   onPointerLeave?: ActionPointerHandler
 ) {
-  const reduceMotion = usePrefersReducedMotion()
-  const [fill, setFill] = React.useState({ x: 0, y: 0, on: false })
   const solid = variant === "default"
-
-  const place = (event: React.PointerEvent<HTMLButtonElement>, on: boolean) => {
-    const box = event.currentTarget.getBoundingClientRect()
-    setFill({ x: event.clientX - box.left, y: event.clientY - box.top, on })
-  }
+  const { place, circle, label, attrs } = useHoverFill(solid ? "bg-(--hx-background)" : "bg-(--hx-primary)")
 
   return {
+    attrs,
     className: cn(
-      solid ? "hover:bg-(--hx-primary) hover:text-(--hx-foreground)" : "hover:bg-(--hx-background) hover:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
+      // The label flips colour as the dot passes under it, not the instant the pointer arrives
+      solid
+        ? "hover:bg-(--hx-primary) data-[fill=on]:text-(--hx-foreground)"
+        : "hover:bg-(--hx-background) data-[fill=on]:text-(--hx-primary-foreground) in-data-[theme=dark]:hover:bg-(--hx-input)/30",
+      "transition-colors duration-(--flip) delay-(--flip-delay) motion-reduce:transition-none motion-reduce:delay-0",
       "relative isolate h-11 overflow-hidden px-5 text-base focus-visible:ring-0",
       solid && "border-(--hx-primary)"
     ),
@@ -2412,18 +2467,8 @@ function useActionHover(
     },
     content: (children: React.ReactNode) => (
       <>
-        <motion.span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute -z-10 aspect-square w-[250%] -translate-x-1/2 -translate-y-1/2 rounded-full",
-            solid ? "bg-(--hx-background)" : "bg-(--hx-primary)"
-          )}
-          style={{ left: fill.x, top: fill.y }}
-          initial={false}
-          animate={{ scale: fill.on ? 1 : 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.7, ease: [0.65, 0, 0.35, 1] }}
-        />
-        <span className="relative">{children}</span>
+        {circle}
+        {label(children)}
       </>
     ),
   }
@@ -2453,6 +2498,7 @@ function QuestionnairePrevious({
       )}
       onPointerEnter={hover.onPointerEnter}
       onPointerLeave={hover.onPointerLeave}
+      {...hover.attrs}
       {...props}
     >
       {hover.content(children ?? "Previous")}
@@ -2484,6 +2530,7 @@ function QuestionnaireSkip({
       )}
       onPointerEnter={hover.onPointerEnter}
       onPointerLeave={hover.onPointerLeave}
+      {...hover.attrs}
       {...props}
     >
       {hover.content(children ?? "Skip")}
@@ -2515,6 +2562,7 @@ function QuestionnaireNext({
       )}
       onPointerEnter={hover.onPointerEnter}
       onPointerLeave={hover.onPointerLeave}
+      {...hover.attrs}
       {...props}
     >
       {hover.content(children ?? "Next")}
@@ -2546,6 +2594,7 @@ function QuestionnaireSubmit({
       )}
       onPointerEnter={hover.onPointerEnter}
       onPointerLeave={hover.onPointerLeave}
+      {...hover.attrs}
       {...props}
     >
       {hover.content(children ?? "Submit")}

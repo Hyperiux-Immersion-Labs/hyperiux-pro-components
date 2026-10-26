@@ -2474,7 +2474,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedAttachment",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2730,7 +2730,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedQuestionnaire",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {

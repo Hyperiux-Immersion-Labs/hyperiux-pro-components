@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-questionnaire",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A step-by-step set of questions with progress.",
   "main": "index.tsx",
   "files": [

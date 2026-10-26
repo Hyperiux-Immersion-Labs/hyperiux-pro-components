@@ -766,8 +766,8 @@
   },
   {
     "name": "@hyperiux/animated-attachment",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-animated-attachment-1.0.0.tgz"
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-animated-attachment-1.0.1.tgz"
   },
   {
     "name": "@hyperiux/animated-button",
@@ -801,8 +801,8 @@
   },
   {
     "name": "@hyperiux/animated-questionnaire",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-animated-questionnaire-1.0.0.tgz"
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-animated-questionnaire-1.0.1.tgz"
   },
   {
     "name": "@hyperiux/animated-sidebar",
@@ -873,5 +873,15 @@
     "name": "@hyperiux/animated-menubar",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-animated-menubar-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-accordion",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-accordion-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-tabs-bar",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-animated-tabs-bar-1.0.0.tgz"
   }
 ]

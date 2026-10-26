@@ -1205,6 +1205,12 @@ function AttachmentGroup({
     className: cn(
       "relative flex min-w-0 [mask-image:linear-gradient(to_right,transparent,#000_2.5rem,#000_calc(100%-2.5rem),transparent)] snap-x snap-mandatory scroll-px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden gap-3 overflow-x-auto overscroll-x-contain py-1 *:data-[slot=attachment]:flex-none *:data-[slot=attachment]:snap-start",
       "data-[overflow=false]:[mask-image:none] data-[wrap=true]:snap-none data-[wrap=true]:[mask-image:none] data-[wrap=true]:flex-wrap data-[wrap=true]:overflow-visible",
+      // Tablet and phone: wrapped cards share the row evenly, so no row ends in empty space.
+      // Image cards keep a small minimum (three to a phone row); file chips stack on phones.
+      "max-lg:data-[wrap=true]:grid max-lg:data-[wrap=true]:grid-cols-[repeat(auto-fit,minmax(min(100%,var(--attachment-min,14rem)),1fr))] has-[>[data-orientation=vertical]]:[--attachment-min:5rem]",
+      "max-lg:data-[wrap=true]:*:data-[slot=attachment]:w-auto max-lg:data-[wrap=true]:*:data-[slot=attachment]:min-w-0",
+      // Phone: three image cards to a row, so their padding and text tighten to keep names whole
+      "max-sm:*:data-[orientation=vertical]:p-1.5 max-sm:*:data-[orientation=vertical]:gap-1.5 max-sm:**:data-[slot=attachment-title]:text-xs max-sm:**:data-[slot=attachment-description]:text-[0.625rem]",
       className
     ),
     style,

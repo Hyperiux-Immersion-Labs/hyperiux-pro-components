@@ -12,10 +12,15 @@
   "registryDependencies": [],
   "exportName": "AnimatedQuestionnaire",
   "exportKind": "default",
-  "importPath": "@/components/effects/animated-questionnaire",
   "tier": "pro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-26",
+      "summary": "Button hover fills now match Animated Button: quicker, they finish growing before leaving, and the label flips colour as the fill passes.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-23",
