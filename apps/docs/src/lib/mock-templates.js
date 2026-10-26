@@ -93,6 +93,26 @@ export const TEMPLATES = [
       "Every section transition runs on GSAP scroll animation with Lenis smooth scroll underneath, and the footer ships with a working enquiry form and an app-download modal ready to wire up to a real backend.",
     ],
   },
+  {
+    slug: "the-missing-pixel",
+    catalogue: "full",
+    title: "The Missing Pixel",
+    category: "Agency",
+    tier: "pro",
+    pricing: { standaloneOneTime: 139, includedInAnnualPro: true },
+    tags: ["GSAP", "Lenis", "Multi-page"],
+    screenshots: ["/assets/templates/templates-listing/the-missing-pixel.webp"],
+    href: "/templates/the-missing-pixel",
+    previewHref: "/template-demo/the-missing-pixel",
+    publishedAt: "2026-10-26",
+    updatedAt: "2026-10-26",
+    tagline:
+      "A multi-page brand and digital studio template built around pixels - a pixel page transition, a scroll-opening showreel, a sideways work gallery and a playable footer.",
+    overview: [
+      "The Missing Pixel is a full studio site: home, work and case studies, services and service detail, about, a journal with articles, contact, and a playable 404. The homepage runs from a cinematic hero and client marquee through a showreel that opens as you scroll, a horizontal work gallery, a pixel-grid process story, services, testimonials and the latest journal posts.",
+      "Pages change behind a pixel transition, images build themselves in pixel by pixel, and the footer ends in a find-the-missing-pixel game - all on GSAP with Lenis smooth scroll, fully responsive and with a reduced-motion fallback throughout.",
+    ],
+  },
 ];
 
 export function getTemplateBySlug(slug) {

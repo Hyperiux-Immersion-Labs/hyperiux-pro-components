@@ -21,6 +21,8 @@ export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental-xdvj4nbtbMdg44rvYYZBIB2uFW4HhL.zip",
   kyntra:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/kyntra-T304SvvfA02g1sS9t3Y8BUE1btcJn3.zip",
+  "the-missing-pixel":
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/the-missing-pixel-0i4QsY3P51HdWWqbMgZZ54bOTUUrIt.zip",
 };
 
 export function getTemplateScaffoldUrl(slug) {

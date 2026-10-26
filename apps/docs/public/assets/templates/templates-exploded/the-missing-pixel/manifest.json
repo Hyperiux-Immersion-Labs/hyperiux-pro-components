@@ -1,0 +1,81 @@
+{
+  "slug": "the-missing-pixel",
+  "source": "figma",
+  "devices": {
+    "desktop": {
+      "sections": [
+        {
+          "name": "hero",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/01-hero.webp",
+          "width": 1200,
+          "height": 675
+        },
+        {
+          "name": "clients",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/02-clients.webp",
+          "width": 1200,
+          "height": 225
+        },
+        {
+          "name": "showreel",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/03-showreel.webp",
+          "width": 1200,
+          "height": 675
+        },
+        {
+          "name": "intro",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/04-intro.webp",
+          "width": 1200,
+          "height": 538
+        },
+        {
+          "name": "work",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/05-work.webp",
+          "width": 1200,
+          "height": 700
+        },
+        {
+          "name": "process",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/06-process.webp",
+          "width": 1200,
+          "height": 813
+        },
+        {
+          "name": "services",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/07-services.webp",
+          "width": 1200,
+          "height": 1113
+        },
+        {
+          "name": "testimonials",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/08-testimonials.webp",
+          "width": 1200,
+          "height": 513
+        },
+        {
+          "name": "journal",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/09-journal.webp",
+          "width": 1200,
+          "height": 575
+        },
+        {
+          "name": "cta",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/10-cta.webp",
+          "width": 1200,
+          "height": 738
+        },
+        {
+          "name": "footer",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/desktop/11-footer.webp",
+          "width": 1200,
+          "height": 678
+        }
+      ]
+    }
+  },
+  "full": {
+    "src": "/assets/templates/templates-full/the-missing-pixel.webp",
+    "width": 720,
+    "height": 4344
+  }
+}

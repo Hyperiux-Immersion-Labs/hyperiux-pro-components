@@ -95,6 +95,23 @@ export const TEMPLATE_SECTIONS = {
       { match: "footer", name: "Footer", note: "A parallax footer with the enquiry form.", effect: "parallax-footer" },
     ],
   },
+  "the-missing-pixel": {
+    stack: ["Next.js", "React 19", "Tailwind CSS", "GSAP", "Lenis"],
+    effects: ["pixel-transition", "image-pixel-reveal", "testimonial-swiper", "parallax-footer", "parallax-image-animation", "immersive-full-screen-nav", "square-translate", "globe", "animated-faq", "animated-form"],
+    sections: [
+      { match: "hero", name: "Hero", note: "A full-screen photo hero; the headline rises in after the page loader." },
+      { match: "clients", name: "Clients", note: "A client marquee that keeps scrolling sideways." },
+      { match: "showreel", name: "Showreel", note: "A reel that opens from a small frame to full screen as you scroll." },
+      { match: "intro", name: "Intro", note: "Studio positioning revealed as you scroll, with figures that count up." },
+      { match: "work", name: "Work", note: "A pinned horizontal gallery; each project image builds in pixel by pixel.", effect: "image-pixel-reveal" },
+      { match: "process", name: "Process", note: "Four steps told alongside a pixel grid where the missing pixel moves.", effect: "testimonial-swiper" },
+      { match: "services", name: "Services", note: "A service list where a preview frame moves to the row you are on and swaps in its image." },
+      { match: "testimonials", name: "Testimonials", note: "A client quote slider.", effect: "testimonial-swiper" },
+      { match: "journal", name: "Journal", note: "The latest articles, images revealed pixel by pixel.", effect: "image-pixel-reveal" },
+      { match: "cta", name: "Call to Action", note: "The project call to action and a find-the-missing-pixel game." },
+      { match: "footer", name: "Footer", note: "A parallax footer whose wordmark draws itself in pixels.", effect: "parallax-footer" },
+    ],
+  },
 };
 
 // Title case: every word capitalised except short joining words mid-name.
