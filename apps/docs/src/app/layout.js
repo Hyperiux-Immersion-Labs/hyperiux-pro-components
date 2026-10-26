@@ -7,6 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import DeferredAnalytics from "@/components/WebsiteComps/DeferredAnalytics";
 import DeferredGTM from "@/components/WebsiteComps/DeferredGTM";
 import ButtonClickTracking from "@/components/WebsiteComps/ButtonClickTracking";
+import ReferralRocketTracking from "@/components/WebsiteComps/ReferralRocketTracking";
 import {
   ImageObjectJsonLd,
   LocalBusiness,
@@ -148,6 +149,8 @@ export default function RootLayout({ children }) {
         <DeferredGTM />
         {/* every button click with an id, as one GTM event (button_click) */}
         <ButtonClickTracking />
+        {/* referral links and referred visitors only (plus the homepage) */}
+        <ReferralRocketTracking />
         <DeferredAnalytics />
       </body>
     </html>

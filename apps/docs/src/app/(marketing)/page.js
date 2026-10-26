@@ -1,7 +1,6 @@
 import Homepage from "@/homepage/Homepage";
 import { FAQJSONLD, WebpageJsonLd } from "@/lib/json-ld";
 import { createPageMetadata } from "@/lib/seo-metadata";
-import ReferralRocketTracking from "@/components/WebsiteComps/ReferralRocketTracking";
 import { FREE_LABEL, TOTAL_LABEL } from "@/lib/library-counts";
 
 const faqItems = [
@@ -102,7 +101,6 @@ export default function page() {
     <>
       <WebpageJsonLd metadata={metadata} />
       <FAQJSONLD faqs={faqItems} />
-      <ReferralRocketTracking />
       <Homepage faqItems={faqItems} />
     </>
   );

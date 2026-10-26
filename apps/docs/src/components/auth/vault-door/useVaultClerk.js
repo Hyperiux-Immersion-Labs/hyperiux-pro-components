@@ -3,6 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { useSignIn, useSignUp } from "@clerk/nextjs/legacy";
 import { notifyClerkSessionChanged } from "@/lib/clerkSessionCache";
+import { addReferralLead, markOAuthSignUpPending } from "@/lib/referral-rocket";
 import { errorMessage, isSessionExistsError } from "@/components/auth/AuthFormPrimitives";
 import { SSO_CALLBACK_URL } from "./constants";
 import { splitName } from "./utils";
@@ -152,6 +153,9 @@ export function useVaultClerk({ redirectUrl }) {
 
   // Redirects away to the provider; Clerk lands back on /sso-callback
   async function startOAuth(mode, strategy) {
+    // Either mode can end in a new account (Clerk turns an unknown sign-in into
+    // a sign-up), so ReferralOAuthLead checks which it was on the way back
+    markOAuthSignUpPending();
     try {
       const resource = mode === "sign-up" ? signUp : signIn;
       await resource.authenticateWithRedirect({ strategy, redirectUrl: SSO_CALLBACK_URL, redirectUrlComplete: redirectUrl });
@@ -166,14 +170,9 @@ export function useVaultClerk({ redirectUrl }) {
     await setActive({ session: sessionId, redirectUrl });
     notifyClerkSessionChanged();
 
-    // Referral lead tracking (client-side only, see lib/referral-rocket.js)
-    if (isNewAccount) {
-      try {
-        window.Rocket?.getCampaign?.().addParticipant({ email });
-      } catch (referralError) {
-        console.error("REFERRAL_ROCKET_ADD_PARTICIPANT_ERROR:", referralError);
-      }
-    }
+    // Referral lead tracking (client-side only, see lib/referral-rocket.js); not
+    // awaited, it can wait a few seconds for the widget
+    if (isNewAccount) addReferralLead(email);
   }
 
   return { isLoaded, isSignedIn: Boolean(isSignedIn), getStepAction, resendCode, startOAuth, activate };

@@ -1,16 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import Script from "next/script";
-import { REFERRAL_ROCKET_CAMPAIGN_ID } from "@/lib/referral-rocket";
+import { REFERRAL_ROCKET_CAMPAIGN_ID, hasReferralParam, isReferredVisitor } from "@/lib/referral-rocket";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 
-// Referral click tracking (ReferralRocket's widget). Homepage-only by
-// design, same reasoning as the old Affitor tracker: rendered directly in
-// (marketing)/page.js rather than the root layout, since that's the only
-// page we want attributed here. The script itself reads ?referralCode= off
-// the URL and stores it in the rr_referral_code cookie - see
-// lib/referral-rocket.js for the rest of this integration.
+// Referral click tracking (ReferralRocket's widget), mounted once in the root
+// layout. The script itself reads ?referralCode= off the URL and stores it in
+// the rr_referral_code cookie - see lib/referral-rocket.js for the rest of
+// this integration. It loads:
+// - on the homepage, for everyone (where it always ran);
+// - on any page opened from a referral link - straight away, before a click
+//   on to another page drops ?referralCode= from the URL;
+// - on every page for a visitor already carrying the cookie, so window.Rocket
+//   is there to report the lead wherever they sign up (the /sign-up page, the
+//   sign-up modal, an OAuth return). Once loaded it stays for the visit.
+// Everyone else never fetches it.
 //
 // It's 381 KiB, 46% of the homepage's total script weight by itself (see
 // the Lighthouse Treemap that flagged it) and has no UI - nothing on the
@@ -36,18 +42,23 @@ const INTERACTION_EVENTS = ["pointerdown", "mousemove", "scroll", "keydown", "to
 const FALLBACK_DELAY_MS = 5000;
 
 export default function ReferralRocketTracking() {
+  const pathname = usePathname();
+  const isHome = pathname === "/" || pathname === "/index";
   const [shouldLoad, setShouldLoad] = useState(false);
 
   useEffect(() => {
     if (shouldLoad) return;
     if (isLighthouseOrHeadless() || isSoftwareRenderer()) return;
+    const fromReferralLink = hasReferralParam();
+    if (!fromReferralLink && !isHome && !isReferredVisitor()) return;
 
     const load = () => setShouldLoad(true);
 
     INTERACTION_EVENTS.forEach((event) =>
       window.addEventListener(event, load, { once: true, passive: true })
     );
-    const fallback = setTimeout(load, FALLBACK_DELAY_MS);
+    // A referral link loads it straight away, before a click drops the code from the URL
+    const fallback = setTimeout(load, fromReferralLink ? 0 : FALLBACK_DELAY_MS);
 
     return () => {
       INTERACTION_EVENTS.forEach((event) =>
@@ -55,7 +66,7 @@ export default function ReferralRocketTracking() {
       );
       clearTimeout(fallback);
     };
-  }, [shouldLoad]);
+  }, [shouldLoad, isHome]);
 
   if (!shouldLoad) return null;
 

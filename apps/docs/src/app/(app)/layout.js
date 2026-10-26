@@ -1,5 +1,6 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import PendingCheckoutResume from "@/components/Payments/PendingCheckoutResume";
+import ReferralOAuthLead from "@/components/auth/ReferralOAuthLead";
 
 const clerkLocalization = {
   signUp: {
@@ -39,6 +40,7 @@ export default function AppLayout({ children }) {
       }}
     >
       <PendingCheckoutResume />
+      <ReferralOAuthLead />
       {children}
     </ClerkProvider>
   );
