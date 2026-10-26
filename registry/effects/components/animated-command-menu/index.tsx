@@ -920,6 +920,16 @@ function CommandSearch({
     setOwn(next)
     onOpenChange?.(next)
   }
+  // Closes and lets go of the input; stops the click reaching the box, which would reopen it.
+  const close = (event?: React.SyntheticEvent) => {
+    event?.stopPropagation()
+    setOpen(false)
+    root.current?.querySelector("input")?.blur()
+  }
+  // Picking a result closes the list, like Enter does.
+  const closeOnPick = (event: React.MouseEvent) => {
+    if ((event.target as HTMLElement).closest("[cmdk-item]")) close(event)
+  }
 
   return (
     <CommandMotionContext.Provider value={options}>
@@ -996,7 +1006,9 @@ function CommandSearch({
                   )}
                   <motion.span
                     aria-hidden
-                    className="pointer-events-none absolute z-10 flex size-5"
+                    // Open, the icon closes the search; closed, clicks pass through to the trigger
+                    onClick={open ? close : undefined}
+                    className={cn("absolute z-10 flex size-5", open ? "cursor-pointer" : "pointer-events-none")}
                     initial={false}
                     animate={{ right: open ? 16 : 11, top: open ? 18 : 11 }}
                     transition={reduceMotion ? { duration: 0 } : { type: "spring", visualDuration: options.duration, bounce: 0 }}
@@ -1026,6 +1038,7 @@ function CommandSearch({
                           : { type: "spring", visualDuration: options.duration, bounce: 0 },
                       }}
                       exit={{ height: 0, opacity: 0, transition: { duration: 0.2, ease: "easeIn" } }}
+                      onClick={closeOnPick}
                       className="overflow-hidden"
                     >
                       <div className="border-t p-1">
@@ -1056,6 +1069,7 @@ function CommandSearch({
                     y: dropdownAnimation === "slide" ? -16 : 0,
                     transition: { duration: 0.15, ease: "easeIn" },
                   }}
+                  onClick={closeOnPick}
                   className={cn(
                     "absolute inset-x-0 top-[calc(100%+0.5rem)] z-20 border bg-(--hx-muted) p-1 shadow-lg",
                     ROUNDED[options.rounded]

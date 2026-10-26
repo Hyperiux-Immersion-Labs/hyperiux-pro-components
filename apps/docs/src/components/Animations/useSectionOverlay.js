@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "@/lib/motion";
+import { refreshScrollTrigger } from "@/components/Animations/gsapAnimations";
 
 if (typeof window !== "undefined") {
     gsap.registerPlugin(ScrollTrigger, useGSAP);
@@ -83,7 +84,9 @@ export function useSectionOverlay(ref, { scale = 0.88, lag = 0.8 } = {}) {
         ro.observe(root);
 
         apply(trigger.progress, true);
-        ScrollTrigger.refresh();
+        // Shared with the page's other sections: two overlays mounting together (the homepage
+        // has two) each ran a full refresh during hydration
+        refreshScrollTrigger();
 
         return () => {
             ro.disconnect();

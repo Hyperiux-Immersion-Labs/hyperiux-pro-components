@@ -54,7 +54,8 @@ export function CookieConsentNudge() {
           prefetch={policyPrefetch}
           className="text-white underline underline-offset-2 transition-colors hover:text-primary"
         >
-          Learn More
+          {/* Says where it goes: "Learn More" fails the SEO descriptive-link-text check */}
+          Privacy Policy
         </Link>
       </p>
 

@@ -610,7 +610,11 @@ export function mountThereminRibbons(
     if (run && !raf) { clock.getDelta(); resetScrollState(); raf = requestAnimationFrame(frame); }
     else if (!run && raf) { cancelAnimationFrame(raf); raf = 0; }
   };
+  // The scroll position as of the last scroll event: reading window.scrollY in the frame loop,
+  // after other animations had written styles, forced a style recalculation every frame
+  let scrollYAtEvent = window.scrollY;
   const onScroll = () => {
+    scrollYAtEvent = window.scrollY;
     // Scrolled past the hero mid-hold: let go quietly, no shatter.
     if (press && !heroActive()) {
       const p = press;
@@ -683,7 +687,7 @@ export function mountThereminRibbons(
   // The loop pauses off-screen, so on resume the scroll it missed must not
   // land as one giant jump (that throws the layers apart and tilts them)
   function resetScrollState() {
-    lastScroll = window.scrollY;
+    lastScroll = scrollYAtEvent = window.scrollY;
     scrollV = 0;
     scrollWave = 0;
     RU.uScrollV.value = 0;
@@ -708,7 +712,7 @@ export function mountThereminRibbons(
       cur.rr.lerp(tmpV.fromArray(P.rr), k);
       cur.rs = lerp(cur.rs, P.rs, k);
     }
-    const sy = window.scrollY;
+    const sy = scrollYAtEvent;
     // Capped per frame, so a fast flick (or a dropped frame) can't spike it
     scrollV = lerp(scrollV, clamp(sy - lastScroll, -MAX_SCROLL_STEP, MAX_SCROLL_STEP), 0.08);
     lastScroll = sy;
@@ -741,14 +745,14 @@ export function mountThereminRibbons(
     // The hero holds its pose while scrolling (only the scroll ripple reacts)
     if (!isHero) {
       // Slides in from the right as the footer arrives (and back out if it leaves)
-      const footerTop = host.getBoundingClientRect().top;
+      const footerTop = host.getBoundingClientRect().top; // read once a frame, used twice
       footerSlide = lerp(footerSlide, footerTop < window.innerHeight * 0.85 ? 0 : FOOTER_SLIDE_FROM, 1 - Math.pow(0.06, dt));
       ribbons.position.x += footerSlide;
       // Drifts left / right with the pointer - kept small, so a pointer at the far
       // edge of a wide screen doesn't carry the model out of the canvas
       ribbons.position.x += mouse.sx * 0.5;
       // Settles into its corner as the footer arrives (scaled to the small pose)
-      const fr = clamp(host.getBoundingClientRect().top / window.innerHeight, -1, 1);
+      const fr = clamp(footerTop / window.innerHeight, -1, 1);
       ribbons.rotation.z += fr * 0.3;
       ribbons.position.y += fr * 0.8;
     }

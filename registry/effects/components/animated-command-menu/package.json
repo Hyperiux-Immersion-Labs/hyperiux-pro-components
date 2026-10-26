@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-command-menu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A searchable list of commands, opened with a shortcut.",
   "main": "index.tsx",
   "files": [

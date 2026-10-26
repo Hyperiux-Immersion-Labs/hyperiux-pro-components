@@ -1,7 +1,13 @@
 {
   "name": "animated-data-table",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-26",
+      "summary": "Phones and tablets scroll the table sideways inside its frame, with roomier cells.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-23",

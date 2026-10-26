@@ -1694,8 +1694,14 @@
   },
   {
     "name": "animated-checkbox-group",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "A dragged option gets a frosted backdrop blur, so the options behind it blur while it moves.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",
@@ -2154,8 +2160,14 @@
   },
   {
     "name": "animated-command-menu",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "The search icon closes the open search, and picking a result closes the list.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",
@@ -2575,8 +2587,14 @@
   },
   {
     "name": "animated-data-table",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "Phones and tablets scroll the table sideways inside its frame, with roomier cells.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",
@@ -3746,8 +3764,14 @@
   },
   {
     "name": "animated-dialog",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "The trigger's hover fill no longer sticks after the dialog closes, and closing glides smoothly back into the trigger.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",
@@ -5682,8 +5706,14 @@
   },
   {
     "name": "animated-menubar",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "The tablet and phone menu panel scrolls reliably, even on pages with smooth scrolling.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",
@@ -6776,8 +6806,14 @@
   },
   {
     "name": "animated-radio-group",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-26",
+        "summary": "A dragged option gets a frosted backdrop blur, so the options behind it blur while it moves.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-23",

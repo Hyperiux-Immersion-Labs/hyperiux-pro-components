@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-radio-group",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Pick one option. Arrow keys, Home and End move the choice.",
   "main": "index.tsx",
   "files": [

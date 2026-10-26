@@ -14,10 +14,15 @@
   "registryDependencies": [],
   "exportName": "AnimatedCommandMenu",
   "exportKind": "default",
-  "importPath": "@/components/effects/animated-command-menu",
   "tier": "pro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-26",
+      "summary": "The search icon closes the open search, and picking a result closes the list.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-23",

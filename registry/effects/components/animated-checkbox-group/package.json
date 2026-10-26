@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-checkbox-group",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tick any number of options. Shift-click ticks a range.",
   "main": "index.tsx",
   "files": [

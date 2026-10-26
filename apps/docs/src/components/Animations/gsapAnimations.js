@@ -15,7 +15,9 @@ const useIsomorphicLayoutEffect =
 
 let refreshPending = false;
 
-function refreshScrollTrigger() {
+// One ScrollTrigger.refresh for everything that asks in the same couple of frames: a refresh
+// re-measures every trigger on the page, and sections mounting together would each run one
+export function refreshScrollTrigger() {
   if (typeof window === "undefined" || refreshPending) return;
 
   refreshPending = true;

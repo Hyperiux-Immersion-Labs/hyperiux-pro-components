@@ -1047,7 +1047,7 @@ function DataTable({
   )
 
   const thClass = cn(
-    "relative h-12 px-2 max-md:px-4 text-left align-middle whitespace-nowrap text-(--hx-foreground)",
+    "relative h-12 px-2 max-lg:px-4 text-left align-middle whitespace-nowrap text-(--hx-foreground)",
     boldHeader ? "font-semibold" : "font-normal",
     stickyHeader && "sticky top-0 z-20 bg-(--hx-background) transition-shadow duration-300",
     stickyHeader && scrolled && "shadow-[0_6px_10px_-6px_rgb(0_0_0/0.2)]"
@@ -1280,7 +1280,7 @@ function DataTable({
                 data-slot="table"
                 // Fixed layout: columns keep their widths when filtering or paging changes the rows.
                 // On phones it's wider than the screen and scrolls, so cells aren't cut off.
-                className="relative w-full table-fixed caption-bottom text-base max-md:min-w-3xl"
+                className="relative w-full table-fixed caption-bottom text-base max-lg:min-w-[46rem]"
                 initial={staggerRows ? "hidden" : false}
                 animate={reveal}
                 // Re-measured on every move, so the highlight follows rows that have shifted.
@@ -1307,7 +1307,7 @@ function DataTable({
                           <td
                             key={j}
                             className={cn(
-                              "px-2 py-3 align-middle max-md:px-4",
+                              "px-2 py-3 align-middle max-lg:px-4",
                               showVerticalLines &&
                                 j < leading + ordered.length + trailing - 1 &&
                                 "border-r"
@@ -1364,7 +1364,7 @@ function DataTable({
                       {ordered.map((column, j) => (
                         <motion.td
                           key={column.key}
-                          className={cn(footClass, "px-2 py-3 align-middle max-md:px-4", ALIGN_CLASS[textAlign])}
+                          className={cn(footClass, "px-2 py-3 align-middle max-lg:px-4", ALIGN_CLASS[textAlign])}
                         >
                           {(column.key === totalKey || j === 0) && (
                             <LoadingCell loading={showSkeleton}>
@@ -1596,7 +1596,7 @@ function DataTableRowView({
           data-col={column.key}
           data-row={row.id}
           className={cn(
-            "relative px-2 align-middle whitespace-nowrap max-md:px-4",
+            "relative px-2 align-middle whitespace-nowrap max-lg:px-4",
             ALIGN_CLASS[settings.textAlign],
             column.className
           )}

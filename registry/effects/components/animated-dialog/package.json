@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-dialog",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A window over the page that asks for a decision before you carry on.",
   "main": "index.tsx",
   "files": [

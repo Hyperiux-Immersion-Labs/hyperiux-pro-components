@@ -18,7 +18,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           <DemoHeader />
           <div
             {...getThemeProps(values.theme as AnimatedSidebarTheme, values.mode as AnimatedSidebarMode)}
-            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:py-[25%]"
+            className="flex min-h-screen w-full flex-col items-center gap-[3vw] bg-(--hx-background) px-[5vw] py-[7%] text-(--hx-foreground) transition-colors duration-500 max-md:gap-[8vw] max-md:pt-[25%]"
           >
             <div className="flex flex-col items-center gap-[1vw]">
               <HeadAnim>

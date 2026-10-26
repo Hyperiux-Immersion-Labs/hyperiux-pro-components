@@ -2546,7 +2546,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedCheckboxGroup",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2567,7 +2567,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedCommandMenu",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2588,7 +2588,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedDataTable",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "pro"
     },
     {
@@ -2630,7 +2630,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedDialog",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2729,7 +2729,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedMenubar",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2764,7 +2764,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedRadioGroup",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {

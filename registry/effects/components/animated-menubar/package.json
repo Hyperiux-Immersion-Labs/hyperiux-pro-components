@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-menubar",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A row of menus, like an app’s File and Edit menus.",
   "main": "index.tsx",
   "files": [

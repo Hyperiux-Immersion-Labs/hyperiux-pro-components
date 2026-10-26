@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-data-table",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Sort, filter, select and reorder rows that glide into place.",
   "main": "index.tsx",
   "files": [
