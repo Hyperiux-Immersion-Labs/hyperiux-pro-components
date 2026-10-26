@@ -547,7 +547,8 @@ const BLOG_LISTING_PROJECTION = `{
   updatedAt
 }`
 
-// Server-side paginated + filtered listing query - the page a viewer is on
+// Server-side paginated + filtered listing query, newest first by publishedAt (the
+// Studio drag order is ignored here; only the featured post keeps it). The page a viewer is on
 // determines exactly which posts get fetched and sent down, rather than
 // pulling every post and slicing/filtering in the browser. Scales to
 // hundreds of posts without the listing payload growing with them.
@@ -561,15 +562,18 @@ export async function getSanityBlogEntries({category, page = 1, pageSize = 9} = 
   const start = (safePage - 1) * pageSize
   const end = start + pageSize
   const categoryFilter = category ? ` && $category in categories[]->slug.current` : ''
+  // The featured post (same pick as getSanityFeaturedBlogPost) lives in the hero, so it's left
+  // out of every grid page and the count - by date it can land on any page, not just the first.
+  const featuredFilter = ` && slug.current != *[_type == "blogPost" && defined(slug.current) && isFeatured == true] | order(orderRank asc, publishedAt desc)[0].slug.current`
 
   try {
     const client = getSanityClient()
 
     const result = await client.fetch(
       `{
-        "total": count(*[_type == "blogPost" && defined(slug.current)${categoryFilter}]),
-        "posts": *[_type == "blogPost" && defined(slug.current)${categoryFilter}]
-          | order(orderRank asc, publishedAt desc, _createdAt desc, _id asc) [$start...$end] ${BLOG_LISTING_PROJECTION}
+        "total": count(*[_type == "blogPost" && defined(slug.current)${categoryFilter}${featuredFilter}]),
+        "posts": *[_type == "blogPost" && defined(slug.current)${categoryFilter}${featuredFilter}]
+          | order(publishedAt desc, _createdAt desc, _id asc) [$start...$end] ${BLOG_LISTING_PROJECTION}
       }`,
       {category: category || null, start, end},
       SANITY_BLOG_FETCH_OPTIONS

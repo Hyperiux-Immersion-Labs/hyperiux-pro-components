@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useLenis } from "lenis/react";
 import { motion } from "motion/react";
 import BlogCard from "./BlogCard";
 import { useFadeIn, useFadeUp } from "@/components/Animations/gsapAnimations";
@@ -120,6 +121,21 @@ export default function BlogListing({
     } catch {}
   };
 
+  // Pagination keeps the scroll position (scroll={false}) instead of jumping to the page top;
+  // when the grid's top is above the screen, glide back to it so the new page starts in view.
+  const lenis = useLenis();
+  const shownPage = useRef(page);
+  useEffect(() => {
+    if (shownPage.current === page) return;
+    shownPage.current = page;
+    const top = sectionRef.current?.getBoundingClientRect().top;
+    if (top === undefined || top >= 0) return;
+    const targetTop = top + window.scrollY - window.innerHeight * 0.1;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (lenis) lenis.scrollTo(targetTop, { duration: reduce ? 0 : 1.15, easing: (t) => 1 - Math.pow(1 - t, 3), force: true });
+    else window.scrollTo({ top: targetTop, behavior: reduce ? "auto" : "smooth" });
+  }, [page, lenis]);
+
   useFadeUp(sectionRef, [activeCategory, page]);
   useFadeIn(sectionRef, [activeCategory, page]);
 
@@ -197,6 +213,7 @@ export default function BlogListing({
           <nav aria-label="Blog pages" className="flex items-center justify-center gap-[calc(var(--cvw)*0.4)] max-md:gap-[1.5vw]">
             <Link
               href={buildHref({ category: activeCategory, page: page - 1 })}
+              scroll={false}
               aria-disabled={page === 1}
               className={`${chip(false)} ${page === 1 ? "pointer-events-none opacity-30" : ""}`}
             >
@@ -206,6 +223,7 @@ export default function BlogListing({
               <Link
                 key={pageNumber}
                 href={buildHref({ category: activeCategory, page: pageNumber })}
+                scroll={false}
                 aria-current={page === pageNumber ? "page" : undefined}
                 className={chip(page === pageNumber)}
               >
@@ -214,6 +232,7 @@ export default function BlogListing({
             ))}
             <Link
               href={buildHref({ category: activeCategory, page: page + 1 })}
+              scroll={false}
               aria-disabled={page === pageCount}
               className={`${chip(false)} ${page === pageCount ? "pointer-events-none opacity-30" : ""}`}
             >
