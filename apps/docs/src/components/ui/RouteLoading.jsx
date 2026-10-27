@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useLenis } from "lenis/react";
 import { GridDots } from "@/components/grid-dots";
+import { holdPageScroll, releasePageScroll } from "@/lib/scroll-hold";
 
 /**
  * The page-change loading screen (the orange dot grid) - used by every place
@@ -11,13 +12,13 @@ import { GridDots } from "@/components/grid-dots";
  * so a wheel or touch during the change doesn't carry into the new page;
  * scrolling comes back once no loader is left on screen.
  *
- * Scrolling is locked on <html> and the (workspace-wide) Lenis is stopped.
+ * The page is held with lib/scroll-hold.js (its scrollbar stays put, so nothing
+ * shifts when the loader leaves) and the (workspace-wide) Lenis is stopped.
  * Two loaders can overlap during one change (VaultLayout's, then
  * loading.js's), so the lock is counted: it goes on with the first loader and
  * comes off with the last, rather than each one restoring what it saw.
  */
 let activeLoaders = 0;
-const blockScroll = (event) => event.preventDefault();
 
 /**
  * True while a page-change loader is on screen. Code that force-starts Lenis
@@ -31,19 +32,14 @@ export function RouteLoading({ className = "sticky top-0 flex h-screen w-full it
 
   useEffect(() => {
     activeLoaders += 1;
-    if (activeLoaders === 1) {
-      document.documentElement.style.overflow = "hidden";
-      window.addEventListener("wheel", blockScroll, { passive: false });
-      window.addEventListener("touchmove", blockScroll, { passive: false });
-    }
+    holdPageScroll();
     lenis?.stop();
     return () => {
       activeLoaders -= 1;
-      if (activeLoaders > 0) return;
-      document.documentElement.style.overflow = "";
-      window.removeEventListener("wheel", blockScroll);
-      window.removeEventListener("touchmove", blockScroll);
-      lenis?.start();
+      // Lenis first: its stopped state clips the page's overflow, which would drop the
+      // scrollbar for a frame between the release and the start
+      if (activeLoaders === 0) lenis?.start();
+      releasePageScroll();
     };
   }, [lenis]);
 

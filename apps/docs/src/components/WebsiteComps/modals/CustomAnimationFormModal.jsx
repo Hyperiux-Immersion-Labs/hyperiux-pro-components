@@ -9,12 +9,12 @@ import {
   useState,
 } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { useLenis } from "lenis/react";
 import PhoneInput from "@/components/WebsiteComps/form/PhoneInput";
 import { GlobalError, StepHeading, SubmitButton } from "@/components/auth/AuthFormPrimitives";
 import Turnstile from "@/components/WebsiteComps/Turnstile";
 import { validateForm } from "@/lib/form-validation";
 import { useCustomAnimationFormModal } from "./CustomAnimationForm";
+import { useLenisLock } from "@/hooks/useLenisLock";
 
 const MODAL_TRANSITION = {
   duration: 0.5,
@@ -84,7 +84,6 @@ function CustomAnimationFormModalInner() {
   const { isOpen, closeCustomAnimationForm } =
     useCustomAnimationFormModal();
 
-  const lenis = useLenis();
 
   const formRef = useRef(null);
   const [values, setValues] = useState(INITIAL_FORM);
@@ -98,20 +97,14 @@ function CustomAnimationFormModalInner() {
   const isSubmitting = status === "submitting";
   const isSuccess = status === "success";
 
+  // The page's scrollbar stays in place while the form is open (hiding the overflow
+  // took its width away and shifted the page), hidden until the exit animation ends
+  useLenisLock(isOpen, { closeMs: MODAL_TRANSITION.duration * 1000 });
+
+  // (Lenis is stopped and restarted by useLenisLock above, which knows whether another
+  // modal still holds the page)
   useEffect(() => {
     if (!isOpen) return;
-
-    const originalOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
-
-    document.body.style.overflow = "hidden";
-    document.documentElement.style.overflow = "hidden";
-
-    lenis?.stop?.();
-
-    const restartStop = window.setInterval(() => {
-      lenis?.stop?.();
-    }, 80);
 
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -122,22 +115,9 @@ function CustomAnimationFormModalInner() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      window.clearInterval(restartStop);
-      document.body.style.overflow = originalOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
       window.removeEventListener("keydown", handleKeyDown);
-
-      lenis?.start?.();
-
-      requestAnimationFrame(() => {
-        lenis?.start?.();
-      });
-
-      window.setTimeout(() => {
-        lenis?.start?.();
-      }, 80);
     };
-  }, [isOpen, lenis, closeCustomAnimationForm]);
+  }, [isOpen, closeCustomAnimationForm]);
 
   useEffect(() => {
     if (isOpen) return;
@@ -273,6 +253,7 @@ function CustomAnimationFormModalInner() {
           >
             {/* Card: the sign-in page's surface - site background, hairline border. */}
             <div
+              data-lenis-prevent
               className="custom-animation-form-scroll relative max-h-[88vh] w-full overflow-x-hidden overflow-y-auto border border-white/10 bg-background px-12 py-12 text-white shadow-float max-lg:px-8 max-lg:py-10 max-md:px-5 max-md:py-8"
               onWheelCapture={(e) => e.stopPropagation()}
               onTouchStart={(e) => e.stopPropagation()}

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useLenis } from "lenis/react";
+import { holdPageScroll, releasePageScroll } from "@/lib/scroll-hold";
 import { isLoaderWaiting } from "./loader-state";
 
 const FAILSAFE_MS = 15000;
@@ -29,7 +30,9 @@ export function lockScroll() {
   if (typeof document === "undefined" || locked) return;
 
   locked = true;
-  document.documentElement.style.overflow = "hidden";
+  // Keeps the scrollbar in place (no sideways jump on release); the listeners below
+  // also track scroll momentum, so they stay
+  holdPageScroll();
   addEventListener("wheel", block, BLOCK_OPTS);
   addEventListener("touchmove", block, BLOCK_OPTS);
   addEventListener("keydown", block, BLOCK_OPTS);
@@ -67,13 +70,15 @@ export function unlockScroll() {
   window.clearTimeout(failsafeId);
   failsafeId = 0;
 
-  document.documentElement.style.overflow = "";
   // Anything that slipped through while locked is undone: enter on the hero
   if (window.scrollY > 0) window.scrollTo(0, 0);
   // Lenis parks `targetScroll` on the real position while stopped, so it picks
   // up from where the page actually is rather than from everything the user
   // wheeled at it in the meantime.
   lenisInstance?.start?.();
+  // Only after Lenis is going again: its stopped state clips the page's overflow,
+  // which would drop the scrollbar for a frame in between
+  releasePageScroll();
 }
 
 /**

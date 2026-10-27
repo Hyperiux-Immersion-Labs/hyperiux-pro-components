@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { useLenis } from "lenis/react";
+import { isRouteLoading } from "@/components/ui/RouteLoading";
 
 // Holding the page still behind a modal or drawer, the way the effects' preview drawer
 // always has - shared so every modal does it the same way:
@@ -19,6 +20,21 @@ import { useLenis } from "lenis/react";
 // last one closes (a sign-in prompt over a drawer).
 let holds = 0;
 let shows = 0;
+
+/**
+ * True when nothing holds the page still - no modal (here) and no page-change loader
+ * (RouteLoading). Code that restarts Lenis on its own (closing the search, a sidebar
+ * toggle, a route change) asks this first, so it can't set the page scrolling again
+ * behind a modal that is still open.
+ */
+export function canStartLenis() {
+  return holds === 0 && !isRouteLoading();
+}
+
+/** True while a modal or drawer holds the page (⌘K leaves the search shut under one). */
+export function isPageHeld() {
+  return holds > 0;
+}
 
 const insideModalScroll = (target) => target instanceof Element && Boolean(target.closest("[data-lenis-prevent]"));
 const blockPageScroll = (event) => {
@@ -52,7 +68,10 @@ export function useLenisLock(open, { onScreen = open, closeMs = 0 } = {}) {
     };
   }, [onScreen, closeMs]);
 
-  useEffect(() => {
+  // A layout effect too: a modal with no close delay drops the attribute above while it
+  // commits, and Lenis has to start in that same commit - a frame later, its stopped state
+  // (overflow: clip) took the scrollbar away for one frame and the page jumped
+  useLayoutEffect(() => {
     if (!open) return undefined;
     holds += 1;
     lenis?.stop();
@@ -65,7 +84,8 @@ export function useLenisLock(open, { onScreen = open, closeMs = 0 } = {}) {
       if (holds === 0) {
         document.removeEventListener("wheel", blockPageScroll);
         document.removeEventListener("touchmove", blockPageScroll);
-        lenis?.start();
+        // Not under the page-change loader (picking a search result): it restarts Lenis itself
+        if (canStartLenis()) lenis?.start();
       }
     };
   }, [open, lenis]);

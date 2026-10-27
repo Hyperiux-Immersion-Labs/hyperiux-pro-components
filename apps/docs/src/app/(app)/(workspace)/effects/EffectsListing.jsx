@@ -7,7 +7,6 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { AnimatePresence, motion } from "motion/react";
 import {X } from "lucide-react";
-import { AppVaultHeader } from "@/components/layout/AppVaultHeader";
 import {
   effectCategories,
   effectsOverviewContent,
@@ -40,6 +39,8 @@ import Copy from "@/components/Animations/Copy";
 import RollNumber from "@/components/Pricing/exploded/RollNumber";
 import RollText from "@/components/Pricing/exploded/RollText";
 import { buttonId } from "@/lib/button-id";
+import { useVaultLayout } from "@/components/layout/VaultLayout";
+import { swallowWheelMomentum } from "@/components/SmoothScroll/LenisScroll";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -111,8 +112,9 @@ export function EffectsListing({
 
   /* ---------- the page being shown ---------- */
   // Category chips switch the page in place - hero copy, stats, trending, cards, FAQ
-  // and the URL (/effects/<category>) change, but nothing reloads or scrolls. The
-  // server props describe the page that was first loaded.
+  // and the URL (/effects/<category>) change, but nothing reloads; the new page opens
+  // at its top (selectCategory). The server props describe the page that was first loaded.
+  const { scrollToTop } = useVaultLayout();
   const [scope, setScope] = useState(initialScope);
   const content = useMemo(
     () => (scope === initialScope ? initialContent : scope ? getEffectCategoryContent(scope) : effectsOverviewContent),
@@ -216,6 +218,10 @@ export function EffectsListing({
     setCategory(id);
     setScope(id);
     window.history.pushState(window.history.state, "", `${getEffectCategoryHref(id || "all")}${window.location.search}`);
+    // A new page, so it opens at its top like one reached by a link - picked mid-scroll it
+    // otherwise kept the old page's position (and the rest of the swipe) and opened midway
+    scrollToTop();
+    swallowWheelMomentum();
   };
 
   // Back / forward between pages switched in place: read the page from the URL.
@@ -468,8 +474,6 @@ export function EffectsListing({
 
   return (
     <div ref={rootRef} className="relative text-light">
-      <AppVaultHeader showSearch totalEffects={effects.length} effects={effects} />
-
       {/* ---------- hero ---------- */}
       <section id="effects-hero" className={`${WRAP} flex flex-col gap-7 pt-32 pb-20 max-lg:pt-32 max-lg:pb-14 max-md:pt-28`}>
         <div data-v4-fade>

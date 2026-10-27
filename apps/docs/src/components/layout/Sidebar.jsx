@@ -464,6 +464,7 @@ export function Sidebar({
   }, [sidebarEffects]);
 
   const navigateOverview = (event) => {
+    if (event?.defaultPrevented) return; // the pixel page transition took this click
     event?.preventDefault();
 
     categoryNavigationInProgressRef.current = false;
@@ -482,6 +483,7 @@ export function Sidebar({
   // that needs real Sanity-backed counts. This is a plain top-level link
   // until that data exists, same as "All Effects" today.
   const navigateTemplates = (event) => {
+    if (event?.defaultPrevented) return; // the pixel page transition took this click
     event?.preventDefault();
 
     setOpenSection("");
@@ -490,6 +492,7 @@ export function Sidebar({
   };
 
   const navigateCategory = (event, categoryId) => {
+    if (event?.defaultPrevented) return; // the pixel page transition took this click
     event?.preventDefault();
 
     categoryNavigationInProgressRef.current = true;
@@ -506,6 +509,7 @@ export function Sidebar({
   };
 
   const navigateDocumentation = (event, href) => {
+    if (event?.defaultPrevented) return; // the pixel page transition took this click
     event?.preventDefault();
 
     categoryNavigationInProgressRef.current = false;
@@ -532,6 +536,7 @@ export function Sidebar({
   };
 
   const navigateLegal = (event, href) => {
+    if (event?.defaultPrevented) return; // the pixel page transition took this click
     event?.preventDefault();
 
     categoryNavigationInProgressRef.current = false;
@@ -607,7 +612,9 @@ export function Sidebar({
             prefetch={false}
             href="/"
             scroll={false}
-            onClick={() => {
+            onClick={(event) => {
+              // The pixel page transition took this click: it navigates when it has covered the page
+              if (event.defaultPrevented) return;
               startNavigation("/");
               forceScrollToTop();
             }}
@@ -858,7 +865,8 @@ export function Sidebar({
             icon={Pricing}
             isExpanded={isExpanded}
             isActive={hoveredSidebarKey ? hoveredSidebarKey === "pricing" : pathname === "/pricing"}
-            onClick={() => {
+            onClick={(event) => {
+              if (event.defaultPrevented) return; // as the logo link above
               startNavigation("/pricing");
               forceScrollToTop();
             }}

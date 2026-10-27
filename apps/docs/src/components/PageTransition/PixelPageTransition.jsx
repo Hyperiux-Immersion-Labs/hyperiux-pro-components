@@ -70,6 +70,8 @@ const INTERNAL_WORKSPACE_PREFIXES = [
   '/templates',
   '/docs',
   '/legal',
+  '/ai-components',
+  '/llm-info',
   '/mcp',
   '/demo/aperture-transition',
   '/demo/aperture-transition/page2',

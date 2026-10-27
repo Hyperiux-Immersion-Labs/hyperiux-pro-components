@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useLenis } from "lenis/react";
-import { isRouteLoading } from "@/components/ui/RouteLoading";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { X } from "lucide-react";
@@ -13,6 +12,7 @@ import { whenIdle } from "@/lib/when-idle";
 import { prefersReducedMotion } from "@/lib/motion";
 import { navCategoryColumns, navDocsItems } from "@/utils/Links";
 import { useButtonId } from "@/components/ui/ButtonIds";
+import { canStartLenis, isPageHeld, useLenisLock } from "@/hooks/useLenisLock";
 
 gsap.registerPlugin(useGSAP);
 
@@ -410,29 +410,9 @@ export function GlobalSearch({ effects = [], externalOpen = 0, openOnMount = fal
 
   useEffect(() => () => void tweenRef.current?.kill(), []);
 
-  // Stop smooth scroll while search is open; start it again only when search
-  // closes (not on every run), so it can't restart Lenis the page-change loader stopped.
-  const stoppedLenisRef = useRef(false);
-  useEffect(() => {
-    if (isOpen) {
-      lenis?.stop?.();
-      stoppedLenisRef.current = true;
-    } else if (stoppedLenisRef.current) {
-      if (!isRouteLoading()) lenis?.start?.();
-      stoppedLenisRef.current = false;
-    }
-  }, [isOpen, lenis]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [isOpen]);
+  // The page holds still while search is open, its scrollbar kept in place (no sideways
+  // jump) and hidden until the close animation is done
+  useLenisLock(isOpen, { closeMs: CLOSE_DURATION * 1000 });
 
   // Mounted by a ⌘K / search press made before it loaded (LazyGlobalSearch)
   useEffect(() => {
@@ -458,7 +438,9 @@ export function GlobalSearch({ effects = [], externalOpen = 0, openOnMount = fal
 
       if ((event.metaKey || event.ctrlKey) && key === "k") {
         event.preventDefault();
-        openSearch();
+        // Not under a drawer or modal: the search would open behind it, unseen but
+        // holding the focus (and when the search is open, it's the one holding)
+        if (!isPageHeld()) openSearch();
       }
 
       if (event.key === "Escape") {
@@ -526,9 +508,10 @@ export function GlobalSearch({ effects = [], externalOpen = 0, openOnMount = fal
       document.body.style.removeProperty("overflow");
     }
 
-    // Never while the page-change loader is up (it restarts Lenis itself)
+    // Never under the page-change loader or another modal still open (each restarts
+    // Lenis itself when it goes)
     const start = () => {
-      if (!isRouteLoading()) lenis?.start?.();
+      if (canStartLenis()) lenis?.start?.();
     };
     start();
     requestAnimationFrame(start);

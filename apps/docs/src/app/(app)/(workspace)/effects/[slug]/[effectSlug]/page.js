@@ -221,7 +221,6 @@ export default async function EffectPage({ params }) {
   const allEffects = buildEffectsFromSanity(sanityEntries);
   const categoriesMap = getEffectsByCategoryFromSanity(sanityEntries);
 
-  const globalSearchEffects = [...allEffects].sort((a, b) => (b.addedAt ?? 0) - (a.addedAt ?? 0));
 
   const effectCounts = {};
   for (const [categoryId, catEffects] of Object.entries(categoriesMap)) {
@@ -254,10 +253,7 @@ export default async function EffectPage({ params }) {
 
   // Install counts come from Supabase - not awaited; the related cards show a
   // skeleton until they stream in.
-  const installCountsPromise = getEffectInstallCounts([
-    ...globalSearchEffects,
-    ...relatedEffects,
-  ]).catch(() => ({}));
+  const installCountsPromise = getEffectInstallCounts(relatedEffects).catch(() => ({}));
 
   const pageMetadata = getEffectPageMetadata(effect, content, slug, effectSlug);
   const faqItems = getSanityFaqs(content);
@@ -286,7 +282,6 @@ export default async function EffectPage({ params }) {
         effectCounts={effectCounts}
         totalEffects={sanityEntries.length}
         effectTier={effectTier}
-        searchEffects={globalSearchEffects}
       />
     </>
   );

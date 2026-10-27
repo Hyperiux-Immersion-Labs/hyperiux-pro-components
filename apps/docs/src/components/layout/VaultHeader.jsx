@@ -11,7 +11,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import dynamic from "next/dynamic";
-import { useLenis } from "lenis/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import LazyGlobalSearch from "./LazyGlobalSearch";
@@ -36,6 +35,7 @@ import SoundToggle from "@/homepage/components/SoundToggle";
 import { useHideOnScrollDown } from "./useHideOnScrollDown";
 import { useAccountSummary } from "./useAccountSummary";
 import { useButtonId } from "@/components/ui/ButtonIds";
+import { useLenisLock } from "@/hooks/useLenisLock";
 
 const useIsoLayoutEffect =
   typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -147,7 +147,6 @@ export function VaultHeader({
   const openedRef = useRef(false);
   const desktopHeaderRef = useRef(null);
   const mobileBarRef = useRef(null);
-  const lenis = useLenis();
 
   const pathname = usePathname();
   const [routeShown, setRouteShown] = useState(pathname);
@@ -270,12 +269,12 @@ export function VaultHeader({
     setSection(null);
   }
 
+  // The page holds still under the open menu, its scrollbar kept in place (no sideways
+  // jump) and hidden until the overlay has wiped away (~0.6s)
+  useLenisLock(open, { closeMs: 600 });
+
   useEffect(() => {
     if (!open) return;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    lenis?.stop?.();
 
     const onKeyDown = (event) => {
       if (event.key === "Escape") close();
@@ -284,11 +283,9 @@ export function VaultHeader({
     window.addEventListener("keydown", onKeyDown);
 
     return () => {
-      document.body.style.overflow = previousOverflow;
-      lenis?.start?.();
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, lenis, close]);
+  }, [open, close]);
 
   useIsoLayoutEffect(() => {
     const overlay = overlayRef.current;

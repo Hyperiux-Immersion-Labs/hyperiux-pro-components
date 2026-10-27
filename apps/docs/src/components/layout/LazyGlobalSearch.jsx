@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useIdle } from "@/lib/when-idle";
+import { isPageHeld } from "@/hooks/useLenisLock";
 
 const GlobalSearch = dynamic(() => import("./SearchBar").then((m) => m.GlobalSearch), { ssr: false });
 
@@ -20,6 +21,7 @@ export default function LazyGlobalSearch({ effects, externalOpen = 0 }) {
     const onKeyDown = (event) => {
       if (!isSearchShortcut(event)) return;
       event.preventDefault();
+      if (isPageHeld()) return; // as in SearchBar: no search behind a drawer or modal
       setShortcutUsed(true);
     };
     document.addEventListener("keydown", onKeyDown);

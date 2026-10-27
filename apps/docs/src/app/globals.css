@@ -110,6 +110,17 @@ html {
   overflow-x: clip;
 }
 
+/* While a loader holds the page (lib/scroll-hold.js) its scrollbar stays exactly where it
+   is: hiding the overflow - or Lenis's overflow: clip when it stops - took the 8px away,
+   and the whole page jumped sideways as each loader left. Scroll stays on even if the
+   loading page is only a screen tall; the holder blocks wheel / touch / keys itself, and
+   the thumb is hidden (below) so there is nothing to drag. */
+html[data-scroll-held],
+html.lenis.lenis-stopped[data-scroll-held] {
+  overflow-x: clip;
+  overflow-y: scroll;
+}
+
 body {
   width: 100%;
   overflow-x: clip;
@@ -958,12 +969,16 @@ html[data-pc-rm] body *:not([data-demo-header], [data-demo-header] *) {
 .docs-sheet .group:hover .group-hover\:text-primary { color: var(--primary); }
 .docs-sheet .hover\:border-primary\/60:not(.codeblock-root *):hover { border-color: var(--primary); }
 
-html[data-v4-drawer-open] {
+/* While a modal or a loader holds the page still, its scrollbar keeps its place and only
+   the thumb turns invisible (hooks/useLenisLock, lib/scroll-hold.js) */
+html[data-v4-drawer-open],
+html[data-scroll-held] {
   --scrollbar-thumb: transparent;
 }
 
 @supports not selector(::-webkit-scrollbar) {
-  html[data-v4-drawer-open] {
+  html[data-v4-drawer-open],
+  html[data-scroll-held] {
     scrollbar-color: transparent transparent;
   }
 }

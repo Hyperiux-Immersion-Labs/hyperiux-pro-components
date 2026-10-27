@@ -11,7 +11,6 @@ import { displayFirstName } from "@/lib/display-name";
 import { hasDeletedAccount } from "@/lib/account-deleted";
 import { BUTTON_SIZE } from "@/homepage/components/Button";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
-import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { DarkSegment } from "@/components/ui/DarkSegment";
 import { ADMIN_TABS, USER_TABS, activeTab, canSeeTab, dashboardPath, isAdminPath } from "./dashboardRoutes";
 import { DashboardProvider, HERO_ASIDE_ID } from "./DashboardContext";
@@ -106,7 +105,7 @@ function TabRow({ children, activeKey, tabsKey }) {
  * the tabs for the admin ones under /dashboard/{username}/admin. The admin pages that split
  * by account (Activity, Users, Invoicing) put that choice beside their own date filter.
  */
-export function DashboardShell({ username, effects = [], catalog = [], children }) {
+export function DashboardShell({ username, catalog = [], children }) {
   const bid = useButtonId();
   const pathname = usePathname();
   const router = useRouter();
@@ -184,8 +183,6 @@ export function DashboardShell({ username, effects = [], catalog = [], children 
       {/* At least a screen tall, so a short tab's light sheet still reaches the bottom of
           the screen; otherwise as tall as the tab's content */}
       <div className="flex min-h-svh flex-col text-foreground">
-        <VaultHeader showSearch totalEffects={effects.length} effects={effects} />
-
         <section id="dashboard" className="section-x flex w-full flex-col gap-[calc(var(--cvw)*3)] pt-32 pb-[calc(var(--cvw)*3)] max-lg:gap-10 max-lg:pb-10 max-md:gap-8 max-md:pt-28 max-md:pb-8">
           {/* back + breadcrumb, and for admins the View as User / Admin switch on the right.
               On phones the breadcrumb is just its last two crumbs, and admins don't get it

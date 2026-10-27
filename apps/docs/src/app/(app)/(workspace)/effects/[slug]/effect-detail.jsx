@@ -8,12 +8,10 @@ import {
   useState,
   useEffect,
   useCallback,
-  Suspense,
   forwardRef,
 } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { AppVaultHeader as VaultHeader } from "@/components/layout/AppVaultHeader";
 import { EffectCard, resolveCover } from "../EffectCard";
 import { useGlideRow } from "@/hooks/useGlideRow";
 import { CustomAnimationCta } from "../CustomAnimationCta";
@@ -170,7 +168,6 @@ export function EffectDetailContent({
   relatedEffects: baseRelatedEffects = [],
   installCounts: installCountsSource = null,
   effectTier = "pro",
-  searchEffects: baseSearchEffects = [],
 }) {
   // Install counts arrive as a promise (Supabase): related cards show a skeleton until it lands.
   const installCounts = usePromiseValue(installCountsSource, { pending: null, fallback: {} });
@@ -182,10 +179,6 @@ export function EffectDetailContent({
           )
         : baseRelatedEffects,
     [baseRelatedEffects, installCounts, installCountsSource],
-  );
-  const searchEffects = useMemo(
-    () => (installCounts ? baseSearchEffects.map((e) => ({ ...e, installCount: installCounts[e.name || e.effectSlug || e.slug] ?? 0 })) : baseSearchEffects),
-    [baseSearchEffects, installCounts],
   );
   useFadeUp();
   useLineAnim();
@@ -321,12 +314,6 @@ export function EffectDetailContent({
       {/* Hover sounds everywhere above the white area; the cursor swish plays in the
             header and hero but not over the stage. The white area below is silent. */}
       <div className="min-h-screen text-foreground">
-        <Suspense fallback={<div className="h-12" />}>
-          <VaultHeader effectName={pageTitle || safeEffect.title}
-            showSearch={true}
-            effects={searchEffects} />
-        </Suspense>
-
         {isMainDataLoading ? (
           <EffectDetailMainSkeleton />
         ) : (

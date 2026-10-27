@@ -5,7 +5,7 @@ import * as THREE from "three";
 import gsap from "gsap";
 import { prefersReducedMotion } from "@/lib/motion";
 import { motion } from "motion/react";
-import { useLenis } from "lenis/react";
+import { useLenisLock } from "@/hooks/useLenisLock";
 import { RotateCcw } from "lucide-react";
 import { LABEL, T13, T14 } from "../tokens";
 import { BREAKPOINTS } from "@/lib/breakpoints";
@@ -55,31 +55,19 @@ export default function TemplateExploded({
   const [panelIndex, setPanelIndex] = useState(0);
   const [selected, setSelected] = useState(-1);
 
-  // While a section is zoomed the page holds still: Lenis stops and wheel / touch /
-  // scroll keys are swallowed until the zoom is released. The drawers' flag goes on
-  // first so lenis-stopped doesn't clip <html> (that drops the scrollbar and shifts the
-  // sticky stage).
-  const lenis = useLenis();
+  // While a section is zoomed the page holds still, the way a modal holds it
+  // (useLenisLock: Lenis stopped, wheel / touch swallowed, the scrollbar kept so the
+  // sticky stage doesn't shift - and shared with any modal opened over it, so closing
+  // that one doesn't set the page scrolling under the zoom). Scroll keys too.
+  useLenisLock(selected >= 0);
   useEffect(() => {
     if (selected < 0) return undefined;
-    const html = document.documentElement;
-    html.setAttribute("data-v4-drawer-open", "");
-    const block = (event) => event.preventDefault();
     const blockKeys = (event) => {
       if ([" ", "PageUp", "PageDown", "Home", "End", "ArrowUp", "ArrowDown"].includes(event.key)) event.preventDefault();
     };
-    window.addEventListener("wheel", block, { passive: false });
-    window.addEventListener("touchmove", block, { passive: false });
     window.addEventListener("keydown", blockKeys);
-    lenis?.stop();
-    return () => {
-      window.removeEventListener("wheel", block);
-      window.removeEventListener("touchmove", block);
-      window.removeEventListener("keydown", blockKeys);
-      lenis?.start();
-      html.removeAttribute("data-v4-drawer-open");
-    };
-  }, [selected, lenis]);
+    return () => window.removeEventListener("keydown", blockKeys);
+  }, [selected]);
 
   useEffect(() => {
     explodeRef.current = explode;

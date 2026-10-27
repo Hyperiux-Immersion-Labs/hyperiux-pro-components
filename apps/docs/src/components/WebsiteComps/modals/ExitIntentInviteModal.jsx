@@ -4,13 +4,13 @@ import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useLenis } from "lenis/react";
 import { Mail } from "lucide-react";
 import Turnstile from "@/components/WebsiteComps/Turnstile";
 import { buttonClassName, ButtonChrome } from "@/homepage/components/Button";
 import { FREE_LABEL } from "@/lib/library-counts";
 import { isLoaderWaiting } from "@/homepage/components/loader-state";
 import { useCachedClerkSession } from "@/lib/clerkSessionCache";
+import { useLenisLock } from "@/hooks/useLenisLock";
 
 // Site-wide exit-intent capture (except the auth flows, /dashboard, the demos
 // and signed-in visitors - see isEligible below): motion/react with the MODAL_TRANSITION curve and a
@@ -121,7 +121,6 @@ export function ExitIntentInviteModal() {
   // Cloudflare Turnstile token for the bot check (see components/WebsiteComps/Turnstile.jsx)
   const [turnstileToken, setTurnstileToken] = useState(null);
   const [turnstileFailed, setTurnstileFailed] = useState(false);
-  const lenis = useLenis();
   const pathname = usePathname();
   // No ClerkProvider on marketing pages, so a signed-in browser is read from
   // Clerk's session cookie - they already have the account this invite is for
@@ -190,12 +189,11 @@ export function ExitIntentInviteModal() {
     return () => document.removeEventListener("mouseout", handleMouseOut);
   }, [armed, isEligible]);
 
+  // The page holds still behind the dialog, its scrollbar kept in place (no sideways jump)
+  useLenisLock(open, { closeMs: 500 });
+
   useEffect(() => {
     if (!open) return;
-
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    lenis?.stop?.();
 
     // Straight into the email field, and back to wherever focus was on close
     const returnFocusTo = document.activeElement;
@@ -228,13 +226,11 @@ export function ExitIntentInviteModal() {
     window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      lenis?.start?.();
       window.cancelAnimationFrame(focusFrame);
       window.removeEventListener("keydown", handleKeyDown);
       returnFocusTo?.focus?.({ preventScroll: true });
     };
-  }, [open, lenis]);
+  }, [open]);
 
   const close = () => setOpen(false);
 

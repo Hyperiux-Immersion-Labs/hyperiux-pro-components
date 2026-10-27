@@ -2,7 +2,6 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/Dashboard/DashboardShell";
 import { dashboardPath } from "@/components/Dashboard/dashboardRoutes";
-import { getRegistryIndex } from "@/lib/registry";
 import { getAllSanityEffectEntries, buildEffectsFromSanity } from "@/lib/sanity";
 import { dashboardUsername } from "@/lib/user-slug";
 import { DEV_PREVIEW_USERNAME } from "@/lib/dev/dashboardPreview";
@@ -21,12 +20,11 @@ export default async function UserDashboardLayout({ children, params }) {
   if (!mine) redirect("/");
   if (username !== mine) redirect(dashboardPath(mine));
 
-  const registry = getRegistryIndex();
   // Full effect details (titles, covers, tags) for the tabs' effect cards and lists
   const catalog = buildEffectsFromSanity(await getAllSanityEffectEntries());
 
   return (
-    <DashboardShell username={username} effects={registry?.items || []} catalog={catalog}>
+    <DashboardShell username={username} catalog={catalog}>
       {children}
     </DashboardShell>
   );

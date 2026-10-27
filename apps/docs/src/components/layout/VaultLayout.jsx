@@ -9,7 +9,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sidebar } from "./Sidebar";
 import { MEDIA } from "@/lib/breakpoints";
 import { getEffectCategoryHref } from "@/lib/category-routes";
-import { RouteLoading, isRouteLoading } from "@/components/ui/RouteLoading";
+import { RouteLoading } from "@/components/ui/RouteLoading";
+import { AppVaultHeader } from "./AppVaultHeader";
+import { canStartLenis } from "@/hooks/useLenisLock";
 
 const VaultLayoutContext = createContext({
   isSidebarOpen: true,
@@ -163,15 +165,15 @@ export function VaultLayout({
   }, []);
 
   // Recovers Lenis after a route change in case something left it stopped, but
-  // never while the page-change loader is up - that keeps it stopped and
-  // starts it itself once the new page is in (see RouteLoading).
+  // never while the page-change loader or a modal is up - each keeps it stopped and
+  // starts it itself when it goes (RouteLoading, useLenisLock).
   const forceStartLenis = useCallback(() => {
     if (typeof document !== "undefined") {
       document.body.style.removeProperty("overflow");
     }
 
     const start = () => {
-      if (!isRouteLoading()) lenis?.start?.();
+      if (canStartLenis()) lenis?.start?.();
     };
     start();
 
@@ -201,20 +203,37 @@ export function VaultLayout({
     });
   }, [forceStartLenis, lenis]);
 
+  // Where a page opens: its #hash target (a /docs/x#section link), else the top. The
+  // repeated resets below otherwise undid the browser's jump to the anchor.
+  const scrollToEntry = useCallback(() => {
+    const id = window.location.hash.slice(1);
+    const target = id && document.getElementById(decodeURIComponent(id));
+    if (!target) {
+      scrollToTop();
+      return;
+    }
+
+    forceStartLenis();
+    const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+    const top = target.getBoundingClientRect().top + window.scrollY - margin;
+    if (lenis) lenis.scrollTo(top, { immediate: true, force: true });
+    else window.scrollTo({ top, left: 0, behavior: "auto" });
+  }, [forceStartLenis, lenis, scrollToTop]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
 
     const previousScrollRestoration = window.history.scrollRestoration;
 
     window.history.scrollRestoration = "manual";
-    scrollToTop();
+    scrollToEntry();
 
-    const rafOne = requestAnimationFrame(scrollToTop);
+    const rafOne = requestAnimationFrame(scrollToEntry);
     const rafTwo = requestAnimationFrame(() => {
-      requestAnimationFrame(scrollToTop);
+      requestAnimationFrame(scrollToEntry);
     });
 
-    const timeout = window.setTimeout(scrollToTop, 120);
+    const timeout = window.setTimeout(scrollToEntry, 120);
 
     return () => {
       cancelAnimationFrame(rafOne);
@@ -222,7 +241,7 @@ export function VaultLayout({
       window.clearTimeout(timeout);
       window.history.scrollRestoration = previousScrollRestoration;
     };
-  }, [scrollToTop]);
+  }, [scrollToEntry]);
 
   const refreshScrollTrigger = useCallback(
     (includeSidebarDelay = false) => {
@@ -257,17 +276,17 @@ export function VaultLayout({
 
   const handleRouteChange = useCallback(() => {
     forceStartLenis();
-    scrollToTop();
+    scrollToEntry();
     refreshScrollTrigger();
 
     if (typeof window === "undefined") return;
 
     requestAnimationFrame(() => {
       forceStartLenis();
-      scrollToTop();
+      scrollToEntry();
       refreshScrollTrigger();
     });
-  }, [forceStartLenis, refreshScrollTrigger, scrollToTop]);
+  }, [forceStartLenis, refreshScrollTrigger, scrollToEntry]);
 
   useEffect(() => {
     if (!sidebarMounted) return undefined;
@@ -344,8 +363,9 @@ export function VaultLayout({
     // The sidebar is never shown on phones or tablets (Sidebar is max-lg:hidden), so
     // its open state must not pause scrolling there - it used to stop Lenis on phones,
     // from an old overlay-sidebar design.
+    // (Not over a modal or the page-change loader: they restart it when they go)
     const syncLenis = () => {
-      lenis?.start?.();
+      if (canStartLenis()) lenis?.start?.();
       refreshScrollTrigger();
     };
 
@@ -354,7 +374,7 @@ export function VaultLayout({
 
     return () => {
       mediaQuery.removeEventListener("change", syncLenis);
-      lenis?.start?.();
+      if (canStartLenis()) lenis?.start?.();
     };
   }, [isSidebarOpen, isSidebarReady, lenis, refreshScrollTrigger]);
 
@@ -557,6 +577,11 @@ export function VaultLayout({
             </Suspense>
 
             <main className="relative min-w-0 flex-1">
+              {/* One header for every workspace page, outside the swap below: rendered by
+                  each page it unmounted under the loader and came back on every route change */}
+              <Suspense fallback={null}>
+                <AppVaultHeader showSearch effects={effects} />
+              </Suspense>
               {isNavigating ? (
                 // Same loader as loading.js: locks scrolling and stops Lenis while it shows
                 <RouteLoading className="absolute inset-x-0 top-0 flex h-screen items-center justify-center" />

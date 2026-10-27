@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
-import { useLenis } from "lenis/react";
 import { TUTORIAL_VIDEO_POSTER, TUTORIAL_VIDEO_SRC } from "./tutorial-video";
+import { useLenisLock } from "@/hooks/useLenisLock";
 
 // One open/closed state for the walkthrough modal. Both header bars (desktop
 // and mobile are mounted together) and in-page links like ExplainVault's
@@ -60,7 +60,6 @@ export function TutorialVideoHost() {
 
 function TutorialVideoModal() {
     const closeRef = useRef(null);
-    const lenis = useLenis();
     const [closing, setClosing] = useState(false);
 
     // Play the exit animation, then unmount
@@ -69,17 +68,17 @@ function TutorialVideoModal() {
         setTimeout(closeTutorialVideo, EXIT_MS);
     }, []);
 
-    // Hold the page still behind the modal, and close on Escape
+    // Hold the page still behind the modal (scrollbar kept in place, so nothing shifts),
+    // and close on Escape
+    useLenisLock(true);
     useEffect(() => {
-        lenis?.stop();
         closeRef.current?.focus();
         const onKey = (e) => { if (e.key === "Escape") requestClose(); };
         document.addEventListener("keydown", onKey);
         return () => {
             document.removeEventListener("keydown", onKey);
-            lenis?.start();
         };
-    }, [lenis, requestClose]);
+    }, [requestClose]);
 
     return createPortal(
         <div
