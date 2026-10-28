@@ -94,6 +94,14 @@ const Cursor = () => {
       setState(event.target as Element);
     };
 
+    // A native drag (pressing and moving over selected text) stops pointermove until the
+    // button is released, which froze the ring mid-press - dragover keeps reporting position
+    const handleDrag = (event: DragEvent) => {
+      if (!visible) return;
+      pointer.x = event.clientX;
+      pointer.y = event.clientY;
+    };
+
     const handleLeave = () => {
       visible = false;
       scale.labelTarget = 0;
@@ -148,6 +156,7 @@ const Cursor = () => {
 
     window.addEventListener("pointermove", handleMove, { passive: true });
     window.addEventListener("pointerdown", handleDown);
+    window.addEventListener("dragover", handleDrag, { passive: true });
     window.addEventListener("scroll", handleScroll, { passive: true });
     document.documentElement.addEventListener("pointerleave", handleLeave);
     gsap.ticker.add(tick);
@@ -155,6 +164,7 @@ const Cursor = () => {
     return () => {
       window.removeEventListener("pointermove", handleMove);
       window.removeEventListener("pointerdown", handleDown);
+      window.removeEventListener("dragover", handleDrag);
       window.removeEventListener("scroll", handleScroll);
       document.documentElement.removeEventListener("pointerleave", handleLeave);
       gsap.ticker.remove(tick);

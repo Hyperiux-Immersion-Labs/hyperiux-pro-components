@@ -254,6 +254,7 @@ const calloutBlock = defineType({
           type: 'block',
           styles: [],
           lists: [{title: 'Bullet', value: 'bullet'}],
+          of: [defineArrayMember({type: 'lineBreak'})],
           marks: {
             decorators: [{title: 'Strong', value: 'strong'}, {title: 'Emphasis', value: 'em'}],
             annotations: [
@@ -272,6 +273,29 @@ const calloutBlock = defineType({
       validation: (rule) => rule.required().min(1),
     }),
   ],
+})
+
+const lineBreak = defineType({
+  name: 'lineBreak',
+  title: 'Line Break',
+  type: 'object',
+  fields: [
+    defineField({
+      name: 'label',
+      title: 'Label',
+      type: 'string',
+      initialValue: 'Line break',
+      hidden: true,
+      readOnly: true,
+    }),
+  ],
+  preview: {
+    prepare() {
+      return {
+        title: '↵ Line break',
+      }
+    },
+  },
 })
 
 const horizontalRule = defineType({
@@ -377,6 +401,7 @@ const bodyBlock = defineType({
         {title: 'H3', value: 'h3'},
         {title: 'Quote', value: 'blockquote'},
       ],
+      of: [defineArrayMember({type: 'lineBreak'})],
       lists: [
         {title: 'Bullet', value: 'bullet'},
         {title: 'Numbered', value: 'number'},
@@ -553,6 +578,7 @@ export const effectContentSchemaTypes = [
   tableRow,
   tableBlock,
   calloutBlock,
+  lineBreak,
   horizontalRule,
   faqAccordionItem,
   faqAccordion,

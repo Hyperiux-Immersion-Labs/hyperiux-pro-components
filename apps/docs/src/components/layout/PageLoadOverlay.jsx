@@ -38,8 +38,14 @@ export function PageLoadOverlay() {
   const [noCover] = useState(isHome || hasOwnLoader(pathname));
 
   useLayoutEffect(() => {
-    if (!ref.current) return undefined;
-    const hide = () => gsap.set(ref.current, { opacity: 0 });
+    // A missing URL is served the prebuilt 404, rendered for Next's own not-found path
+    // rather than the URL asked for - so on /template-demo/* the server draws the cover
+    // while the client (noCover) renders nothing and never gets the ref. Lifting it
+    // through the ref alone left that cover up for good: the grid on screen, the page
+    // under it unseen. Find the server's copy too.
+    const cover = ref.current ?? document.querySelector("[data-page-load-overlay]");
+    if (!cover) return undefined;
+    const hide = () => gsap.set(cover, { opacity: 0 });
     if (!document.querySelector("[data-vault-sidebar]") || window.__vaultSidebarReady) {
       hide();
       return undefined;

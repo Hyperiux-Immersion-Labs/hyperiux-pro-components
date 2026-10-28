@@ -1042,6 +1042,7 @@ function buildMarkedChildren(block) {
   const markDefs = block.markDefs || [];
 
   return (block.children || []).map((child, index) => {
+    if (child?._type === "lineBreak") return <br key={child._key || index} />;
     if (!child?.text) return null;
 
     let node = child.text;

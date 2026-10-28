@@ -372,7 +372,7 @@ const PixelField = () => {
   return (
     <div
       ref={hostRef}
-      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y overflow-hidden rounded-lg bg-(--mpx-ink) max-lg:h-[60vh] max-md:h-[46vh]"
+      className="font-mpx-head relative h-[min(60vh,33vw)] w-full cursor-crosshair touch-pan-y select-none overflow-hidden rounded-lg bg-(--mpx-ink) max-lg:h-[60vh] max-md:h-[46vh]"
     >
       <canvas ref={canvasRef} aria-hidden className="absolute inset-0 block h-full w-full" />
       <span

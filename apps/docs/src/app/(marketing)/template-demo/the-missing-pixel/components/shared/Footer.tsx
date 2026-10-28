@@ -209,7 +209,7 @@ const Footer = () => {
         <div className="flex flex-col">
           <div ref={markRef} aria-hidden className="flex flex-col gap-5 overflow-hidden max-md:gap-4">
             <div className="h-px w-full bg-(--mpx-white)/15" />
-            <div className="relative">
+            <div className="relative select-none">
               <div
                 ref={markInnerRef}
                 className="font-mpx-head flex justify-center overflow-hidden whitespace-nowrap py-[0.8vw] text-128 font-semibold leading-[1.3] tracking-tighter text-transparent"
