@@ -118,7 +118,7 @@ const PostGrid = () => {
       </div>
       {collapsed && pool.length > VISIBLE && (
         <div className="flex justify-center">
-          <PixelButton label="Show Older Essays" variant="outline" onClick={showOlder} />
+          <PixelButton label="Show older essays" variant="outline" onClick={showOlder} />
         </div>
       )}
     </div>

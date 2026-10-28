@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/liquid-shatter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
   "main": "index.tsx",
   "files": [
@@ -8,7 +8,7 @@
     "registry.json"
   ],
   "keywords": [
-    "components",
+    "webgl",
     "hyperiux"
   ],
   "dependencies": {

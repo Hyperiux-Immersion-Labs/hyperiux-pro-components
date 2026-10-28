@@ -13,7 +13,7 @@ const Testimonials = dynamic(() => import("./components/home/Testimonials"));
 const Journal = dynamic(() => import("./components/home/Journal"));
 
 export const metadata = pageMetadata(
-  "The Missing Pixel - Brand and Digital Studio Template",
+  "The Missing Pixel | Brand and Digital Studio Template",
   "A multi-page template for a brand and digital studio, featuring a pixel page transition, a scroll-opening showreel, a horizontal work gallery, pixel scrollytelling, a playable footer and a synthesised soundtrack.",
 );
 

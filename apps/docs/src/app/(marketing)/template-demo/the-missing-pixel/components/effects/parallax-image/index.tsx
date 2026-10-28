@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import Image, { type StaticImageData } from "next/image";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
@@ -24,6 +24,8 @@ type ParallaxImageProps = {
   scale?: number;
   start?: string;
   end?: string;
+  // Rendered inside the reveal, so overlays are clipped to the pixels shown so far
+  children?: ReactNode;
 };
 
 const ParallaxImage = ({
@@ -38,6 +40,7 @@ const ParallaxImage = ({
   scale = 1.2,
   start = "top bottom",
   end = "bottom top",
+  children,
 }: ParallaxImageProps) => {
   const wrapRef = useRef<HTMLDivElement | null>(null);
   const moveRef = useRef<HTMLDivElement | null>(null);
@@ -97,6 +100,7 @@ const ParallaxImage = ({
             className="h-full w-full object-cover"
           />
         </div>
+        {children}
         </PixelReveal>
       ) : (
       <MediaReveal zoom={false} className="h-full w-full">
@@ -110,6 +114,7 @@ const ParallaxImage = ({
             className="h-full w-full object-cover"
           />
         </div>
+        {children}
       </MediaReveal>
       )}
       </div>

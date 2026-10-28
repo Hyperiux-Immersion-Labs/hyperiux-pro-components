@@ -14,7 +14,7 @@ import UnderlineLink from "../Buttons/UnderlineLink";
 import { ArrowRight, LogoMark } from "../Buttons/icons";
 import FooterParallax from "../effects/parallax-footer";
 import WordmarkPixels from "./WordmarkPixels";
-import { ROUTES } from "../../routes";
+import { ROUTES, servicePath } from "../../routes";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -32,11 +32,11 @@ const COLUMNS = [
   {
     title: "Services",
     links: [
-      { label: "Brand strategy", href: ROUTES.service },
-      { label: "Brand identity", href: ROUTES.service },
-      { label: "Websites and products", href: ROUTES.service },
-      { label: "Motion and 3D", href: ROUTES.service },
-      { label: "Packaging", href: ROUTES.service },
+      { label: "Brand strategy", href: servicePath("brand-strategy") },
+      { label: "Brand identity", href: servicePath("brand-identity") },
+      { label: "Websites and products", href: servicePath("websites-and-products") },
+      { label: "Motion and 3D", href: servicePath("motion-and-3d") },
+      { label: "Packaging", href: servicePath("packaging") },
     ],
   },
   {
@@ -126,7 +126,7 @@ const Footer = () => {
           stagger: 0.03,
           scrollTrigger: {
             trigger: wrapper,
-            start: "40% bottom",
+            start: "15% bottom",
             end: "bottom bottom",
             scrub: true,
             onUpdate: (self) => {
@@ -197,7 +197,7 @@ const Footer = () => {
                 <ul className="flex flex-col gap-2 text-22 max-md:gap-1">
                   {column.links.map((link, linkIndex) => (
                     <FadeUp as="li" key={link.label} delay={columnIndex * 0.02 + linkIndex * 0.03}>
-                      <UnderlineLink href={link.href}>{link.label}</UnderlineLink>
+                      <UnderlineLink href={link.href} external={link.href.startsWith("http")}>{link.label}</UnderlineLink>
                     </FadeUp>
                   ))}
                 </ul>
@@ -240,7 +240,7 @@ const Footer = () => {
               onClick={toTop}
               className="group flex items-center gap-2 transition-colors duration-300 hover:text-(color:--mpx-paper) max-md:absolute max-md:bottom-[3vh] max-md:right-0 max-md:size-[12vw] max-md:justify-center max-md:rounded-full max-md:bg-(--mpx-white) max-md:text-(color:--mpx-ink) max-md:hover:text-(color:--mpx-ink)"
             >
-              <span className="max-md:sr-only">Back to Top</span>
+              <span className="max-md:sr-only">Back to top</span>
               <ArrowRight className="size-[0.7vw] -rotate-90 transition-transform duration-500 group-hover:-translate-y-[0.2vw] max-lg:size-[2vw] max-md:size-[5vw]" />
             </button>
           </div>

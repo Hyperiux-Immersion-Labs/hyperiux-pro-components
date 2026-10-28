@@ -396,7 +396,7 @@ export function CodeBlock({
             {/* codeblock: the site's thin code scrollbar (globals.css). */}
             <div
                 ref={scrollRef}
-                className={`codeblock max-h-[420px] ${collapsed ? "overflow-x-auto overflow-y-hidden" : "overflow-auto"}`}
+                className={`codeblock max-h-[380px] ${collapsed ? "overflow-x-auto overflow-y-hidden" : "overflow-auto"}`}
             >
                 <div ref={contentRef}>
                 <pre

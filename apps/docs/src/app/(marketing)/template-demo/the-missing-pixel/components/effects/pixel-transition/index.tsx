@@ -9,7 +9,8 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { prefersReducedMotion } from "../../Animations/reducedMotion";
 import { playSound } from "../../Sound/pixelSfx";
-import { BASE, PAGE_NAMES, ROUTES } from "../../../routes";
+import { BASE, PAGE_NAMES, ROUTES, servicePath } from "../../../routes";
+import { SERVICES } from "../../services/services";
 import NumberCounter, { LOADER_COUNTER_DURATION } from "../number-counter";
 
 gsap.registerPlugin(useGSAP);
@@ -72,8 +73,14 @@ const PixelTransition = () => {
     coveringRef.current = false;
     window.clearTimeout(failsafeRef.current);
 
-    lenis?.scrollTo(0, { immediate: true, force: true });
-    window.scrollTo(0, 0);
+    const hashTarget = window.location.hash ? document.getElementById(decodeURIComponent(window.location.hash.slice(1))) : null;
+    if (hashTarget) {
+      lenis?.scrollTo(hashTarget, { immediate: true, force: true });
+      if (!lenis) hashTarget.scrollIntoView();
+    } else {
+      lenis?.scrollTo(0, { immediate: true, force: true });
+      window.scrollTo(0, 0);
+    }
     playSound("arrive");
 
     const grid = { p: 0 };
@@ -142,6 +149,14 @@ const PixelTransition = () => {
         "<",
       );
 
+    // Hold the loader text back until Host Grotesk is ready so it never swaps weight on screen
+    const family = getComputedStyle(label).fontFamily;
+    Promise.all([document.fonts.load(`500 1em ${family}`), document.fonts.load(`400 1em ${family}`)])
+      .catch(() => undefined)
+      .then(() => {
+        if (timeline.time() < LOADER_COUNTER_DURATION) gsap.to([label, count], { opacity: 1, duration: 0.25 });
+      });
+
     return () => timeline.kill();
   }, []);
 
@@ -179,8 +194,10 @@ const PixelTransition = () => {
 
       const target = url.pathname + url.search + url.hash;
       const slug = url.pathname.startsWith(`${ROUTES.work}/`) ? url.pathname.split("/").pop() : undefined;
+      const serviceTitle = SERVICES.find((service) => servicePath(service.slug) === url.pathname)?.title;
       labelText.textContent =
         PAGE_NAMES[url.pathname] ??
+        serviceTitle ??
         (slug ? slug.split("-").map((word) => word[0].toUpperCase() + word.slice(1)).join(" ") : "Loading");
       gsap.set(root, { display: "block", backgroundColor: "transparent" });
       gsap.set([label, count], { opacity: 0 });
@@ -228,13 +245,13 @@ const PixelTransition = () => {
         <canvas ref={canvasRef} className="absolute inset-0 block h-full w-full" />
         <div
           ref={labelRef}
-          className="font-mpx-head absolute inset-0 flex items-center justify-center text-128 font-medium text-(color:--mpx-ink)"
+          className="font-mpx-head absolute inset-0 flex items-center justify-center text-128 font-medium text-(color:--mpx-ink) opacity-0"
         >
           <span ref={labelTextRef}>Missing Pixel</span>
         </div>
         <span
           ref={countRef}
-          className="font-mpx-head mpx-container absolute bottom-[2.5vw] right-0 text-64 tabular-nums text-(color:--mpx-ink) max-lg:bottom-[4vw] max-md:bottom-[6vw]"
+          className="font-mpx-head mpx-container absolute bottom-[2.5vw] right-0 text-64 tabular-nums text-(color:--mpx-ink) opacity-0 max-lg:bottom-[4vw] max-md:bottom-[6vw]"
         >
           <NumberCounter />
         </span>

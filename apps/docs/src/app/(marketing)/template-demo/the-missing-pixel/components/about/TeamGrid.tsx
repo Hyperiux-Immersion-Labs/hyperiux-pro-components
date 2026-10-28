@@ -26,7 +26,7 @@ const LINK_CLASSES =
 
 const TeamGrid = () => (
   <>
-  <ul className="grid grid-cols-4 gap-x-9  gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:flex max-md:w-full max-md:max-w-full max-md:snap-x max-md:snap-mandatory max-md:gap-x-4 max-md:overflow-x-scroll max-md:pb-4 max-md:px-[7vw] max-md:scroll-px-[7vw] max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden">
+  <ul className="grid grid-cols-4 gap-x-9  gap-y-14  max-lg:gap-x-6 max-lg:gap-y-11 max-lg:grid-cols-2 max-md:flex max-md:w-full max-md:max-w-full max-md:snap-x max-md:snap-mandatory max-md:gap-x-4 max-md:overflow-x-scroll max-md:pb-4 max-md:px-[7vw] max-md:scroll-px-[7vw] max-md:scrollbar-none max-md:[&::-webkit-scrollbar]:hidden">
     {TEAM.map((member, index) => (
       <FadeUp as="li" key={member.name} delay={(index % 4) * 0.08} className="max-md:w-[78vw] max-md:shrink-0 max-md:snap-start">
         <article className="h-full">
@@ -37,14 +37,15 @@ const TeamGrid = () => (
             sizes="(max-width: 768px) 45vw, (max-width: 1025px) 30vw, 22vw"
             className="h-full"
             body={
-              <div className="flex flex-1 flex-col content-start gap-1 px-2 pt-4 pb-2">
+              // Keyed because React flags JSX passed from a server component through a prop
+              <div key="body" className="flex flex-1 flex-col content-start gap-1 px-2 pt-4 pb-2">
                 <h3 className="text-24 font-medium!">{member.name}</h3>
                 <p className="text-14 opacity-60">{member.role}</p>
               </div>
             }
           >
             <div className="absolute inset-x-[5%] bottom-[4%] z-2 flex gap-2">
-              <Link href="https://www.linkedin.com/" rel="noopener" aria-label={`${member.name} on LinkedIn`} className={LINK_CLASSES}>
+              <Link href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label={`${member.name} on LinkedIn`} className={LINK_CLASSES}>
                 LinkedIn
               </Link>
               <Link href="mailto:hello@themissingpixel.studio" aria-label={`Email ${member.name}`} className={`${LINK_CLASSES} delay-50`}>

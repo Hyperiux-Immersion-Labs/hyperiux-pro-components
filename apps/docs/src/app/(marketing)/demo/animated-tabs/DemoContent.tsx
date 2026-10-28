@@ -14,7 +14,8 @@ export default function DemoContent({ registry }: { registry: any }) {
       copyCodeOptions={{ propsVariableName: "animatedTabsProps" }}
     >
       {({ effect }) => (
-        <>
+        // The heading and the tabs share one screen, so there's no empty space under the content
+        <div className="flex min-h-screen flex-col bg-white">
           <DemoHeader />
           <div className=" h-full flex flex-col items-center gap-[1vw] bg-white text-[#111111] px-[5vw] pt-[7%] max-md:pt-[15%] max-sm:pt-[30%] inset-0 z-1">
             <HeadAnim>
@@ -31,7 +32,7 @@ export default function DemoContent({ registry }: { registry: any }) {
           <div className='max-md:mt-[-2vw]'>
             {effect}
           </div>
-        </>
+        </div>
       )}
     </RegistryRemixerDemo>
   );

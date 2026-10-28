@@ -2,8 +2,9 @@
 
 "use client";
 
-import { useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useSyncExternalStore, type ComponentType, type MouseEvent } from "react";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -15,6 +16,32 @@ import { ROUTES } from "../../routes";
 import reelPixel from "../../assets/pictures/reel-pixel.webp";
 import heroFigure from "../../assets/pictures/hero-figure.webp";
 import heroFigureMobile from "../../assets/pictures/hero-figure-m.webp";
+import mobileHeroBg from "../../assets/pictures/mobile-hero-bg.png";
+import tabletHeroBg from "../../assets/pictures/tablet-hero-bg.png";
+
+// Footer background from hyperiux-staging (FlowFieldPlane.jsx), copied unchanged as plain JS
+const FlowFieldHero = dynamic<{ texturePath?: string; imageResolution?: [number, number] }>(
+  () =>
+    import("../effects/flow-field/index.jsx") as Promise<{
+      default: ComponentType<{ texturePath?: string; imageResolution?: [number, number] }>;
+    }>,
+  { ssr: false },
+);
+
+const CUE_IDLE_MS = 3000;
+
+// The shader canvas only runs on desktop; phones and tablets get still images instead
+const DESKTOP_QUERY = "(min-width: 1025px)";
+const subscribeDesktop = (onChange: () => void) => {
+  const query = window.matchMedia(DESKTOP_QUERY);
+  query.addEventListener("change", onChange);
+  return () => query.removeEventListener("change", onChange);
+};
+const getDesktop = () => window.matchMedia(DESKTOP_QUERY).matches;
+const getServerDesktop = () => false;
+
+// Desktop matches neither source, so the browser falls back to this empty pixel and downloads nothing
+const EMPTY_PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -27,7 +54,35 @@ const Hero = () => {
   const bgRef = useRef<HTMLDivElement | null>(null);
   const photoRef = useRef<HTMLDivElement | null>(null);
   const figureRef = useRef<HTMLDivElement | null>(null);
-  const lightRef = useRef<HTMLDivElement | null>(null);
+  const cueRef = useRef<HTMLDivElement | null>(null);
+  const desktop = useSyncExternalStore(subscribeDesktop, getDesktop, getServerDesktop);
+
+  // Scroll cue fades out while the visitor scrolls and fades back after 3s of stillness
+  useEffect(() => {
+    const cue = cueRef.current;
+    if (!cue) return;
+    let timer = 0;
+    let hidden = false;
+
+    const onScroll = () => {
+      if (!hidden) {
+        hidden = true;
+        gsap.to(cue, { autoAlpha: 0, duration: 0.5, ease: "power2.out", overwrite: true });
+      }
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => {
+        hidden = false;
+        gsap.to(cue, { autoAlpha: 1, duration: 0.8, ease: "power2.out", overwrite: true });
+      }, CUE_IDLE_MS);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(timer);
+      gsap.killTweensOf(cue);
+    };
+  }, []);
 
   useGSAP(
     () => {
@@ -35,8 +90,7 @@ const Hero = () => {
       const bg = bgRef.current;
       const photo = photoRef.current;
       const figure = figureRef.current;
-      const light = lightRef.current;
-      if (!hero || !bg || !photo || !figure || !light) return;
+      if (!hero || !bg || !photo || !figure) return;
 
       const lines = gsap.utils.toArray<HTMLElement>("[data-hero-line]", hero);
       const pixel = hero.querySelector<HTMLElement>("[data-hero-pixel]");
@@ -85,15 +139,9 @@ const Hero = () => {
 
       const mm = gsap.matchMedia();
       mm.add("(hover: hover) and (pointer: fine)", () => {
-        const restX = () => window.innerWidth * 0.7;
-        const restY = () => window.innerHeight * 0.3;
-
-        gsap.set(light, { xPercent: -50, yPercent: -50, x: restX(), y: restY() });
         const figureX = gsap.quickTo(figure, "x", { duration: 1.2, ease: "power3.out" });
         const figureY = gsap.quickTo(figure, "y", { duration: 1.2, ease: "power3.out" });
         const figureRotate = gsap.quickTo(figure, "rotation", { duration: 1.2, ease: "power3.out" });
-        const lightX = gsap.quickTo(light, "x", { duration: 1.6, ease: "power3.out" });
-        const lightY = gsap.quickTo(light, "y", { duration: 1.6, ease: "power3.out" });
 
         const move = (event: PointerEvent) => {
           if (event.pointerType !== "mouse") return;
@@ -102,16 +150,12 @@ const Hero = () => {
           figureX((0.5 - px) * 46);
           figureY((0.5 - py) * 26);
           figureRotate((0.5 - px) * 1);
-          lightX(event.clientX);
-          lightY(event.clientY);
         };
 
         const leave = () => {
           figureX(0);
           figureY(0);
           figureRotate(0);
-          lightX(restX());
-          lightY(restY());
         };
 
         hero.addEventListener("pointermove", move);
@@ -120,9 +164,6 @@ const Hero = () => {
           hero.removeEventListener("pointermove", move);
           hero.removeEventListener("pointerleave", leave);
         };
-      });
-      mm.add("(hover: none), (pointer: coarse)", () => {
-        gsap.set(light, { xPercent: -50, yPercent: -50, x: window.innerWidth * 0.7, y: window.innerHeight * 0.3 });
       });
 
       return () => mm.revert();
@@ -150,16 +191,18 @@ const Hero = () => {
         aria-hidden
         className="mpx-hero-bg absolute inset-x-0 top-0 -z-10 h-[120vh] overflow-hidden will-change-transform motion-reduce:h-full"
       >
-        <div className="mpx-hero-gradient absolute inset-0 overflow-hidden">
-          <span className="mpx-hero-blob mpx-hero-blob-glow" />
-          <span className="mpx-hero-blob mpx-hero-blob-amber" />
-          <span className="mpx-hero-blob mpx-hero-blob-fire" />
-          <span className="mpx-hero-blob mpx-hero-blob-shade" />
-        </div>
-        <div
-          ref={lightRef}
-          className="mpx-hero-light pointer-events-none absolute left-0 top-0 size-[70vmax] rounded-full opacity-55 mix-blend-screen will-change-transform"
-        />
+        {/* Same component and texture as the hyperiux-staging footer; kept under the figure */}
+        {/* The staging canvas is fixed at 55vw tall; stretch it to the full hero background instead */}
+        {desktop && (
+          <div className="absolute inset-0 [&>section]:h-full!">
+            <FlowFieldHero texturePath="/assets/textures/orange.png" />
+          </div>
+        )}
+        <picture className="absolute inset-0 lg:hidden">
+          <source media="(max-width: 767px)" srcSet={mobileHeroBg.src} />
+          <source media="(max-width: 1024px)" srcSet={tabletHeroBg.src} />
+          <img src={EMPTY_PIXEL} alt="" fetchPriority="high" className="h-full w-full object-cover" />
+        </picture>
         <div ref={figureRef} className="absolute -inset-[4%] origin-[62%_100%] will-change-transform">
           <div ref={photoRef} className="absolute inset-0 opacity-0">
             <Image
@@ -225,18 +268,19 @@ const Hero = () => {
             big thing work.
           </LineReveal>
           <FadeUp delay={INTRO_DELAY + 0.75} className="flex flex-wrap gap-3 max-lg:grid max-lg:w-fit max-lg:gap-4">
-            <PixelButton label="See the Work" href={ROUTES.work} tone="media" icon />
-            <PixelButton label="Start a Project" href={ROUTES.contact} tone="media" variant="outline" />
+            <PixelButton label="See the work" href={ROUTES.work} tone="media" icon />
+            <PixelButton label="Start a project" href={ROUTES.contact} tone="media" variant="outline" />
           </FadeUp>
         </div>
       </div>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 flex h-screen items-end justify-end px-[5vw] py-[4vh] max-lg:px-[6vw] max-md:px-[7vw] max-md:py-[3vh]">
         <FadeUp delay={INTRO_DELAY + 1.2} className="pointer-events-auto">
-          <a
+          <div ref={cueRef}>
+            <a
             href="#brands"
             onClick={handleScrollCue}
-            className="font-mpx-head flex items-center gap-3 text-14 font-medium uppercase tracking-[0.18em] text-(color:--mpx-white)/60 transition-colors duration-300 hover:text-(color:--mpx-white)"
+            className="font-mpx-head flex items-center gap-3 text-14 font-medium text-(color:--mpx-white)/60 transition-colors duration-300 hover:text-(color:--mpx-white)"
           >
             Scroll to explore
             <svg
@@ -252,7 +296,8 @@ const Hero = () => {
             >
               <path d="M6 1v15M1.5 11.5 6 16l4.5-4.5" />
             </svg>
-          </a>
+            </a>
+          </div>
         </FadeUp>
       </div>
     </section>

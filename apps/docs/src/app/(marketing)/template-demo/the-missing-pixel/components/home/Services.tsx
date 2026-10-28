@@ -241,7 +241,7 @@ const Services = () => {
             arrow
             className="font-mpx-head text-24 font-medium text-mpx-ink "
           >
-            All Services
+            All services
           </UnderlineLink>
         </FadeUp>
       </div>
@@ -307,7 +307,7 @@ const Services = () => {
                   }`}
                 >
                   <span
-                    className={`font-mpx-head col-span-5 max-md:pt-3 text-40 font-medium leading-[1.05] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-7 max-lg:row-start-1 max-lg:translate-x-0 max-md:col-span-12 max-md:row-start-2 ${
+                    className={`font-mpx-head col-span-5 max-md:pt-3 text-40 font-medium leading-[1.2] tracking-tight transition-transform duration-900 ease-[cubic-bezier(0.25,1,0.5,1)] motion-reduce:transition-none max-lg:col-span-7 max-lg:row-start-1 max-lg:translate-x-0 max-md:col-span-12 max-md:row-start-2 ${
                       isActive ? "translate-x-[0.8vw]" : "translate-x-0"
                     }`}
                   >

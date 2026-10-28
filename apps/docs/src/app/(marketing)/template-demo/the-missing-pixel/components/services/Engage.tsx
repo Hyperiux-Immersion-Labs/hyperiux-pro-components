@@ -77,7 +77,7 @@ const Engage = () => (
         arrow
         className="font-mpx-head text-22 font-medium"
       >
-        Start a Project
+        Start a project
       </UnderlineLink>
     </FadeUp>
   </div>

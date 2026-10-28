@@ -270,13 +270,22 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 
 ### Animated FAQ (`animated-faq`, free)
 
+Merged with the former Animated Accordion (`animated-accordion`) on October 28, 2026. No theme props; colours come from `className` and `accentColor`. Each concept has one prop: the fill takes the item's corners from `className` (no `rounded` prop), and an outer border is a `className` too (no `bordered` prop).
+
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `children` | undefined | react-node | compound/slot | Content rendered inside the component. |
-| `allowMultiple` | `false` | boolean | toggle | Toggles allow multiple behavior. |
-| `defaultOpenItems` | `[]` | array | asset-list/json | List data for default open items. |
-| `value` | undefined | unknown | manual review | Value for value. |
-| `onChange` | undefined | function | custom/function | Callback fired for the change event. |
+| `allowMultiple` | `false` | boolean | checkbox | Lets more than one answer stay open at once (`FAQGroup`). |
+| `openOnHover` | `false` | boolean | checkbox | Answers open while a mouse rests on them and close when it leaves (`FAQGroup`). |
+| `fill` | `"none"` | string | select | Background that grows down from the top while open: none, muted, accent (`FAQWrapper`). |
+| `accentColor` | `#ff6b00` | color | color | Colour of the accent fill (`FAQWrapper`). |
+| `duration` | `0.45` | number | range | Open and close duration in seconds (`FAQWrapper`). |
+| `elastic` | `false` | boolean | checkbox | Springs instead of easing (`FAQWrapper`). |
+| `bounce` | `0.3` | number | range | Spring overshoot; needs `elastic` (`FAQWrapper`). |
+| `delay` | `0.1` | number | range | Seconds before the answer starts to appear (`FAQWrapper`). |
+| `stagger` | `0.05` | number | range | Seconds between each part of the answer appearing (`FAQWrapper`). |
+| `showIcon` | `true` | boolean | checkbox | Shows the trigger icon (`FAQTitle`). |
+| `iconPosition` | `"right"` | string | select | Left or right of the title (`FAQTitle`). |
+| `iconMode` | `"rotate"` | string | select | Chevron down (180°), chevron right (90°) or plus to minus (`FAQTitle`). |
 
 ### Animated Form (`animated-form`, pro) - Suggested props
 
@@ -310,13 +319,24 @@ Note: `defaultChecked` was removed - all three toggles always start unchecked.
 
 ### Tabs (`animated-tabs`, pro) - Suggested props
 
+Merged with the former Animated Tabs Bar (`animated-tabs-bar`) on October 28, 2026. No theme props. `animationType` gained `none` (no separate `contentAnimation`), and the fade uses `duration` (no separate `fadeDuration`).
+
 | Prop | Default | Type | Remixer control | Short description |
 |---|---|---|---|---|
-| `defaultActiveIndex` | `0` | number | range/number | Index of the initially active tab. |
-| `animationType` | `"slide"` | string | select | Panel transition style. |
-| `slideDistance` | `40` | number | range/number | Horizontal travel distance for the slide transition in pixels. |
-| `accentColor` | `#ff6b00` | color | color | Color used for the active tab label and indicator. |
-| `duration` | `0.35` | number | range/number | Panel and indicator transition duration. |
+| `defaultActiveIndex` | `0` | number | select | Index of the initially active tab. |
+| `indicator` | `"underline"` | string | select | Slide underline, glide pill or fade underline. |
+| `pillStyle` | `"solid"` | string | select | Solid accent or soft tint; only with the glide pill. |
+| `hoverHighlight` | `false` | boolean | checkbox | Highlight follows the pointer over the tabs. |
+| `divider` | `true` | boolean | checkbox | Line under the row of tabs. |
+| `listBorder` | `false` | boolean | checkbox | Border around the row of tabs. |
+| `rounded` | `"md"` | string | select | Corner radius of the tabs, pill and borders. |
+| `accentColor` | `#ff6b00` | color | color | Active tab, indicator, solid pill and focus ring. |
+| `animationType` | `"slide"` | string | select | Slide (follows direction), fade or none. |
+| `slideDistance` | `40` | number | range | Slide distance in pixels; only with slide. |
+| `smoothHeight` | `true` | boolean | checkbox | Panel animates to each tab's height. |
+| `panelBorder` | `false` | boolean | checkbox | Border around the content. |
+| `duration` | `0.35` | number | range | Indicator and content duration in seconds. |
+| `bounce` | `0.15` | number | range | Springiness of the indicator and slide. |
 
 ### Border Beam (`border-beam`, pro)
 

@@ -16,6 +16,7 @@ type UnderlineLinkProps = {
   /** Arrow after the text (turns on hover) - for standalone link buttons. */
   arrow?: boolean;
   tabIndex?: number;
+  external?: boolean;
 };
 
 const UnderlineLink = ({
@@ -25,6 +26,7 @@ const UnderlineLink = ({
   persistent = false,
   arrow = false,
   tabIndex,
+  external = false,
 }: UnderlineLinkProps) => {
   const lineRef = useRef<HTMLSpanElement | null>(null);
   const timelineRef = useRef<gsap.core.Timeline | null>(null);
@@ -64,6 +66,7 @@ const UnderlineLink = ({
     <Link
       href={href}
       tabIndex={tabIndex}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
       onMouseEnter={enter}
       onMouseLeave={leave}
       onFocus={enter}

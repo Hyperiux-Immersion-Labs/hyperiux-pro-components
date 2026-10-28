@@ -41,6 +41,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuReady, setMenuReady] = useState(false);
   const [instantClose, setInstantClose] = useState(false);
+  // The cross only rotates on a fresh hover, never on the hover that clicked it open
+  const [hoverArmed, setHoverArmed] = useState(false);
   const [prevPathname, setPrevPathname] = useState(pathname);
 
   // Route change: close the menu instantly (state adjusted during render, not in an effect)
@@ -135,7 +137,6 @@ const Header = () => {
       if (!icon || !top || !bottom) return;
 
       const duration = prefersReducedMotion() || instantClose ? 0 : 0.6;
-      gsap.to(icon, { rotate: menuOpen ? 180 : 0, duration, ease: "power3.out" });
       gsap.to(top, { yPercent: menuOpen ? 0 : -200, rotate: menuOpen ? 45 : 0, duration, ease: "power3.out" });
       gsap.to(bottom, { yPercent: menuOpen ? 0 : 200, rotate: menuOpen ? -45 : 0, duration, ease: "power3.out" });
 
@@ -234,7 +235,7 @@ const Header = () => {
             <SoundToggle inverted={light} />
             <div className="max-lg:hidden">
               <PixelButton
-                label="Start a Project"
+                label="Start a project"
                 href={ROUTES.contact}
                 size="sm"
                 tone={ctaDark ? "dark" : onPhoto ? "media" : "light"}
@@ -244,10 +245,14 @@ const Header = () => {
               ref={menuButtonRef}
               type="button"
               data-menu-toggle
-              onClick={toggleMenu}
+              onClick={() => {
+                setHoverArmed(false);
+                toggleMenu();
+              }}
+              onPointerLeave={() => setHoverArmed(true)}
               aria-expanded={menuOpen}
               aria-controls="mpx-menu"
-              className={`font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] ${sync} motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
+              className={`group font-mpx-head flex h-[5vh] items-center rounded-full border px-[0.3vw] text-22 transition-[border-color] ${sync} motion-reduce:transition-none font-medium max-lg:h-[5.2vh] max-lg:px-[0.8vw] max-md:aspect-square max-md:h-[5.8vh] max-md:justify-center max-md:border-transparent max-md:px-0 ${
                 menuOpen ? "border-(--mpx-accent)/60" : onPhoto ? "border-(--mpx-white)/35" : "border-(--mpx-ink)/30"
               }`}
             >
@@ -276,8 +281,14 @@ const Header = () => {
                   menuOpen ? "bg-(--mpx-accent) text-(color:--mpx-ink)" : onPhoto ? "bg-(--mpx-white) text-(color:--mpx-ink)" : "bg-(--mpx-ink) text-(color:--mpx-paper)"
                 }`}
               >
-                <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
-                <span ref={barBottomRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
+                <span
+                  className={`relative flex size-full items-center justify-center transition-transform duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] motion-reduce:transition-none ${
+                    menuOpen && hoverArmed ? "group-hover:rotate-90" : ""
+                  }`}
+                >
+                  <span ref={barTopRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
+                  <span ref={barBottomRef} className="absolute h-px w-[0.6vw] bg-current max-lg:w-[1.8vw] max-md:h-0.5 max-md:w-[3vw]" />
+                </span>
               </span>
             </button>
           </div>

@@ -2,17 +2,23 @@
   "name": "animated-tabs",
   "type": "registry:component",
   "title": "Tabs",
-  "description": "Animated tabs with a moving active indicator and panel transitions",
+  "description": "Animated tabs with a gliding pill or underline, directional content transitions and smooth panel height",
   "dependencies": [
-    "gsap"
+    "@base-ui/react",
+    "motion"
   ],
   "registryDependencies": [],
   "exportName": "AnimatedTabs",
   "exportKind": "default",
-  "importPath": "@/components/effects/animated-tabs",
   "tier": "pro",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "changelog": [
+    {
+      "version": "2.0.0",
+      "date": "2026-10-28",
+      "breaking": true,
+      "summary": "Rebuilt on Motion and Base UI with the Animated Tabs Bar features: glide pill, slide or fade underline, hover highlight, smooth panel height, spring bounce, borders and roundness, and a None content animation. Replaces gsap with motion and @base-ui/react."
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-31",
@@ -34,8 +40,8 @@
       "description": "Index of the initially active tab.",
       "remixer": {
         "control": "select",
-        "group": "behavior",
-        "groupTitle": "Behavior",
+        "group": "tabs",
+        "groupTitle": "Tabs",
         "options": [
           {
             "label": "Overview",
@@ -53,14 +59,145 @@
       }
     },
     {
+      "name": "indicator",
+      "type": "string",
+      "default": "underline",
+      "description": "How the active tab is marked: an underline or pill that glides to it, or an underline that fades in.",
+      "remixer": {
+        "control": "select",
+        "group": "tabs",
+        "groupTitle": "Tabs",
+        "options": [
+          {
+            "label": "Slide underline",
+            "value": "underline"
+          },
+          {
+            "label": "Glide pill",
+            "value": "glide"
+          },
+          {
+            "label": "Fade underline",
+            "value": "fade"
+          }
+        ]
+      }
+    },
+    {
+      "name": "pillStyle",
+      "type": "string",
+      "default": "solid",
+      "description": "Solid fills the pill with the accent colour; Soft uses a light tint of the text colour. Only used by Glide pill.",
+      "remixer": {
+        "control": "select",
+        "group": "tabs",
+        "groupTitle": "Tabs",
+        "options": [
+          {
+            "label": "Solid",
+            "value": "solid"
+          },
+          {
+            "label": "Soft",
+            "value": "soft"
+          }
+        ],
+        "disabledWhen": {
+          "prop": "indicator",
+          "notEquals": "glide"
+        }
+      }
+    },
+    {
+      "name": "hoverHighlight",
+      "type": "boolean",
+      "default": false,
+      "description": "Highlights the tab under the pointer.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "tabs",
+        "groupTitle": "Tabs"
+      }
+    },
+    {
+      "name": "divider",
+      "type": "boolean",
+      "default": true,
+      "description": "Draws a line under the row of tabs.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "tabs",
+        "groupTitle": "Tabs"
+      }
+    },
+    {
+      "name": "listBorder",
+      "type": "boolean",
+      "default": false,
+      "description": "Draws a border around the row of tabs.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "tabs",
+        "groupTitle": "Tabs"
+      }
+    },
+    {
+      "name": "rounded",
+      "type": "string",
+      "default": "md",
+      "description": "Corner radius of the tabs, the pill and the borders.",
+      "remixer": {
+        "control": "select",
+        "group": "tabs",
+        "groupTitle": "Tabs",
+        "options": [
+          {
+            "label": "None",
+            "value": "none"
+          },
+          {
+            "label": "sm",
+            "value": "sm"
+          },
+          {
+            "label": "md",
+            "value": "md"
+          },
+          {
+            "label": "lg",
+            "value": "lg"
+          },
+          {
+            "label": "xl",
+            "value": "xl"
+          },
+          {
+            "label": "Full",
+            "value": "full"
+          }
+        ]
+      }
+    },
+    {
+      "name": "accentColor",
+      "type": "color",
+      "default": "#ff6b00",
+      "description": "Colour of the active tab, the indicator, the solid pill and the focus ring.",
+      "remixer": {
+        "control": "color",
+        "group": "tabs",
+        "groupTitle": "Tabs"
+      }
+    },
+    {
       "name": "animationType",
       "type": "string",
       "default": "slide",
-      "description": "Panel transition style.",
+      "description": "How content changes when you switch tabs. Slide follows the direction you moved.",
       "remixer": {
         "control": "select",
-        "group": "motion",
-        "groupTitle": "Motion",
+        "group": "content",
+        "groupTitle": "Content",
         "options": [
           {
             "label": "Slide",
@@ -69,53 +206,91 @@
           {
             "label": "Fade",
             "value": "fade"
+          },
+          {
+            "label": "None",
+            "value": "none"
           }
-        ]
+        ],
+        "hideWhenReducedMotion": true
       }
     },
     {
       "name": "slideDistance",
       "type": "number",
       "default": 40,
-      "description": "Horizontal travel distance for the slide transition, in pixels.",
+      "description": "How far content slides when switching tabs, in pixels. Needs Content animation set to Slide.",
       "remixer": {
         "control": "range",
-        "group": "motion",
-        "groupTitle": "Motion",
+        "group": "content",
+        "groupTitle": "Content",
         "min": 0,
         "max": 160,
-        "step": 5
+        "step": 5,
+        "disabledWhen": {
+          "prop": "animationType",
+          "notEquals": "slide"
+        },
+        "hideWhenReducedMotion": true
       }
     },
     {
-      "name": "accentColor",
-      "type": "color",
-      "default": "#ff6b00",
-      "description": "Color used for the active tab label and indicator.",
+      "name": "smoothHeight",
+      "type": "boolean",
+      "default": true,
+      "description": "The content area animates to each tab's height instead of jumping.",
       "remixer": {
-        "control": "color",
-        "group": "style",
-        "groupTitle": "Style"
+        "control": "checkbox",
+        "group": "content",
+        "groupTitle": "Content",
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "panelBorder",
+      "type": "boolean",
+      "default": false,
+      "description": "Draws a border around the tab content.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "content",
+        "groupTitle": "Content"
       }
     },
     {
       "name": "duration",
       "type": "number",
       "default": 0.35,
-      "description": "Panel and indicator transition duration in seconds.",
+      "description": "How long the indicator and the content take, in seconds.",
       "remixer": {
         "control": "range",
         "group": "motion",
         "groupTitle": "Motion",
         "min": 0.05,
-        "max": 2,
-        "step": 0.05
+        "max": 1.5,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
+      }
+    },
+    {
+      "name": "bounce",
+      "type": "number",
+      "default": 0.15,
+      "description": "Springiness of the indicator and the slide.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 0.6,
+        "step": 0.05,
+        "hideWhenReducedMotion": true
       }
     }
   ],
   "remixer": {
     "enabled": true,
-    "defaultOpenGroupId": "behavior",
+    "defaultOpenGroupId": "tabs",
     "layout": {
       "buttonClassName": "right-4! top-25!",
       "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"

@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/animated-faq",
-  "version": "1.0.1",
-  "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
+  "version": "2.0.0",
+  "description": "Accessible FAQ accordion with smooth or elastic Motion animations, staggered answers and fills",
   "main": "index.tsx",
   "files": [
     "index.tsx",
@@ -12,7 +12,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*",
-    "lucide-react": "*"
+    "lucide-react": "*",
+    "motion": "*"
   }
 }

@@ -283,7 +283,7 @@
 
 - [ ] summary has leading/trailing spaces or a stray \n
 
-### [Liquid Shatter](https://vault.hyperiux.com/effects/components/liquid-shatter)
+### [Liquid Shatter](https://vault.hyperiux.com/effects/webgl-effects/liquid-shatter)
 
 - [ ] usage imports from "@/components/effects/LiquidShatter" but the CLI installs it at @/components/effects/liquid-shatter
 

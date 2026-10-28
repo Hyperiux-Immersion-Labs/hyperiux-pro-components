@@ -27,9 +27,9 @@ Phase 2  Codegen                  for ONE named effect only, in one step since b
    |                              finalized props/values; (b) re-syncs the registry-side files
    |                              (index.tsx, registry.json, package.json, and every other
    |                              distributable file) in registry/effects/{category}/{slug}/ so
-   |                              they reflect the just-rewired demo/component. (The old step (c),
-   |                              a JSX copy in a local codegen/ folder for Sanity, was removed on
-   |                              2026-10-26 - nothing is written outside the registry any more.)
+   |                              they reflect the just-rewired demo/component; (c) writes a JSX
+   |                              copy into a local codegen/{slug}/ folder for Sanity - only when
+   |                              the `codegen` command itself is run, never from update/ship.
 Phase 3  Rollback-on-failure      auto-revert if a later phase fails after Phase 1 already wrote
 ```
 
@@ -135,10 +135,13 @@ that would each re-sync the same files:
    changes something that affects them (e.g. a new/changed prop, a new
    dependency, a different export) - not unconditionally regenerated every
    `codegen` run.
-3. **No codegen/ folder (removed 2026-10-26).** This step used to write a
-   type-stripped JSX copy of each registry file into `codegen/{slug}/` for
-   pasting into Sanity. It was taken out of `component-ship.mjs`; nothing is
-   written there any more, and `codegen/` is in `.gitignore`.
+3. **Local JSX handoff - explicit `codegen` runs only.** Writes each registry
+   code file into `codegen/{slug}/`: the type-stripped `.jsx`/`.js` copy for
+   pasting into Sanity, plus the original `.tsx`/`.ts` alongside it. Only files
+   that changed are rewritten. This happens only when you run the `codegen`
+   command itself - `update` and `ship` reuse the codegen step but never write
+   this folder. `codegen/` is in `.gitignore`; delete `codegen/{slug}/` once
+   Sanity is updated. (Removed on 2026-10-26, restored as opt-in on 2026-10-28.)
 
 ---
 
@@ -187,7 +190,7 @@ All commands are `node scripts/component-ship.mjs <command> --slug {slug} [flags
 | Command | What it does |
 |---|---|
 | `registry` | Phase 1: create (`new`) or update (`sync`) the registry entry - props table, remixer sub-blocks, changelog; rebuilds only this effect's `public/r/{slug}.json` and this effect's entry in `public/r/index.json`. |
-| `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise). Writes no `codegen/` folder. Never touches any other slug. |
+| `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise). Writes the `codegen/{slug}/` JSX handoff folder - the only command that does. Never touches any other slug. |
 | `update` | Re-runs `registry` + `codegen` together for one already-shipped `--slug` whose demo/component changed again. Diff-scoped like `codegen`. |
 | `revert` | Standalone Phase 3: `git restore` the tracked distribution paths for a slug. |
 | `ship` | Runs Phase 1 (`registry`) then Phase 2 (`codegen`) for a slug end to end, stopping on failure, offering `revert` on failure. |

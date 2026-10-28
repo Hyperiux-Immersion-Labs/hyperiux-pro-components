@@ -16,7 +16,7 @@ const NineBlock = () => (
         Tell us what you’re making. A partner replies within two working days.
       </p>
       <div className="flex flex-wrap items-center gap-x-7 gap-y-4 py-3">
-        <PixelButton label="Start a Project" href={ROUTES.contact} icon />
+        <PixelButton label="Start a project" href={ROUTES.contact} icon />
         <UnderlineLink href="mailto:hello@themissingpixel.studio" className="text-22">
           hello@themissingpixel.studio
         </UnderlineLink>

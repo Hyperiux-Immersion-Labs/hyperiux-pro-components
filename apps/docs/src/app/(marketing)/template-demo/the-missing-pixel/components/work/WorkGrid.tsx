@@ -51,14 +51,16 @@ export const WorkListCard = ({ project, offset }: { project: Project; offset: bo
             image={project.image}
             alt={project.alt}
             sizes="(max-width: 768px) 90vw, 45vw"
-            className="aspect-[4/3]"
-          />
+            className="aspect-4/3"
+          >
+            {/* Inside the image so the tint only covers pixels already revealed */}
+            <div
+              ref={tintRef}
+              aria-hidden
+              className="pointer-events-none absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
+            />
+          </ParallaxImage>
         </div>
-        <div
-          ref={tintRef}
-          aria-hidden
-          className="pointer-events-none  absolute inset-0 bg-(--mpx-accent) opacity-0 mix-blend-multiply"
-        />
       </FadeUp>
       <FadeUp className="flex justify-between gap-4 max-md:px-2">
         <div className="flex flex-col gap-1">

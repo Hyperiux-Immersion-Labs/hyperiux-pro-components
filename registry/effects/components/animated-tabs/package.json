@@ -1,7 +1,7 @@
 {
   "name": "@hyperiux/animated-tabs",
-  "version": "1.0.1",
-  "description": "Animated tabs with a moving active indicator and panel transitions",
+  "version": "2.0.0",
+  "description": "Animated tabs with a gliding pill or underline, directional content transitions and smooth panel height",
   "main": "index.tsx",
   "files": [
     "index.tsx",
@@ -12,6 +12,7 @@
     "hyperiux"
   ],
   "dependencies": {
-    "gsap": "*"
+    "@base-ui/react": "*",
+    "motion": "*"
   }
 }

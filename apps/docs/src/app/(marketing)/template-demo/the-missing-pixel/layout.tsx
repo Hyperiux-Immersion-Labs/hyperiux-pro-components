@@ -35,9 +35,14 @@ const layout = ({ children }: { children: ReactNode }) => {
       <Header />
       <main data-mpx-inert className="relative z-2 rounded-b-3xl bg-(--mpx-paper)">
         {children}
-        <FooterCta />
+        {/* data-mpx-chrome: hidden on the 404 (see .mpx-page:has([data-mpx-404]) in the styles) */}
+        <div data-mpx-chrome className="contents">
+          <FooterCta />
+        </div>
       </main>
-      <Footer />
+      <div data-mpx-chrome className="contents">
+        <Footer />
+      </div>
     </div>
   );
 };

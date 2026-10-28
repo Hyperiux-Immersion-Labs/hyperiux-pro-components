@@ -46,8 +46,8 @@ const ServiceDetail = ({ service }: { service: Service }) => (
       text={service.description}
     >
       <div className="flex flex-wrap gap-3">
-        <PixelButton label="Book an Intro Call" href={ROUTES.contact} icon />
-        <PixelButton label="See Pricing" href="#pricing" variant="outline" />
+        <PixelButton label="Book an intro call" href={ROUTES.contact} icon />
+        <PixelButton label="See pricing" href="#pricing" variant="outline" />
       </div>
     </PageHero>
 
@@ -220,7 +220,7 @@ const ServiceDetail = ({ service }: { service: Service }) => (
           arrow
           className="font-mpx-head text-22 font-medium"
         >
-          All Projects
+          All projects
         </UnderlineLink>
       </SectionHead>
       <ul className="grid grid-cols-2 gap-9 max-lg:gap-6 max-md:grid-cols-1 max-md:gap-12">
@@ -299,7 +299,7 @@ const CheckList = ({
         )}
         <FadeUp
           delay={index * 0.08}
-          className={`flex items-start gap-3 text-24 ${ruled ? "py-4" : ""}`}
+          className={`flex items-center gap-3 text-24 ${ruled ? "py-4" : ""}`}
         >
           <Check className="size-[1.2vw] shrink-0 text-mpx-accent max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
           {item}

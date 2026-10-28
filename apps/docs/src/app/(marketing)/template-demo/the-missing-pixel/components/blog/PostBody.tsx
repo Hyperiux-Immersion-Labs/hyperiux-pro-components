@@ -122,7 +122,7 @@ const PostBody = ({ post }: PostBodyProps) => {
         <MaskReveal as="h2">Keep reading</MaskReveal>
         <FadeUp>
           <UnderlineLink href={ROUTES.blog} persistent arrow className="font-mpx-head text-24 font-medium text-mpx-ink">
-            All Essays
+            All essays
           </UnderlineLink>
         </FadeUp>
       </div>

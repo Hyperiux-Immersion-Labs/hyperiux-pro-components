@@ -130,19 +130,9 @@
     "tarball": "registry/dist/hyperiux-zoom-slider-1.0.1.tgz"
   },
   {
-    "name": "@hyperiux/animated-faq",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-animated-faq-1.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/animated-modal",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-animated-modal-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/animated-tabs",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-animated-tabs-1.0.1.tgz"
   },
   {
     "name": "@hyperiux/border-beam",
@@ -198,11 +188,6 @@
     "name": "@hyperiux/interactive-list-preview",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-interactive-list-preview-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/liquid-shatter",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-liquid-shatter-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/shear-wipe",
@@ -883,5 +868,20 @@
     "name": "@hyperiux/animated-tabs-bar",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-animated-tabs-bar-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/liquid-shatter",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-liquid-shatter-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-tabs",
+    "version": "2.0.0",
+    "tarball": "registry/dist/hyperiux-animated-tabs-2.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/animated-faq",
+    "version": "2.0.0",
+    "tarball": "registry/dist/hyperiux-animated-faq-2.0.0.tgz"
   }
 ]

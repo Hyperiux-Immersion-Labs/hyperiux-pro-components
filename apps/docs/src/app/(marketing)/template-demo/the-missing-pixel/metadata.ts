@@ -1,7 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
 import type { Metadata } from "next";
-import ogImage from "./assets/pictures/missing-pixel-og.jpg";
+import ogImage from "./assets/pictures/missing-pixel-og.png";
 
 export const pageMetadata = (
   title: string,

@@ -103,7 +103,7 @@ const Journal = () => (
           arrow
           className="font-mpx-head text-24 font-medium text-mpx-ink"
         >
-          Read the Journal
+          Read the journal
         </UnderlineLink>
       </FadeUp>
     </div>
