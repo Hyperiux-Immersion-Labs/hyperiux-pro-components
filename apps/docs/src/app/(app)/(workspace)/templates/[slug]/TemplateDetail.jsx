@@ -288,7 +288,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
       {/* ---------- hero ---------- */}
       <section id="template-hero" className={`${GUTTER} flex flex-col gap-10 pt-32 pb-16 max-lg:pt-32 max-md:pt-28`}>
         <motion.div {...HERO_FADE}>
-          <Breadcrumb />
+          <Breadcrumb hideHome />
         </motion.div>
 
         <div className="flex items-start justify-between gap-12 max-lg:flex-col max-lg:gap-10">

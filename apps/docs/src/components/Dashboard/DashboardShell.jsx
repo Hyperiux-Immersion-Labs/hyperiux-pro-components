@@ -170,7 +170,6 @@ export function DashboardShell({ username, catalog = [], children }) {
 
   const personSlug = adminView && pathname.startsWith(`${dashboardPath(username, "admin/activity")}/`) ? decodeURIComponent(pathname.split("/").pop()) : null;
   const crumbs = [
-    { label: "Home", href: "/" },
     { label: "Dashboard", href: dashboardPath(username) },
     ...(adminView ? [{ label: "Admin", href: dashboardPath(username, "admin") }] : []),
     ...(current && current.key !== "overview" ? [{ label: current.label, href: dashboardPath(username, current.sub) }] : []),
@@ -194,7 +193,7 @@ export function DashboardShell({ username, catalog = [], children }) {
                 type="button"
                 onClick={() => router.back()}
                 aria-label="Go back"
-                className="grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+                className="hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
               >
                 <ArrowLeft className="size-4" aria-hidden="true" />
               </button>

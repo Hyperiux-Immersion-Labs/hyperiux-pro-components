@@ -35,7 +35,7 @@ export default function LegalBody({ children }) {
   return (
     <main ref={rootRef} className="relative flex w-full flex-col gap-[calc(var(--cvw)*10)] pt-25 max-md:gap-[20vw] max-md:pt-36">
       <section id="legal-hero" className={`${WRAP} flex flex-col gap-[calc(var(--cvw)*1.4)] max-md:gap-[5vw]`}>
-        <Breadcrumb />
+        <Breadcrumb hideHome />
         <LineReveal key={pathname} as="h1" className="type-h1 w-[70%] text-foreground max-lg:w-full">
           {title}
         </LineReveal>

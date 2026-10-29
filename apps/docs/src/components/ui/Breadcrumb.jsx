@@ -10,11 +10,11 @@ function formatSegmentLabel(segment) {
   return SEGMENT_LABELS[segment] ?? segment.replace(/-/g, " ");
 }
 
-function itemsFromPathname(pathname) {
+function itemsFromPathname(pathname, hideHome) {
   const segments = (pathname || "/").split("/").filter(Boolean);
 
   return [
-    { label: "Home", href: "/" },
+    ...(hideHome ? [] : [{ label: "Home", href: "/" }]),
     ...segments.map((segment, index) => {
       const href = "/" + segments.slice(0, index + 1).join("/");
 
@@ -43,12 +43,13 @@ function trimToWords(label, maxWords) {
  * URL-driven breadcrumb. `/` is Home; each path segment is a crumb.
  *
  * @param {number} [maxWords] - clip the final crumb to this many words.
+ * @param {boolean} [hideHome] - drop the leading Home crumb from the URL-driven list.
  * @param {{label: string, href: string}[]} [items] - crumbs to show instead of the URL's
  *   (e.g. the dashboard, whose URL carries a user ID).
  */
-export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, items: givenItems }) {
+export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, hideHome = false, items: givenItems }) {
   const pathname = usePathname();
-  const items = givenItems || itemsFromPathname(pathname);
+  const items = givenItems || itemsFromPathname(pathname, hideHome);
 
   return (
     <nav
