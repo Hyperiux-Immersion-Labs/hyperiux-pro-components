@@ -52,6 +52,13 @@ const CATEGORY_ICON_BY_SLUG = Object.fromEntries(
   })
 );
 
+const CATEGORY_LABEL_BY_SLUG = Object.fromEntries(
+  FLAT_CATEGORY_ITEMS.map((item) => {
+    const slug = item.href.split("/").filter(Boolean).at(-1);
+    return [normalizeIconKey(slug), item.label];
+  })
+);
+
 const CATEGORY_ICON_ALIASES = {
   featured: "/svgs/menu/Featured.svg",
 
@@ -188,7 +195,10 @@ function getEffectCategoryLabel(effect) {
     ? effect.categories
     : [effect.category];
 
-  return categories.filter(Boolean).join(", ");
+  return categories
+    .filter(Boolean)
+    .map((category) => CATEGORY_LABEL_BY_SLUG[normalizeIconKey(category)] || category)
+    .join(", ");
 }
 
 function getSafeEffectHref(effect) {
@@ -682,8 +692,8 @@ export function GlobalSearch({ effects = [], externalOpen = 0, openOnMount = fal
                           {effect.title}
                         </div>
 
-                        <div className="mt-0.5 text-xs capitalize text-neutral-500 transition-colors group-hover:text-neutral-400">
-                          {categoryLabel}
+                        <div className="mt-0.5 text-xs text-neutral-400 transition-colors group-hover:text-neutral-200">
+                          {[categoryLabel, effect.description].filter(Boolean).join(" · ")}
                         </div>
                       </div>
 

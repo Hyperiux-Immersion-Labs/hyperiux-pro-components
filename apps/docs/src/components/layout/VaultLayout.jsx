@@ -578,9 +578,11 @@ export function VaultLayout({
 
             <main className="relative min-w-0 flex-1">
               {/* One header for every workspace page, outside the swap below: rendered by
-                  each page it unmounted under the loader and came back on every route change */}
+                  each page it unmounted under the loader and came back on every route change.
+                  No `effects` here: those are the registry skeleton (no title or description),
+                  so the search loads its Sanity-backed index itself */}
               <Suspense fallback={null}>
-                <AppVaultHeader showSearch effects={effects} />
+                <AppVaultHeader showSearch />
               </Suspense>
               {isNavigating ? (
                 // Same loader as loading.js: locks scrolling and stops Lenis while it shows
