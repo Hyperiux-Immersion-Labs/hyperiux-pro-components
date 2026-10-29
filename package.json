@@ -41,5 +41,10 @@
     "recharts": "^3.10.1",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.2.2"
+  },
+  "overrides": {
+    "@vercel/cli-config": {
+      "zod": "4.6.7"
+    }
   }
 }

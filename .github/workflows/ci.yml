@@ -81,3 +81,7 @@ jobs:
         working-directory: hyperiux-vault
       - run: npm run build
         working-directory: hyperiux-vault
+        env:
+          # Build against the locked sanity version instead of resolving the
+          # auto-update version from sanity-cdn.com, which timed out once.
+          SANITY_AUTO_UPDATES: "false"

@@ -1,3 +1,4 @@
+import process from 'node:process'
 import {defineCliConfig} from 'sanity/cli'
 
 export default defineCliConfig({
@@ -10,8 +11,11 @@ export default defineCliConfig({
     /**
      * Enable auto-updates for studios.
      * Learn more at https://www.sanity.io/docs/studio/latest-version-of-sanity#k47faf43faf56
+     *
+     * CI sets SANITY_AUTO_UPDATES=false so its build check doesn't depend on
+     * sanity-cdn.com answering in time (a timeout there failed the job once).
      */
-    autoUpdates: true,
+    autoUpdates: process.env.SANITY_AUTO_UPDATES !== 'false',
   },
   /**
    * The schema worker bundles with `ssr.noExternal: true`, which inlines every
