@@ -37,10 +37,12 @@ function usePrefersReducedMotion() {
 // A low, grazing camera over the hills, like the reference: the ground fills the lower half
 const CAMERA_POSITION = new THREE.Vector3(0, 1.0, 6.4);
 const CAMERA_TARGET = new THREE.Vector3(0, 0.62, 0);
-// Ground extent, in world units; it runs well past the edges and into the dark behind
+// Ground extent, in world units; it runs well past the edges and into the dark behind, and its
+// near edge sits behind the camera, so a hill or the pointer's swell rising in the foreground
+// never lifts the bottom of the view clear of the ground
 const GROUND_WIDTH = 22;
-const GROUND_DEPTH = 16;
-const GROUND_Z = -3.5;
+const GROUND_DEPTH = 19.5;
+const GROUND_Z = -2;
 // Moss: stacked shells above the ground, each a little higher and sparser, give it real depth
 const SHELLS = 18;
 const MOSS_DEPTH = 0.09;
@@ -318,7 +320,7 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
   );
 
   const ground = useMemo(() => {
-    const g = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_DEPTH, 260, 200);
+    const g = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_DEPTH, 260, 244);
     g.rotateX(-Math.PI / 2);
     g.translate(0, 0, GROUND_Z);
     const layers = new Float32Array(SHELLS);
