@@ -1,10 +1,26 @@
 # Dashboard analytics - what exists, what to build next
 
-*Planning memo - hyperiux-pro-components / apps/docs - draft, not yet started*
+*Planning memo - hyperiux-pro-components / apps/docs - largely built since (status re-checked 2026-11-02)*
 
-A working plan for adding activity graphs and charts to the admin and user dashboards, grounded in the tables and rows that actually exist in Supabase today. Nothing here is built yet - this is the proposal to react to before anything gets scoped.
+A working plan for adding activity graphs and charts to the admin and user dashboards, grounded in the tables and rows that existed in Supabase when it was written. Sections 1-4 describe that starting point; the status table below says what has been built since.
 
-**At a glance:** 33 users on file · 4 tables in production · no charts anywhere yet
+**At a glance (when written):** 33 users on file · 4 tables in production · no charts anywhere yet
+
+## Status (2026-11-02)
+
+The dashboards now live under `/dashboard/[username]/...`; the daily limit is the shared install limit (`install_unlocks` / `install_events`, see `Installation-SyncUp.md`), not `copy_usage`. Charts are hand-rolled components (`components/Dashboard/UsageBars.jsx`, `TrendStat.jsx`, `RingMeter.jsx`); `recharts` is in `apps/docs/package.json` but nothing in `src` imports it.
+
+| Proposal | State |
+|---|---|
+| Admin overview with plan split, signups trend, top saved effects | **Built** - Admin → Activity (`api/admin/activity/overview`: signups, installs by source, saves, template views, `planDistribution` Free/Pro/Pro+, top installed/saved effects) |
+| Copy-limit pressure | **Built** as install-limit analysis (`api/admin/installs?limits=1`, would-have-denied rate) |
+| Revenue / MRR | **Built** on an `invoices` table (not the proposed `payments`): Revenue card on Activity, Admin → Invoicing, `api/admin/invoices/stats` |
+| Admin activity log | **Built** as `admin_audit_log` (`lib/admin-audit.js`, Admin → Log), not `admin_activity_log` |
+| User: today's usage ring | **Built** - `RingMeter` on `/dashboard/[username]/usage` |
+| User: billing history | **Built** - `/dashboard/[username]/invoicing` (`api/dashboard/invoices`) |
+| Email deliverability chart, invitation funnel, CLI adoption | Not built (Email Log has filters and recipient search, no chart) |
+| Saved effects by category donut | Not built (Saved has filters and a date range, no chart) |
+| Effect engagement / `effect_events`, personal activity trend | Not built (only templates have view tracking, `template_views`) |
 
 ---
 

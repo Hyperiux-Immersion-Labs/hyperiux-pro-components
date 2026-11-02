@@ -60,9 +60,7 @@ THREE.BufferGeometry.prototype.computeBoundsTree = computeBoundsTree;
 THREE.BufferGeometry.prototype.disposeBoundsTree = disposeBoundsTree;
 THREE.Mesh.prototype.raycast = acceleratedRaycast;
 
-// ---------------------------------------------------------------------------
 // Shared helpers
-// ---------------------------------------------------------------------------
 
 function snapToGrid(v: THREE.Vector3, grid: number) {
   return new THREE.Vector3(
@@ -133,10 +131,8 @@ type ParticleDatum = {
 
 type ActionPhase = "idle" | "holding" | "exploding" | "reforming";
 
-// ---------------------------------------------------------------------------
 // CubeVisual - the actual cube mesh (face + textured overlay + outline)
 // shared by both the floating background cubes and the interactive particles
-// ---------------------------------------------------------------------------
 
 type CubeVisualProps = {
   texture: THREE.Texture;
@@ -218,10 +214,8 @@ const CubeVisual = memo(function CubeVisual({
   );
 });
 
-// ---------------------------------------------------------------------------
 // CameraShakeOnHold - nudges the R3F camera around its own base pose while
 // the user is holding the logo down, easing back to rest otherwise
-// ---------------------------------------------------------------------------
 
 type CameraShakeOnHoldProps = {
   actionPhase?: ActionPhase;
@@ -317,10 +311,8 @@ function CameraShakeOnHold({
   return null;
 }
 
-// ---------------------------------------------------------------------------
 // HoldCursorIndicator - the ring that fills in around the cursor while
 // holding, counting down to the auto-explosion trigger
-// ---------------------------------------------------------------------------
 
 const HOLD_TRIGGER_DURATION_MS = 3000;
 
@@ -466,9 +458,7 @@ function HoldCursorIndicator({
   );
 }
 
-// ---------------------------------------------------------------------------
 // FloatingCubes - the ambient background field of drifting cubes
-// ---------------------------------------------------------------------------
 
 type FloatingCubeDatum = {
   progress: number;
@@ -710,10 +700,8 @@ function FloatingCubes({
   );
 }
 
-// ---------------------------------------------------------------------------
 // InteractiveParticles - the cube swarm that traces the logo's silhouette:
 // idle/hold cursor-repel, explode-on-release, reform back into shape
-// ---------------------------------------------------------------------------
 
 type BurstTrack = {
   seed: number;
@@ -1099,10 +1087,8 @@ function InteractiveParticles({
   );
 }
 
-// ---------------------------------------------------------------------------
 // CubeParticlesModel - loads the GLB, samples its front-facing silhouette
 // into a cube grid, and renders the floating background + interactive swarm
-// ---------------------------------------------------------------------------
 
 type PreparedModel = {
   sceneClone: THREE.Group;
@@ -1687,10 +1673,8 @@ function CubeParticlesModelTorus(props: CubeParticlesModelProps) {
   return <CubeParticlesModelBody prepared={prepared} {...props} />;
 }
 
-// ---------------------------------------------------------------------------
 // HyperiuxLogo - the page-level component: owns the hold/explode/reform
 // state machine, the light/dark toggle, and the R3F canvas
-// ---------------------------------------------------------------------------
 
 const PHASE_IDLE: ActionPhase = "idle";
 const PHASE_HOLDING: ActionPhase = "holding";

@@ -6,7 +6,6 @@ import { Bloom, DepthOfField, EffectComposer, Noise, Vignette } from "@react-thr
 import { BlendFunction } from "postprocessing";
 import * as THREE from "three";
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -31,7 +30,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Scene layout
 
 // A low, grazing camera over the hills, like the reference: the ground fills the lower half
@@ -52,7 +50,6 @@ const BACKGROUND = "#0d0d0d";
 // The lights show only around the pointer, and along a short trail behind it that fades out
 const TRAIL = 24;
 
-// ---------------------------------------------------------------------------
 // Shared GLSL
 
 // 2D simplex noise (Ashima Arts / Stefan Gustavson, MIT) and the height of the mossy hills, which both
@@ -275,7 +272,6 @@ void main() {
   gl_FragColor = vec4(col * keep * keep * far, 1.0);
 }`;
 
-// ---------------------------------------------------------------------------
 // Scene
 
 interface Settings {
@@ -331,6 +327,8 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
     }),
     [],
   );
+  // the frame loop writes to the same uniforms object through a ref, which React treats as mutable
+  const uniformsRef = useRef(uniforms);
 
   const mossMaterial = useMemo(() => new THREE.ShaderMaterial({ vertexShader: MOSS_VS, fragmentShader: MOSS_FS, uniforms }), [uniforms]);
   const dotMaterial = useMemo(
@@ -442,7 +440,7 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
   }, [camera, gl, raycaster, plane]);
 
   useFrame((_, delta) => {
-    const u = uniforms;
+    const u = uniformsRef.current;
     const cfg = settingsRef.current;
     const sim = simRef.current;
     const dt = Math.min(delta, 0.1);
@@ -542,7 +540,6 @@ function CameraRig() {
   return null;
 }
 
-// ---------------------------------------------------------------------------
 // Component
 
 export interface MossGridProps {

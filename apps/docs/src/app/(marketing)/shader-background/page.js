@@ -1,21 +1,19 @@
 import Link from "next/link";
 import { createPageMetadata } from "@/lib/seo-metadata";
 
-
 // The new shader backgrounds aren't in the registry yet - this indexes their /demo pages
 const BACKGROUNDS = [
   { slug: "aurora-ribbon", title: "Aurora Ribbon", author: "Hitesh", description: "A drifting ribbon of aurora light with film grain that the pointer stirs." },
-  { slug: "violet-arc", title: "Violet Arc", author: "Hitesh", description: "A soft violet arc of light that the pointer stirs like ink in water." },
+  { slug: "arc-light", title: "Arc Light", author: "Hitesh", description: "A soft arc of light that the pointer stirs like ink in water." },
   { slug: "ascii-band", title: "ASCII Band", author: "Hitesh", description: "A band of light drawn in flickering ASCII characters." },
   { slug: "ascii-dome", title: "ASCII Dome", author: "Hitesh", description: "A red-to-violet dome of light rendered in flickering ASCII characters." },
   { slug: "flower-field", title: "Flower Field", author: "Hitesh", description: "A 3D meadow of wood anemones that bloom and sway under the pointer." },
   { slug: "moss-grid", title: "Moss Grid", author: "Hitesh", description: "Rolling hills of shimmering grid lights revealed around the pointer." },
   { slug: "neon-streak", title: "Neon Streak", author: "Hitesh", description: "The pointer draws twisting pink-violet light streaks over drifting smoke; idle, it draws a neon ring." },
   { slug: "opal-flow", title: "Opal Flow", author: "Hitesh", description: "A periwinkle ground with a pink-to-peach ribbon and cyan wisps that smear under the pointer." },
-  { slug: "creepy-bg", title: "Creepy BG", author: "Ishita", description: "Warped clouds that burn from blue to red, with coloured smoke trailing the cursor." },
-  { slug: "grassy-bg", title: "Grassy BG", author: "Ishita", description: "Wind-blown grass over slowly shifting rolling hills." },
+  { slug: "creepy-background", title: "Creepy Background", author: "Ishita", description: "Warped clouds that burn from blue to red, with coloured smoke trailing the cursor." },
+  { slug: "grassy-background", title: "Grassy Background", author: "Ishita", description: "Wind-blown grass over slowly shifting rolling hills." },
 ];
-
 
 export const metadata = createPageMetadata({
   title: "Shader Backgrounds | Hyperiux Vault",
@@ -24,7 +22,6 @@ export const metadata = createPageMetadata({
   robots: { index: false, follow: false },
 });
 
-
 export default function ShaderBackgroundPage() {
   return (
     <main className="min-h-screen w-full bg-black px-[5vw] py-[8vw] text-white max-md:py-[20vw]">
@@ -32,7 +29,6 @@ export default function ShaderBackgroundPage() {
       <p className="mt-[1vw] text-[1.1vw] text-white/60 max-md:mt-[3vw] max-md:text-[4vw]">
         {BACKGROUNDS.length} new backgrounds by Hitesh and Ishita.
       </p>
-
 
       <ol className="mt-[3vw] grid grid-cols-2 gap-[1.2vw] max-md:mt-[8vw] max-md:grid-cols-1 max-md:gap-[4vw]">
         {BACKGROUNDS.map((bg, i) => (

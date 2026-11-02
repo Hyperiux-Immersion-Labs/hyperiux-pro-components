@@ -15,14 +15,38 @@ Decisions taken (confirmed with the owner):
 
 | Decision | Choice |
 |---|---|
-| Anonymous npm users | Allowed, but a **lower cap (2/day)** keyed on device-ID + IP. Signed-in free = 3/day. |
+| Anonymous npm users | ~~Allowed, but a lower cap (2/day) keyed on device-ID + IP.~~ **Superseded:** every install now needs an account, free effects included (`sign-in-required`, see `apps/docs/NO_ANONYMOUS_INSTALLS.md`). Signed-in free = 3/day. |
 | Quota scope | **One shared quota** across website + CLI + MCP. |
-| Pro subscribers | **Stay capped at 10/day** (unchanged from today). |
+| Pro subscribers | ~~Stay capped at 10/day.~~ Now per tier from `lib/plans.js` `installsPerDay`: **Pro 5/day, Pro+ 10/day**. Admins unmetered. |
 | Rollout | **Log-only (shadow) first**, calibrate against real data, then enforce. |
+
+## Status (2026-11-02)
+
+| Piece | State |
+|---|---|
+| `install_unlocks` + `install_events` tables, `claim_install_slot` RPC | **Built.** Fixture: `apps/docs/test/fixtures/install-limit-schema.sql` |
+| `apps/docs/src/lib/install-limit.js` (`getInstallLimitDecision`, `LIMITS`, `getLimitForTier`, `getUnlockedEffectSlugsToday`, `resolveSignedInIdentity`, per-user `installBonus`) | **Built**, with `install-limit.test.js` + `install-limit.concurrency.test.js` |
+| Enforce switch | **Built.** Admin dashboard Settings tab (`install_limit_enforced`, `lib/app-settings.js` `isInstallLimitEnforced()`), falling back to `INSTALL_LIMIT_ENFORCE` |
+| Web copy (`api/copy-usage`, `api/effects/[slug]/copy`), CLI/MCP delivery (`api/cli/effects/[effectSlug]`, legacy `api/effects/[slug]`) | **Built**, all go through `getInstallLimitDecision`; signed out returns 401, over the limit returns 429 with `Retry-After` |
+| `lib/utc-day.js` (`secondsUntilNextUtcMidnight`, for `Retry-After`) | **Built** |
+| `lib/limitNudge.js` (`getLimitNudge`, the "daily install limit reached" copy per tier) | **Built**, used by effect pages, Get code menu and the listing |
+| `lib/request-ip.js` (`getRequestIp`), salted `hashIp()` | **Built** (IP is now only logged on signed-out denials) |
+| `lib/cli-install-stats.js` (cached per-effect install counts from `cli_effect_installs`) | **Built**, feeds the install counts on effect pages |
+| Telemetry fixes (§7) | **Done** server-side: slug read from `properties.effect`, bearer token resolved to `clerk_user_id`, per-(anonymous_id, effect) `cli_effect_installs` table |
+| Admin installs analytics | **Built:** `api/admin/installs` (+ test), shown on the admin Activity page |
+| CLI 1.2.0 / MCP 0.3.0 (device-ID, version headers, `rateLimited`/sign-in handling, no public-JSON fallback) | **Done in `hyperiux-components`**, not yet published to npm (per `NO_ANONYMOUS_INSTALLS.md`) |
+| Strip source from free `/r/*.json` | **Done:** `scripts/build-registry.js` and the single-effect rebuild in `scripts/component-ship.mjs` both write a one-line sign-in stub for free code files; after the 2026-11-02 rebuild all 75 free files in `public/r` carry the stub and none carry source |
+| Backfill from / drop of `copy_usage_effects` | Not verifiable from the repo; no code reads the old table any more |
 
 ---
 
 ## 1. What already exists (reuse, do not rebuild)
+
+> As of the original plan. Several rows have since moved: paths now sit under
+> `app/(app)/(workspace)/...` (e.g. `effects/[slug]/useCopyLimit.js`,
+> `dashboard/[username]/usage/page.js`), the limits come from `install-limit.js`
+> and `plans.js` rather than `copy-usage/route.js`, and the "Pro-only" CLI token now
+> works for free accounts too.
 
 | Capability | Where | State |
 |---|---|---|
@@ -63,6 +87,11 @@ and return that static payload directly for free effects.
 
 So today a free install **touches no server code at all** - it cannot be counted,
 limited, or attributed. No amount of work elsewhere changes that.
+
+> **Status (2026-11-02): done in code.** Free source now goes through
+> `/api/cli/effects/[effectSlug]` (sign-in required), and `scripts/build-registry.js`
+> replaces free code with a one-line sign-in stub in `public/r`. The free/pro counts
+> above are from the original audit; `public/r` now holds 74 free and 110 pro items.
 
 **Fix:** route free-effect source through `/api/cli/effects/[effectSlug]` too. The route
 already handles free tier correctly (`effect-access.js:110` returns `allowed`), so
@@ -164,6 +193,12 @@ New: **`apps/docs/src/lib/install-limit.js`** - sibling to `effect-access.js`, s
 single-decision-point discipline (this mirrors the F-040 consolidation the existing
 comments describe).
 
+> **Built** as planned, with these differences: `LIMITS = { free: 3, pro: PLANS.pro.installsPerDay (5),
+> pro_plus: PLANS.pro_plus.installsPerDay (10), admin: null }` (no anonymous or IP bucket:
+> signed-out callers get `sign-in-required`), the signature also takes `cliVersion`,
+> `mcpVersion`, `userAgent`, `anonymousProjectId`, `telemetryDisabled`, and the enforce
+> switch is read from the admin Settings tab before `INSTALL_LIMIT_ENFORCE`.
+
 ```js
 export const LIMITS = { anonymous: 2, free: 3, pro: 10, admin: null, ip: 10 };
 export const LIMIT_POLICY_VERSION = "1";
@@ -197,6 +232,8 @@ allowance (see the recursion at `packages/cli/src/commands/add.js:302-317`).
 
 ### Stage 1 - Track everything, enforce nothing
 
+**Status: done** (server and clients; CLI 1.2.0 / MCP 0.3.0 not yet on npm).
+
 Server (`hyperiux-pro-components`):
 - SQL: create both tables + `claim_install_slot` RPC; backfill from `copy_usage_effects`.
 - New `lib/install-limit.js` (shadow mode on).
@@ -219,12 +256,19 @@ Clients (`hyperiux-components`):
 
 ### Stage 2 - Calibrate
 
+**Status: tooling built** (`api/admin/installs`, admin Activity page); calibration itself is an ongoing owner task.
+
 - Admin surface: extend `/dashboard/admin` + new `api/admin/installs` - installs by
   user, effect, source, day; **and how many would have been denied**.
 - Answer before flipping the switch: are 2/3/10 right? What's the shape of real usage?
   Do CI pipelines / monorepos / shared office IPs trip the limits?
 
 ### Stage 3 - Enforce
+
+**Status: in progress.** 429 + `Retry-After` responses, CLI/MCP `rateLimited` handling
+and the Settings-tab enforce switch are built; whether enforcement is on is a runtime
+setting, not visible in the repo. Free `content` stripping is in `build-registry.js`
+but not yet rebuilt for every file in `public/r`.
 
 - Flip `INSTALL_LIMIT_ENFORCE=true`.
 - CLI: new `rateLimited` branch. `createRegistryError` already carries
@@ -241,7 +285,10 @@ Clients (`hyperiux-components`):
 
 ## 7. Live bugs this work must fix
 
-These are pre-existing and currently make CLI install data **completely empty**:
+These were pre-existing and made CLI install data **completely empty**. **Status
+(2026-11-02): all four fixed** - the telemetry route reads `properties.effect` and
+resolves the bearer token, `cli_effect_installs` (keyed on `anonymous_id, effect`)
+replaced `cli_effect_usage`, and quota claims go through the atomic `claim_install_slot` RPC.
 
 1. **Every CLI `add` telemetry POST 400s.** `add.js:340` sends the slug nested as
    `properties.effect`; `api/cli/telemetry/route.js:75-77` reads it top-level. The CLI
@@ -316,14 +363,15 @@ These are pre-existing and currently make CLI install data **completely empty**:
 4. **The website limiter is client-cooperative.** Source is already in the RSC payload
    from Sanity, so a signed-in user can read it without pressing the button. The quota
    records button presses. Closing that is a separate, larger change.
-5. **Pre-existing status inconsistency, out of scope but worth a ticket:**
+5. **Resolved:** all three files now share `ACTIVE_PRO_STATUSES = ["authenticated", "active", "trialing"]`
+   from `lib/subscription.js`. Original finding:
    `PAID_STATUSES = ["authenticated", "active"]` (`lib/pro-access.js:16`) vs
    `ACTIVE_STATUSES = ["active", "trialing"]` (`lib/subscription.js:5`,
    `lib/effect-access.js:13`). A subscriber in `authenticated` state is written as Pro
    but resolves to **free** at access time.
-6. **`docs/effect-access.md` is referenced from 5 files and does not exist.** Worth
+6. **`docs/effect-access.md` is still referenced (from 4 files) and still does not exist.** Worth
    writing alongside this, since it's meant to be the entry-point map.
-7. **Incidental dead code** in the CLI: `src/utils/api.js` (zero importers, duplicate API
+7. **Resolved** (the files are gone from `hyperiux-components`). Original finding: **incidental dead code** in the CLI: `src/utils/api.js` (zero importers, duplicate API
    client) and `src/commands/{logout,whoami}.js` (unused; `whoami.js` imports a
    nonexistent `getAuthStatus`). Delete before adding a second auth path.
 8. **Privacy** - IPs hashed with a server-side salt, never stored raw. `install_events`

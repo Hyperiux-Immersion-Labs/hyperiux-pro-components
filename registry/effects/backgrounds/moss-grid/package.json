@@ -1,0 +1,20 @@
+{
+  "name": "@hyperiux/moss-grid",
+  "version": "1.0.0",
+  "description": "Rolling hills of shimmering grid lights revealed around the pointer.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@react-three/fiber": "*",
+    "@react-three/postprocessing": "*",
+    "postprocessing": "*",
+    "three": "*"
+  }
+}

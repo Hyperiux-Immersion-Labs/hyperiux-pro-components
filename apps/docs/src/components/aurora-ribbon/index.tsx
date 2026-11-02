@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -27,7 +26,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Shape
 
 // The ribbon's spine, fitted to the reference artwork (x, y in 0..1 of a 1.405:1 frame, y down).
@@ -71,7 +69,6 @@ const SMEAR_HALF_LIFE = 0.4;
 const SMEAR_ADVECT = 2;
 const SMEAR_MAX = 0.4;
 
-// ---------------------------------------------------------------------------
 // Shaders
 
 const QUAD_VS = `#version 300 es
@@ -200,7 +197,6 @@ void main() {
   outColor = vec4(col, 1.0);
 }`;
 
-// ---------------------------------------------------------------------------
 // Helpers
 
 function hexToRgb(hex: string): [number, number, number] {
@@ -289,7 +285,6 @@ const smoothstep = (a: number, b: number, x: number) => {
   return t * t * (3 - 2 * t);
 };
 
-// ---------------------------------------------------------------------------
 // Component
 
 export interface AuroraRibbonProps {

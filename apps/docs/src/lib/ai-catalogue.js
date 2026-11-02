@@ -266,10 +266,8 @@ export const getAiCatalogue = cache(async () => {
   });
 });
 
-// ---------------------------------------------------------------------------
 // llms.txt (https://llmstxt.org): a short, linked index. /llms-full.txt has
 // every effect's full record.
-// ---------------------------------------------------------------------------
 
 const MAIN_PAGES = [
   ["Home", "/", "Hyperiux Vault - React & Next.js interaction effects"],

@@ -1,4 +1,6 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
+ 
+// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import gsap from "gsap";
@@ -6,6 +8,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ReactLenis } from "lenis/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import Image from "next/image";
 const DESKTOP_WIDTH = 1200;
 const TABLET_MIN_WIDTH = 1025;
 
@@ -369,11 +372,14 @@ export function CircularSplitRollComp({
                   className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center opacity-0 will-change-[transform,opacity]"
                 >
                   <div className="relative h-full w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_30px_60px_rgba(0,0,0,0.28),0_8px_20px_rgba(0,0,0,0.16)]">
-                    <img
+                    <Image
                       src={item.image}
                       alt={item.alt}
                       className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
                       draggable="false"
+                      fill
+                      sizes="100vw"
+                      loading="eager"
                     />
                   </div>
                 </div>
@@ -393,11 +399,14 @@ export function CircularSplitRollComp({
               <div
                 className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-md:rounded-[14px] ${gridImageClassName}`}
               >
-                <img
+                <Image
                   src={item.image}
                   alt={item.alt}
                   className="block h-full w-full object-cover absolute inset-0"
                   draggable="false"
+                  fill
+                  sizes="100vw"
+                  loading="eager"
                 />
               </div>
 
@@ -437,61 +446,61 @@ const showcaseItems = [
   {
     title: "Vuelta",
     image:
-      "https://picsum.photos/seed/v01/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
     alt: "Vuelta lamp",
   },
   {
     title: "JH42",
     image:
-      "https://picsum.photos/seed/v02/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
     alt: "JH42 lamp",
   },
   {
     title: "Hay",
     image:
-      "https://picsum.photos/seed/v03/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
     alt: "Hay product",
   },
   {
     title: "Teresa",
     image:
-      "https://picsum.photos/seed/h08/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
     alt: "Teresa lamp",
   },
   {
     title: "Tahiti",
     image:
-      "https://picsum.photos/seed/h14/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
     alt: "Tahiti lamp",
   },
   {
     title: "Akari 1A",
     image:
-      "https://picsum.photos/seed/v06/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
     alt: "Akari 1A lamp",
   },
   {
     title: "Nessino",
     image:
-      "https://picsum.photos/seed/v07/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
     alt: "Nessino lamp",
   },
   {
     title: "Panthella",
     image:
-      "https://picsum.photos/seed/v08/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
     alt: "Panthella lamp",
   },
   {
     title: "Bellhop",
     image:
-      "https://picsum.photos/seed/h01/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
     alt: "Bellhop lamp",
   },
   {
     title: "Flowerpot",
     image:
-      "https://picsum.photos/seed/h06/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
     alt: "Flowerpot lamp",
   },
 ];

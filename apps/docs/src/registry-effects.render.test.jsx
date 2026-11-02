@@ -2,7 +2,7 @@
 //
 // Render + prop-contract regression net for all registry effects (Phase 2,
 // Wave 2 "Tests, all 150+ effects"). Scope is deliberately render-mounts-
-// cleanly, not pixel-diff visual regression - see phase-2-plan.md.
+// cleanly, not pixel-diff visual regression.
 //
 // One `it()` per effect (not one file per effect) so the pass/fail list
 // still reads as "which effects broke," without 115 near-identical files.

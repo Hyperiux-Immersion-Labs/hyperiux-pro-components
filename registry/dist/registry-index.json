@@ -160,11 +160,6 @@
     "tarball": "registry/dist/hyperiux-globe-1.0.0.tgz"
   },
   {
-    "name": "@hyperiux/gooey-counter",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-gooey-counter-1.0.1.tgz"
-  },
-  {
     "name": "@hyperiux/gsap-flip-card",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-gsap-flip-card-1.0.0.tgz"
@@ -178,11 +173,6 @@
     "name": "@hyperiux/infinite-grid-gallery",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-infinite-grid-gallery-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/information-drawer",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-information-drawer-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/interactive-list-preview",
@@ -258,11 +248,6 @@
     "name": "@hyperiux/interactive-arrows",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-interactive-arrows-1.1.0.tgz"
-  },
-  {
-    "name": "@hyperiux/liquid-glass-cursor",
-    "version": "1.1.0",
-    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-1.1.0.tgz"
   },
   {
     "name": "@hyperiux/magnetic-image-trail",
@@ -368,11 +353,6 @@
     "name": "@hyperiux/circular-slider",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-circular-slider-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/circular-split-roll",
-    "version": "1.0.2",
-    "tarball": "registry/dist/hyperiux-circular-split-roll-1.0.2.tgz"
   },
   {
     "name": "@hyperiux/grid-scale",
@@ -505,19 +485,9 @@
     "tarball": "registry/dist/hyperiux-drop-text-2.0.0.tgz"
   },
   {
-    "name": "@hyperiux/flickering-text",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-flickering-text-1.0.0.tgz"
-  },
-  {
     "name": "@hyperiux/focus-text",
     "version": "1.0.0",
     "tarball": "registry/dist/hyperiux-focus-text-1.0.0.tgz"
-  },
-  {
-    "name": "@hyperiux/glitchy-text",
-    "version": "1.0.1",
-    "tarball": "registry/dist/hyperiux-glitchy-text-1.0.1.tgz"
   },
   {
     "name": "@hyperiux/glowing-text",
@@ -655,11 +625,6 @@
     "tarball": "registry/dist/hyperiux-sweep-lift-transition-1.0.0.tgz"
   },
   {
-    "name": "@hyperiux/3d-portfolio-slider",
-    "version": "1.0.2",
-    "tarball": "registry/dist/hyperiux-3d-portfolio-slider-1.0.2.tgz"
-  },
-  {
     "name": "@hyperiux/book-flip",
     "version": "1.1.0",
     "tarball": "registry/dist/hyperiux-book-flip-1.1.0.tgz"
@@ -738,11 +703,6 @@
     "name": "@hyperiux/progressive-bloom-valley",
     "version": "1.0.1",
     "tarball": "registry/dist/hyperiux-progressive-bloom-valley-1.0.1.tgz"
-  },
-  {
-    "name": "@hyperiux/strip-slider",
-    "version": "1.0.0",
-    "tarball": "registry/dist/hyperiux-strip-slider-1.0.0.tgz"
   },
   {
     "name": "@hyperiux/animated-form",
@@ -881,7 +841,97 @@
   },
   {
     "name": "@hyperiux/animated-faq",
-    "version": "2.0.0",
-    "tarball": "registry/dist/hyperiux-animated-faq-2.0.0.tgz"
+    "version": "2.0.1",
+    "tarball": "registry/dist/hyperiux-animated-faq-2.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/neon-streak",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-neon-streak-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/creepy-background",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-creepy-background-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/glitchy-text",
+    "version": "1.0.2",
+    "tarball": "registry/dist/hyperiux-glitchy-text-1.0.2.tgz"
+  },
+  {
+    "name": "@hyperiux/gooey-counter",
+    "version": "1.0.2",
+    "tarball": "registry/dist/hyperiux-gooey-counter-1.0.2.tgz"
+  },
+  {
+    "name": "@hyperiux/strip-slider",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-strip-slider-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/flickering-text",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-flickering-text-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/information-drawer",
+    "version": "1.0.1",
+    "tarball": "registry/dist/hyperiux-information-drawer-1.0.1.tgz"
+  },
+  {
+    "name": "@hyperiux/3d-portfolio-slider",
+    "version": "1.0.2",
+    "tarball": "registry/dist/hyperiux-3d-portfolio-slider-1.0.2.tgz"
+  },
+  {
+    "name": "@hyperiux/circular-split-roll",
+    "version": "1.0.2",
+    "tarball": "registry/dist/hyperiux-circular-split-roll-1.0.2.tgz"
+  },
+  {
+    "name": "@hyperiux/liquid-glass-cursor",
+    "version": "2.1.0",
+    "tarball": "registry/dist/hyperiux-liquid-glass-cursor-2.1.0.tgz"
+  },
+  {
+    "name": "@hyperiux/ascii-band",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-ascii-band-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/ascii-dome",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-ascii-dome-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/aurora-ribbon",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-aurora-ribbon-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/opal-flow",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-opal-flow-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/arc-light",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-arc-light-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/grassy-background",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-grassy-background-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/flower-field",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-flower-field-1.0.0.tgz"
+  },
+  {
+    "name": "@hyperiux/moss-grid",
+    "version": "1.0.0",
+    "tarball": "registry/dist/hyperiux-moss-grid-1.0.0.tgz"
   }
 ]

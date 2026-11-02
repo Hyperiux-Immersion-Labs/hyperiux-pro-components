@@ -1,6 +1,14 @@
 # Vault Control Plane - Dashboard Audit
 
 **Scope:** `/dashboard/*`, `/dashboard/admin/*`, and their API routes, as of 2026-09-10.
+
+> **Status update (2026-11-02):** the findings below are the 2026-09-10 snapshot. Since then
+> the dashboard moved to `/dashboard/[username]/...` (user tabs now include Templates; admin
+> tabs are Users, Activity, Effects, Emails, Invoicing, Log, Roles, Settings), and RBAC grew
+> from two fixed roles into owner + custom roles with per-permission checks
+> (`lib/admin.js` `requirePermission()`, `lib/admin-permissions.js`, `lib/admin-roles.js`,
+> `sql/admin_roles.sql`). Several gaps are now closed; the baseline, scenario and
+> recommendation lists below are marked accordingly.
 **Method:** grounded in the actual route/schema behavior exercised while diagnosing and fixing
 the invoicing and user-search bugs referenced below - not a surface read of the UI alone.
 
@@ -77,7 +85,7 @@ email actually sent.
 | Activity → Overview | Site-wide 30-day trends, per-user drill-in | **Solid** | Signups, copies, revenue, plan mix, top saved/copied effects in one screen. |
 | Activity → Installs & Copies | CLI/MCP/web delivery ledger | **Solid** | Genuinely good instinct: tracks a "would-be-denied rate" in shadow mode before ever switching real enforcement on - see [What's already right](#whats-already-right). |
 | Activity → per-user detail | One user's full picture | **Thin** | Sessions, saves, copies, and billing history in one place - but the billing rows here have no link out to the actual Razorpay invoice. Have to cross-reference the separate Super Admin Invoicing tab by hand. |
-| Email Log | Delivery log, HTML preview, click tracking | **Thin** | No search by recipient. "Did this one person actually get their invite" means paging through the whole log by eye. |
+| Email Log | Delivery log, HTML preview, click tracking | **Thin** | No search by recipient. "Did this one person actually get their invite" means paging through the whole log by eye. *(2026-11-02: recipient search now exists, `?to=` on `api/admin/emails`.)* |
 
 ## Tier 3 - Super admin
 
@@ -122,11 +130,11 @@ data are involved. Twelve primitives, checked against what actually exists today
 | Full-userbase search | "Find this one person" is the single most common admin action there is. | ✅ Have (fixed) |
 | Accurate server-side pagination | A count that's wrong past page one erodes trust in every other number on the page. | ✅ Have (fixed) |
 | Bulk data export | Finance, legal, and migrations all eventually ask for "just give me the CSV." | ✅ Have |
-| Audit log of admin actions | "Who upgraded this account, and when" needs an answer that isn't a Slack search. | ❌ Missing |
+| Audit log of admin actions | "Who upgraded this account, and when" needs an answer that isn't a Slack search. | ✅ Have (2026-11-02: `lib/admin-audit.js` `recordAdminAction`, `sql/admin_audit_log.sql`, Admin → Log "changes") |
 | Impersonation / "view as user" | Half of support debugging is "what is this person actually seeing." | ❌ Missing |
-| System health surface | Webhook silently stopping, email bounce spike - these need a dashboard, not a bug report from a customer. | ⚠️ Partial (Email Log only) |
+| System health surface | Webhook silently stopping, email bounce spike - these need a dashboard, not a bug report from a customer. | ⚠️ Partial (2026-11-02: Email Log, Razorpay webhook log in Admin → Log, `api/admin/subscriptions/health`, Admin → Effects health; no alerting) |
 | Billing reconciliation view | One screen to answer "did this specific payment actually create this specific invoice." | ⚠️ Partial (exists, was unreliable) |
-| Entitlement overrides with provenance | Comped access must be visibly distinct from a paying customer everywhere revenue gets counted. | ⚠️ Open (built, rolled back) |
+| Entitlement overrides with provenance | Comped access must be visibly distinct from a paying customer everywhere revenue gets counted. | ✅ Have (2026-11-02: "Mark as internal" via `api/admin/users/update-internal`, internal accounts kept out of customer numbers; per-payment exclude via `api/admin/payments/exclude`) |
 | Confirm + reversibility on destructive actions | Revoking Pro or granting Super Admin should never be one accidental click. | ⚠️ Partial (one surface only) |
 | Deep-linkable filter state | "Here's the exact view I'm looking at" should be a URL you can paste to a teammate. | ❌ Missing |
 | Saved views / alerting on metrics | Nobody should have to remember to check if failed-email rate spiked. | ❌ Missing |
@@ -139,10 +147,10 @@ Six scenarios a real admin runs into.
 |---|---|---|
 | Marketing | "How many people signed up and converted to Pro this week?" | ✅ **Works** - Activity Overview's trend charts, or the new User Management activity tiles switched to "Last 7 days." |
 | Support | "A customer says they paid but don't have Pro." | ⚠️ **Friction** - doable, but four manual steps: find the user, open their activity detail, cross-check the separate Invoicing tab, then verify against Razorpay directly. Exactly the walk this session took to diagnose one real case. |
-| Trust & safety | "Who currently has admin or super-admin access?" | ⚠️ **Friction** - no filter for it; means scrolling the entire user directory hunting for role badges. |
-| Ops | "Did someone just accidentally downgrade a paying customer?" | ❌ **Blocked** - no way to answer this at all; plan changes leave no record of who made them. |
+| Trust & safety | "Who currently has admin or super-admin access?" | ✅ **Works** (2026-11-02) - `api/admin/users` takes a `role` filter (incl. `role:<id>` for custom roles), and Admin → Roles lists them. |
+| Ops | "Did someone just accidentally downgrade a paying customer?" | ✅ **Works** (2026-11-02) - plan changes are recorded in the admin audit log (Admin → Log). |
 | Support | "Show me exactly what this confused user is seeing right now." | ❌ **Blocked** - no impersonation / view-as. Reproducing their state means asking them to screen-share. |
-| Ops | "Is the Razorpay webhook still actually firing?" | ❌ **Blocked** - no ongoing monitor; one real instance of it silently failing (invoice recording) was only caught this session by deliberately going looking. |
+| Ops | "Is the Razorpay webhook still actually firing?" | ⚠️ **Friction** (2026-11-02) - every delivery is now logged (`lib/webhook-log.js`, Admin → Log "Razorpay events"), but there is still no alert when it stops. |
 
 ## Recommendations
 
@@ -151,20 +159,20 @@ start to hurt.
 
 ### Now - revenue & trust
 
-- **Admin action audit log.** One table: who, what changed, on which account, when. Every
+- **Admin action audit log.** *(Done, 2026-11-02.)* One table: who, what changed, on which account, when. Every
   mutation route already knows this - just needs one insert.
-- **Finish the comped-vs-paid flag.** Run the pending migration, re-land the reverted feature.
+- **Finish the comped-vs-paid flag.** *(Done as the "internal" flag, 2026-11-02.)* Run the pending migration, re-land the reverted feature.
   Revenue reporting is quietly wrong without it the moment demo accounts exist.
 - **Link billing views together.** Per-user detail ↔ Super Admin Invoicing should cross-link
   both directions - five-minute change, closes a real daily friction point.
 
 ### Next - support leverage
 
-- **Recipient search on the Email Log.** "Did this person get their email" shouldn't require
+- **Recipient search on the Email Log.** *(Done: `?to=` on `api/admin/emails`, 2026-11-02.)* "Did this person get their email" shouldn't require
   paging by eye.
-- **An "Admins" filter on User Management.** Trust & safety shouldn't scroll the whole
+- **An "Admins" filter on User Management.** *(Done: role filter, 2026-11-02.)* Trust & safety shouldn't scroll the whole
   directory to answer "who has the keys."
-- **Surface CLI token status to its owner.** The data already exists server-side - just render
+- **Surface CLI token status to its owner.** *(Still open, 2026-11-02: `CliTokenManager.jsx` only generates/revokes.)* The data already exists server-side - just render
   it back on the page that owns the Revoke button.
 
 ### Later - operational maturity

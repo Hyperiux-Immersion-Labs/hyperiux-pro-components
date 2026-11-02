@@ -1,12 +1,14 @@
 # Hyperiux MCP Server
 
-> **Audit status (2026-08-12):** substantially accurate, and more accurate than the
-> CLI repo's own `MCP-GUIDE.md`/`MCP-OVERVIEW.md` (which still wrongly claim the
-> package isn't published - `hyperiux-mcp-server@0.1.0` is live on npm and `npx -y
-> hyperiux-mcp-server` works today). One real defect: the **auth-precedence order is
-> reversed**. The doc says the saved `hyperiux login` session is checked first, then
-> `HYPERIUX_TOKEN`; the actual code (`src/auth.ts:10-17`) checks `HYPERIUX_TOKEN`
-> first and only falls back to the saved session if it's unset.
+> **Audit status (2026-11-02):** re-checked against the server source in the sibling
+> `hyperiux-components` checkout (`packages/mcp-server`, `hyperiux-mcp-server@0.3.0`
+> in `package.json`). Fixed here: auth precedence (`HYPERIUX_TOKEN` first, then the
+> saved `hyperiux login` session, per `src/auth.ts`); source now needs a signed-in
+> account for **every** effect, not just Pro; `hyperiux_list_effects` now returns
+> `tier` and `next_offset`; `hyperiux_get_effect` gained `sign_in_required`,
+> `rate_limited` and `install_limit`/`install_remaining`; example payloads updated to
+> the current registry. Not verified (no network access during the audit): which
+> version is live on npm.
 
 **Give your AI coding assistant live, accurate knowledge of the entire Hyperiux Vault effect catalog.**
 
@@ -30,7 +32,7 @@ This server closes that gap with a live, read-only interface into the actual reg
 
 - Node.js 18 or later (Codex CLI itself additionally requires Node.js 22+)
 - An MCP-compatible client that supports **local/stdio servers**: [Claude Code](https://claude.com/product/claude-code), [Claude Desktop](https://claude.ai/download), [Cursor](https://cursor.com), [Codex CLI](https://developers.openai.com/codex/mcp), [Google Antigravity](https://antigravity.google), or any other client that supports the MCP standard's local server transport. (The ChatGPT web app is a notable exception - see [ChatGPT (web app) - not currently supported](#chatgpt-web-app--not-currently-supported).)
-- No account or subscription required to use it for free effects. A [Hyperiux Pro](https://vault.hyperiux.com/pricing) subscription is only needed to retrieve Pro effect source code.
+- No account required to browse the catalog or look up any effect's details. Fetching source code needs a free Hyperiux account (signed in with `hyperiux login`) for every effect; a [Hyperiux Pro](https://vault.hyperiux.com/pricing) subscription is additionally needed for Pro effect source.
 
 ---
 
@@ -288,16 +290,20 @@ You should get back a real, specific list (things like `scroll`, `webgl`, `curso
 
 ## Authentication and Pro effects
 
-No setup is required to query metadata or source for any of the **free** effects in the catalog.
+No setup is required to list effects, list categories, or look up any effect's metadata (`include_source: false`). Those calls read the public registry only and never count as an install.
 
-To retrieve source code for a **Pro** effect, the server needs a Hyperiux Pro CLI token. It automatically picks one up from either of these, in order:
+To retrieve source code (`include_source: true`) for **any** effect, free ones included, the server needs a CLI token. It picks one up from either of these, in order:
 
-1. A saved session from running `hyperiux login` (the same login the `hyperiux` CLI itself uses) - this is the recommended way, since it's a one-time setup done directly in your own terminal.
-2. A `HYPERIUX_TOKEN` environment variable - useful for CI or scripted environments.
+1. A `HYPERIUX_TOKEN` environment variable - useful for CI or scripted environments. If set, it wins.
+2. A saved session from running `hyperiux login` (`~/.hyperiux/auth.json`, the same login the `hyperiux` CLI itself uses) - the recommended way, since it's a one-time setup done directly in your own terminal.
 
 **Never share your token directly with an AI assistant in a chat.** Run `hyperiux login` yourself, in your own terminal, and let the server pick up the saved session automatically.
 
-Without a valid token, Pro effect lookups still return full metadata - description, dependencies, version, changelog - just not the source code itself, along with a clear explanation of why. This is expected behavior for an unauthenticated Pro lookup, not an error.
+Source requests go through the same signed-in, metered API the CLI uses, so each one counts toward the account's daily install limit. When source can't be returned, the response still carries full metadata (description, dependencies, version, changelog) plus a marker saying why - expected behaviour, not an error:
+
+- no token, or the API rejected it: `sign_in_required` + `sign_in_required_reason`
+- a Pro effect on an account without Pro: `source_locked` + `source_locked_reason`
+- daily install limit reached: `rate_limited` + `rate_limit_reason`
 
 ---
 
@@ -323,13 +329,13 @@ Browse or search the catalog.
   "count": 12,
   "offset": 0,
   "effects": [
-    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.1.1" }
+    { "name": "dotted-grid", "category": "backgrounds", "categories": ["backgrounds"], "dependencies": [], "version": "1.0.1", "tier": "free" }
   ],
   "has_more": false
 }
 ```
 
-> **Note:** this tool does not report tier (free vs. Pro) - use `hyperiux_get_effect` on a specific slug to check.
+`next_offset` is added when `has_more` is true. `tier` is `"free"` or `"pro"`, so free/Pro counts can be answered from one call.
 
 ### `hyperiux_get_effect`
 
@@ -338,36 +344,34 @@ Full detail for one effect, by its exact slug.
 | Parameter | Type | Required | Description |
 |---|---|---|---|
 | `name` | string | Yes | Exact effect slug (get this from `hyperiux_list_effects` if you don't already know it) |
-| `include_source` | boolean | No (default `false`) | Also return the component's source code |
+| `include_source` | boolean | No (default `false`) | Also return the component's source code. Needs a signed-in account for every effect (Pro too for Pro effects) and counts as one of the day's installs |
 
-**Returns:**
+**Returns** (details-only lookup):
 ```json
 {
   "name": "dotted-grid",
   "title": "Dotted Grid",
   "description": "Canvas 2D fullscreen dot grid that autonomously cycles through five geometric shapes...",
   "tier": "free",
-  "version": "1.1.1",
+  "version": "1.0.1",
   "dependencies": [],
   "changelog": [
-    { "version": "1.1.1", "date": "2026-07-22", "summary": "Added a reduced-motion notice...", "breaking": false }
+    { "version": "1.0.1", "date": "2026-07-22", "summary": "Added prefers-reduced-motion support with a static canvas fallback.", "breaking": false }
   ],
   "install_command": "npx hyperiux add dotted-grid",
-  "preview_url": "/demo/dotted-grid",
   "import_path": "@/components/effects/dotted-grid",
-  "target": "src/components/effects/dotted-grid",
-  "main": "index.jsx",
-  "import_statement": "import { DottedGrid } from \"@/components/effects/dotted-grid\";",
+  "import_statement": "import DottedGrid from \"@/components/effects/dotted-grid\";",
   "files": [
-    { "path": "index.jsx" },
-    { "path": "createSuspendedRaf.js" }
+    { "path": "index.tsx" }
   ]
 }
 ```
 
-When `include_source: true` and you're entitled to the source (always true for free effects; for Pro effects, only with a valid token), each file in `files[]` also includes a `content` field with the full source.
+`preview_url`, `target` and `main` are only included when the registry response carries them. The public registry JSON used for details lookups has none of them; a source fetch adds `preview_url`.
 
-If a Pro effect is requested without a valid token, the response includes `"source_locked": true` and a `source_locked_reason` explaining why - metadata is still returned in full.
+When `include_source: true` and you're entitled to the source (signed in, and on Pro for a Pro effect), each file in `files[]` also includes a `content` field with the full source, and the response adds `install_limit` / `install_remaining` for the day.
+
+If source can't be returned, the response carries `sign_in_required`, `source_locked` or `rate_limited` with a matching `*_reason` (see [Authentication and Pro effects](#authentication-and-pro-effects)) - metadata is still returned in full.
 
 ### `hyperiux_list_categories`
 
@@ -379,9 +383,9 @@ No parameters required.
 ```json
 {
   "categories": [
-    { "category": "scroll", "count": 23 },
-    { "category": "webgl", "count": 19 },
-    { "category": "cursor", "count": 16 }
+    { "category": "components", "count": 41 },
+    { "category": "scroll", "count": 26 },
+    { "category": "text", "count": 25 }
   ]
 }
 ```
@@ -405,9 +409,9 @@ For actually installing an effect into your project, your assistant will use the
 ## What this server does not do
 
 - **It does not install effects.** Installing is handled entirely by the `hyperiux` CLI. This server's job is making sure the right effect, dependencies, and import path are known before that install happens.
-- **It does not expose component props.** There is currently no structured props schema in the registry, so the server cannot yet answer "what props does this component accept?" in a reliable, structured way.
-- **It does not currently report tier at the list level.** `hyperiux_list_effects` and `hyperiux_list_categories` cannot distinguish free from Pro effects - only `hyperiux_get_effect` on a specific slug can. Always verify tier before assuming an effect is installable without a Pro subscription.
-- **It never returns Pro source without a valid, authenticated token.** There is no way to bypass this from a client - it's enforced by the same protected API the CLI itself uses.
+- **It does not expose component props.** Every registry entry now carries a structured `props` array (it's in the public `r/<slug>.json`), but `hyperiux_get_effect` doesn't include it in its output yet, so the server cannot answer "what props does this component accept?" in a structured way.
+- **It does not report tier per category.** `hyperiux_list_categories` returns counts only; use `hyperiux_list_effects` (which includes `tier`) to split free from Pro.
+- **It never returns source without a valid, authenticated token** (and a Pro plan for Pro effects). There is no way to bypass this from a client - it's enforced by the same protected API the CLI itself uses.
 
 ---
 

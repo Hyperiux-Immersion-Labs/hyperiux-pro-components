@@ -8,11 +8,21 @@ A concise, step-by-step guide from writing your first file to making the compone
 > in `hyperiux-components`) and the complete CLI command reference. This
 > doc only covers creating something new.
 
-> **Audit status (2026-09-21):** re-checked against the current registry/CLI - the
-> two-repo free-tier rule, `registry.json` field list, `build:registry` step, and
-> `registry/index.json` root-index step all still match reality. File extensions
-> were corrected from `.jsx`/`.js` to `.tsx`: all 150 registry components use
-> `index.tsx`, and demo pages use `page.tsx`.
+> **Automated path:** Steps 3-7 and 9 below are what
+> `apps/docs/scripts/component-ship.mjs` (`registry` / `ship`) does for you,
+> including drafting `registry.json`'s `props` from a `LocalRemixerDemo`
+> demo. See [`new-component-workflow.md`](./new-component-workflow.md). This
+> guide describes the same result by hand, which is still useful for
+> checking what the script produced.
+
+> **Audit status (2026-11-02):** re-checked against `build-registry.js`,
+> `component-ship.mjs` and the registry. The registry is 100% TypeScript: all
+> 185 registry components use `index.tsx`, and demo pages use `page.tsx`.
+> Corrected since the last audit: public JSON no longer embeds free-tier source
+> (Step 6), `previewUrl` must be `/demo/{slug}` (Step 4), demo pages import
+> `registry.json` directly rather than calling `getEffectBySlug` (Step 2),
+> `package.json` starts at the registry version (Step 5), and there is no
+> `others` category.
 
 ---
 
@@ -64,6 +74,8 @@ src/components/
     └── Demo.tsx         ← optional: demo wrapper just for the docs site
 ```
 
+> The tooling's file discovery only skips `Demo.jsx`, `*.demo.jsx`, `*.test.*`, `*.spec.*` and `.md` files, so a `Demo.tsx` here *would* be copied into the registry by `component-ship.mjs` / `component-workflow.mjs`. Keep docs-only wrappers in the demo page folder (`app/(marketing)/demo/{slug}/DemoContent.tsx`) instead.
+
 **Naming rules:**
 - Folder: `glitch-text` (lowercase, hyphens, no spaces or underscores)
 - Main file: always `index.tsx`
@@ -88,7 +100,9 @@ Every component needs a live preview page so users can see it before installing.
 apps/docs/src/app/(marketing)/demo/{your-slug}/page.tsx
 ```
 
-Inside this page, import your component from `@/components/{name}` and render a live demo. The page also calls `getEffectBySlug(slug)` to pull in metadata for the code panel and install instructions - this data comes from the registry you'll set up in the next steps, so you can come back and wire this up fully after Step 4.
+The usual shape (see `demo/moss-grid/`) is a server `page.tsx` that imports the effect's `registry.json` and passes it to a client `DemoContent.tsx`, plus `generateMetadata()` returning `getDemoPageMetadata("{slug}")` from `@/lib/demo-metadata`. `DemoContent.tsx` imports your component from `@/components/{name}` and renders it inside `RegistryRemixerDemo` (`@/components/remixer-panel/RegistryRemixerDemo`), which drives the Remixer Panel from `registry.json`'s `props`.
+
+Until `registry.json` exists (after Step 4), render the component inside `LocalRemixerDemo` (`@/components/local-remixer`) with an inline draft `props={[...]}` array instead. Keep that array a plain object literal: `component-ship.mjs registry` evaluates it as-is to draft `registry.json`'s `props`, and props built through helper functions, variables or TypeScript-only syntax are not picked up (they come out as an empty `props` array). `component-ship.mjs codegen` later swaps the demo over to `RegistryRemixerDemo`. See [`new-component-workflow.md`](./new-component-workflow.md).
 
 ---
 
@@ -116,7 +130,8 @@ registry/effects/{category}/{your-slug}/
 | `backgrounds` | Animated backgrounds, particles, grids |
 | `loaders` | Page loaders, skeletons, spinners |
 | `transitions` | Page/route transition animations |
-| `others` | Anything that doesn't fit above |
+
+These are the folders that exist under `registry/effects/` today. The scripts reject any category without a folder there, and skip any folder whose name starts with `_`.
 
 **Copy only the files users need** - no Demo.tsx, no docs-site-only wrappers. If your component has sub-component files (e.g. `GlitchLayer.tsx`), copy those too.
 
@@ -141,7 +156,7 @@ This is the most important file. The build script reads this to generate everyth
 | `tier` | `"free"` or `"pro"` | `"pro"` |
 | `dependencies` | NPM packages imported by the component | `["gsap", "lucide-react"]` or `[]` |
 | `registryDependencies` | Other Hyperiux slugs this depends on | `[]` |
-| `previewUrl` | Path of the docs preview page from Step 2 | `"/text/glitch-text"` |
+| `previewUrl` | Path of the docs preview page from Step 2; `build:registry` fails on anything else | `"/demo/glitch-text"` |
 | `main` | Entry file | `"index.tsx"` |
 | `exportName` | Exact function name of the main component | `"GlitchText"` |
 | `exportKind` | `"named"` or `"default"` matching the export style | `"named"` |
@@ -160,6 +175,8 @@ This is the most important file. The build script reads this to generate everyth
 
 Every file the component imports must appear in this array. If a file is missing, users get import errors after installing.
 
+**Also written by the tooling** (add them by hand if you skip it): `changelog` (array of `{ version, date, summary, breaking }`, newest first), `subfolder: true`, `props` (one entry per public prop, each with an optional `remixer` sub-block for the Remixer Panel) and `remixer` (`{ enabled, layout, copyCode }`). See an existing effect such as `registry/effects/backgrounds/moss-grid/registry.json` for the shape.
+
 ---
 
 ## Step 5 - Create `package.json` (for NPM distribution)
@@ -168,8 +185,10 @@ Every file the component imports must appear in this array. If a file is missing
 
 Only three things matter here:
 - `name` - must be `@hyperiux/{slug}` (e.g. `"@hyperiux/glitch-text"`)
-- `version` - start at `"0.0.1"`, bump when you update
-- `peerDependencies` - list `react` and any major packages like `gsap` or `framer-motion`
+- `version` - same as `registry.json`'s `version` (so `"1.0.0"` for a new component); bump both together when you update
+- `dependencies` - the npm packages from `registry.json`'s `dependencies` (the tooling writes them as `"*"`; existing packages use `dependencies`, not `peerDependencies`)
+
+The tooling also sets `description`, `main`, `files` (the code files plus `registry.json`) and `keywords`.
 
 ---
 
@@ -185,8 +204,9 @@ This script reads every `registry.json` in `registry/effects/`, processes them, 
 - `apps/docs/public/r/{slug}.json` - your component's public metadata
 - `apps/docs/public/r/index.json` - the master index (updated automatically)
 
-For **free** tier components, the full source code is embedded in the public JSON.
-For **pro** tier components, only metadata is public - code is served via authenticated API.
+No tier gets its source in the public JSON. **Pro** files carry no `content` at all; **free** code files carry a one-line sign-in stub as `content`. For every tier the code is served through the signed-in API (`/api/cli/effects/[effectSlug]`), so every install needs an account. See `apps/docs/NO_ANONYMOUS_INSTALLS.md`.
+
+The build rewrites the whole of `public/r/` (it builds into `public/r.tmp` and swaps it in), so any file not generated from `registry/effects/` is removed.
 
 > After running this, verify `public/r/{slug}.json` exists and `public/r/index.json` contains your component. If either is missing, check your `registry.json` for typos.
 
@@ -194,7 +214,7 @@ For **pro** tier components, only metadata is public - code is served via authen
 
 ## Step 7 - Add to the Root Registry Index
 
-Open `registry/index.json` at the monorepo root and add an entry for your component. Keep entries sorted alphabetically by `name`. The entry mirrors the key fields from your `registry.json` but uses full paths relative to the monorepo root.
+Open `registry/index.json` at the monorepo root (a JSON array) and add an entry for your component. Keep entries sorted alphabetically by `name`. The entry is a copy of your `registry.json` plus a `registryPath` field giving its location relative to the monorepo root (`registry/effects/{category}/{slug}/registry.json`); this is what `component-ship.mjs` and `component-workflow.mjs` write.
 
 ---
 
@@ -225,6 +245,8 @@ The tarball filename must follow: `hyperiux-{slug}-{version}.tgz`
 
 When you update a component, always bump the `version` in `package.json`, delete the old tarball from `registry/dist/`, and re-pack.
 
+Alternatives: `npm run build:registry:dist` wipes `registry/dist/` and re-packs every effect (also rewriting `registry/dist/registry-index.json`); `component-ship.mjs registry` re-packs just this one effect and updates its entry in `registry-index.json`.
+
 ---
 
 ## Checklist
@@ -240,7 +262,7 @@ When you update a component, always bump the `version` in `package.json`, delete
 - [ ] `registry/effects/{category}/{slug}/` folder created
 - [ ] Distributable files copied in (no demo wrappers)
 - [ ] `registry.json` created with all required fields
-- [ ] `version` set to `"1.0.0"`
+- [ ] `version` set to `"1.0.0"` (and `package.json` version matches)
 - [ ] `name` in `registry.json` matches folder name exactly
 - [ ] All sub-component files listed in `files` array
 - [ ] `package.json` created with correct `@hyperiux/{slug}` name
@@ -278,4 +300,4 @@ When you update a component, always bump the `version` in `package.json`, delete
 - **Editing a component's code without bumping `version` in its `registry.json`** - the registry will silently serve the new code under the old version number, and no CLI command (`outdated`, `diff`, `versions`) will ever detect it changed. See `versioning.md` for the full versioning workflow.
 - **Not bumping the version before re-packing** - old tarballs get silently overwritten
 - **Forgetting to re-run `build:registry` after edits** - the docs site and CLI both read from `public/r/`, not the source
-- **Free component added only to `hyperiux-pro-components`** - it must also be in the `hyperiux-components` public repo or it won't be installable without auth
+- **Free component added only to `hyperiux-pro-components`** - it must also be in the `hyperiux-components` public repo so the free mirror stays complete (installs themselves go through the signed-in API for every tier)

@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/opal-flow",
+  "version": "1.0.0",
+  "description": "A periwinkle ground with a pink-to-peach ribbon and cyan wisps that smear under the pointer.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

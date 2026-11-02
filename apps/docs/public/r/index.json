@@ -580,7 +580,7 @@
       "registryDependencies": [],
       "exportName": "LiquidGlassCursor",
       "exportKind": "default",
-      "version": "1.1.0",
+      "version": "2.1.0",
       "tier": "free"
     },
     {
@@ -672,6 +672,78 @@
       "tier": "pro"
     },
     {
+      "name": "arc-light",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "ArcLight",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "ascii-band",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "AsciiBand",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "ascii-dome",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "AsciiDome",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "aurora-ribbon",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "AuroraRibbon",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "creepy-background",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [
+        "three"
+      ],
+      "registryDependencies": [],
+      "exportName": "CreepyBackground",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "dither-canvas",
       "type": "registry:component",
       "category": "backgrounds",
@@ -714,6 +786,41 @@
       "tier": "free"
     },
     {
+      "name": "flower-field",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [
+        "@react-three/fiber",
+        "@react-three/postprocessing",
+        "postprocessing",
+        "three"
+      ],
+      "registryDependencies": [],
+      "exportName": "FlowerField",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "grassy-background",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [
+        "three"
+      ],
+      "registryDependencies": [],
+      "exportName": "GrassyBackground",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
       "name": "grid-lift",
       "type": "registry:component",
       "category": "backgrounds",
@@ -726,6 +833,53 @@
       "exportKind": "default",
       "version": "1.1.0",
       "tier": "pro"
+    },
+    {
+      "name": "moss-grid",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [
+        "@react-three/fiber",
+        "@react-three/postprocessing",
+        "postprocessing",
+        "three"
+      ],
+      "registryDependencies": [],
+      "exportName": "MossGrid",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
+    },
+    {
+      "name": "neon-streak",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "NeonStreak",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "pro"
+    },
+    {
+      "name": "opal-flow",
+      "type": "registry:component",
+      "category": "backgrounds",
+      "categories": [
+        "backgrounds"
+      ],
+      "dependencies": [],
+      "registryDependencies": [],
+      "exportName": "OpalFlow",
+      "exportKind": "default",
+      "version": "1.0.0",
+      "tier": "free"
     },
     {
       "name": "spider-particles",
@@ -1008,7 +1162,7 @@
       "registryDependencies": [],
       "exportName": "FlickeringText",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -1040,7 +1194,7 @@
       "registryDependencies": [],
       "exportName": "GlitchyText",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "tier": "pro"
     },
     {
@@ -1871,7 +2025,7 @@
       "registryDependencies": [],
       "exportName": "AnimatedFaq",
       "exportKind": "default",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "tier": "free"
     },
     {
@@ -2245,7 +2399,7 @@
       "registryDependencies": [],
       "exportName": "GooeyCounter",
       "exportKind": "default",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "tier": "free"
     },
     {
@@ -2306,7 +2460,7 @@
       "registryDependencies": [],
       "exportName": "InformationDrawer",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "free"
     },
     {
@@ -2324,23 +2478,6 @@
       "exportKind": "default",
       "version": "1.0.1",
       "tier": "free"
-    },
-    {
-      "name": "liquid-shatter",
-      "type": "registry:component",
-      "category": "webgl",
-      "categories": [
-        "webgl"
-      ],
-      "dependencies": [
-        "gsap",
-        "three"
-      ],
-      "registryDependencies": [],
-      "exportName": "LiquidShatter",
-      "exportKind": "default",
-      "version": "1.0.1",
-      "tier": "pro"
     },
     {
       "name": "shear-wipe",
@@ -2842,6 +2979,23 @@
       "tier": "free"
     },
     {
+      "name": "liquid-shatter",
+      "type": "registry:component",
+      "category": "webgl",
+      "categories": [
+        "webgl"
+      ],
+      "dependencies": [
+        "gsap",
+        "three"
+      ],
+      "registryDependencies": [],
+      "exportName": "LiquidShatter",
+      "exportKind": "default",
+      "version": "1.0.1",
+      "tier": "pro"
+    },
+    {
       "name": "milky-way",
       "type": "registry:component",
       "category": "webgl",
@@ -2915,7 +3069,7 @@
       "registryDependencies": [],
       "exportName": "StripSlider",
       "exportKind": "default",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "tier": "pro"
     }
   ]

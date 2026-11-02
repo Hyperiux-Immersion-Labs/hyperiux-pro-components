@@ -1,6 +1,6 @@
 {
   "name": "gooey-counter",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "type": "registry:component",
   "title": "Gooey Counter",
   "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
@@ -22,6 +22,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-11-02",
+      "summary": "Hid the canvas from assistive tech and mirrored the current number as text.",
+      "breaking": false
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-30",

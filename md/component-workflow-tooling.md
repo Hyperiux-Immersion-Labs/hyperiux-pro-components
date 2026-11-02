@@ -1,35 +1,41 @@
 # Component Workflow Tooling
 
-Two planning docs, merged: the `scripts/component-workflow.mjs` plan (component
-new/sync/rename/move/delete/diff/revert/verify) and the `scripts/sanity-code-sync.mjs`
+Two planning docs, merged: the `apps/docs/scripts/component-workflow.mjs` plan (component
+new/sync/rename/move/delete/diff/revert/verify) and the `apps/docs/scripts/sanity-code-sync.mjs`
 plan (keeping Sanity's rendered code blocks in sync with the registry source). Both
 were Wave 1 Foundation items and both scripts are built.
 
-> **Audit status (2026-08-12):** both docs are best read as *documentation of what
-> exists* - the described commands are built and match, not aspirational. Two real
-> gaps found:
+> **Audit status (2026-11-02):** both scripts are built and wired up as npm
+> scripts (`component:*`, `sanity:code:*`, in both `apps/docs/package.json` and the
+> root `package.json`). The text below is the original plan; where the code differs,
+> the plan text has been corrected or annotated. For new effects with a Remixer
+> Panel, the newer `apps/docs/scripts/component-ship.mjs` pipeline
+> ([`new-component-workflow.md`](./new-component-workflow.md)) is the usual path;
+> `component-workflow.mjs` remains the tool for rename/move/delete/diff/verify.
+> Still-open gaps:
 >
-> 1. **`component-workflow.mjs`'s `main` file default is still hardcoded to
->    `"index.jsx"`** (4 call sites). File discovery/import-resolution *are* already
->    TypeScript-aware (`.ts`/`.tsx` included in `SOURCE_EXTENSIONS`), but since
->    `registry/effects/**/index.*` is now 100% `.tsx` (see
->    [`typescript-migration-plan.md`](./typescript-migration-plan.md)), running
->    `component:new` on a new TS-only component without explicitly passing `--main
->    index.tsx` will fail - the script looks for a nonexistent `index.jsx`.
+> 1. **`component-workflow.mjs`'s `main` default is still hardcoded to
+>    `"index.jsx"`** (`new` and `sync`). File discovery/import resolution are
+>    TypeScript-aware, but every registry effect is now `index.tsx`, so
+>    `component:new` without `--main index.tsx` fails looking for `index.jsx`.
+>    `sync` is fine for existing effects because it reads `main` from `registry.json`.
+>    (`component-ship.mjs` detects `index.tsx` itself.)
 > 2. **`sanity-code-sync.mjs` has no `--all` batch mode and no `component:sync
->    --sync-sanity-code` integration flag.** Both are consistent with the plan's own
->    "Minimum Viable Version" scoping - they were always optional/deferred, just still
->    genuinely unbuilt.
-> 3. **`component-workflow.mjs` still treats `registry.json` mostly as generated
->    output, not as the home for curated remixer metadata.** In practice, teams now
->    hand-author `props`, `remixer`, and related install-facing metadata directly in
->    `registry/effects/{category}/{slug}/registry.json` first, then expect workflow
->    commands to preserve and carry that data through public JSON, tarballs, and free
->    mirror sync. The current script rebuilds core metadata from docs source and does
->    not yet have a "preserve existing `registry.json.props` when present" rule.
+>    --sync-sanity-code` integration flag.** Both were optional in the plan's
+>    "Minimum Viable Version" and are still unbuilt.
+> 3. **Curated `props`/`remixer` metadata: partly resolved.** `component:sync`
+>    (and `rename`/`move`) now start from the existing `registry.json` and keep
+>    `props`, `remixer` and any other hand-authored fields, only refreshing derived
+>    ones. `component:new --overwrite` still deletes the registry folder and writes a
+>    fresh `registry.json` without `props`/`remixer`, so use `component:sync` once a
+>    `registry.json` exists.
+> 4. **Tarballs come from `build:registry:dist`**, not the root `build:registry`
+>    (which only proxies to the `apps/docs` public JSON build). The plan text in
+>    Phases 7-11 has been corrected.
 >
-> Everything else - command boundaries, safety gating (`--yes`/`--dry-run`), the
-> matching/patch-shape logic, required env vars - checks out against the live scripts.
+> Command boundaries and safety gating (`--yes`/`--dry-run`) check out. The Sanity
+> sync's matching and write shape changed from the plan (draft-only writes, `code` +
+> `tsxCode`, extension-less filenames); see Part 2.
 
 ---
 
@@ -176,8 +182,14 @@ passed. A full delete removes:
 Run this command only when the component should be removed from both the docs
 source tree and distribution registry.
 
-The implementation can live as `scripts/component-workflow.mjs`, with package
-scripts added later after review.
+The implementation lives at `apps/docs/scripts/component-workflow.mjs`, with
+`component:*` package scripts in `apps/docs/package.json` (proxied from the root
+`package.json`). Extra flags the built script accepts: `--skip-build`,
+`--skip-verify`, `--skip-free-mirror`, `--free-repo-path`, `--prune` (sync),
+`--include-docs` (diff/revert), `--full-diff-check` (verify),
+`--no-version-bump` (sync) and `--image-source picsum|unsplash|placeholder`,
+which rewrites private R2 image URLs in the copied registry source to public
+placeholder images (default `picsum`).
 
 ## Inputs
 
@@ -189,18 +201,18 @@ Required for a new component:
 | `category` | `navigation` | Must be one of the existing `registry/effects/*` categories. |
 | `tier` | `free` or `pro` | Drives public JSON behavior and free-repo mirror sync. |
 | `title` | `Immersive Full Screen Navigation` | Human-readable title. |
+| `description` | `Full-screen navigation overlay...` | The built script fails if missing. |
 
 Optional:
 
 | Input | Example | Default |
 |---|---|---|
-| `description` | `Full-screen navigation overlay...` | Prompt/fail if missing for new components. |
 | `version` | `1.0.0` | `1.0.0` for new registry entries. |
 | `packageVersion` | `1.0.0` | Match `registry.json` version unless explicitly overridden. |
 | `date` | `2026-07-27` | Changelog release date. Defaults to today's date. |
 | `summary` | `Initial release` | Changelog summary. Defaults to `Initial release` for new components. |
 | `addedAt` | `2026-07-27` | Not written in the first automation pass unless Sanity automation is added. |
-| `main` | `index.jsx` | `index.jsx`. |
+| `main` | `index.tsx` | `index.jsx` (stale default; pass `--main index.tsx`, see audit gap 1). |
 | `exportName` | `ImmersiveFullscreenNav` | Auto-detect when safe; otherwise require explicit input. |
 | `exportKind` | `default` | Auto-detect when safe; otherwise require explicit input. |
 | `dependencies` | `gsap,lucide-react` | Auto-detect first pass, allow explicit override. |
@@ -213,8 +225,8 @@ Required for an existing component refresh:
 | Input | Example | Notes |
 |---|---|---|
 | `slug` | `immersive-full-screen-nav` | Finds the current registry entry and derives category/tier from it. |
-| `bump` | `patch` | One of `patch`, `minor`, or `major`. |
-| `summary` | `Added reduced-motion support` | Prepended to `registry.json.changelog`. |
+| `bump` | `patch` | One of `patch`, `minor`, or `major`. Or pass `--version x.y.z`, or `--no-version-bump` to keep the version. |
+| `summary` | `Added reduced-motion support` | Prepended to `registry.json.changelog`. Required whenever the version changes. |
 
 Optional for an existing refresh:
 
@@ -348,22 +360,22 @@ selection is uncertain.
    `component:sync` is used.
 6. For `tier=free`, verify the sibling `hyperiux-components` checkout exists,
    unless `--skip-free-mirror` is explicitly passed.
-7. Check that `apps/docs/scripts/build-registry.js` and root
-   `scripts/build-registry.js` are present.
+7. Check that `apps/docs/scripts/build-registry.js` and
+   `apps/docs/scripts/build-registry-dist.js` are present (there is no root
+   `scripts/` folder).
 8. In dry-run mode, show the full file plan and stop before writes.
 
 ### Phase 2: Discover Distributable Files
 
 Scan `apps/docs/src/components/{slug}/` and include only files users need:
 
-- include `.js`, `.jsx`, `.css`
+- include `.ts`, `.tsx`, `.js`, `.jsx`, `.css`
 - exclude docs-only files by convention:
-  - `Demo.jsx`
+  - `Demo.jsx` (note: `Demo.tsx` is *not* excluded)
   - `*.demo.jsx`
-  - `*.test.js`
-  - `*.test.jsx`
-  - `*.spec.js`
-  - local notes/readmes unless explicitly requested
+  - `*.test.{js,jsx,ts,tsx}`
+  - `*.spec.{js,jsx,ts,tsx}`
+  - `*.md` (local notes/readmes)
 
 Then parse local relative imports so the command can fail if a required file is
 missing from the generated `files` list.
@@ -399,22 +411,30 @@ Generate `registry.json`:
   "previewUrl": "/demo/slug",
   "tier": "free",
   "subfolder": true,
-  "main": "index.jsx",
+  "main": "index.tsx",
   "exportName": "ExportName",
   "exportKind": "default",
   "importPath": "@/components/effects/slug",
   "target": "src/components/effects/slug",
   "files": [
     {
-      "path": "index.jsx",
-      "target": "src/components/effects/slug/index.jsx"
+      "path": "index.tsx",
+      "target": "src/components/effects/slug/index.tsx"
     }
   ]
 }
 ```
 
+`component:new` writes no `props`/`remixer`; `component-ship.mjs registry` adds
+both, drafting `props` from the demo's `LocalRemixerDemo` (see
+[`new-component-workflow.md`](./new-component-workflow.md), Phase 1, including
+its limits: only an inline literal `props={[...]}` array is read, and props
+built through helper functions come out empty).
+
 Preserve curated metadata already authored in
-`registry/effects/{category}/{slug}/registry.json` when it exists. In particular,
+`registry/effects/{category}/{slug}/registry.json` when it exists. *(Status:
+`component:sync`, `rename` and `move` do this by building on the existing
+`registry.json`; `component:new --overwrite` does not, see audit gap 3.)* In particular,
 the workflow should treat these fields as registry-authored data rather than
 regenerating or dropping them:
 
@@ -463,8 +483,8 @@ separate:
   "name": "@hyperiux/slug",
   "version": "1.0.0",
   "description": "Description",
-  "main": "index.jsx",
-  "files": ["index.jsx", "registry.json"],
+  "main": "index.tsx",
+  "files": ["index.tsx", "registry.json"],
   "keywords": ["category", "hyperiux"],
   "dependencies": {}
 }
@@ -518,8 +538,10 @@ This produces:
 
 Important behavior already handled by the existing script:
 
-- Free components embed file content in public JSON.
-- Pro components strip file content from public JSON.
+- No tier ships source in public JSON: free code files get a one-line sign-in
+  stub as `content`, pro files get no `content` (code is served through the
+  signed-in `/api/cli/effects/[effectSlug]` route; see
+  `apps/docs/NO_ANONYMOUS_INSTALLS.md`).
 - `previewUrl` must be `/demo/{slug}`.
 - export detection runs and fails on ambiguous exports.
 
@@ -528,19 +550,18 @@ Important behavior already handled by the existing script:
 Run from the repo root:
 
 ```bash
-npm run build:registry
+npm --prefix apps/docs run build:registry:dist
 ```
 
-This syncs each effect package and rebuilds `registry/dist/*.tgz` plus
-`registry/dist/registry-index.json`.
+(or `npm run build:registry:dist`, which proxies to it). This wipes
+`registry/dist/`, syncs each effect's `package.json`, and re-packs every
+`registry/dist/*.tgz` plus `registry/dist/registry-index.json`. The root
+`npm run build:registry` only proxies to the `apps/docs` public JSON build and
+does not build tarballs. `component:new`/`sync`/`rename`/`move` run both builds
+unless `--skip-build` is passed.
 
-The automation should either:
-
-- run the existing full tarball rebuild, or
-- add a later optimized mode that packs only one component and updates
-  `registry/dist/registry-index.json`.
-
-Start with the full rebuild because it already exists and is easier to trust.
+`component-workflow.mjs` uses the full rebuild. The single-component pack mode
+exists in `component-ship.mjs` (`buildTarballForEffect`).
 
 ### Phase 8: Existing Component Sync
 
@@ -789,9 +810,11 @@ those should be separate phases because they touch content/design workflows.
 
 ## Test Suites
 
-The automation needs tests before it becomes the default workflow. Use fixture
-directories under `scripts/component-workflow/__fixtures__/` so tests do not
-mutate the real registry.
+The automation needs tests before it becomes the default workflow. *(Status:
+the tests that exist live in `apps/docs/src/lib/component-workflow.test.js`, run
+with `npm run component:test`; they point the script at a temporary fixture repo
+via `HYPERIUX_WORKFLOW_ROOT`. There is no `scripts/component-workflow/` folder;
+the commands below are the original plan.)*
 
 ### Unit Tests
 
@@ -878,7 +901,7 @@ After the command writes real registry files, run:
 
 ```bash
 npm --prefix apps/docs run build:registry
-npm run build:registry
+npm --prefix apps/docs run build:registry:dist
 ```
 
 Expected:
@@ -896,7 +919,7 @@ For a free component:
 node -e "const d=require('./apps/docs/public/r/SLUG.json'); console.log(d.files.some(f => f.content))"
 ```
 
-Expected: `true`.
+Expected: `true`, but the `content` is only the sign-in stub, not the source.
 
 For a pro component:
 
@@ -971,7 +994,7 @@ they point at the automation files or generated registry files.
 ## Open Decisions
 
 1. Should automation also create the docs demo page under
-   `apps/docs/src/app/(marketing)/demo/{slug}/page.js`, or only validate that it
+   `apps/docs/src/app/(marketing)/demo/{slug}/page.tsx`, or only validate that it
    exists?
 2. Should free-tier mirror sync be required by default, or should local-only
    development allow `--skip-free-mirror`?
@@ -1003,7 +1026,7 @@ It should:
 3. Generate `package.json`.
 4. Update `registry/index.json`.
 5. Run `npm --prefix apps/docs run build:registry`.
-6. Run `npm run build:registry`.
+6. Run `npm --prefix apps/docs run build:registry:dist`.
 7. Run `component:verify`.
 8. Print a verification summary.
 
@@ -1011,7 +1034,7 @@ After that works for pro components, add the free-tier mirror branch.
 
 ---
 
-## Part 2 - Sanity code sync (`scripts/sanity-code-sync.mjs`)
+## Part 2 - Sanity code sync (`apps/docs/scripts/sanity-code-sync.mjs`)
 
 *(formerly `sanity-code-sync-plan.md`)*
 
@@ -1019,7 +1042,34 @@ After that works for pro components, add the free-tier mirror branch.
 This document plans an automation layer that keeps Sanity `effectCodeBlock`
 content in sync with the registry source files for each component.
 
-It is a plan only. No implementation code is included here.
+*(Status, 2026-11-02: built as `npm run sanity:code:diff` / `npm run
+sanity:code:sync`, tests in `apps/docs/src/lib/sanity-code-sync.test.js` run with
+`npm run sanity:code:test`.)* What the built script does differently from the plan
+below:
+
+- **Draft-only writes.** It never edits the published document. It works on
+  `drafts.<publishedId>` (cloned from the published doc the first time, or the
+  existing draft so in-progress Studio edits are kept) and writes it with a
+  `createOrReplace` of that draft id. Nothing goes live until someone publishes
+  in Studio. A draft-only document (never published) is also found.
+- **Two code fields.** For `.ts`/`.tsx` files it writes `tsxCode` (the original
+  source) and `code` (types stripped to JSX with the TypeScript compiler).
+  `.js`/`.jsx`/`.css`/`.json` files go into `code` as-is. `language` is never
+  touched; there is no `--sync-language`.
+- **Filename matching.** Exact path, then basename, then extension-less name
+  (Sanity blocks are stored as e.g. `index` for `index.tsx`). If exactly one
+  block and one registry file are still unmatched (ignoring `page`/`layout`
+  usage blocks), they are paired. New blocks from `--create-missing` use the
+  extension-less filename. Usage/demo code blocks are left alone.
+- **Lookup.** Always by `effectSlug` *and* `categorySlug`; `--sanity-slug` /
+  `--sanity-category` override them when Sanity's values differ from the
+  registry. `--fixture <file>` reads/writes a local JSON document instead of
+  Sanity (used by the tests).
+- **Flags.** `--slug` (required), `--yes`, `--dry-run`, `--create-missing`,
+  `--sanity-slug`, `--sanity-category`, `--fixture`. No `--all` and no
+  `component:sync --sync-sanity-code`.
+
+The original plan follows.
 
 ## Goal
 
@@ -1041,7 +1091,7 @@ show the new code inside the existing code block.
 The effect detail page renders content from Sanity in:
 
 ```text
-apps/docs/src/app/(app)/effects/[slug]/effect-detail.jsx
+apps/docs/src/app/(app)/(workspace)/effects/[slug]/effect-detail.jsx
 ```
 
 Code blocks are rendered when `content.body` contains objects like:
@@ -1108,7 +1158,7 @@ Real sync:
 npm run sanity:code:sync -- --slug immersive-full-screen-nav --yes
 ```
 
-Sync all changed code blocks for all registry components:
+Sync all changed code blocks for all registry components (not built, see audit gap 2):
 
 ```bash
 npm run sanity:code:sync -- --all --dry-run
@@ -1182,6 +1232,9 @@ SANITY_API_TOKEN=...
 ```
 
 The token must have permission to update `effectContent` documents.
+`NEXT_PUBLIC_SANITY_DATASET` defaults to `production`; `SANITY_API_VERSION`
+(default `2024-01-01`) and `HYPERIUX_SANITY_API_BASE` (API base URL override,
+which also makes the project id optional) are optional.
 
 Do not hardcode tokens in scripts.
 
@@ -1306,6 +1359,8 @@ Default behavior:
 - preserve unknown fields on each code block
 - update `code`
 - update `language` only when missing or when `--sync-language` is passed
+  *(not built: the script never touches `language`, and writes `tsxCode` as well
+  as `code`)*
 
 The command should not create missing code blocks by default.
 
@@ -1323,6 +1378,10 @@ the body after the last existing `effectCodeBlock`. If no code blocks exist,
 they should be appended to the end of `body`.
 
 ## Patch Shape
+
+*(Built differently: the script sends `createOrReplace` for the `drafts.` copy
+with the new `body`, never a patch on the published document. See the status
+note at the top of Part 2.)*
 
 The command should avoid replacing the whole document.
 
@@ -1358,7 +1417,9 @@ The diff output should show a summary before any mutation.
 
 - Default to dry-run behavior unless `--yes` is passed.
 - `--dry-run` and missing `--yes` should never write to Sanity.
-- Never use `createOrReplace` for existing documents.
+- Never use `createOrReplace` for existing documents. *(Built differently: it
+  never writes the published document, but does `createOrReplace` the
+  `drafts.` copy.)*
 - Never touch documents whose `_type` is not `effectContent`.
 - Never update code blocks without a filename unless an explicit mapping is
   provided later.

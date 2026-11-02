@@ -237,21 +237,22 @@ const GlitchyText = ({
             </span>
           </p>
 
+          {/* the glitch layers are visual copies of the line above, so screen readers skip them */}
           {!prefersReducedMotion && (
             <>
-              <p className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
+              <p aria-hidden="true" className="absolute left-[2vw] top-0 z-2 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
                 <span ref={text3Ref} className="block">
                   Engineering meets artistry
                 </span>
               </p>
 
-              <p className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
+              <p aria-hidden="true" className="absolute left-[2vw] top-0 z-8 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter">
                 <span ref={text2Ref} className="block">
                   Engineering meets artistry
                 </span>
               </p>
 
-              <p className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
+              <p aria-hidden="true" className="absolute left-[2vw] top-0 z-6 text-nowrap text-[6.5vw] italic uppercase leading-none tracking-tighter" style={{ color: glitchColor }}>
                 <span ref={text4Ref} className="block">
                   Engineering meets artistry
                 </span>

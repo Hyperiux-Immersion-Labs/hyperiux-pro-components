@@ -1,10 +1,10 @@
 # Daily Automated CSV Invite Sender
 
-> Status: planned, not yet started. Saved 2026-08-26 for later implementation.
+> Status: planned, not yet started (re-checked 2026-11-02: none of the new files, tables or the `vercel.json` cron exist yet). Saved 2026-08-26 for later implementation.
 
 ## Context
 
-The admin dashboard (`apps/docs/src/app/(app)/(workspace)/dashboard/admin/page.js`) already has an `InviteModal` that lets an admin paste or upload emails and send them *immediately*, capped at 100/day (`DAILY_INVITE_LIMIT` in `apps/docs/src/app/api/admin/waitlist/invite/route.js`). There's no way today to hand it a large list and have it trickle out automatically over multiple days.
+The admin dashboard's Users tab (`apps/docs/src/app/(app)/(workspace)/dashboard/[username]/admin/users/page.js`) already has an `InviteModal` that lets an admin paste or upload emails and send them *immediately*, capped at 100/day (`DAILY_INVITE_LIMIT` in `apps/docs/src/app/api/admin/waitlist/invite/route.js`). There's no way today to hand it a large list and have it trickle out automatically over multiple days.
 
 This adds a second, additive flow: an admin uploads a CSV once; a Vercel Cron job fires daily at **05:30 UTC (11:00 IST, no DST)** and sends the next 70 rows, sharing the *same* 100/day cap the manual flow already enforces. The queue is durable server-side state in Supabase, survives redeploys, self-terminates when exhausted (no looping), and a fresh upload always fully replaces whatever is still queued.
 
@@ -148,9 +148,9 @@ No RLS - consistent with every other table here; all access goes through the ser
 - `DAILY_INVITE_LIMIT = 100`
 - `EMAIL_RE`
 - `startOfTodayUTC()`
-- `getInvitesSentToday()` (same `sent_emails` query, lines 30-40 today)
-- `inviteOneUser(clerk, { email, name })` - same Clerk `createInvitation` + `sendEmail` body as today's `inviteOne` (lines 59-116); `name` accepted but not yet used in the template (template stays as-is).
-- `inviteManyWithConcurrency(clerk, recipients, concurrency)` - same worker-pool as today's `inviteWithConcurrency` (lines 118-135), operating on `{email, name}` objects.
+- `getInvitesSentToday()` (same `sent_emails` query, lines 31-41 today)
+- `inviteOneUser(clerk, { email, name })` - same Clerk `createInvitation` + `sendEmail` body as today's `inviteOne` (lines 60-117); `name` accepted but not yet used in the template (template stays as-is).
+- `inviteManyWithConcurrency(clerk, recipients, concurrency)` - same worker-pool as today's `inviteWithConcurrency` (lines 119-136), operating on `{email, name}` objects.
 
 **`route.js` changes**: import the above from `@/lib/inviteUser` instead of defining locally; `MAX_EMAILS_PER_REQUEST = 10` and `CONCURRENCY = 5` stay local (HTTP-shape concerns, not shared state); `POST` calls `inviteManyWithConcurrency(clerk, valid.map((email) => ({ email })), CONCURRENCY)`. No behavior change to this endpoint.
 
@@ -183,7 +183,7 @@ Body: find `active` batch → `supabase.rpc("claim_invite_batch_rows", { p_batch
 ```
 ⚠️ Flag to confirm: Vercel Hobby plan only guarantees cron delivery *within the scheduled hour*, not the exact minute - exact-minute delivery needs Pro/Enterprise. Confirmed acceptable to run on Hobby (see "Free-tier check" above).
 
-**`apps/docs/src/components/admin/AutoInviteBatchCard.jsx`** - new client component, rendered from `admin/page.js` as its own section (not inside `InviteModal`): file upload input (confirms via `window.confirm` if replacing a still-active batch), status display (sent/total, pending, status pill, "Next run" in `Asia/Kolkata` via `Intl.DateTimeFormat`), cancel button. Styling matches existing conventions in `admin/page.js` (borders, `ButtonV3`, badge patterns already used for role/plan pills).
+**`apps/docs/src/components/admin/AutoInviteBatchCard.jsx`** - new client component, rendered from `admin/users/page.js` as its own section (not inside `InviteModal`): file upload input (confirms via `window.confirm` if replacing a still-active batch), status display (sent/total, pending, status pill, "Next run" in `Asia/Kolkata` via `Intl.DateTimeFormat`), cancel button. Styling matches existing conventions in `admin/users/page.js` (borders, `ButtonV3`, badge patterns already used for role/plan pills).
 
 ## 4. Env vars
 
@@ -232,4 +232,4 @@ john.smith@example.com,John Smith
 - `apps/docs/src/app/api/cron/auto-invite/route.js` (new)
 - `apps/docs/vercel.json` (add crons)
 - `apps/docs/src/components/admin/AutoInviteBatchCard.jsx` (new)
-- `apps/docs/src/app/(app)/(workspace)/dashboard/admin/page.js` (render the new card)
+- `apps/docs/src/app/(app)/(workspace)/dashboard/[username]/admin/users/page.js` (render the new card)

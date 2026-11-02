@@ -1,0 +1,253 @@
+{
+  "name": "neon-streak",
+  "type": "registry:component",
+  "title": "Neon Streak",
+  "description": "The pointer draws twisting pink-violet light streaks over drifting smoke; idle, it draws a neon ring.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "exportName": "NeonStreak",
+  "exportKind": "default",
+  "importPath": "@/components/effects/neon-streak",
+  "tier": "pro",
+  "version": "1.0.0",
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2026-11-02",
+      "summary": "Initial release",
+      "breaking": false
+    }
+  ],
+  "props": [
+    {
+      "name": "backgroundColor",
+      "label": "Background",
+      "type": "color",
+      "default": "#0b0b0b",
+      "description": "Canvas colour behind the smoke.",
+      "remixer": {
+        "control": "color",
+        "group": "colour",
+        "groupTitle": "Colour"
+      }
+    },
+    {
+      "name": "hue",
+      "label": "Hue",
+      "type": "number",
+      "default": 0,
+      "description": "Turns every colour around the colour wheel, in degrees. 0 is the reference violet.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": -180,
+        "max": 180,
+        "step": 1
+      }
+    },
+    {
+      "name": "saturation",
+      "label": "Saturation",
+      "type": "number",
+      "default": 1,
+      "description": "Colour strength. 0 is greyscale, 1 matches the reference.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": 0,
+        "max": 1.6,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "intensity",
+      "label": "Intensity",
+      "type": "number",
+      "default": 1,
+      "description": "Overall brightness of the light.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": 0.2,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "glow",
+      "label": "Glow",
+      "type": "number",
+      "default": 1,
+      "description": "How wide the glow spreads around each strand.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": 0.3,
+        "max": 2.5,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "smoke",
+      "label": "Smoke",
+      "type": "number",
+      "default": 1,
+      "description": "How much grey smoke drifts behind the light. 0 leaves the background flat.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": 0,
+        "max": 2,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "grain",
+      "label": "Grain",
+      "type": "number",
+      "default": 0.04,
+      "description": "Film grain strength. 0 turns it off.",
+      "remixer": {
+        "control": "range",
+        "group": "colour",
+        "groupTitle": "Colour",
+        "min": 0,
+        "max": 0.2,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "thickness",
+      "label": "Thickness",
+      "type": "number",
+      "default": 1,
+      "description": "How thick the bright strands are.",
+      "remixer": {
+        "control": "range",
+        "group": "streak",
+        "groupTitle": "Streak",
+        "min": 0.3,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "weave",
+      "label": "Weave",
+      "type": "number",
+      "default": 1,
+      "description": "How far the strands weave apart and cross. 0 draws one line.",
+      "remixer": {
+        "control": "range",
+        "group": "streak",
+        "groupTitle": "Streak",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "trailLength",
+      "label": "Trail length",
+      "type": "number",
+      "default": 2.6,
+      "description": "Seconds a streak stays lit before it fades out.",
+      "remixer": {
+        "control": "range",
+        "group": "streak",
+        "groupTitle": "Streak",
+        "min": 0.4,
+        "max": 6,
+        "step": 0.1
+      }
+    },
+    {
+      "name": "speed",
+      "label": "Speed",
+      "type": "number",
+      "default": 1,
+      "description": "How fast the smoke drifts and the strands twist. 0 holds them still.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0,
+        "max": 3,
+        "step": 0.05
+      }
+    },
+    {
+      "name": "ringSize",
+      "label": "Ring size",
+      "type": "number",
+      "default": 0.32,
+      "description": "Radius of the self-drawn ring, in canvas heights.",
+      "remixer": {
+        "control": "range",
+        "group": "motion",
+        "groupTitle": "Motion",
+        "min": 0.1,
+        "max": 0.48,
+        "step": 0.01
+      }
+    },
+    {
+      "name": "interactive",
+      "label": "Draw with pointer",
+      "type": "boolean",
+      "default": true,
+      "description": "Let the pointer draw streaks of light.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "cursor",
+        "groupTitle": "Cursor"
+      }
+    },
+    {
+      "name": "autoplay",
+      "label": "Autoplay",
+      "type": "boolean",
+      "default": true,
+      "description": "Draw the ring on its own when nobody is moving the pointer.",
+      "remixer": {
+        "control": "checkbox",
+        "group": "cursor",
+        "groupTitle": "Cursor"
+      }
+    },
+    {
+      "name": "idleDelay",
+      "label": "Idle delay",
+      "type": "number",
+      "default": 1.2,
+      "description": "Seconds after the pointer stops before the ring starts drawing itself again.",
+      "remixer": {
+        "control": "range",
+        "group": "cursor",
+        "groupTitle": "Cursor",
+        "min": 0.2,
+        "max": 5,
+        "step": 0.1
+      }
+    }
+  ],
+  "remixer": {
+    "enabled": true,
+    "layout": "panel",
+    "copyCode": {
+      "includeOnlyPublicProps": true
+    }
+  },
+  "files": [
+    {
+      "path": "index.tsx",
+      "type": "registry:component",
+      "target": "src/components/effects/neon-streak/index.tsx"
+    }
+  ]
+}

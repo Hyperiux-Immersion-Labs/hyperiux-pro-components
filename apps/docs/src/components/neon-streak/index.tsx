@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -27,7 +26,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Shape
 
 type Rgb = [number, number, number];
@@ -67,7 +65,6 @@ const FLOATS_PER_SPLAT = 4;
 // The halo is broad enough that every fifth point of one strand blends into a smooth band
 const HALO_STRIDE = 5;
 
-// ---------------------------------------------------------------------------
 // Shaders
 
 const QUAD_VS = `#version 300 es
@@ -216,7 +213,6 @@ void main() {
   outColor = vec4(col, 1.0);
 }`;
 
-// ---------------------------------------------------------------------------
 // Helpers
 
 function hexToRgb(hex: string): Rgb {
@@ -267,7 +263,6 @@ function loopPoint(angle: number, time: number, radius: number, out: { x: number
   out.y = Math.sin(angle) * r + 0.01 * Math.cos(time * 0.17);
 }
 
-// ---------------------------------------------------------------------------
 // Component
 
 export interface NeonStreakProps {

@@ -6,6 +6,7 @@ import Lenis from "lenis";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import * as THREE from "three";
 
+import Image from "next/image";
 const DEFAULT_ROOT_MARGIN = "256px";
 
 type RafRoot = Element | null | { current: Element | null } | (() => Element | null);
@@ -703,12 +704,14 @@ function PortfolioSlider({
                 {/* Plain <img> so no next.config images.remotePatterns is needed.
  crossOrigin matches the WebGL texture request, so the browser cache
  entry is CORS-enabled for both. */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <Image
                   src={item.url}
                   crossOrigin="anonymous"
                   alt={item.description}
                   className="absolute inset-0 w-full h-full object-cover"
+                  fill
+                  sizes="100vw"
+                  loading="eager"
                 />
               </div>
             );
@@ -723,31 +726,30 @@ function PortfolioSlider({
 // Images load straight from the Vault asset bucket. It serves
 // Access-Control-Allow-Origin: *, so they work as WebGL textures with
 // crossOrigin="anonymous" - no proxy route or next.config needed.
-const imageUrl = (seed: string, portrait = false) =>
-  `https://picsum.photos/seed/assetsimages-${seed}/${portrait ? "1200/1600" : "1600/1200"}`;
+const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
 
 const items = [
-  { url: imageUrl("h-01"), description: "PORTFOLIO 01" },
-  { url: imageUrl("h-02"), description: "PORTFOLIO 02" },
-  { url: imageUrl("h-03"), description: "PORTFOLIO 03" },
-  { url: imageUrl("h-05"), description: "PORTFOLIO 04" },
-  { url: imageUrl("h-06"), description: "PORTFOLIO 05" },
-  { url: imageUrl("v-10", true), description: "PORTFOLIO 06" },
-  { url: imageUrl("h-08"), description: "PORTFOLIO 07" },
-  { url: imageUrl("h-09"), description: "PORTFOLIO 08" },
-  { url: imageUrl("h-10"), description: "PORTFOLIO 09" },
-  { url: imageUrl("h-11"), description: "PORTFOLIO 10" },
-  { url: imageUrl("h-12"), description: "PORTFOLIO 11" },
-  { url: imageUrl("h-13"), description: "PORTFOLIO 12" },
-  { url: imageUrl("h-14"), description: "PORTFOLIO 13" },
-  { url: imageUrl("h-15"), description: "PORTFOLIO 14" },
-  { url: imageUrl("v-01", true), description: "PORTFOLIO 15" },
-  { url: imageUrl("v-02", true), description: "PORTFOLIO 16" },
-  { url: imageUrl("v-03", true), description: "PORTFOLIO 17" },
-  { url: imageUrl("v-04", true), description: "PORTFOLIO 18" },
-  { url: imageUrl("v-05", true), description: "PORTFOLIO 19" },
-  { url: imageUrl("v-06", true), description: "PORTFOLIO 20" },
-  { url: imageUrl("v-07", true), description: "PORTFOLIO 21" },
+  { url: `${B}/h-01.jpg`, description: "PORTFOLIO 01" },
+  { url: `${B}/h-02.jpg`, description: "PORTFOLIO 02" },
+  { url: `${B}/h-03.jpg`, description: "PORTFOLIO 03" },
+  { url: `${B}/h-05.jpg`, description: "PORTFOLIO 04" },
+  { url: `${B}/h-06.jpg`, description: "PORTFOLIO 05" },
+  { url: `${B}/v-10.jpg`, description: "PORTFOLIO 06" },
+  { url: `${B}/h-08.jpg`, description: "PORTFOLIO 07" },
+  { url: `${B}/h-09.jpg`, description: "PORTFOLIO 08" },
+  { url: `${B}/h-10.jpg`, description: "PORTFOLIO 09" },
+  { url: `${B}/h-11.jpg`, description: "PORTFOLIO 10" },
+  { url: `${B}/h-12.jpg`, description: "PORTFOLIO 11" },
+  { url: `${B}/h-13.jpg`, description: "PORTFOLIO 12" },
+  { url: `${B}/h-14.jpg`, description: "PORTFOLIO 13" },
+  { url: `${B}/h-28.png`, description: "PORTFOLIO 14" },
+  { url: `${B}/h-16.jpg`, description: "PORTFOLIO 15" },
+  { url: `${B}/v-02.jpg`, description: "PORTFOLIO 16" },
+  { url: `${B}/v-03.jpg`, description: "PORTFOLIO 17" },
+  { url: `${B}/v-04.jpg`, description: "PORTFOLIO 18" },
+  { url: `${B}/h-19.jpg`, description: "PORTFOLIO 19" },
+  { url: `${B}/h-20.jpg`, description: "PORTFOLIO 20" },
+  { url: `${B}/h-21.jpg`, description: "PORTFOLIO 21" },
 ];
 
 export default function PortfolioSlider3D({

@@ -12,6 +12,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedQuestionnaire",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-questionnaire",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

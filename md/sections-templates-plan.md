@@ -1,6 +1,34 @@
 # Sections & Templates for Hyperiux Vault
 
-*Planning memo - hyperiux-pro-components / apps/docs - approved plan, not yet started*
+*Planning memo - hyperiux-pro-components / apps/docs - approved plan; Templates and the live effect preview built (differently from below), Sections not started (status re-checked 2026-11-02)*
+
+> **Status (2026-11-02):**
+> - **Sections (§1, §4): not started.** No `registry:block` entries, no
+>   `sectionCategories` in `lib/categories.js`, no `/sections` route, no
+>   `getRegistrySections()` in `apps/docs/test/effect-harness.js`.
+> - **Templates (§2, §5): built, on a different architecture from §2a-2d.**
+>   There is no `registry/templates/**/template.json` and no Sanity
+>   `templateContent`. Each template is a folder under
+>   `apps/docs/src/app/(marketing)/template-demo/<slug>/` (elenavoss, kyntra,
+>   lumera, oris-dental, the-missing-pixel); listing/detail metadata lives in
+>   `src/lib/mock-templates.js` `TEMPLATES`; `scripts/create-template.mjs`
+>   (`npm run template:create`) scaffolds a new one and
+>   `scripts/package-template.mjs` (`npm run template:update`) zips it to Vercel
+>   Blob and rewrites `src/lib/template-scaffolds.js`. Access is
+>   `src/lib/template-access.js` (sibling to `effect-access.js`), purchases go
+>   through Razorpay (`api/razorpay/create-order` with `templateSlug`), not
+>   Stripe, into `template_purchases`, plus template credits
+>   (`lib/template-credits.js`, `api/templates/[slug]/redeem`). The gated
+>   download is `api/templates/[slug]/download` (streams the blob, URL never
+>   sent to the client). Routes: `/templates` and `/templates/[slug]` under
+>   `app/(app)/(workspace)/`. See `md/template-download-purchase-plan.md`
+>   and `md/template-qc-checklist.md`.
+> - **Live preview on the effect detail page (§3): built.**
+>   `effects/[slug]/EffectStage.jsx` embeds the `/demo/<slug>` route in an
+>   iframe (props cross over by `postMessage`); phones get the video or cover
+>   instead.
+> - Counts below ("134 registry entries") are from when this was written;
+>   `registry/index.json` now lists 185.
 
 Adds two new content types to the Vault: composed page **Sections** (hero,
 feature, testimonial, footer, etc.) and full multi-page **Templates**

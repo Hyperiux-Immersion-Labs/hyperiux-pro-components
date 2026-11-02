@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -27,7 +26,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Look
 
 type Rgb = [number, number, number];
@@ -43,7 +41,6 @@ const SMEAR_HALF_LIFE = 0.4;
 const SMEAR_ADVECT = 2;
 const SMEAR_MAX = 0.4;
 
-// ---------------------------------------------------------------------------
 // Shaders
 
 const QUAD_VS = `#version 300 es
@@ -220,7 +217,6 @@ void main() {
   outColor = vec4(col, 1.0);
 }`;
 
-// ---------------------------------------------------------------------------
 // Helpers
 
 function hexToRgb(hex: string): Rgb {
@@ -286,7 +282,6 @@ function sizeTarget(
   gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 }
 
-// ---------------------------------------------------------------------------
 // Component
 
 export interface OpalFlowProps {

@@ -4,9 +4,10 @@
 [`sections-templates-plan.md`](./sections-templates-plan.md) §4 and
 [`template-qc-checklist.md`](./template-qc-checklist.md) (every item here is
 also a prerequisite gate a Section must clear before it's eligible to be
-bundled into any Template). Not yet wired into automated tooling; this is
-the full gate a human (and eventually CI) runs before a Section is allowed
-to ship.
+bundled into any Template). Not yet wired into automated tooling, and no
+Sections exist yet (re-checked 2026-11-02: no `registry:block` entries, no
+`sectionCategories`, no `getRegistrySections()` harness); this is the full
+gate a human (and eventually CI) runs before a Section is allowed to ship.
 
 A Section is registry-shaped exactly like an effect (same `registry.json`,
 same tier/access model, same CLI path - see the plan §1), so this checklist
@@ -170,8 +171,9 @@ which is a real degraded experience for a Section browsed on the buy page.)*
 - [ ] **[BLOCK]** Registry copy carries the
       `// Built using Hyperiux Vault: https://vault.hyperiux.com`
       attribution header (existing convention - verify on the registry
-      copy specifically; docs mirrors never carry it, so checking the
-      wrong copy gives a false pass).
+      copy specifically; docs mirrors under `apps/docs/src/components/` only
+      carry it inconsistently, so checking the wrong copy gives a false
+      result either way).
 - [ ] **[BLOCK]** Any third-party asset (stock photo, icon, font) bundled
       with the section has a license compatible with redistribution to
       installers - flag and remove anything uncertain.

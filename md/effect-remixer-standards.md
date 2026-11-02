@@ -4,18 +4,20 @@ Every effect under `registry/effects/**` follows these rules. They come from the
 shadcn components (`registry/effects/components/animated-*`), which already do all of this,
 plus the `reducedMotionNote` pattern that the older effects use.
 
-Status (rolled out to all effects on 2026-10-26):
+Status (rolled out to all effects on 2026-10-26; counts rechecked against
+`registry/effects/**/registry.json` on 2026-11-02):
 
-| Rule | animated-* components (28) | Other effects (124 with props) |
+| Rule | animated-* components (26) | Other effects (159, all with props) |
 |---|---|---|
-| 1. `disabledWhen` on dependent props | 21 use it | 27 effects, 62 props |
-| 2. `hideWhenReducedMotion` on motion-only props | 24 use it | 83 effects, 270 props |
-| 3. "Needs X on." in dependent prop descriptions | yes | yes, on every `disabledWhen` prop |
+| 1. `disabledWhen` on dependent props | 21 effects, 77 props | 29 effects, 71 props |
+| 2. `hideWhenReducedMotion` on motion-only props | 24 effects, 160 props | 85 effects, 280 props |
+| 3. Dependency named in dependent prop descriptions | mostly; 15 props in animated-drawer, -dialog, -hover-card, -date-picker, -command-menu and -data-table have no note yet, and some use "Only used by ..." wording | yes, on every `disabledWhen` prop |
 | 4. Effect honours OS + simulated reduced motion | yes (`matchMedia` + `data-pc-rm`) | yes (`matchMedia`, plus the global `html[data-pc-rm]` rule in `globals.css` for CSS transitions) |
-| 5. `reducedMotionNote` when motion can't be reduced | 0 (not needed so far) | 34 demos |
+| 5. `reducedMotionNote` when motion can't be reduced | 0 (not needed so far) | 42 demos |
 
 Effects with a note and no reducible motion (most cursors, dither-canvas, dotted-grid,
-card-drift, circular-split-roll, ribbon-drift, strip-slider ...) only got `disabledWhen` rules.
+card-drift, circular-split-roll, ribbon-drift, strip-slider ...) have no `hideWhenReducedMotion`
+flags; some of them (dither-canvas, ribbon-drift) have `disabledWhen` rules.
 
 Runtime support for rules 1 and 2 is already built in `apps/docs/src/components/remixer-panel/`
 (`types.ts`, `remixer-utils.ts`, `RemixerPanel.tsx`). Applying them to an effect only means

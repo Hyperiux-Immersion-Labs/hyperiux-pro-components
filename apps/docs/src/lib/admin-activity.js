@@ -195,9 +195,7 @@ export function buildDailyBucketsForRange({ startDateString, endDateString, maxD
   return buckets;
 }
 
-// ---------------------------------------------------------------------------
 // Period comparison (the admin Activity stat cards)
-// ---------------------------------------------------------------------------
 
 const DAY_MS = 86400000;
 

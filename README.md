@@ -7,7 +7,7 @@
 
 **A collection of high-quality animation effects and interactive components for Next.js - designed by [Hyperiux](https://hyperiux.com).**
 
-Hyperiux Vault includes 175 effects total: 70 free effects are open source (MPL 2.0) and install with a free Hyperiux account, and 105 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
+Hyperiux Vault includes 185 effects total: 75 free effects are open source (MPL 2.0) and install with a free Hyperiux account, and 110 pro effects are available with a [Pro subscription](https://vault.hyperiux.com/pricing). The CLI copies source code directly into your project - you own what you install.
 
 ---
 
@@ -137,12 +137,17 @@ Global flags: `-V, --version` and `-h, --help`.
 
 ## Free Effects
 
-All 56 free effects install with a free Hyperiux account (`npx hyperiux login` first). Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 75 free effects install with a free Hyperiux account (`npx hyperiux login` first). Browse and preview them at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ```bash
 # Backgrounds
+npx hyperiux add arc-light
+npx hyperiux add ascii-band
+npx hyperiux add aurora-ribbon
 npx hyperiux add dot-transition
 npx hyperiux add dotted-grid
+npx hyperiux add moss-grid
+npx hyperiux add opal-flow
 npx hyperiux add spider-particles
 
 # Buttons
@@ -158,10 +163,23 @@ npx hyperiux add dimensional-switch-slider
 npx hyperiux add ellipse-carousel
 npx hyperiux add orbit-flip-slider
 npx hyperiux add parallax-strip-slider
+npx hyperiux add portal-carousel
 npx hyperiux add zoom-slider
 
 # Components
+npx hyperiux add animated-button
+npx hyperiux add animated-checkbox-group
+npx hyperiux add animated-date-picker
+npx hyperiux add animated-dialog
+npx hyperiux add animated-drawer
+npx hyperiux add animated-dropdown-menu
 npx hyperiux add animated-faq
+npx hyperiux add animated-input-otp
+npx hyperiux add animated-menubar
+npx hyperiux add animated-radio-group
+npx hyperiux add animated-sidebar
+npx hyperiux add animated-skeleton
+npx hyperiux add animated-switch
 npx hyperiux add border-beam
 npx hyperiux add gooey-counter
 npx hyperiux add gsap-flip-card
@@ -188,6 +206,7 @@ npx hyperiux add immersive-full-screen-nav
 # Scroll
 npx hyperiux add circular-split-roll
 npx hyperiux add horizontal-feature-reveal
+npx hyperiux add image-pixel-reveal
 npx hyperiux add infinite-perspective-slider
 npx hyperiux add rotation-slider
 npx hyperiux add split-canvas
@@ -221,13 +240,13 @@ npx hyperiux add milky-way
 
 ### Free effects by category
 
-**Backgrounds** - `dot-transition` · `dotted-grid` · `spider-particles`
+**Backgrounds** - `arc-light` · `ascii-band` · `aurora-ribbon` · `dot-transition` · `dotted-grid` · `moss-grid` · `opal-flow` · `spider-particles`
 
 **Buttons** - `arrow-fill-button` · `link-button` · `metallic-button` · `scramble-link-button` · `shiny-button`
 
-**Carousels** - `arc-flow-carousel` · `dimensional-switch-slider` · `ellipse-carousel` · `orbit-flip-slider` · `parallax-strip-slider` · `zoom-slider`
+**Carousels** - `arc-flow-carousel` · `dimensional-switch-slider` · `ellipse-carousel` · `orbit-flip-slider` · `parallax-strip-slider` · `portal-carousel` · `zoom-slider`
 
-**Components** - `animated-faq` · `border-beam` · `gooey-counter` · `gsap-flip-card` · `hover-stack` · `information-drawer` · `interactive-list-preview` · `timeline`
+**Components** - `animated-button` · `animated-checkbox-group` · `animated-date-picker` · `animated-dialog` · `animated-drawer` · `animated-dropdown-menu` · `animated-faq` · `animated-input-otp` · `animated-menubar` · `animated-radio-group` · `animated-sidebar` · `animated-skeleton` · `animated-switch` · `border-beam` · `gooey-counter` · `gsap-flip-card` · `hover-stack` · `information-drawer` · `interactive-list-preview` · `timeline`
 
 **Cursor** - `dotted-trail` · `liquid-glass-cursor` · `phantom-image-trail` · `pixelated-image-effect`
 
@@ -235,7 +254,7 @@ npx hyperiux add milky-way
 
 **Navigation** - `directional-menu` · `elevate-navbar` · `immersive-full-screen-nav`
 
-**Scroll** - `circular-split-roll` · `horizontal-feature-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `stack-spread` · `sticky-content-wrapper` · `text-convergence`
+**Scroll** - `circular-split-roll` · `horizontal-feature-reveal` · `image-pixel-reveal` · `infinite-perspective-slider` · `rotation-slider` · `split-canvas` · `stack-spread` · `sticky-content-wrapper` · `text-convergence`
 
 **Text** - `chromatic-text` · `depth-flip-text` · `drop-text` · `flickering-text` · `focus-text` · `glowing-text` · `number-counter` · `pixel-text-fill` · `rectangular-text-reveal` · `rolling-text` · `typing-text` · `variable-text-proximity`
 
@@ -247,7 +266,7 @@ npx hyperiux add milky-way
 
 ## Pro Effects
 
-95 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
+110 pro effects require a [Hyperiux Vault Pro subscription](https://vault.hyperiux.com/pricing). This covers WebGL shaders, advanced Three.js scenes, GPU particle systems, complex GSAP rigs, and everything else in the full vault.
 
 ### Getting started with Pro
 
@@ -293,17 +312,17 @@ Or add `HYPERIUX_TOKEN` to your CI secrets and the CLI will pick it up automatic
 
 ### Browse Pro effects
 
-All 95 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
+All 110 pro effects with live previews, code previews, and installation names are listed at [vault.hyperiux.com/effects](https://vault.hyperiux.com/effects).
 
 ### Pro effects by category
 
-**Backgrounds** - `dither-canvas` · `grid-lift`
+**Backgrounds** - `ascii-dome` · `creepy-background` · `dither-canvas` · `flower-field` · `grassy-background` · `grid-lift` · `neon-streak`
 
 **Buttons** - `animated-toggle` · `char-stagger-button` · `char-stagger-primary-button` · `dot-fill-button` · `spotlight-button`
 
 **Carousels** - `clippath-slider` · `depth-card-stack` · `infinite-carousel` · `ring-carousel` · `webgl-slider`
 
-**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `globe` · `infinite-grid-gallery` · `shear-wipe` · `testimonial-swiper` · `video-player`
+**Components** - `animated-attachment` · `animated-chat-bubble` · `animated-command-menu` · `animated-data-table` · `animated-form` · `animated-hover-card` · `animated-modal` · `animated-questionnaire` · `animated-slider` · `animated-tabs` · `animated-theme-switch` · `animated-toast` · `animated-tooltip` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `globe` · `infinite-grid-gallery` · `liquid-shatter` · `shear-wipe` · `testimonial-swiper` · `video-player`
 
 **Cursor** - `butterfly-trail-cursor` · `character-trail` · `coffee-bean-cursor` · `colorful-cursor-aura` · `cursor-move` · `fish-eye` · `full-screen-crosshair` · `inertia-img` · `interactive-arrows` · `magnetic-image-trail` · `noise-ripple-cursor` · `pixel-bloom` · `rope-cursor`
 
@@ -317,7 +336,7 @@ All 95 pro effects with live previews, code previews, and installation names are
 
 **Transitions** - `aperture-transition` · `ascend-transition` · `depth-shift-transition` · `page-flip-transition` · `pixel-transition` · `radial-slice-transition` · `svg-brush-transition` · `sweep-lift-transition`
 
-**WebGL** - `3d-portfolio-slider` · `book-flip` · `colliding-models` · `curved-plane` · `donut-particles` · `draggable-canvas` · `file-encryption` · `grid-tunnel` · `hero-banner-animated` · `hover-slider` · `hyperiux-glitter` · `liquid-shatter` · `mouse-pixelation` · `progressive-bloom-valley` · `strip-slider`
+**WebGL** - `3d-portfolio-slider` · `book-flip` · `colliding-models` · `curved-plane` · `donut-particles` · `draggable-canvas` · `file-encryption` · `grid-tunnel` · `hero-banner-animated` · `hover-slider` · `hyperiux-glitter` · `mouse-pixelation` · `progressive-bloom-valley` · `strip-slider`
 
 ---
 
@@ -401,7 +420,7 @@ monorepo:
 - **`apps/docs`** - the Next.js App Router site at [vault.hyperiux.com](https://vault.hyperiux.com): effect docs, live previews, the remixer panel, Clerk auth, Razorpay billing, the admin dashboard, and the CLI-facing API routes (`/api/cli/*`) that authenticate and serve pro source.
 - **`registry/effects`** - private registry source for **every** effect, free and pro, organized by category. `apps/docs/scripts/build-registry.js` reads it and generates `apps/docs/public/r/*.json`, the public metadata the CLI/MCP server actually fetch. Free effects embed full source in that public JSON; pro effects don't - pro source is served only through the authenticated `/api/cli/effects/[slug]` route.
 - **`hyperiux-vault`** - the Sanity Studio project backing the docs site's content.
-- **`scripts`** - `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
+- **`apps/docs/scripts`** - `component-workflow.mjs` (scaffold/rename/move/delete/verify an effect, via the root `npm run component:*` scripts), `component-ship.mjs` (registry sync, codegen, update, revert and ship for an effect, run with `node apps/docs/scripts/component-ship.mjs <command> --slug <slug>`) and `sanity-code-sync.mjs` (keep Sanity's rendered code blocks in sync with the registry). See [`md/component-workflow-tooling.md`](md/component-workflow-tooling.md).
 
 The CLI itself (`npx hyperiux`, published to npm as `hyperiux`) and the MCP server
 (`hyperiux-mcp-server`) live in the separate, public

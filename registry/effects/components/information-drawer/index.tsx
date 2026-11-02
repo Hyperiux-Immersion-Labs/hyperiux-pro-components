@@ -3,6 +3,8 @@
 
 import { gsap } from "gsap/dist/gsap";
 import { useLenis } from "lenis/react";
+import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from "react";
 
 export interface TeamMember {
@@ -44,14 +46,23 @@ function usePrefersReducedMotion() {
 
 export interface InformationDrawerCompProps {
   teams?: TeamMember[] | { teams: TeamMember[] };
+  /** GSAP tween duration (seconds) for the drawer panel and overlay. */
   duration?: number;
+  /** GSAP ease for the drawer panel and overlay. */
   ease?: string;
+  /** GSAP tween delay (seconds) for the drawer panel and overlay. */
   delay?: number;
+  /** Drawer panel background color. */
   backgroundColor?: string;
+  /** Drawer panel text color. */
   textColor?: string;
+  /** Drawer panel width on desktop. Numbers are treated as percentages. */
   sidebarWidth?: string | number;
+  /** Backdrop opacity while the drawer is open. */
   overlayOpacity?: number;
+  /** GSAP tween duration (seconds) for the staged content fade in/out. */
   contentDuration?: number;
+  /** Delay (seconds) before the staged content fades in, measured from when the drawer starts opening. */
   contentDelay?: number;
 }
 
@@ -77,6 +88,7 @@ function InformationDrawerComp({
   const closeTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const prefersReducedMotion = usePrefersReducedMotion();
 
+  // Accept {teams: []} OR [] OR nothing.
   const teamInfo: TeamMember[] = Array.isArray(teams)
     ? teams
     : Array.isArray((teams as { teams?: TeamMember[] })?.teams)
@@ -103,6 +115,7 @@ function InformationDrawerComp({
     if (closeTimeout.current) clearTimeout(closeTimeout.current);
     lenis?.start?.();
 
+    // Fade the content out first, then slide the drawer away.
     const fadeOut = prefersReducedMotion ? 0 : contentDuration;
 
     gsap.to(contentRef.current, {
@@ -113,6 +126,7 @@ function InformationDrawerComp({
       onComplete: () => setDetailOpen(false),
     });
 
+    // Clear the member only once the panel has finished sliding out.
     closeTimeout.current = setTimeout(
       () => {
         setSelectedMember(null);
@@ -139,6 +153,7 @@ function InformationDrawerComp({
     });
   }, [detailOpen, duration, ease, delay, overlayOpacity, prefersReducedMotion]);
 
+  // Fade the staged content in at an absolute offset from the drawer opening.
   useEffect(() => {
     if (typeof window === "undefined" || !detailOpen) return;
 
@@ -216,11 +231,12 @@ function InformationDrawerComp({
                       <span className="absolute w-[0.2vw] h-[1.5vw] bg-white max-md:w-[0.4vw] max-md:h-[3vw] max-lg:w-[0.2vw] max-lg:h-[1.5vw]"></span>
                       </div>
                       {featuredImageSource && (
-                        <img
+                        <Image
                           loading="lazy"
                           src={featuredImageSource}
                           alt={`${member?.title ?? "Member"} Image`}
-                          className={`absolute inset-0 h-full w-full object-cover group-hover:grayscale ${
+                          fill
+                          className={`object-cover group-hover:grayscale ${
                             prefersReducedMotion ? "" : "transition duration-300"
                           }`}
                         />
@@ -336,10 +352,11 @@ function TeamDetail({
       <div className="w-full flex gap-[2vw] max-md:flex-col max-md:gap-[5vw]">
         {featuredImageSource && (
           <div className="w-[25vw] rounded-xl overflow-hidden h-[30vw] relative max-md:w-[90vw] max-md:h-[120vw] max-lg:w-[40vw] max-lg:h-[50vw]">
-            <img
+            <Image
               src={featuredImageSource}
               alt={`${member.title} Image`}
-              className="absolute inset-0 h-full w-full object-cover object-top"
+              className="object-cover object-top"
+              fill
             />
           </div>
         )}
@@ -357,7 +374,7 @@ function TeamDetail({
 
         <div className="flex gap-[2vw] items-end mt-[1vw] mb-[5%] max-md:mb-[10%] max-lg:mb-[10%] max-md:gap-[6vw] max-lg:gap-[4vw]">
           {member.teams.linkedin && (
-            <a
+            <Link
               target="_blank"
               href={member.teams.linkedin}
               className="opacity-55 hover:opacity-100 duration-300 w-[1.5vw] max-lg:w-[4vw] max-md:w-[6vw]"
@@ -368,17 +385,18 @@ function TeamDetail({
                 <path d="M0.478818 35.355C0.471098 35.2006 0.463379 35.0462 0.463379 34.8918C0.463379 27.2571 0.463379 19.6147 0.463379 11.9801C0.463379 11.8257 0.463379 11.679 0.463379 11.5015C3.1112 11.5015 5.72813 11.5015 8.41455 11.5015C8.41455 19.4526 8.41455 27.4038 8.41455 35.355C5.77445 35.355 3.12663 35.355 0.478818 35.355Z" />
                 <path d="M4.59731e-05 4.12196C0.00776555 2.05311 1.40501 0.416562 3.45842 0.0923393C4.79391 -0.116089 6.08308 -0.00801527 7.21014 0.794821C8.62282 1.80609 9.13231 3.24965 8.83897 4.91708C8.54562 6.60767 7.44944 7.64981 5.80517 8.08211C4.70127 8.37545 3.59737 8.32913 2.52435 7.91228C0.957274 7.29471 -0.00767361 5.83571 4.59731e-05 4.12196Z" />
               </svg>
-            </a>
+            </Link>
           )}
         </div>
 
         {profileImageSource && (
           <div className="w-[62vw] overflow-hidden rounded-xl h-[35vw] relative mb-[5%] max-md:w-[90vw] max-md:h-[90vw] max-md:mb-[10%] max-lg:mb-[10%] max-lg:w-[70vw] max-lg:h-[50vw]">
-            <img
+            <Image
               src={profileImageSource}
               loading="lazy"
               alt={`${member.title} Featured Image`}
-              className="absolute inset-0 h-full w-full object-cover"
+              fill
+              className="object-cover"
             />
           </div>
         )}
@@ -394,7 +412,7 @@ export const DEFAULT_TEAM: TeamMember[] = [
     title: "Amara Okafor",
     content:
       "<p>Amara leads brand strategy, turning ambiguous briefs into positioning that clients can actually build a company around. She spends the first two weeks of every engagement asking questions most agencies skip, and it shows in how quickly the work converges.</p><p>Before joining, she ran strategy teams at two design studios in London and Lagos, working across finance, hospitality, and consumer tech. She's most interested in the gap between what a brand says about itself and what its product actually does.</p><p>Outside of client work, Amara mentors early-career strategists and writes occasionally about positioning frameworks that don't collapse the moment a competitor copies them.</p>",
-    featuredImage: "https://picsum.photos/seed/portrait1/1600/1200",
+    featuredImage: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portrait-1.png",
     teams: {
       designation: "Head of Strategy",
       linkedin: "https://www.linkedin.com",
@@ -406,7 +424,7 @@ export const DEFAULT_TEAM: TeamMember[] = [
     title: "Daniel Reyes",
     content:
       "<p>Daniel designs interfaces that hold up under real usage, not just in a showcase reel. Motion, type, and grid systems are his daily tools, and he'd rather ship a slightly less flashy interaction that never jitters than a spectacular one that breaks on the third viewport size he tests.</p><p>He came up through in-house product teams before moving into studio work, which shows in how much he cares about states most designers skip - empty, loading, error, and the ugly middle of a long list. Every project he leads gets a pass for those before it ships.</p><p>He's currently obsessed with reducing the gap between design files and shipped code, and spends a fair amount of time building small internal tools to close it.</p>",
-    featuredImage: "https://picsum.photos/seed/portrait2/1600/1200",
+    featuredImage: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portrait-2.png",
     teams: {
       designation: "Design Director",
       linkedin: "https://www.linkedin.com",
@@ -418,7 +436,7 @@ export const DEFAULT_TEAM: TeamMember[] = [
     title: "Priya Menon",
     content:
       "<p>Priya builds the animation and interaction layer for every project, from scroll choreography to micro-interactions that make a page feel alive. Her rule of thumb: if you notice the animation before you notice what it's telling you, it's wrong.</p><p>She works closely with design from the earliest wireframes rather than being handed a finished comp to animate, which is why so much of the studio's motion work reads as intentional instead of decorative. Performance budgets are non-negotiable on her projects - nothing ships if it drops frames on a mid-range phone.</p><p>When she's not tuning easing curves, she's usually deep in a rabbit hole about how physical materials move, which somehow always ends up back in a spring config.</p>",
-    featuredImage: "https://picsum.photos/seed/portrait3/1600/1200",
+    featuredImage: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portrait-3.png",
     teams: {
       designation: "Lead Motion Engineer",
       linkedin: "https://www.linkedin.com"
@@ -430,7 +448,7 @@ export const DEFAULT_TEAM: TeamMember[] = [
     title: "Marcus Lindqvist",
     content:
       "<p>Marcus runs client relationships end to end, keeping ambitious timelines honest and every project shipping on schedule. He's the person who tells a client their launch date is unrealistic in week one, which tends to save everyone a much worse conversation in week eleven.</p><p>His background is split between agency production and a few years running operations at a small product company, so he understands both sides of the table - what a studio needs to do great work, and what a client actually needs to justify the spend internally.</p><p>He keeps every project's scope, budget, and timeline visible to the whole team at all times, on the theory that surprises are the only real project risk worth worrying about.</p>",
-    featuredImage: "https://picsum.photos/seed/portrait4/1600/1200",
+    featuredImage: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portrait-4.png",
     teams: {
       designation: "Producer",
       linkedin: "https://www.linkedin.com"
@@ -442,7 +460,7 @@ export const DEFAULT_TEAM: TeamMember[] = [
     title: "Sofia Almeida",
     content:
       "<p>Sofia writes the copy and content strategy behind every brand voice we ship, working closely with strategy and design from day one rather than being brought in at the end to fill placeholder text. That's usually the difference between a headline that fits the layout and one that fits the brand.</p><p>She's written for everything from three-person startups to companies going through a full rebrand, and has a particular interest in how a brand's voice needs to flex across a homepage, a support email, and an error message without losing its identity in any of them.</p><p>She also runs the studio's internal writing guidelines, which exist mostly so five different people don't invent five different ways to describe the same product feature.</p>",
-    featuredImage: "https://picsum.photos/seed/portrait5/1600/1200",
+    featuredImage: "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/portrait-5.png",
     teams: {
       designation: "Content Lead",
       linkedin: "https://www.linkedin.com"

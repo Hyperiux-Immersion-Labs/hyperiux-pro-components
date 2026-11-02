@@ -17,13 +17,11 @@ import { vi } from "vitest";
 export const VAULT_ROOT = path.resolve(import.meta.dirname, "../..");
 export const REPO_ROOT = path.resolve(VAULT_ROOT, "../..");
 
-// ---------------------------------------------------------------------------
 // Supabase: minimal in-memory query builder covering the chain shapes the
 // routes actually use (select/eq/in/order/range/maybeSingle, update/upsert/
 // insert/delete). Every call is recorded so tests can assert on *what was
 // asked for* (e.g. which clerk_user_id a query was scoped to), not just
 // what came back.
-// ---------------------------------------------------------------------------
 
 function createQuery(store, table, calls) {
   const state = { table, op: "select", columns: "*", filters: [], payload: null, options: null, single: null };
@@ -202,10 +200,8 @@ export const db = {
   },
 };
 
-// ---------------------------------------------------------------------------
 // Clerk: auth() reads the "signed-in" user; clerkClient().users reads/writes
 // the fake user directory. Tests set the session with signIn()/signOut().
-// ---------------------------------------------------------------------------
 
 export const clerk = {
   sessionUserId: null,
@@ -291,9 +287,7 @@ export const clerkModule = {
   },
 };
 
-// ---------------------------------------------------------------------------
 // Requests
-// ---------------------------------------------------------------------------
 
 export function makeRequest(url = "http://localhost/x", { method = "GET", headers = {}, body } = {}) {
   const init = { method, headers: { ...headers } };
@@ -323,9 +317,7 @@ export async function readJson(response) {
   }
 }
 
-// ---------------------------------------------------------------------------
 // Filesystem scanning helpers for the static checks.
-// ---------------------------------------------------------------------------
 
 export function walk(dir, { include = () => true, skip = ["node_modules", ".next", ".git"] } = {}) {
   const out = [];

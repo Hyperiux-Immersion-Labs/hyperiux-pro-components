@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/ascii-band",
+  "version": "1.0.0",
+  "description": "A band of light drawn in flickering ASCII characters.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

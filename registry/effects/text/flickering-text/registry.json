@@ -1,7 +1,13 @@
 {
   "name": "flickering-text",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-11-02",
+      "summary": "Registry fontSize default corrected to 9vw to match the component.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-18",
@@ -180,7 +186,7 @@
     {
       "name": "fontSize",
       "type": "number | string",
-      "default": "10vw",
+      "default": "9vw",
       "description": "Font size for the text.",
       "remixer": {
         "control": "text",

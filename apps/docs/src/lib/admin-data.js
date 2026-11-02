@@ -12,9 +12,7 @@ export { fetchAllRows };
 // Shared data rules for every admin route, so each number on the admin pages is
 // counted the same way everywhere.
 
-// ---------------------------------------------------------------------------
 // Internal accounts
-// ---------------------------------------------------------------------------
 
 // Our own team: kept out of the customer numbers, shown on their own with the
 // Customers / Internal switch. An account is internal when its email is on one
@@ -115,9 +113,7 @@ export function filterToAudience(query, { audience, internalIds }, column = "cle
   return query.or(`${column}.is.null,${column}.not.in.${list}`);
 }
 
-// ---------------------------------------------------------------------------
 // Plans
-// ---------------------------------------------------------------------------
 
 // What a subscriptions row means right now: "pro" | "pro_plus" | "free".
 // Pro only while the subscription is live and its paid (or granted) period
@@ -132,9 +128,7 @@ export function currentPlanOf(row) {
 
 export const PLAN_LABELS = { free: "Free", pro: "Pro", pro_plus: "Pro+" };
 
-// ---------------------------------------------------------------------------
 // The admin user list
-// ---------------------------------------------------------------------------
 
 const SUBSCRIPTION_COLUMNS =
   "clerk_user_id, plan, tier, status, billing_interval, current_period_end, razorpay_customer_id, razorpay_subscription_id, created_at";
@@ -186,9 +180,7 @@ export async function getAdminUserList({ audience, search = "", plan = "all", ro
     });
 }
 
-// ---------------------------------------------------------------------------
 // Installs
-// ---------------------------------------------------------------------------
 
 // The one definition every admin (and dashboard) number uses: an install is one effect
 // taken by one account on one UTC day - a row in install_unlocks, which is also what the

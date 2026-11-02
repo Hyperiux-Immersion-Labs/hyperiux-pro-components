@@ -1,6 +1,6 @@
 {
   "name": "animated-faq",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "type": "registry:component",
   "title": "Animated FAQ",
   "description": "Accessible FAQ accordion with smooth or elastic Motion animations, staggered answers and fills",
@@ -229,6 +229,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "2.0.1",
+      "date": "2026-11-02",
+      "summary": "Made each question title a native button; the item wrapper is no longer a fake button.",
+      "breaking": false
+    },
     {
       "version": "2.0.0",
       "date": "2026-10-28",

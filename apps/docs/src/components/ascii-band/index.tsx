@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -27,7 +26,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Look
 
 type Rgb = [number, number, number];
@@ -54,7 +52,6 @@ const SMEAR_MAX = 0.4;
 const glsl = (v: number) => v.toFixed(4);
 const glslVec = (v: Rgb) => `vec3(${v.map(glsl).join(", ")})`;
 
-// ---------------------------------------------------------------------------
 // Shaders
 
 const QUAD_VS = `#version 300 es
@@ -200,7 +197,6 @@ void main() {
   outColor = vec4(col, 1.0);
 }`;
 
-// ---------------------------------------------------------------------------
 // Helpers
 
 function hexToRgb(hex: string): Rgb {
@@ -281,7 +277,6 @@ function drawAtlas(ramp: string, cellW: number, cellH: number) {
   return { canvas, count: chars.length };
 }
 
-// ---------------------------------------------------------------------------
 // Component
 
 export interface AsciiBandProps {

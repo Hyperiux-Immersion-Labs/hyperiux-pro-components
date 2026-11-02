@@ -1398,18 +1398,26 @@ galleryContainer.add(mesh);
   }, [items]);
 
   return (
-    <canvas
-    ref={canvasRef}
-    aria-hidden="true"
-    style={{
-      display: "block",
-      width: "100%",
-      height: "100%",
-      background: "#000",
-      cursor: "pointer",
-      touchAction: "none",
-    }}
-  />
+    <>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        style={{
+          display: "block",
+          width: "100%",
+          height: "100%",
+          background: "#000",
+          cursor: "pointer",
+          touchAction: "none",
+        }}
+      />
+      {/* the canvas is hidden from assistive tech, so the gallery's labels are listed here as text */}
+      <ul className="sr-only" aria-label="Gallery images">
+        {(items ?? []).map((item) => (
+          <li key={item.id}>{item.text ?? item.id}</li>
+        ))}
+      </ul>
+    </>
   );
 }
 

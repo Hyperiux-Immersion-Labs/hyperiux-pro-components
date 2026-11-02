@@ -3,32 +3,29 @@
 Two docs, merged: how effect versioning works today, and the original plan that shipped
 it. Both were written 2026-07-15 and neither had been updated since.
 
-> **Audit status (2026-08-12):** the data model (`registry.json` `version`/`changelog`,
-> patch/minor/major semver-by-hand, no `semver` npm dependency) is confirmed accurate.
-> Two things below are wrong and worth knowing before you rely on them:
+> **Audit status (2026-11-02):** re-checked against this repo and the sibling
+> `hyperiux-components` checkout (CLI `hyperiux@1.2.0`). The data model (`registry.json`
+> `version`/`changelog`, patch/minor/major, hand-rolled comparator in
+> `packages/cli/src/utils/semver.js`, no `semver` dependency) is still accurate. The
+> 2026-08-12 findings have been folded into Part 1 below:
 >
-> 1. **The CLI's `outdated`/`versions`/`diff` commands are functionally dead against
->    real installs.** They all read `hyperiux.lock.json` via `readLockfile()`, but
->    `add.js` never writes to the lockfile - `upsertLockEntry` has zero production
->    callers (only a test mock references it). So the lockfile is always empty and
->    these commands print "No effects installed yet" regardless of what's actually on
->    disk. This is the single most impactful gap in the versioning system today.
-> 2. **"Testing locally" env var is wrong.** There is no `HYPERIUX_DEV_REGISTRY_PATH`
->    env var anywhere in `hyperiux-components`. The real mechanism is a hardcoded,
->    auto-detected relative path (`packages/cli/src/utils/registry.js:25-28`,
->    `DEV_REGISTRY_PATH = path.join(__dirname, "../../../../apps/docs/public/r")`) -
->    no manual export step needed when the sibling repo is checked out alongside this
->    one.
-> 3. **The free-tier mirror sync is now automated**, contrary to "must copy manually"
->    below - `scripts/component-workflow.mjs`'s `syncFreeMirror()` auto-copies free
->    components into `hyperiux-components` when `component:sync`/`component:new` is
->    used (see [`component-workflow-tooling.md`](./component-workflow-tooling.md)).
->    Manual copying is only needed if that tool is bypassed, which - per
->    `registry/index.json` being stale relative to source - happens often enough in
->    practice that hand-edits still slip through.
-> 4. Minor: the doc's claim that `add.js` prints a warning pointing at `hyperiux diff`
->    on overwrite is not in the code - the actual overwrite warning never mentions
->    `diff`.
+> 1. **Lockfile now written.** `add.js` calls `upsertLockEntry()` after writing files,
+>    so `outdated`/`versions`/`diff` work against real installs. Installs made with an
+>    older CLI have no lock entry and stay invisible to those commands until re-added.
+> 2. **No local-folder registry any more.** Neither `HYPERIUX_DEV_REGISTRY_PATH` nor
+>    the old hardcoded `DEV_REGISTRY_PATH` exists. The CLI only talks to HTTP endpoints,
+>    overridable with `HYPERIUX_REGISTRY_URL` / `HYPERIUX_APP_URL` / `HYPERIUX_API_URL`.
+>    "Testing locally" below has been rewritten to match.
+> 3. **Free-tier mirror sync is automated** by `component-workflow.mjs` and
+>    `component-ship.mjs` (`syncFreeMirror()`, opt out with `--skip-free-mirror`). The
+>    CLI no longer reads that mirror at all.
+> 4. Still true: the `add` overwrite prompt never mentions `hyperiux diff`. (`outdated`
+>    does point at `npx hyperiux diff <effect>` when something is behind.)
+>
+> Not a doc issue, but blocking: as of 2026-11-02 the working tree has unresolved
+> stash-conflict markers in `apps/docs/scripts/component-ship.mjs`,
+> `registry/index.json`, `apps/docs/public/r/index.json` and the `animated-faq`
+> registry files, so the ship script and those JSON files won't parse until resolved.
 
 ---
 
@@ -41,11 +38,10 @@ How component versions work, how to bump one when you change a component,
 and every CLI command involved - for both the provider side (this repo) and
 the consumer side (a project that installed effects via the CLI).
 
-**This doc describes the local/dev testing setup.** Some of it (the
-`HYPERIUX_DEV_REGISTRY_PATH` env var, the `npm link` step, the exact live
-domain) will change once this is actually shipped to production - see the
-"When this goes to production" section at the bottom for what to update
-then.
+**This doc also covers the local/dev testing setup.** Some of it (the URL
+override env vars, the `npm link` step) only applies to local testing - see
+the "When this goes to production" section at the bottom for the release
+checks.
 
 ---
 
@@ -72,8 +68,8 @@ before touching anything.
 
 | Repo | Role |
 |---|---|
-| `hyperiux-pro-components` (this repo) | Source of truth. `registry/effects/**/registry.json` holds each component's metadata including `version`. `apps/docs/scripts/build-registry.js` compiles all of it into `apps/docs/public/r/*.json`, which is what gets served to the CLI (as static files for free effects, via an authenticated API route for pro effects). |
-| `hyperiux-components` | Ships the `hyperiux` CLI (`packages/cli`). Also has its own **separate, manually-maintained mirror** of the free effects at `hyperiux-components/registry/` - used only so the CLI can be tested locally without hitting a live server. This mirror is not automatically kept in sync with this repo; see "Updating a component" below. |
+| `hyperiux-pro-components` (this repo) | Source of truth. `registry/effects/**/registry.json` holds each component's metadata including `version`. `apps/docs/scripts/build-registry.js` compiles all of it into `apps/docs/public/r/*.json`: public metadata only (tier, `version`, `changelog`, dependencies, file paths), with no real source for any effect - free code files carry a sign-in stub. The actual code, free and Pro, is served only by the signed-in, metered route `apps/docs/src/app/api/cli/effects/[effectSlug]/route.js`. |
+| `hyperiux-components` | Ships the `hyperiux` CLI (`packages/cli`) and `hyperiux-mcp-server` (`packages/mcp-server`). Also holds a mirror of the free effects at `hyperiux-components/registry/`, kept in sync automatically by this repo's component tooling (`syncFreeMirror()` in `component-workflow.mjs` / `component-ship.mjs`). The CLI itself does not read this mirror. |
 
 ---
 
@@ -150,6 +146,28 @@ other mechanism that would ever surface it to them.
 
 ## Updating an existing component - step by step
 
+The tooling does steps 2 and 4 for you. Edit the docs copy in
+`apps/docs/src/components/{slug}/`, then sync it into the registry with a
+bump:
+
+```bash
+cd apps/docs
+node scripts/component-ship.mjs update --slug {slug} --bump patch|minor|major --summary "..."
+# or --version x.y.z instead of --bump; --no-version-bump to sync without a bump
+```
+
+`component-ship.mjs` (`registry`/`update`/`ship`) and `npm run component:sync`
+(`component-workflow.mjs`) both refuse to sync an existing component unless
+you pass `--bump`, `--version` or `--no-version-bump`. When the version
+changes, `--summary` is required and a `{ version, date, summary, breaking }`
+entry is prepended to `changelog` (`breaking` defaults to true for
+`--bump major`, override with `--breaking`/`--no-breaking`; `--date` overrides
+today's date). See [`new-component-workflow.md`](./new-component-workflow.md)
+and [`component-workflow-tooling.md`](./component-workflow-tooling.md) for all
+flags.
+
+By hand, the steps are:
+
 1. **Edit the component's source** under
    `registry/effects/{category}/{slug}/`.
 2. **Bump `version`** in that same folder's `registry.json` (patch/minor/major
@@ -161,13 +179,15 @@ other mechanism that would ever surface it to them.
    npm run build:registry
    ```
    This regenerates every `apps/docs/public/r/*.json` from source. It's a
-   full rebuild (all ~115 components), not just the one you changed - that's
+   full rebuild (all ~185 components), not just the one you changed - that's
    expected and correct, it's idempotent for everything else.
-4. **If the component is free-tier**, also update the mirror in
-   `hyperiux-components/registry/effects/{category}/{slug}/` - copy the
-   same source changes there and add the same `version`/`changelog` to
-   that repo's `registry.json` too. This mirror is what the CLI reads when
-   testing locally (see below); it is **not** auto-synced from this repo.
+   (`component-ship.mjs` rebuilds just that effect's `public/r/<slug>.json`
+   and its index entry itself, unless you pass `--skip-public-rebuild`.)
+4. **If the component is free-tier**, the mirror in
+   `hyperiux-components/registry/effects/{category}/{slug}/` must match.
+   The tooling copies it automatically (`--skip-free-mirror` to opt out,
+   `--free-repo-path` if the sibling checkout isn't at `../hyperiux-components`);
+   only copy by hand if you bypassed the tooling.
 5. **Verify** the built output actually has your change before moving on:
    ```bash
    python3 -c "import json; d=json.load(open('apps/docs/public/r/<slug>.json')); print(d['version'], d.get('changelog'))"
@@ -185,10 +205,11 @@ the start. See that doc for the full walkthrough.
 
 ## Testing locally (this section changes for production)
 
-The CLI auto-detects it's running inside the `hyperiux-components` checkout
-and reads from its **built-in** registry mirror
-(`hyperiux-components/registry/`) or, for a closer-to-real test, from this
-repo's actual built output via an env var override.
+The CLI has no local-folder mode. It always fetches over HTTP: public
+metadata from `HYPERIUX_REGISTRY_URL` (default `https://vault.hyperiux.com/r`)
+and code from the signed-in API at `HYPERIUX_API_URL`, which defaults to
+`HYPERIUX_APP_URL` (default `https://vault.hyperiux.com`). To test against
+this repo, run the docs app locally and point the CLI at it.
 
 ### One-time setup
 
@@ -202,28 +223,27 @@ published npm package. Undo with `npm unlink -g hyperiux` when done.
 ### Every terminal session
 
 ```bash
-export HYPERIUX_DEV_REGISTRY_PATH="/absolute/path/to/hyperiux-pro-components/apps/docs/public/r"
+# with `npm run dev` running in apps/docs (adjust the port if yours differs)
+export HYPERIUX_APP_URL="http://localhost:3000"
+export HYPERIUX_REGISTRY_URL="http://localhost:3000/r"
 ```
-Tells the CLI to read component data from this repo's real built output
-(reflecting whatever you just built in step 3 above) instead of its own
-built-in mirror or the live production site. **This env var and the whole
-"point at a local folder" mechanism only exists for local testing** - it
-won't be set in a real user's environment.
+`HYPERIUX_REGISTRY_URL` makes `outdated`/`versions`/`list` read this repo's
+built `public/r/*.json` (reflecting whatever you just built in step 3
+above); `HYPERIUX_APP_URL` points `login`/`whoami` and, unless
+`HYPERIUX_API_URL` is also set, the code-delivery API at your local server.
+These overrides are for local testing only - a real user never sets them.
 
-Without it set, the CLI falls back to (in order): its own bundled
-`hyperiux-components/registry/` mirror if present, then the real production
-API.
-
-### Logging in for pro effects
+### Logging in
 
 ```bash
 hyperiux login
 ```
-Prompts for a CLI token (generated from the site's `/cli-auth` page),
-validates it against the live API, and saves it to `~/.hyperiux/auth.json`.
-Pro effects always fetch their actual code from the live authenticated API
-regardless of the dev-registry override above - there is no local mock for
-pro content.
+Prints `${HYPERIUX_APP_URL}/cli-auth`, prompts for the CLI token generated
+there (must start with `hpx_`), validates it against `/api/cli/validate` and
+saves it to `~/.hyperiux/auth.json` (mode 0600). **Every** install needs this
+now, free effects included: the API answers 401 `sign-in-required` without a
+token. A `HYPERIUX_TOKEN` env var, if set, takes precedence over the saved
+file.
 
 ---
 
@@ -235,14 +255,17 @@ already run `hyperiux init`.
 | Command | Mutates files? | Purpose |
 |---|---|---|
 | `hyperiux init [-y]` | yes (writes `hyperiux.json`) | Initialize Hyperiux config in a project. `-y`/`--yes` skips the interactive prompts and uses defaults. |
-| `hyperiux add <effect> [-o] [-y] [--dry-run]` | yes | Install a component. Fetches from the registry, installs missing npm dependencies, writes files, and records a `hyperiux.lock.json` entry (version + file hashes). `-o`/`--overwrite` skips the "files already exist" prompt and overwrites. `-y`/`--yes` skips confirmation prompts (still shows the overwrite warning, just doesn't wait for input). `--dry-run` prints what would be installed without writing anything. |
+| `hyperiux add <effect> [-o] [-y] [--dry-run]` | yes | Install a component. Requires `hyperiux login` for every effect (free included); fetches the code from the signed-in API, installs missing npm dependencies, writes files, and records a `hyperiux.lock.json` entry (version + file hashes). `-o`/`--overwrite` skips the "files already exist" prompt and overwrites. `-y`/`--yes` skips prompts but never overwrites: if files already exist it lists them and exits with "re-run with --overwrite". `--dry-run` prints what would be installed without writing anything. |
 | `hyperiux list` | no | List every effect available in the registry (not what's installed - see `versions` for that). |
-| `hyperiux outdated` | no | Check installed effects against the registry and print **only** the ones that are behind (version mismatch), with the bump type (patch/minor/major). Effects that are up to date are summarized as a count, not listed individually. Prints "All N installed effects are up to date." if nothing needs attention. |
-| `hyperiux versions` | no | Full listing of **every** installed effect and its version/status, regardless of whether it's outdated. Use this instead of `outdated` when you want to see everything, not just what needs attention. |
-| `hyperiux diff [effect]` | no | Show a colored line-by-line diff between what's installed and the latest registry version. Omit the effect name to diff every installed effect. Context around unchanged blocks is trimmed (like `git diff`) so large files stay readable. |
-| `hyperiux login` | writes `~/.hyperiux/auth.json` | Authenticate for Pro effect access. Prompts for a token, validates it against the live API, saves it. |
-| `hyperiux logout` | deletes `~/.hyperiux/auth.json` | Remove the saved Pro token. |
-| `hyperiux whoami` | no | Show whether you're currently logged in (does not re-validate the token against the API). |
+| `hyperiux outdated` | no | Check every effect in `hyperiux.lock.json` against the public registry metadata (no sign-in needed, never counts as an install) and print **only** the ones that are behind, with the bump type (patch/minor/major), plus any it couldn't check. Up-to-date effects are summarized as a count, and it suggests `npx hyperiux diff <effect>` when something can be updated. Prints "All N installed effects are up to date." if nothing needs attention. |
+| `hyperiux versions` | no | Full listing of **every** effect in the lockfile and its installed/latest version, regardless of whether it's outdated. Same public metadata source as `outdated`. |
+| `hyperiux diff [effect]` | no | Show a colored line-by-line diff between what's on disk and the latest registry code. Omit the effect name to diff every effect in the lockfile. Fetches code through the signed-in API, so it needs `hyperiux login`. Context around unchanged blocks is trimmed (like `git diff`) so large files stay readable. |
+| `hyperiux login` | writes `~/.hyperiux/auth.json` | Sign in (needed for every install). Prompts for an `hpx_` token, validates it against the API, saves it. |
+| `hyperiux logout` | deletes `~/.hyperiux/auth.json` | Remove the saved token. |
+| `hyperiux whoami` | no | Re-validates the saved (or `HYPERIUX_TOKEN`) token against `/api/cli/validate` and reports whether it's still valid, plus the token file path and a masked preview. |
+
+All three version commands only know about effects that have a lock entry,
+i.e. ones installed by a CLI version that writes the lockfile.
 
 ### Provider-side (this repo, not part of the `hyperiux` CLI)
 
@@ -259,10 +282,10 @@ hyperiux add <effect> --overwrite   # apply it, once you're satisfied with the d
 ```
 
 There is **no dedicated `update` command yet** - updating today means
-reviewing the diff yourself and re-running `add --overwrite`. `add` now
-prints an explicit warning above the overwrite confirmation prompt
-pointing at `hyperiux diff` first, specifically to guide users through this
-same sequence. A guarded `update` command (that refuses to overwrite a file
+reviewing the diff yourself and re-running `add --overwrite`. `outdated`
+points at `hyperiux diff` when something is behind, but `add`'s own
+"Overwrite existing files?" prompt does not mention `diff`. A guarded
+`update` command (that refuses to overwrite a file
 whose hash doesn't match what was originally installed, i.e. the user
 edited it) is the natural next step but isn't built yet.
 
@@ -272,20 +295,23 @@ edited it) is the natural next step but isn't built yet.
 
 Update at that point:
 
-- Remove/ignore `HYPERIUX_DEV_REGISTRY_PATH` from your own testing habits -
-  real users never set it; the CLI will resolve straight to the live API.
-- Confirm the live domain the CLI defaults to
-  (`packages/cli/src/utils/registry.js`, `add.js`, `login.js`, `config.js`)
-  is correct. As of this doc, it's `vault.hyperiux.com` - a previous bug
-  had it hardcoded to `components.hyperiux.com`, which doesn't resolve to
-  anything at all. Double-check this hasn't drifted again before a release.
+- Unset the `HYPERIUX_*_URL` overrides from your own shell before testing a
+  release - real users never set them; the CLI will resolve straight to the
+  live site.
+- Confirm the live domain the CLI defaults to is correct. The defaults now
+  live in two places: `packages/cli/src/utils/urls.js` (`APP_URL`) and
+  `packages/cli/src/utils/registry.js` (`REGISTRY_URL`). As of 2026-11-02
+  both are `vault.hyperiux.com` - a previous bug had it hardcoded to
+  `components.hyperiux.com`, which doesn't resolve to anything at all.
+  Double-check this hasn't drifted again before a release.
 - `npm link` is a local-only convenience; production users get the CLI via
   `npx hyperiux` / `npm install -g hyperiux`, which pulls the real published
   package.
-- The `hyperiux-components/registry/` local mirror is never published
-  (confirmed via that package's `package.json` `"files"` whitelist) - it's
-  purely a local dev fixture. Don't assume it needs to be kept in sync for
-  anything other than local testing.
+- The `hyperiux-components/registry/` mirror is never published (the CLI
+  package's `package.json` `"files"` whitelist only ships `src/commands`,
+  `src/utils`, `src/index.js`, README and LICENSE) and the CLI doesn't read
+  it. The component tooling still keeps it in sync, but nothing in the CLI's
+  install or version flow depends on it.
 
 ---
 
@@ -294,6 +320,13 @@ Update at that point:
 *(formerly `VERSIONING.md`, written before Part 1's system existed - kept for the
 design rationale and the resolved open questions; superseded where it conflicts
 with Part 1.)*
+
+> **Status (2026-11-02):** 1.1-1.3 done. 2.1-2.5 done (`lockfile.js`, lockfile
+> write in `add.js`, `outdated`, `diff`), plus an unplanned `versions` command and a
+> metadata-only `fetchRegistryMetadata()` for 2.3. 2.6 (`update`) and 2.7 (`status`)
+> not started. Open questions resolved: hand-rolled comparator
+> (`utils/semver.js`), `diff` npm package, lockfile at the project root next to
+> `hyperiux.json`.
 
 
 ## The scenario this solves
@@ -373,8 +406,10 @@ registry output or the authenticated pro API, never this repo directly.
 
 ### 1.3 Pro-effect API route needs the same fields
 
-File: `apps/docs/src/app/api/cli/effects/[slug]/route.js` (the
-authenticated route pro users hit). Confirm it reads `version`/`changelog`
+File: `apps/docs/src/app/api/cli/effects/[effectSlug]/route.js` (the
+authenticated route; it now serves free effects' code too, and its payload
+comes from `buildEffectDeliveryPayload()` in `apps/docs/src/lib/registry.js`,
+which includes `version`/`changelog`). Confirm it reads `version`/`changelog`
 from the same source (`registry.json` via `getEffectBySlug`/registry.js
 helpers) and includes them in its response - pro installs go through this
 route instead of the public JSON, so it needs the fields independently
