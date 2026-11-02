@@ -69,7 +69,8 @@ const ReelReveal = () => {
         const dy = cy - vh / 2;
         const zoom = 1.12 - 0.12 * grow;
         const progress = clamp((y - (s1 + rEnd - r0)) / (vh * 0.35));
-        const reveal = clamp((progress - 0.75) * 4);
+        // Caption fades in while the shade darkens (25% -> 75%), not only at the very end
+        const reveal = clamp((progress - 0.25) * 2);
 
         gsap.set(circle, { y: dy, scale });
         gsap.set(media, { y: -dy / scale, scale: zoom / scale });
@@ -108,7 +109,7 @@ const ReelReveal = () => {
     <section
       ref={sectionRef}
       aria-label="Studio showreel"
-      className="relative h-[210vh] max-md:h-[190vh] motion-reduce:h-auto"
+      className="relative h-[170vh] max-md:h-[190vh] motion-reduce:h-auto"
     >
       <div
         ref={stageRef}

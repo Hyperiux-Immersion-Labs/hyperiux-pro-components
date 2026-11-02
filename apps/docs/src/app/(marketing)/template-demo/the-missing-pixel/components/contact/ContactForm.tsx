@@ -227,8 +227,7 @@ const ContactForm = () => {
         onChange={(checked) => set("consent", checked)}
         label={
           <>
-            Store my details so you can reply. We never share them.{" "}
-            <span className="cursor-pointer underline underline-offset-4">Privacy policy</span>
+            Store my details so you can reply. We never share them.
           </>
         }
       />

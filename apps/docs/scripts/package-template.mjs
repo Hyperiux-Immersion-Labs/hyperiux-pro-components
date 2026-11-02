@@ -266,7 +266,80 @@ const TEMPLATES = {
     needsGlbLoader: false,
     figmaFile: "Kyntra.fig",
   },
+  // A multi-page site (home, work, services, about, journal, contact, 404), unlike the
+  // four one-page templates above - see `multiPage` below.
+  "the-missing-pixel": {
+    title: "The Missing Pixel - Brand & Digital Studio Template",
+    description:
+      "A multi-page studio site for a brand and digital agency - work and case studies, services, about, journal, contact and a playable 404, built with GSAP scroll animations.",
+    dependencies: {
+      gsap: "^3.15.0",
+      "@gsap/react": "^2.1.2",
+      lenis: "^1.3.23",
+      "lucide-react": "^0.577.0",
+      // effects/flow-field (the hero's flowing-light canvas)
+      three: "^0.182.0",
+      "@react-three/fiber": "^9.6.0",
+      "@react-three/drei": "^10.7.7",
+    },
+    devDependencies: {
+      "@types/three": "^0.182.0",
+    },
+    // Root-level .ts/.tsx files (page, layout, metadata, routes, not-found) and these route
+    // folders belong in src/app/; everything under components/ and assets/ maps as usual.
+    multiPage: { routes: ["about", "blog", "contact", "services", "work"] },
+    // [...missing] only exists so unknown URLs under /template-demo/the-missing-pixel/ show
+    // the template's 404; a standalone app gets that from src/app/not-found.tsx by itself.
+    // Font-and-color.md is an internal design note.
+    skip: ["Font-and-color.md", "[...missing]"],
+    // Keeps the template's own root layout (fonts, page transition, header, footer)
+    // instead of the generic scaffold one; sourceRewrites below turn it into a root
+    // layout. Its globals.css carries the template's theme (see template-scaffold/).
+    ownLayout: true,
+    globalsCss: "the-missing-pixel/globals.css",
+    // The hero's flow-field loads these by URL from the Vault's public/, so they ship in the
+    // project's own public/ at the same paths.
+    extraFiles: [
+      { from: "apps/docs/public/assets/textures/orange.png", to: "public/assets/textures/orange.png", rewriteImports: [] },
+      { from: "apps/docs/public/assets/textures/mid-orange-texture.png", to: "public/assets/textures/mid-orange-texture.png", rewriteImports: [] },
+    ],
+    sourceRewrites: [
+      {
+        file: "routes.ts",
+        find: 'export const BASE = "/template-demo/the-missing-pixel";',
+        replace:
+          '// Prefix for every internal link. Set it (e.g. "/studio") to serve the site\n// under a sub-path, together with basePath in next.config.mjs.\nexport const BASE = "";',
+      },
+      { file: "routes.ts", find: "  home: BASE,", replace: '  home: BASE || "/",' },
+      {
+        file: "metadata.ts",
+        find: 'import ogImage from "../assets/pictures/missing-pixel-og.png";\n',
+        replace:
+          'import ogImage from "../assets/pictures/missing-pixel-og.png";\n\n// Your live domain. Used for canonical URLs and to resolve social preview\n// images - change it before deploying.\nexport const SITE_URL = "https://example.com";\n',
+      },
+      { file: "metadata.ts", find: "): Metadata => ({\n  title,", replace: "): Metadata => ({\n  metadataBase: new URL(SITE_URL),\n  title," },
+      {
+        file: "metadata.ts",
+        find: "canonical: `https://vault.hyperiux.com/templates/the-missing-pixel${slug}`,",
+        replace: "canonical: `${SITE_URL}${slug}`,",
+      },
+      { file: "layout.tsx", find: 'import "./missing-pixel-styles.css";', replace: 'import "./globals.css";\nimport "./missing-pixel-styles.css";' },
+      {
+        file: "layout.tsx",
+        find: "  return (\n    <div className={`mpx-page",
+        replace: '  return (\n    <html lang="en">\n      <body>\n    <div className={`mpx-page',
+      },
+      { file: "layout.tsx", find: "    </div>\n  );\n};\n\nexport default layout;", replace: "    </div>\n      </body>\n    </html>\n  );\n};\n\nexport default layout;" },
+    ],
+    needsGlbLoader: false,
+  },
 };
+
+// Set per run by packageTemplate() for a multi-page template: its route folders, and the
+// module names of its root .ts/.tsx files (e.g. "routes", "metadata") - imports name those
+// without an extension ("../routes"), so the mapping can't tell them apart by path alone.
+let appRoutes = null;
+let appRootModules = new Set();
 
 function usageError(message) {
   console.error(message);
@@ -317,6 +390,10 @@ function mapTemplatePathToCodePath(relPath) {
   const [first, ...rest] = parts;
 
   if (first === "page.tsx") return "src/app/page.tsx";
+  if (appRoutes) {
+    if (rest.length === 0 && (/\.tsx?$/.test(first) || appRootModules.has(first))) return ["src", "app", first].join("/");
+    if (appRoutes.includes(first)) return ["src", "app", ...parts].join("/");
+  }
   if (first === "assets") return ["src", "assets", ...rest].join("/");
   // A template's own top-level stylesheet (oris-dental.css, kyntra-styles.css,
   // lumera's fonts.css + lumera-styles.css, ...) - anything ending in .css
@@ -488,8 +565,11 @@ Then open **http://localhost:3000**.
 ├── CareComfort.tsx              # Care & comfort feature section
 ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
 ├── Reviews.tsx                  # Ribbon review strips + section break
-├── PassionMeetPurpose.tsx       # Grid gallery showcasing clinic & doctors
-├── BookAppointment.tsx          # Appointment booking card + contact form
+├── BookingFlow.tsx              # "Book your visit in four easy steps" guide
+├── Team.tsx                     # Meet the team; each card pre-fills the form with that doctor
+├── FAQ.tsx                      # Accordion of common patient questions
+├── BookAppointment.tsx          # Appointment booking card + contact form (date & time-slot pickers)
+├── booking.ts                   # Event a team card fires to pre-fill the form
 ├── Footer.tsx                   # Interactive dot canvas footer with brand wordmark
 ├── Loader.tsx                   # Watermark fill progress loading screen
 ├── OrisWrapper.tsx              # Lenis smooth scroll root wrapper
@@ -536,8 +616,11 @@ The 3D tooth model itself ships as a static asset at \`Code/public/teeth-compres
     ├── CareComfort.tsx              # Care & comfort feature section
     ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
     ├── Reviews.tsx                  # Ribbon review strips + section break
-    ├── PassionMeetPurpose.tsx       # Grid gallery showcasing clinic & doctors
-    ├── BookAppointment.tsx          # Appointment booking card + contact form
+    ├── BookingFlow.tsx              # "Book your visit in four easy steps" guide
+    ├── Team.tsx                     # Meet the team; each card pre-fills the form with that doctor
+    ├── FAQ.tsx                      # Accordion of common patient questions
+    ├── BookAppointment.tsx          # Appointment booking card + contact form (date & time-slot pickers)
+    ├── booking.ts                   # Event a team card fires to pre-fill the form
     ├── Footer.tsx                   # Interactive dot canvas footer with brand wordmark
     ├── Loader.tsx                   # Watermark fill progress loading screen
     ├── OrisWrapper.tsx              # Lenis smooth scroll root wrapper
@@ -816,6 +899,42 @@ function escapeRegExp(value) {
 // the one string literal for this slug's TEMPLATE_SCAFFOLD_BLOB_URLS entry
 // (matched via the key + a following quoted string, not a full-line
 // reconstruction) so the file's own formatting/comments survive untouched.
+async function readScaffoldUrl(slug) {
+  const source = await fs.readFile(SCAFFOLDS_FILE, "utf8");
+  const key = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(slug) ? slug : JSON.stringify(slug);
+  return source.match(new RegExp(`${escapeRegExp(key)}:\\s*"([^"]*)"`))?.[1] || null;
+}
+
+// Deletes every other copy of this template's zip: older randomly-suffixed uploads
+// ("<slug>-<30 chars>.zip"). Matched exactly, so "kyntra" never touches a "kyntra-pro"
+// template. `keep` holds the new URL and the one the deployed site still uses until the
+// updated template-scaffolds.js ships - from the next run on, both are the fixed URL.
+async function deleteOldZips(slug, { keep, list, del, token }) {
+  const own = new RegExp(`^templates/${escapeRegExp(slug)}(-[A-Za-z0-9]{30})?\\.zip$`);
+  const stale = [];
+  let cursor;
+  do {
+    const page = await list({ prefix: `templates/${slug}`, cursor, token });
+    for (const blob of page.blobs) {
+      if (own.test(blob.pathname) && !keep.includes(blob.url)) stale.push(blob);
+    }
+    cursor = page.hasMore ? page.cursor : undefined;
+  } while (cursor);
+
+  if (!stale.length) {
+    console.log(`[${slug}] no old zips to remove from Vercel Blob`);
+    return;
+  }
+  // BLOB_CLEANUP=list: only report the old zips, so they can be removed by hand.
+  if (process.env.BLOB_CLEANUP === "list") {
+    console.log(`[${slug}] old zips in Vercel Blob (not deleted, BLOB_CLEANUP=list):`);
+    for (const blob of stale) console.log(`  - ${blob.pathname}  (${(blob.size / 1e6).toFixed(1)} MB, uploaded ${new Date(blob.uploadedAt).toISOString().slice(0, 10)})`);
+    return;
+  }
+  await del(stale.map((blob) => blob.url), { token });
+  console.log(`[${slug}] removed ${stale.length} old zip(s) from Vercel Blob: ${stale.map((blob) => blob.pathname).join(", ")}`);
+}
+
 async function updateScaffoldUrl(slug, newUrl) {
   const source = await fs.readFile(SCAFFOLDS_FILE, "utf8");
   const key = /^[A-Za-z_$][A-Za-z0-9_$]*$/.test(slug) ? slug : JSON.stringify(slug);
@@ -854,7 +973,11 @@ async function packageTemplate(slug) {
   await fs.mkdir(codeDir, { recursive: true });
 
   console.log(`[${slug}] copying template-demo source into Code/src/ ...`);
-  await copyTemplateSource(sourceDir, codeDir, { skip: ["README.md"] });
+  appRoutes = manifest.multiPage?.routes ?? null;
+  appRootModules = new Set(
+    appRoutes ? fssync.readdirSync(sourceDir).filter((name) => /\.tsx?$/.test(name)).map((name) => name.replace(/\.tsx?$/, "")) : []
+  );
+  await copyTemplateSource(sourceDir, codeDir, { skip: ["README.md", ...(manifest.skip ?? [])] });
 
   for (const extra of manifest.extraFiles) {
     console.log(`[${slug}] copying extra shared file: ${extra.from}`);
@@ -944,24 +1067,27 @@ async function packageTemplate(slug) {
 
   console.log(`[${slug}] writing src/app/layout.tsx / src/app/globals.css ...`);
   await fs.mkdir(path.join(codeDir, "src/app"), { recursive: true });
-  const layoutSource = await fs.readFile(
-    path.join(SCAFFOLD_DIR, "app/layout.tsx"),
-    "utf8"
-  );
-  await fs.writeFile(
-    path.join(codeDir, "src/app/layout.tsx"),
-    layoutSource
-      .replace("__TITLE__", manifest.title)
-      .replace("__DESCRIPTION__", manifest.description),
-    "utf8"
-  );
+  // A template with its own root layout (ownLayout) keeps it - already copied and rewritten above.
+  if (!manifest.ownLayout) {
+    const layoutSource = await fs.readFile(
+      path.join(SCAFFOLD_DIR, "app/layout.tsx"),
+      "utf8"
+    );
+    await fs.writeFile(
+      path.join(codeDir, "src/app/layout.tsx"),
+      layoutSource
+        .replace("__TITLE__", manifest.title)
+        .replace("__DESCRIPTION__", manifest.description),
+      "utf8"
+    );
+  }
   // The template's own src/app/globals.css (if any survived the copy - none
   // of the four templates ship one today) would collide with the scaffold's
   // Tailwind entry point of the same name; templates instead import their
   // own scoped stylesheet (e.g. elenavoss.css) directly from page.tsx, so
   // this is always safe to write unconditionally.
   await fs.copyFile(
-    path.join(SCAFFOLD_DIR, "app/globals.css"),
+    path.join(SCAFFOLD_DIR, manifest.globalsCss ?? "app/globals.css"),
     path.join(codeDir, "src/app/globals.css")
   );
 
@@ -1003,26 +1129,25 @@ async function packageTemplate(slug) {
   console.log(`[${slug}] zip written: ${path.relative(REPO_ROOT, zipPath)}`);
 
   if (process.env.BLOB_READ_WRITE_TOKEN) {
-    const { put } = await import("@vercel/blob");
+    const { put, list, del } = await import("@vercel/blob");
+    const token = process.env.BLOB_READ_WRITE_TOKEN;
     const buffer = await fs.readFile(zipPath);
-    // addRandomSuffix explicitly true - @vercel/blob@2.x's own default is
-    // false (verified against its type defs, despite an earlier assumption
-    // here that it defaulted to true), which would silently overwrite the
-    // SAME url on every re-run. Vercel Blob is a CDN-backed store built
-    // around content at a URL being immutable, so overwriting risks serving
-    // a stale cached zip for a while with no reliable way to
-    // force-invalidate it. Every re-run instead gets a genuinely new URL;
-    // updating a template means pasting that new URL into
-    // template-scaffolds.js (a one-line, version-controlled change - same
-    // review/deploy path as any other code change, with a clean git history
-    // of when each template's shipped content last changed).
+    // The URL the deployed site downloads from right now (before this run rewrites it).
+    const liveUrl = await readScaffoldUrl(slug);
+    // One zip per template, always the latest: the same fixed URL is overwritten on every
+    // run, so the store never piles up old versions and template-scaffolds.js stops changing
+    // after the first run. The CDN would otherwise keep serving the previous upload for up
+    // to a month; 60s (the minimum) lets a new build reach buyers almost immediately.
     const blob = await put(`templates/${slug}.zip`, buffer, {
       access: "public",
-      addRandomSuffix: true,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
+      addRandomSuffix: false,
+      allowOverwrite: true,
+      cacheControlMaxAge: 60,
+      token,
     });
     console.log(`[${slug}] uploaded to Vercel Blob: ${blob.url}`);
     await updateScaffoldUrl(slug, blob.url);
+    await deleteOldZips(slug, { keep: [blob.url, liveUrl], list, del, token });
   } else {
     console.log(
       `[${slug}] BLOB_READ_WRITE_TOKEN not set - zip left on disk only. ` +

@@ -1,6 +1,8 @@
 'use client'
 
 import React, { useState, useRef, useEffect, useId } from 'react'
+import { BOOK_DOCTOR_EVENT, type BookDoctorDetail } from '../../booking'
+import { DateField, TimeField, formatDate, formatTime, isPastSlot } from './DateTimeFields'
 
 const TOPICS = [
     { value: 'consultation', label: 'General Consultation' },
@@ -28,6 +30,8 @@ export default function ContactForm() {
     const phoneId = `oris-phone-${uid}`
     const topicId = `oris-topic-${uid}`
     const messageId = `oris-message-${uid}`
+    const dateId = `oris-date-${uid}`
+    const timeId = `oris-time-${uid}`
 
     const [formData, setFormData] = useState({
         name: '',
@@ -35,6 +39,8 @@ export default function ContactForm() {
         countryCode: '+91',
         phone: '',
         topic: '',
+        date: '',
+        time: '',
         message: '',
         terms: false,
     })
@@ -66,6 +72,20 @@ export default function ContactForm() {
         return () => document.removeEventListener('mousedown', handleClick)
     }, [])
 
+    // "Book a visit" on a team card pre-fills the message with that doctor (unless the visitor wrote their own).
+    useEffect(() => {
+        const onBook = (e: Event) => {
+            const { name } = (e as CustomEvent<BookDoctorDetail>).detail
+            setSuccess(false)
+            setFormData((prev) => {
+                const auto = !prev.message || prev.message.startsWith("I'd like to book an appointment with ")
+                return auto ? { ...prev, message: `I'd like to book an appointment with ${name}.` } : prev
+            })
+        }
+        window.addEventListener(BOOK_DOCTOR_EVENT, onBook)
+        return () => window.removeEventListener(BOOK_DOCTOR_EVENT, onBook)
+    }, [])
+
     const [focused, setFocused] = useState<Record<string, boolean>>({})
 
     const handleFocus = (field: string) => {
@@ -89,7 +109,10 @@ export default function ContactForm() {
         } else if (formData.phone.replace(/\D/g, '').length < 6) {
             errs.phone = 'Please enter a valid phone number'
         }
-        if (!formData.topic) errs.topic = 'Please select a topic'
+        if (!formData.topic) errs.topic = 'Please choose a treatment'
+        if (!formData.date) errs.date = 'Please choose a date'
+        if (!formData.time) errs.time = 'Please choose a time slot'
+        else if (isPastSlot(formData.date, formData.time)) errs.time = 'That time has passed, please pick another'
         if (!formData.terms) errs.terms = 'You must agree to the Terms'
 
         setErrors(errs)
@@ -125,7 +148,8 @@ export default function ContactForm() {
                     Request Received
                 </h4>
                 <p className="text-gray-500 text-sm max-lg:text-[2vw] max-md:text-[4vw] mt-2 max-w-xs">
-                    Our care coordinator will call you back within 15 minutes to confirm your 3D scan consultation.
+                    Your requested slot is {formatDate(formData.date)} at {formatTime(formData.time)}. Our care
+                    coordinator will call you back within 15 minutes to confirm it.
                 </p>
                 <button
                     onClick={() => {
@@ -136,6 +160,8 @@ export default function ContactForm() {
                             countryCode: '+91',
                             phone: '',
                             topic: '',
+                            date: '',
+                            time: '',
                             message: '',
                             terms: false,
                         })
@@ -289,11 +315,15 @@ export default function ContactForm() {
                         <input
                             id={phoneId}
                             type="tel"
+                            inputMode="numeric"
+                            autoComplete="tel-national"
+                            // Digits only; 15 is the longest number allowed worldwide (E.164)
+                            maxLength={15}
                             value={formData.phone}
                             onFocus={() => handleFocus('phone')}
                             onBlur={() => handleBlur('phone')}
                             onChange={(e) => {
-                                setFormData({ ...formData, phone: e.target.value })
+                                setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 15) })
                                 if (errors.phone) setErrors({ ...errors, phone: '' })
                             }}
                             className="w-full h-full px-3 text-sm max-lg:text-[2vw] max-md:text-[4vw] text-gray-800 outline-none bg-transparent rounded-r-md"
@@ -303,7 +333,7 @@ export default function ContactForm() {
                 {errors.phone && <p className="mt-1 ml-3 text-xs text-red-500">{errors.phone}</p>}
             </div>
 
-            {/* Topic Select Field */}
+            {/* Treatment Select Field */}
             <div className="w-full" ref={topicRef}>
                 <div className="relative w-full">
                     {/* Floating Label */}
@@ -313,7 +343,7 @@ export default function ContactForm() {
                                 : 'top-1/2 -translate-y-1/2 text-sm max-lg:text-[2vw] max-md:text-[4vw] text-gray-700'
                             }`}
                     >
-                        Topic*
+                        Choose a treatment*
                     </span>
 
                     <button
@@ -328,7 +358,7 @@ export default function ContactForm() {
                             }`}
                     >
                         <span className={formData.topic ? 'text-gray-800 font-normal' : 'opacity-0'}>
-                            {selectedTopic?.label || 'Topic*'}
+                            {selectedTopic?.label || 'Choose a treatment*'}
                         </span>
                     </button>
 
@@ -367,6 +397,30 @@ export default function ContactForm() {
                     )}
                 </div>
                 {errors.topic && <p className="mt-1 ml-3 text-xs text-red-500">{errors.topic}</p>}
+            </div>
+
+            {/* Preferred date & time slot */}
+            <div className="grid grid-cols-2 gap-4 max-md:gap-3">
+                <DateField
+                    id={dateId}
+                    value={formData.date}
+                    error={errors.date}
+                    onChange={(date) => {
+                        // A slot that has already passed on the new date is cleared
+                        setFormData((prev) => ({ ...prev, date, time: isPastSlot(date, prev.time) ? '' : prev.time }))
+                        if (errors.date) setErrors({ ...errors, date: '' })
+                    }}
+                />
+                <TimeField
+                    id={timeId}
+                    value={formData.time}
+                    date={formData.date}
+                    error={errors.time}
+                    onChange={(time) => {
+                        setFormData((prev) => ({ ...prev, time }))
+                        if (errors.time) setErrors({ ...errors, time: '' })
+                    }}
+                />
             </div>
 
             {/* Message Field */}

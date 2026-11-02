@@ -196,9 +196,10 @@ export default function CareComfort() {
           itemClassName="px-[0.95vw] max-lg:px-[1.3vw] max-md:px-[2vw]"
         >
           {CAROUSEL_CARDS.map((card, idx) => (
+            // The carousel tilts each item's first child while it moves; the reveal slides the card
+            // inside it. On the same element the two overwrote each other's transform and jittered.
+            <div key={`${card.id}-${idx}`} aria-hidden={idx >= CARE_CARDS.length}>
             <div
-              key={`${card.id}-${idx}`}
-              aria-hidden={idx >= CARE_CARDS.length}
               className={`care-card-anim w-[28vw] max-lg:w-[50vw] max-md:w-[76vw] aspect-[440/477] rounded-xl max-md:rounded-3xl px-[1.8vw] pt-[1.8vw] pb-[5vw] max-md:px-6 max-md:pt-6 max-md:pb-8 flex flex-col justify-end gap-[2.4vw] max-md:gap-6 relative  select-none will-change-transform ${card.bgClassName}`}
             >
               {/* Interactive Dots on Mouse Move */}
@@ -222,6 +223,7 @@ export default function CareComfort() {
               <p className="relative z-10 text-white/85 oris-text22 max-lg:text-[2.5vw] max-md:text-[3.6vw] leading-[1.3] max-w-[96%] font-normal">
                 {card.description}
               </p>
+            </div>
             </div>
           ))}
         </SmoothInfiniteCarousel>

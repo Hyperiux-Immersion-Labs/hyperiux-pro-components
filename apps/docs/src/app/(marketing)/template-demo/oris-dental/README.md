@@ -1,6 +1,6 @@
 # Oris Dental - Modern Dental Clinic Template
 
-A single-page website template for dental clinics, orthodontists, and cosmetic dental practices. One scrolling page - 3D interactive hero, about us with slot counters, scroll-pinned treatments, why choose us, parallax statement break, floating ribbon review showcase, practice gallery, appointment booking form, and interactive footer - built from [Hyperiux Vault](https://vault.hyperiux.com) effects arranged into a full site.
+A single-page website template for dental clinics, orthodontists, and cosmetic dental practices. One scrolling page - 3D interactive hero, about us with slot counters, scroll-pinned treatments, parallax statement break, a four-step booking guide, floating ribbon review showcase, a meet-the-team section with per-doctor booking, FAQs, an appointment form with date and time-slot pickers, and interactive footer - built from [Hyperiux Vault](https://vault.hyperiux.com) effects arranged into a full site.
 
 ## Tech stack
 
@@ -39,8 +39,11 @@ app/
 ├── CareComfort.tsx              # Care & comfort feature section
 ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
 ├── Reviews.tsx                  # Ribbon review strips + section break
-├── PassionMeetPurpose.tsx       # Grid gallery showcasing clinic & doctors
-├── BookAppointment.tsx          # Appointment booking card + contact form
+├── BookingFlow.tsx              # "Book your visit in four easy steps" guide
+├── Team.tsx                     # Meet the team; each card pre-fills the form with that doctor
+├── FAQ.tsx                      # Accordion of common patient questions
+├── BookAppointment.tsx          # Appointment booking card + contact form (date & time-slot pickers)
+├── booking.ts                   # Event a team card fires to pre-fill the form
 ├── Footer.tsx                   # Interactive dot canvas footer with brand wordmark
 ├── Loader.tsx                   # Watermark fill progress loading screen
 ├── OrisWrapper.tsx              # Lenis smooth scroll root wrapper
@@ -83,7 +86,7 @@ Then open **http://localhost:3000**.
 
 ## Customizing
 
-- **Copy** - every section's text lives as plain data at the top of its file: `STATS` in `AboutOris.tsx`, `TREATMENTS_DATA` in `DentalTreatments.tsx`, `WHY_STATS` in `WhyOris.tsx`, and so on. Edit those directly.
+- **Copy** - every section's text lives as plain data at the top of its file: `STATS` in `AboutOris.tsx`, `TREATMENTS_DATA` in `DentalTreatments.tsx`, `STEPS` in `BookingFlow.tsx`, `TEAM` in `Team.tsx`, `FAQS` in `FAQ.tsx`, `TIME_SLOTS` in `effects/contact-form/DateTimeFields.tsx`, and so on. Edit those directly.
 - **3D Model** - swap the 3D model under `assets/teeth.glb` and adjust lights/materials in `effects/teeth-3d/TeethCanvas.tsx`.
 - **Colors** - Primary blue (`#3365e2`) and secondary navy (`#13314a`) are configured in `oris-dental.css` and can be adjusted across the template.
 - **Contact Form** - Update the `handleSubmit` handler in `effects/contact-form/ContactForm.tsx` to connect to your backend or CRM API.
