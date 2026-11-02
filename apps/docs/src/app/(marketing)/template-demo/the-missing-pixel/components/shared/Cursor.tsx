@@ -178,6 +178,7 @@ const Cursor = () => {
       <div
         ref={wrapRef}
         aria-hidden
+        data-mpx-cursor
         className="pointer-events-none fixed left-0 top-0 z-200 h-0 w-0 opacity-0 mix-blend-difference transition-opacity duration-300"
       >
         <div
@@ -192,6 +193,7 @@ const Cursor = () => {
       <div
         ref={labelRef}
         aria-hidden
+        data-mpx-cursor
         className="font-mpx-head pointer-events-none fixed left-0 top-0 z-201 flex size-[5.6vw] items-center justify-center rounded-full bg-mpx-ink p-3 text-center text-14 font-semibold leading-[1.1] text-mpx-paper will-change-transform"
       />
     </>

@@ -465,6 +465,11 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
   display: none;
 }
 
+/* No blend cursor on the 404 either; the native cursor takes over */
+.mpx-page:has([data-mpx-404]) [data-mpx-cursor] {
+  display: none;
+}
+
 /* A light band sweeping across accent text, used on the 404 */
 .mpx-page .mpx-shimmer {
   background-image: linear-gradient(

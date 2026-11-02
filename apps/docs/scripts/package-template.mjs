@@ -288,10 +288,8 @@ const TEMPLATES = {
     // Root-level .ts/.tsx files (page, layout, metadata, routes, not-found) and these route
     // folders belong in src/app/; everything under components/ and assets/ maps as usual.
     multiPage: { routes: ["about", "blog", "contact", "services", "work"] },
-    // [...missing] only exists so unknown URLs under /template-demo/the-missing-pixel/ show
-    // the template's 404; a standalone app gets that from src/app/not-found.tsx by itself.
     // Font-and-color.md is an internal design note.
-    skip: ["Font-and-color.md", "[...missing]"],
+    skip: ["Font-and-color.md"],
     // Keeps the template's own root layout (fonts, page transition, header, footer)
     // instead of the generic scaffold one; sourceRewrites below turn it into a root
     // layout. Its globals.css carries the template's theme (see template-scaffold/).
@@ -390,6 +388,9 @@ function mapTemplatePathToCodePath(relPath) {
   const [first, ...rest] = parts;
 
   if (first === "page.tsx") return "src/app/page.tsx";
+  // The template's own 404 becomes the app's root not-found, which Next also
+  // serves for every unmatched URL.
+  if (first === "not-found.tsx") return "src/app/not-found.tsx";
   if (appRoutes) {
     if (rest.length === 0 && (/\.tsx?$/.test(first) || appRootModules.has(first))) return ["src", "app", first].join("/");
     if (appRoutes.includes(first)) return ["src", "app", ...parts].join("/");
@@ -455,8 +456,10 @@ function rewriteRelativeSpecifiers(content, importerOldRelPath) {
   // plain `import "./x"`/`from "./x"` - without it, a dynamic import's
   // specifier was silently left unrewritten (caught by an actual `next
   // build` against the restructured output, not just a path-log check).
+  // The lookbehind and the ./ or ../ prefix keep method calls with class
+  // selectors (GSAP's `tl.from(".nf-bg", ...)`) from being taken for imports.
   let result = content.replace(
-    /((?:from|import)\s*\(?\s*)(['"])(\.[^'"]*)\2/g,
+    /((?<![\w$.])(?:from|import)\s*\(?\s*)(['"])(\.\.?\/[^'"]*)\2/g,
     (whole, prefix, quote, specifier) => `${prefix}${quote}${rewriteOne(specifier)}${quote}`
   );
   result = result.replace(
@@ -977,7 +980,9 @@ async function packageTemplate(slug) {
   appRootModules = new Set(
     appRoutes ? fssync.readdirSync(sourceDir).filter((name) => /\.tsx?$/.test(name)).map((name) => name.replace(/\.tsx?$/, "")) : []
   );
-  await copyTemplateSource(sourceDir, codeDir, { skip: ["README.md", ...(manifest.skip ?? [])] });
+  // [...missing] only exists so unknown URLs inside the demo hit the template's
+  // 404; a standalone app gets that from src/app/not-found.tsx on its own.
+  await copyTemplateSource(sourceDir, codeDir, { skip: ["README.md", "[...missing]", ...(manifest.skip ?? [])] });
 
   for (const extra of manifest.extraFiles) {
     console.log(`[${slug}] copying extra shared file: ${extra.from}`);
@@ -1024,6 +1029,18 @@ async function packageTemplate(slug) {
       );
     }
     await fs.writeFile(target, content.split(rewrite.find).join(rewrite.replace), "utf8");
+  }
+
+  // One-page templates point their 404's home links at a HOME constant set to
+  // the demo route; in the standalone app home is "/".
+  const notFoundPath = path.join(codeDir, "src/app/not-found.tsx");
+  if (!appRoutes && fssync.existsSync(notFoundPath)) {
+    const content = await fs.readFile(notFoundPath, "utf8");
+    const homeRe = new RegExp(`(const HOME\\s*=\\s*)(["'])/template-demo/${escapeRegExp(slug)}\\2`);
+    if (!homeRe.test(content)) {
+      throw new Error(`[${slug}] not-found.tsx must declare const HOME = "/template-demo/${slug}" so its home links can be rewritten.`);
+    }
+    await fs.writeFile(notFoundPath, content.replace(homeRe, "$1$2/$2"), "utf8");
   }
 
   console.log(`[${slug}] writing package.json / tsconfig.json ...`);
