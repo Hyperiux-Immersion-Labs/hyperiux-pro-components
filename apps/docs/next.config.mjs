@@ -43,7 +43,7 @@ const allowedIframeSources = [
 // Who may put vault pages in an iframe: the vault itself (effect and template
 // previews) and our own domains. Stops other sites framing the dashboard or
 // billing pages to trick clicks (security audit M2).
-const allowedFrameAncestors = ["'self'", "https://hyperiux.com", "https://*.hyperiux.com"].join(" ");
+const allowedFrameAncestors = ["'self'", "https://hyperiux.com", "https://21st.dev","https://*.hyperiux.com"].join(" ");
 
 // Hosts next/image may fetch and resize. Anything else is refused, so
 // /_next/image can't be used to fetch arbitrary URLs (security audit M2).
