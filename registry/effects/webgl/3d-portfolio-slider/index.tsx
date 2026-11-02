@@ -6,7 +6,6 @@ import Lenis from "lenis";
 import { useEffect, useRef, useSyncExternalStore } from "react";
 import * as THREE from "three";
 
-import Image from "next/image";
 const DEFAULT_ROOT_MARGIN = "256px";
 
 type RafRoot = Element | null | { current: Element | null } | (() => Element | null);
@@ -704,14 +703,11 @@ function PortfolioSlider({
                 {/* Plain <img> so no next.config images.remotePatterns is needed.
  crossOrigin matches the WebGL texture request, so the browser cache
  entry is CORS-enabled for both. */}
-                <Image
+                <img
                   src={item.url}
                   crossOrigin="anonymous"
                   alt={item.description}
                   className="absolute inset-0 w-full h-full object-cover"
-                  fill
-                  sizes="100vw"
-                  loading="eager"
                 />
               </div>
             );

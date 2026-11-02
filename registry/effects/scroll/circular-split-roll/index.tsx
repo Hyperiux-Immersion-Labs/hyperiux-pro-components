@@ -1,6 +1,4 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
- 
-// Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
 import gsap from "gsap";
@@ -8,7 +6,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ReactLenis } from "lenis/react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
-import Image from "next/image";
 const DESKTOP_WIDTH = 1200;
 const TABLET_MIN_WIDTH = 1025;
 
@@ -372,14 +369,11 @@ export function CircularSplitRollComp({
                   className="circular-scroll-showcase__right-item absolute left-1/2 top-1/2 ml-[calc(var(--css-card-width,210px)*-0.5)] mt-[calc(var(--css-card-height,210px)*-0.5)] h-(--css-card-height,210px) w-(--css-card-width,210px) origin-center opacity-0 will-change-[transform,opacity]"
                 >
                   <div className="relative h-full w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_30px_60px_rgba(0,0,0,0.28),0_8px_20px_rgba(0,0,0,0.16)]">
-                    <Image
+                    <img
                       src={item.image}
                       alt={item.alt}
                       className="pointer-events-none block h-full w-full select-none object-cover absolute inset-0"
                       draggable="false"
-                      fill
-                      sizes="100vw"
-                      loading="eager"
                     />
                   </div>
                 </div>
@@ -399,14 +393,11 @@ export function CircularSplitRollComp({
               <div
                 className={`relative aspect-square w-full overflow-hidden rounded-[18px] bg-[#f5f2eb] shadow-[0_18px_38px_rgba(0,0,0,0.28)] max-md:rounded-[14px] ${gridImageClassName}`}
               >
-                <Image
+                <img
                   src={item.image}
                   alt={item.alt}
                   className="block h-full w-full object-cover absolute inset-0"
                   draggable="false"
-                  fill
-                  sizes="100vw"
-                  loading="eager"
                 />
               </div>
 
