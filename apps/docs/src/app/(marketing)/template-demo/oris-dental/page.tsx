@@ -8,7 +8,9 @@ import CareComfort from "./CareComfort";
 import DentalTreatments from "./DentalTreatments";
 import ParallaxSectionBreak from "./ParallaxSectionBreak";
 import Reviews from "./Reviews";
-import PassionMeetPurpose from "./PassionMeetPurpose";
+import BookingFlow from "./BookingFlow";
+import Team from "./Team";
+import FAQ from "./FAQ";
 import BookAppointment from "./BookAppointment";
 import Footer from "./Footer";
 import Loader from "./Loader";
@@ -42,10 +44,11 @@ export default function Page() {
         <AboutOris />
         <CareComfort />
         <DentalTreatments />
-        {/* <WhyOris /> */}
         <ParallaxSectionBreak />
+        <BookingFlow />
         <Reviews />
-        <PassionMeetPurpose />
+        <Team />
+        <FAQ />
         <BookAppointment />
       </div>
       <Footer />

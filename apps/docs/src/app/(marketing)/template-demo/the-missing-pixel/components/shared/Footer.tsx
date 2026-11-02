@@ -227,10 +227,9 @@ const Footer = () => {
           <div className="relative flex flex-wrap items-center justify-between gap-4 border-t border-(--mpx-white)/15 py-[1.5vw] text-14 text-(color:--mpx-white)/60 max-lg:gap-6 max-lg:py-[3vw] max-md:flex-col max-md:items-start max-md:gap-2 max-md:py-[3vh] max-md:pr-[16vw]">
             <span>© {new Date().getFullYear()} The Missing Pixel. Made with an unreasonable amount of care.</span>
             <nav aria-label="Legal" className="flex gap-5 max-lg:gap-6">
+              {/* Plain text: the template has no legal pages, so these don't pretend to link anywhere */}
               {LEGAL.map((item) => (
-                <span key={item} className="cursor-pointer transition-colors duration-300 hover:text-(color:--mpx-paper)">
-                  {item}
-                </span>
+                <span key={item}>{item}</span>
               ))}
             </nav>
             {/* Phones: a round white button with just the arrow, pinned to the bar's

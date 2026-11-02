@@ -71,6 +71,76 @@
           "height": 678
         }
       ]
+    },
+    "phone": {
+      "sections": [
+        {
+          "name": "hero",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/01-hero.webp",
+          "width": 600,
+          "height": 1298
+        },
+        {
+          "name": "clients",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/02-clients.webp",
+          "width": 600,
+          "height": 332
+        },
+        {
+          "name": "showreel",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/03-showreel.webp",
+          "width": 600,
+          "height": 1298
+        },
+        {
+          "name": "intro",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/04-intro.webp",
+          "width": 600,
+          "height": 1428
+        },
+        {
+          "name": "work",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/05-work.webp",
+          "width": 600,
+          "height": 1252
+        },
+        {
+          "name": "process",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/06-process.webp",
+          "width": 600,
+          "height": 2329
+        },
+        {
+          "name": "services",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/07-services.webp",
+          "width": 600,
+          "height": 1562
+        },
+        {
+          "name": "testimonials",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/08-testimonials.webp",
+          "width": 600,
+          "height": 1196
+        },
+        {
+          "name": "journal",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/09-journal.webp",
+          "width": 600,
+          "height": 2513
+        },
+        {
+          "name": "cta",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/10-cta.webp",
+          "width": 600,
+          "height": 1335
+        },
+        {
+          "name": "footer",
+          "src": "/assets/templates/templates-exploded/the-missing-pixel/phone/11-footer.webp",
+          "width": 600,
+          "height": 1299
+        }
+      ]
     }
   },
   "full": {

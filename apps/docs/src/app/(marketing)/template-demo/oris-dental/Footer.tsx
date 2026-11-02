@@ -4,6 +4,7 @@ import React, { useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import gsap from 'gsap'
+import { useLenis } from 'lenis/react'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import DotsCanvas from './teeth-3d/DotsCanvas'
 import SplitTextLines from './effects/split-text-lines/SplitTextLines'
@@ -16,26 +17,21 @@ if (typeof window !== 'undefined') {
 
 type FooterColumn = {
     title: string
-    links: { label: string; href: string }[]
+    /** `target` is the section a link scrolls to; links without one (socials) stay put. */
+    links: { label: string; href: string; target?: string }[]
 }
 
+// The treatments section's id carries a generated suffix, so it is matched by prefix.
+const TREATMENTS = '[id^="dental-treatments"]'
+
+// Only links the one-page template can back up: each scrolls to its section on the page.
 const LEFT_COLUMNS: FooterColumn[] = [
     {
         title: 'Our Treatments',
         links: [
-            { label: 'Teeth Whitening', href: '#' },
-            { label: 'Smile Restoration', href: '#' },
-            { label: 'Dental Implants', href: '#' },
-            { label: 'Braces & Aligners', href: '#' },
-        ],
-    },
-    {
-        title: 'About Us',
-        links: [
-            { label: 'Our Team', href: '#' },
-            { label: 'Technology', href: '#' },
-            { label: 'Patient Stories', href: '#' },
-            { label: 'Careers', href: '#' },
+            { label: 'Teeth Whitening', href: '#treatments', target: TREATMENTS },
+            { label: 'Dental Implants', href: '#treatments', target: TREATMENTS },
+            { label: 'Braces & Aligners', href: '#treatments', target: TREATMENTS },
         ],
     },
 ]
@@ -44,10 +40,9 @@ const RIGHT_COLUMNS: FooterColumn[] = [
     {
         title: 'Support',
         links: [
-            { label: 'Book Appointment', href: '#' },
-            { label: 'FAQ', href: '#' },
-            { label: 'Insurance Info', href: '#' },
-            { label: 'Contact', href: '#' },
+            { label: 'Book Appointment', href: '#oris-form', target: '#oris-form' },
+            { label: 'FAQ', href: '#faq', target: '#faq' },
+            { label: 'Contact', href: '#oris-form', target: '#oris-form' },
         ],
     },
     {
@@ -61,6 +56,18 @@ const RIGHT_COLUMNS: FooterColumn[] = [
 ]
 
 function FooterLinkColumn({ column }: { column: FooterColumn }) {
+    const lenis = useLenis()
+
+    // Smooth-scrolls to the link's section; social placeholders do nothing instead of jumping to the top.
+    const go = (event: React.MouseEvent<HTMLAnchorElement>, target?: string) => {
+        event.preventDefault()
+        if (!target) return
+        const section = document.querySelector<HTMLElement>(target)
+        if (!section) return
+        if (lenis) lenis.scrollTo(section, { duration: 1.6 })
+        else section.scrollIntoView({ behavior: 'smooth' })
+    }
+
     return (
         <div className="footer-col flex flex-col gap-3">
             <p className="text-white oris-text22 font-medium! whitespace-nowrap">
@@ -72,6 +79,7 @@ function FooterLinkColumn({ column }: { column: FooterColumn }) {
                         <CharStaggerButton
                             text={link.label}
                             href={link.href}
+                            onClick={(event) => go(event, link.target)}
                             hoverColor="#ffffff"
                             className="text-white/90"
                             textClassName="whitespace-nowrap text-sm md:text-base"
@@ -193,14 +201,16 @@ export default function Footer() {
                 <nav
                     ref={navRef}
                     aria-label="Footer"
-                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-lg:grid max-lg:grid-cols-2 max-lg:gap-6 max-lg:mt-10 max-lg:mb-6 max-md:grid-cols-2 max-md:gap-8"
+                    className="relative z-10 flex w-full items-start justify-between mt-[4vw] mb-[3vw] max-lg:grid max-lg:grid-cols-2 max-lg:gap-x-6 max-lg:gap-y-12 max-lg:mt-10 max-lg:mb-6 max-md:gap-x-8"
                 >
-                    <div className="flex gap-30  max-lg:flex-col max-lg:gap-12 ">
+                    {/* Below desktop both groups dissolve into the nav's 2-column grid: Treatments and
+                        Support share the first row, Follow Us starts the second on the left. */}
+                    <div className="flex gap-30 max-lg:contents">
                         {LEFT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}
                     </div>
-                    <div className="flex gap-30  max-lg:flex-col max-lg:gap-16">
+                    <div className="flex gap-30 max-lg:contents">
                         {RIGHT_COLUMNS.map((column) => (
                             <FooterLinkColumn key={column.title} column={column} />
                         ))}

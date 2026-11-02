@@ -65,7 +65,7 @@ const TestimonialSwiper = ({
     if (!autoplay || prefersReducedMotion() || total <= 1) return;
 
     autoplayRef.current = gsap.delayedCall(autoplayDelay / 1000, () =>
-      goTo((currentRef.current + 1) % total),
+      goTo((currentRef.current + 1) % total, 1),
     );
   };
 
@@ -91,7 +91,8 @@ const TestimonialSwiper = ({
       });
     });
 
-  const goTo = async (index: number) => {
+  // `direction` is passed by the arrows so wrapping round (last -> first) still moves forward.
+  const goTo = async (index: number, direction?: Direction) => {
     if (isAnimatingRef.current || total <= 1 || index === currentRef.current) return;
     isAnimatingRef.current = true;
     autoplayRef.current?.kill();
@@ -99,7 +100,7 @@ const TestimonialSwiper = ({
     if (!prefersReducedMotion()) await fadeOutCurrent();
 
     revertSplit();
-    directionRef.current = index > currentRef.current ? 1 : -1;
+    directionRef.current = direction ?? (index > currentRef.current ? 1 : -1);
     currentRef.current = index;
     setCurrent(index);
   };
@@ -273,7 +274,10 @@ const TestimonialSwiper = ({
         </figure>
       </div>
 
-      <div role="group" aria-label="Choose a testimonial" className="flex justify-center gap-[0.6vw] max-lg:gap-2">
+      {/* Position bars centred, as before; the previous / next arrows sit at the right end
+          of the same row (on phones, centred on their own row below the bars) */}
+      <div className="relative flex items-center justify-center max-md:flex-col max-md:gap-5">
+      <div role="group" aria-label="Choose a testimonial" className="flex justify-center gap-[0.6vw] max-lg:gap-2 max-md:self-center">
         {items.map((entry, index) => {
           const isActive = index === current;
           return (
@@ -296,8 +300,37 @@ const TestimonialSwiper = ({
           );
         })}
       </div>
+      <div className="absolute right-0 top-1/2 flex -translate-y-1/2 gap-[0.6vw] max-lg:gap-2 max-md:static max-md:translate-y-0">
+        <NavButton label="Previous testimonial" flip onClick={() => goTo((currentRef.current - 1 + total) % total, -1)} />
+        <NavButton label="Next testimonial" onClick={() => goTo((currentRef.current + 1) % total, 1)} />
+      </div>
+      </div>
     </div>
   );
 };
+
+const NavButton = ({ label, flip = false, onClick }: { label: string; flip?: boolean; onClick: () => void }) => (
+  <button
+    type="button"
+    aria-label={label}
+    onClick={onClick}
+    // No hover fill: the site cursor turns into a difference-blended disc over buttons, and over
+    // a filled background that blend flickered to the inverse colour. The border darkens instead.
+    className={`group flex size-[3.4vw] items-center justify-center rounded-full border border-(--mpx-ink)/20 text-mpx-ink transition-colors duration-300 hover:border-(--mpx-ink) focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--mpx-accent) motion-reduce:transition-none max-lg:size-12 max-md:size-11`}
+  >
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.6}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+      className={`size-[1.2vw] transition-transform duration-500 ${EASE_OUT} max-lg:size-5 ${flip ? "rotate-180 group-hover:-translate-x-0.5" : "group-hover:translate-x-0.5"}`}
+    >
+      <path d="M5 12h14M13 6l6 6-6 6" />
+    </svg>
+  </button>
+);
 
 export default TestimonialSwiper;

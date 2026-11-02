@@ -35,28 +35,40 @@
           "height": 806
         },
         {
+          "name": "booking flow",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/06-booking-flow.webp",
+          "width": 1200,
+          "height": 701
+        },
+        {
           "name": "reviews",
-          "src": "/assets/templates/templates-exploded/oris-dental/desktop/06-reviews.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/07-reviews.webp",
           "width": 1200,
           "height": 1419
         },
         {
-          "name": "passion meet purpose",
-          "src": "/assets/templates/templates-exploded/oris-dental/desktop/07-passion-meet-purpose.webp",
+          "name": "our team",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/08-our-team.webp",
           "width": 1200,
-          "height": 588
+          "height": 558
+        },
+        {
+          "name": "faq",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/09-faq.webp",
+          "width": 1200,
+          "height": 681
         },
         {
           "name": "book an appointment",
-          "src": "/assets/templates/templates-exploded/oris-dental/desktop/08-book-an-appointment.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/10-book-an-appointment.webp",
           "width": 1200,
-          "height": 724
+          "height": 827
         },
         {
           "name": "footer",
-          "src": "/assets/templates/templates-exploded/oris-dental/desktop/09-footer.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/desktop/11-footer.webp",
           "width": 1200,
-          "height": 603
+          "height": 750
         }
       ]
     },
@@ -93,28 +105,40 @@
           "height": 1360
         },
         {
+          "name": "booking flow",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/06-booking-flow.webp",
+          "width": 600,
+          "height": 2217
+        },
+        {
           "name": "reviews",
-          "src": "/assets/templates/templates-exploded/oris-dental/phone/06-reviews.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/07-reviews.webp",
           "width": 600,
           "height": 1266
         },
         {
-          "name": "passion meet purpose",
-          "src": "/assets/templates/templates-exploded/oris-dental/phone/07-passion-meet-purpose.webp",
+          "name": "our team",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/08-our-team.webp",
           "width": 600,
-          "height": 962
+          "height": 2723
+        },
+        {
+          "name": "faq",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/09-faq.webp",
+          "width": 600,
+          "height": 1426
         },
         {
           "name": "book an appointment",
-          "src": "/assets/templates/templates-exploded/oris-dental/phone/08-book-an-appointment.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/10-book-an-appointment.webp",
           "width": 600,
-          "height": 1362
+          "height": 1648
         },
         {
           "name": "footer",
-          "src": "/assets/templates/templates-exploded/oris-dental/phone/09-footer.webp",
+          "src": "/assets/templates/templates-exploded/oris-dental/phone/11-footer.webp",
           "width": 600,
-          "height": 1298
+          "height": 958
         }
       ]
     }
@@ -122,6 +146,6 @@
   "full": {
     "src": "/assets/templates/templates-exploded/oris-dental/full-desktop.webp",
     "width": 720,
-    "height": 4266
+    "height": 5228
   }
 }
