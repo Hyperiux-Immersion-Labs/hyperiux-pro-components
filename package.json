@@ -31,7 +31,7 @@
     "@gsap/react": "^2.1.2",
     "@next/bundle-analyzer": "^16.2.10",
     "@vercel/blob": "^2.8.0",
-    "archiver": "^7.0.1",
+    "archiver": "^8.0.0",
     "disposable-email-domains": "^1.0.62",
     "jspdf": "^4.2.1",
     "leva": "^0.10.1",
