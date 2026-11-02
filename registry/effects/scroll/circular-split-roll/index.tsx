@@ -437,61 +437,61 @@ const showcaseItems = [
   {
     title: "Vuelta",
     image:
-      "https://picsum.photos/seed/v01/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-01.jpg",
     alt: "Vuelta lamp",
   },
   {
     title: "JH42",
     image:
-      "https://picsum.photos/seed/v02/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-02.jpg",
     alt: "JH42 lamp",
   },
   {
     title: "Hay",
     image:
-      "https://picsum.photos/seed/v03/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-03.jpg",
     alt: "Hay product",
   },
   {
     title: "Teresa",
     image:
-      "https://picsum.photos/seed/h08/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-08.jpg",
     alt: "Teresa lamp",
   },
   {
     title: "Tahiti",
     image:
-      "https://picsum.photos/seed/h14/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-14.jpg",
     alt: "Tahiti lamp",
   },
   {
     title: "Akari 1A",
     image:
-      "https://picsum.photos/seed/v06/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-06.jpg",
     alt: "Akari 1A lamp",
   },
   {
     title: "Nessino",
     image:
-      "https://picsum.photos/seed/v07/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-07.jpg",
     alt: "Nessino lamp",
   },
   {
     title: "Panthella",
     image:
-      "https://picsum.photos/seed/v08/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/v-08.jpg",
     alt: "Panthella lamp",
   },
   {
     title: "Bellhop",
     image:
-      "https://picsum.photos/seed/h01/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-01.jpg",
     alt: "Bellhop lamp",
   },
   {
     title: "Flowerpot",
     image:
-      "https://picsum.photos/seed/h06/1600/1200",
+      "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images/h-06.jpg",
     alt: "Flowerpot lamp",
   },
 ];

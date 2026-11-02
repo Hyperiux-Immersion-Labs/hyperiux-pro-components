@@ -1,6 +1,6 @@
 {
   "name": "information-drawer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "registry:component",
   "title": "Information Drawer",
   "description": "Team profile grid with an animated information drawer and editable panel styling",
@@ -113,8 +113,8 @@
     {
       "name": "sidebarWidth",
       "type": "number | string",
-      "default": 60,
-      "description": "Desktop drawer width. Numbers are treated as viewport-width percentages.",
+      "default": 70,
+      "description": "Desktop drawer width. Numbers are applied as a percentage (70 renders as \"70%\").",
       "remixer": {
         "control": "range",
         "group": "layout",
@@ -157,6 +157,12 @@
     }
   ],
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-11-02",
+      "summary": "Registry sidebarWidth default corrected to 70 (70%) to match the component.",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-08-21",

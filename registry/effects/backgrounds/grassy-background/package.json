@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/grassy-background",
+  "version": "1.0.0",
+  "description": "Wind-blown grass over slowly shifting rolling hills.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*"
+  }
+}

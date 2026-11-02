@@ -9,8 +9,14 @@
   "exportKind": "default",
   "importPath": "@/components/effects/gooey-counter",
   "tier": "free",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-11-02",
+      "summary": "Hid the canvas from assistive tech and mirrored the current number as text.",
+      "breaking": false
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-30",

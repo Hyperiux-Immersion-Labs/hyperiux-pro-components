@@ -14,6 +14,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedCommandMenu",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-command-menu",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

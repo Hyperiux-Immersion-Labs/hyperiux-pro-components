@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/arc-light",
+  "version": "1.0.0",
+  "description": "A soft arc of light that the pointer stirs like ink in water.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

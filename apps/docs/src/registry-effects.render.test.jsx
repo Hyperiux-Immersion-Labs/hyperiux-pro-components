@@ -2,7 +2,7 @@
 //
 // Render + prop-contract regression net for all registry effects (Phase 2,
 // Wave 2 "Tests, all 150+ effects"). Scope is deliberately render-mounts-
-// cleanly, not pixel-diff visual regression - see phase-2-plan.md.
+// cleanly, not pixel-diff visual regression.
 //
 // One `it()` per effect (not one file per effect) so the pass/fail list
 // still reads as "which effects broke," without 115 near-identical files.
@@ -30,6 +30,10 @@ async function importEffect(effect) {
 const KNOWN_LIMITATIONS = {
   "fish-eye":
     "imports 'three/webgpu', which throws (Cannot read properties of undefined, reading 'VERTEX') outside a real browser GPU context - a three/webgpu-in-Node incompatibility, not an effect bug.",
+  "creepy-background":
+    "imports 'three/webgpu' - the same three/webgpu-in-Node incompatibility as fish-eye, not an effect bug.",
+  "grassy-background":
+    "imports 'three/webgpu' - the same three/webgpu-in-Node incompatibility as fish-eye, not an effect bug.",
   "dotted-grid":
     "resolves to an undefined default export only when imported alongside ~30+ other effects in the same vite-node session (confirmed via bisection); imports and renders correctly alone or in small groups. Root cause not identified - looks like a vite-node/esbuild transform-pipeline quirk at that module count, not a bug in this effect.",
   "full-screen-crosshair":

@@ -120,9 +120,7 @@ const CARDS: StackSpreadCard[] = [
   },
 ];
 
-// ---------------------------------------------------------------------------
 // Mechanism
-// ---------------------------------------------------------------------------
 
 // Scroll progress where the cluster starts scattering and where it finishes.
 const SCATTER_START = 0.12;

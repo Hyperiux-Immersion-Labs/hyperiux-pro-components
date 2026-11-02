@@ -126,7 +126,6 @@ export interface GlassFolderProps {
   style?: CSSProperties;
 }
 
-// ---------------------------------------------------------------------------
 // Reduced motion
 
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
@@ -151,7 +150,6 @@ function usePrefersReducedMotion() {
   return useSyncExternalStore(subscribeToReducedMotion, prefersReducedMotion, getServerReducedMotionSnapshot);
 }
 
-// ---------------------------------------------------------------------------
 // Art
 
 export interface GlassFolderArtRecipe {
@@ -721,7 +719,6 @@ const DEFAULT_FILES: GlassFolderFile[] = [
 const pad3 = (n: number) => String(n).padStart(3, "0");
 const cx = (...names: (string | false | null | undefined)[]) => names.filter(Boolean).join(" ");
 
-// ---------------------------------------------------------------------------
 // Preview: a chosen file comes out of the folder into a modal at the centre of
 // the screen. Arrows, swipes and the arrow keys move through the folder's files;
 // Escape, the cross or a press on the backdrop puts it back.
@@ -2004,7 +2001,6 @@ export default function GlassFolder({
   );
 }
 
-// ---------------------------------------------------------------------------
 // Keyframes: the one thing Tailwind classes can't declare from inside a component.
 // Everything else is a class above; durations are multiplied by --gf-pace there.
 

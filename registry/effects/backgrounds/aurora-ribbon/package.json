@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/aurora-ribbon",
+  "version": "1.0.0",
+  "description": "A drifting ribbon of aurora light with film grain that the pointer stirs.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

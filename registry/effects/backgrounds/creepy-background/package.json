@@ -1,0 +1,17 @@
+{
+  "name": "@hyperiux/creepy-background",
+  "version": "1.0.0",
+  "description": "Warped clouds that burn from blue to red, with coloured smoke trailing the cursor.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "three": "*"
+  }
+}

@@ -1,17 +1,14 @@
 [
   {
     "name": "3d-portfolio-slider",
-    "title": "3D Portfolio Slider",
-    "description": "Infinite scroll slider with a Three.ts WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
-    "category": "webgl",
-    "categories": [
-      "webgl",
-      "scroll"
-    ],
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-09-18",
+        "summary": "Fix cover image being stretched by mapping the shader UVs to crop (object-cover) instead of stretching to the plane",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-23",
@@ -25,33 +22,86 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "3D Portfolio Slider",
+    "description": "Infinite scroll slider with a Three.js WebGL fullscreen plane, cosine zoom distortion, a circular thumbnail ring, and GSAP text transitions",
+    "category": "webgl",
+    "categories": [
+      "webgl",
+      "scroll"
+    ],
     "dependencies": [
-      "three",
       "gsap",
-      "lenis"
+      "lenis",
+      "three"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/3d-portfolio-slider/registry.json",
-    "importPath": "@/components/effects/3d-portfolio-slider",
-    "target": "src/components/effects/3d-portfolio-slider",
     "previewUrl": "/demo/3d-portfolio-slider",
+    "tier": "pro",
     "main": "index.tsx",
     "exportName": "PortfolioSlider3D",
     "exportKind": "default",
+    "importPath": "@/components/effects/3d-portfolio-slider",
+    "target": "src/components/effects/3d-portfolio-slider",
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/3d-portfolio-slider/index.tsx"
-      },
-      {
-        "path": "PortfolioSlider.tsx",
-        "target": "src/components/effects/3d-portfolio-slider/PortfolioSlider.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/3d-portfolio-slider/createSuspendedRaf.ts"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "zoomFactor",
+        "type": "number",
+        "default": 1,
+        "description": "Multiplier on the shader zoom applied to planes as they swing away from center.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "scrollSpeed",
+        "type": "number",
+        "default": 0.01,
+        "description": "How fast wheel/scroll input moves the carousel.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.002,
+          "max": 0.03,
+          "step": 0.001
+        }
+      },
+      {
+        "name": "showCaption",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows the project caption text overlay.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/webgl/3d-portfolio-slider/registry.json"
   },
   {
     "name": "animated-attachment",
@@ -4435,7 +4485,7 @@
   },
   {
     "name": "animated-faq",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "type": "registry:component",
     "title": "Animated FAQ",
     "description": "Accessible FAQ accordion with smooth or elastic Motion animations, staggered answers and fills",
@@ -4664,6 +4714,12 @@
       }
     ],
     "changelog": [
+      {
+        "version": "2.0.1",
+        "date": "2026-11-02",
+        "summary": "Made each question title a native button; the item wrapper is no longer a fake button.",
+        "breaking": false
+      },
       {
         "version": "2.0.0",
         "date": "2026-10-28",
@@ -10126,6 +10182,204 @@
     "registryPath": "registry/effects/carousels/arc-flow-carousel/registry.json"
   },
   {
+    "name": "arc-light",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Arc Light",
+    "description": "A soft arc of light that the pointer stirs like ink in water.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/arc-light",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "ArcLight",
+    "exportKind": "default",
+    "importPath": "@/components/effects/arc-light",
+    "target": "src/components/effects/arc-light",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/arc-light/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "color",
+        "label": "Colour",
+        "type": "color",
+        "default": "#ff5f00",
+        "description": "Colour of the light. The arcs keep their shading and take on this hue.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#07060f",
+        "description": "Canvas colour behind the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "saturation",
+        "label": "Saturation",
+        "type": "number",
+        "default": 1,
+        "description": "Colour strength. 0 is greyscale, 1 is the picked colour.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "number",
+        "default": 1,
+        "description": "Overall brightness. 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "softness",
+        "label": "Softness",
+        "type": "number",
+        "default": 1,
+        "description": "How diffuse the light is. Above 1 spreads it wider and softer.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.06,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the arcs drift. 0 holds them still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flow",
+        "label": "Flow",
+        "type": "number",
+        "default": 1,
+        "description": "How far the arcs sway while they drift.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Smear",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer stir the light like ink in water.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "smearStrength",
+        "label": "Strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far a stroke drags the light.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smearRadius",
+        "label": "Brush size",
+        "type": "number",
+        "default": 0.1,
+        "description": "Width of the stroke, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.04,
+          "max": 0.4,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/arc-light/registry.json"
+  },
+  {
     "name": "arrow-fill-button",
     "version": "1.1.0",
     "changelog": [
@@ -10241,6 +10495,759 @@
       }
     ],
     "registryPath": "registry/effects/transitions/ascend-transition/registry.json"
+  },
+  {
+    "name": "ascii-band",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "ASCII Band",
+    "description": "A band of light drawn in flickering ASCII characters.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/ascii-band",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "AsciiBand",
+    "exportKind": "default",
+    "importPath": "@/components/effects/ascii-band",
+    "target": "src/components/effects/ascii-band",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/ascii-band/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#000000",
+        "description": "Canvas colour behind the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "hue",
+        "label": "Hue",
+        "type": "number",
+        "default": 0,
+        "description": "Turns every colour around the colour wheel, in degrees. 0 is the reference violet.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "saturation",
+        "label": "Saturation",
+        "type": "number",
+        "default": 1,
+        "description": "Colour strength. 0 is greyscale, 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "number",
+        "default": 1,
+        "description": "Overall brightness. 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "softness",
+        "label": "Softness",
+        "type": "number",
+        "default": 1,
+        "description": "How diffuse the light is. Above 1 spreads the band wider and softer.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.03,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "characters",
+        "label": "Characters",
+        "type": "string",
+        "default": " =+xX80S#@",
+        "description": "Characters from darkest to brightest. The first is usually a space.",
+        "remixer": {
+          "control": "text",
+          "group": "glyphs",
+          "groupTitle": "Characters"
+        }
+      },
+      {
+        "name": "cellSize",
+        "label": "Cell size",
+        "type": "number",
+        "default": 16,
+        "description": "Width of one character cell, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 6,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "glyphOpacity",
+        "label": "Opacity",
+        "type": "number",
+        "default": 1,
+        "description": "Strength of the character layer. 0 hides it.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "gaps",
+        "label": "Gaps",
+        "type": "number",
+        "default": 0.22,
+        "description": "Share of cells left empty, 0 to 1.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 0.9,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "flicker",
+        "label": "Flicker",
+        "type": "number",
+        "default": 1.5,
+        "description": "How often each character re-rolls, per second. 0 freezes the grid.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the band drifts. 0 holds it still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flow",
+        "label": "Flow",
+        "type": "number",
+        "default": 1,
+        "description": "How far the band sways and breathes while it drifts.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Smear",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer stir the light like ink in water.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "smearStrength",
+        "label": "Strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far a stroke drags the light.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smearRadius",
+        "label": "Brush size",
+        "type": "number",
+        "default": 0.1,
+        "description": "Width of the stroke, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.04,
+          "max": 0.4,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/ascii-band/registry.json"
+  },
+  {
+    "name": "ascii-dome",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "ASCII Dome",
+    "description": "A red-to-violet dome of light rendered in flickering ASCII characters.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/ascii-dome",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "AsciiDome",
+    "exportKind": "default",
+    "importPath": "@/components/effects/ascii-dome",
+    "target": "src/components/effects/ascii-dome",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/ascii-dome/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#000000",
+        "description": "Canvas colour behind the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "hue",
+        "label": "Hue",
+        "type": "number",
+        "default": 0,
+        "description": "Turns every colour around the colour wheel, in degrees. 0 is the reference red-to-violet.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "saturation",
+        "label": "Saturation",
+        "type": "number",
+        "default": 1,
+        "description": "Colour strength. 0 is greyscale, 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "number",
+        "default": 1,
+        "description": "Overall brightness. 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "softness",
+        "label": "Softness",
+        "type": "number",
+        "default": 1,
+        "description": "How diffuse the light is. Above 1 softens the steps between colours.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.03,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "characters",
+        "label": "Characters",
+        "type": "string",
+        "default": " =+xX80S#@",
+        "description": "Characters from darkest to brightest. The first is usually a space.",
+        "remixer": {
+          "control": "text",
+          "group": "glyphs",
+          "groupTitle": "Characters"
+        }
+      },
+      {
+        "name": "cellSize",
+        "label": "Cell size",
+        "type": "number",
+        "default": 16,
+        "description": "Width of one character cell, in px.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 6,
+          "max": 40,
+          "step": 1
+        }
+      },
+      {
+        "name": "glyphOpacity",
+        "label": "Opacity",
+        "type": "number",
+        "default": 1,
+        "description": "Strength of the character layer. 0 hides it.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "gaps",
+        "label": "Gaps",
+        "type": "number",
+        "default": 0.22,
+        "description": "Share of cells left empty, 0 to 1.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 0.9,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "flicker",
+        "label": "Flicker",
+        "type": "number",
+        "default": 1.5,
+        "description": "How often each character re-rolls, per second. 0 freezes the grid.",
+        "remixer": {
+          "control": "range",
+          "group": "glyphs",
+          "groupTitle": "Characters",
+          "min": 0,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the dome drifts. 0 holds it still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flow",
+        "label": "Flow",
+        "type": "number",
+        "default": 1,
+        "description": "How far the dome breathes and ripples while it drifts.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Smear",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer stir the light like ink in water.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "smearStrength",
+        "label": "Strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far a stroke drags the light.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smearRadius",
+        "label": "Brush size",
+        "type": "number",
+        "default": 0.1,
+        "description": "Width of the stroke, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.04,
+          "max": 0.4,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/ascii-dome/registry.json"
+  },
+  {
+    "name": "aurora-ribbon",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Aurora Ribbon",
+    "description": "A drifting ribbon of aurora light with film grain that the pointer stirs.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/aurora-ribbon",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "AuroraRibbon",
+    "exportKind": "default",
+    "importPath": "@/components/effects/aurora-ribbon",
+    "target": "src/components/effects/aurora-ribbon",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/aurora-ribbon/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#0c1218",
+        "description": "Canvas colour behind the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "haloColor",
+        "label": "Halo",
+        "type": "color",
+        "default": "#13605d",
+        "description": "The wide, dim glow at the ribbon's edges.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "glowColor",
+        "label": "Glow",
+        "type": "color",
+        "default": "#73bea1",
+        "description": "The soft body of the ribbon.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "coreColor",
+        "label": "Core",
+        "type": "color",
+        "default": "#b8bc5b",
+        "description": "Light added along the centre line, on top of the glow.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "number",
+        "default": 1,
+        "description": "Overall brightness. 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "softness",
+        "label": "Softness",
+        "type": "number",
+        "default": 1,
+        "description": "How diffuse the light is. Above 1 spreads it wider and softer.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.5,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.06,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the ribbon drifts. 0 holds it still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flow",
+        "label": "Flow",
+        "type": "number",
+        "default": 1,
+        "description": "How far the ribbon sways while it drifts.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Smear",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer stir the light like ink in water.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "smearStrength",
+        "label": "Strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far a stroke drags the light.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smearRadius",
+        "label": "Brush size",
+        "type": "number",
+        "default": 0.1,
+        "description": "Width of the stroke, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.04,
+          "max": 0.4,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/aurora-ribbon/registry.json"
   },
   {
     "name": "block-transition",
@@ -11226,13 +12233,14 @@
   },
   {
     "name": "circular-split-roll",
-    "title": "Circular Split Roll",
-    "description": "Split circular slider with orbiting titles on one side and image cards on the other",
-    "category": "scroll",
-    "type": "registry:component",
-    "tier": "free",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-10-15",
+        "summary": "Rebuilt as a single-file CSS sticky layout, moved the reduced-motion notice to the demo page, and aligned the tablet breakpoint to max-lg (below 1025px).",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-24",
@@ -11246,29 +12254,99 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Circular Split Roll",
+    "description": "Split circular slider with orbiting titles on one side and image cards on the other",
+    "category": "scroll",
     "dependencies": [
       "gsap",
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/scroll/circular-split-roll/registry.json",
-    "importPath": "@/components/effects/circular-split-roll",
-    "target": "src/components/effects/circular-split-roll",
     "previewUrl": "/demo/circular-split-roll",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "CircularSplitRoll",
     "exportKind": "default",
+    "importPath": "@/components/effects/circular-split-roll",
+    "target": "src/components/effects/circular-split-roll",
+    "props": [
+      {
+        "name": "radius",
+        "type": "number",
+        "default": 500,
+        "description": "Radius of both rotating rings.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 100,
+          "max": 900,
+          "step": 10
+        }
+      },
+      {
+        "name": "cardSize",
+        "type": "number",
+        "default": 205,
+        "description": "Size of the right-rail image cards.",
+        "remixer": {
+          "control": "range",
+          "group": "layout",
+          "groupTitle": "Layout",
+          "min": 80,
+          "max": 420,
+          "step": 1
+        }
+      },
+      {
+        "name": "textSideScale",
+        "type": "number",
+        "default": 0.68,
+        "description": "Title scale away from the center.",
+        "remixer": {
+          "control": "range",
+          "group": "text",
+          "groupTitle": "Text",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.02
+        }
+      },
+      {
+        "name": "textSideOpacity",
+        "type": "number",
+        "default": 0.18,
+        "description": "Title opacity away from the center.",
+        "remixer": {
+          "control": "range",
+          "group": "text",
+          "groupTitle": "Text",
+          "min": 0,
+          "max": 1,
+          "step": 0.02
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "layout",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/circular-split-roll/index.tsx"
-      },
-      {
-        "path": "CircularSplitRollComp.tsx",
-        "target": "src/components/effects/circular-split-roll/CircularSplitRollComp.tsx"
       }
-    ]
+    ],
+    "registryPath": "registry/effects/scroll/circular-split-roll/registry.json"
   },
   {
     "name": "clippath-slider",
@@ -11456,6 +12534,302 @@
         "target": "src/components/effects/colorful-cursor-aura/ColorfulCursorAuraComp.tsx"
       }
     ]
+  },
+  {
+    "name": "creepy-background",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Creepy Background",
+    "description": "Warped clouds that burn from blue to red, with coloured smoke trailing the cursor.",
+    "category": "backgrounds",
+    "dependencies": [
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/creepy-background",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "CreepyBackground",
+    "exportKind": "default",
+    "importPath": "@/components/effects/creepy-background",
+    "target": "src/components/effects/creepy-background",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/creepy-background/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 0.15,
+        "description": "How fast the clouds crawl and fold into new shapes.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.01,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "warp",
+        "label": "Warp",
+        "type": "number",
+        "default": 2.5,
+        "description": "How much the clouds twist into each other. Higher is stranger. Not used when Cursor only is on.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0,
+          "max": 5,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "cursorOnly",
+            "equals": true
+          }
+        }
+      },
+      {
+        "name": "scale",
+        "label": "Scale",
+        "type": "number",
+        "default": 1.1,
+        "description": "Size of the pattern. Lower values give bigger clouds. Not used when Cursor only is on.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "cursorOnly",
+            "equals": true
+          }
+        }
+      },
+      {
+        "name": "voidSize",
+        "label": "Void size",
+        "type": "number",
+        "default": 0.65,
+        "description": "Size of the dark, empty area that drifts around the middle. 0 fills the screen. Not used when Cursor only is on.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0,
+          "max": 1.5,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "cursorOnly",
+            "equals": true
+          }
+        }
+      },
+      {
+        "name": "cursorOnly",
+        "label": "Cursor only",
+        "type": "boolean",
+        "default": false,
+        "description": "Hides the background clouds so only the colour from the cursor shows on the background colour.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "interaction",
+          "groupTitle": "Interaction"
+        }
+      },
+      {
+        "name": "mouseInteractive",
+        "label": "Mouse",
+        "type": "boolean",
+        "default": true,
+        "description": "The cursor leaves coloured smoke that spreads out and fades over the clouds.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "mouseStrength",
+        "label": "Mouse strength",
+        "type": "number",
+        "default": 1,
+        "description": "How much colour the cursor releases as it moves. Needs Mouse on.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "min": 0,
+          "max": 2,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "mouseInteractive",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "mouseSize",
+        "label": "Mouse size",
+        "type": "number",
+        "default": 1,
+        "description": "Width of the smoke trail the cursor leaves. Needs Mouse on.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "mouseInteractive",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "trailLength",
+        "label": "Trail length",
+        "type": "number",
+        "default": 2,
+        "description": "How long the smoke lingers and spreads before it fades, in seconds. Needs Mouse on.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "min": 0.5,
+          "max": 10,
+          "step": 0.5,
+          "disabledWhen": {
+            "prop": "mouseInteractive",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "heat",
+        "label": "Heat",
+        "type": "number",
+        "default": 2.2,
+        "description": "How far the clouds burn from blue into orange and red cores. Not used when Cursor only is on.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0.5,
+          "max": 4,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "cursorOnly",
+            "equals": true
+          }
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.5,
+        "description": "Strength of the speckled film grain inside the clouds.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 1,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#000000",
+        "description": "Colour of the empty space behind the clouds.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "coolColor",
+        "label": "Cool",
+        "type": "color",
+        "default": "#2a1aff",
+        "description": "Colour of the thin outer edges of the clouds.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "midColor",
+        "label": "Mid",
+        "type": "color",
+        "default": "#e04cff",
+        "description": "Colour of the denser middle of the clouds.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "warmColor",
+        "label": "Warm",
+        "type": "color",
+        "default": "#ffa01e",
+        "description": "Colour of the hot areas near the cores.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "hotColor",
+        "label": "Hot",
+        "type": "color",
+        "default": "#d0101a",
+        "description": "Colour of the hottest cores.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/creepy-background/registry.json"
   },
   {
     "name": "cursor-move",
@@ -14221,8 +15595,14 @@
   },
   {
     "name": "flickering-text",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-02",
+        "summary": "Registry fontSize default corrected to 9vw to match the component.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-08-18",
@@ -14235,8 +15615,8 @@
     "description": "Deterministic per-character text flicker with adjustable correlation and optional glow bloom.",
     "category": "text",
     "dependencies": [
-      "gsap",
-      "@gsap/react"
+      "@gsap/react",
+      "gsap"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/flickering-text",
@@ -14251,7 +15631,7 @@
       {
         "name": "backgroundColor",
         "type": "string",
-        "default": "#111844",
+        "default": "#0a0a0a",
         "description": "Background color behind the text.",
         "remixer": {
           "control": "color",
@@ -14274,11 +15654,15 @@
         "name": "glowColor",
         "type": "string",
         "default": "#ffffff",
-        "description": "Glow color when bloom is enabled.",
+        "description": "Glow color when bloom is enabled. Needs Glow on.",
         "remixer": {
           "control": "color",
           "group": "colors",
-          "groupTitle": "Colors"
+          "groupTitle": "Colors",
+          "disabledWhen": {
+            "prop": "glow",
+            "equals": false
+          }
         }
       },
       {
@@ -14292,7 +15676,8 @@
           "groupTitle": "Motion",
           "min": 0.2,
           "max": 8,
-          "step": 0.1
+          "step": 0.1,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -14306,7 +15691,8 @@
           "groupTitle": "Motion",
           "min": 0,
           "max": 1,
-          "step": 0.01
+          "step": 0.01,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -14320,7 +15706,8 @@
           "groupTitle": "Motion",
           "min": 0,
           "max": 1,
-          "step": 0.01
+          "step": 0.01,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -14334,7 +15721,8 @@
           "groupTitle": "Motion",
           "min": -1,
           "max": 1,
-          "step": 0.01
+          "step": 0.01,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -14348,41 +15736,52 @@
           "groupTitle": "Motion",
           "min": -1,
           "max": 1,
-          "step": 0.01
+          "step": 0.01,
+          "hideWhenReducedMotion": true
         }
       },
       {
         "name": "glowIntensity",
         "type": "number",
         "default": 1,
-        "description": "Glow strength when bloom is enabled.",
+        "description": "Glow strength when bloom is enabled. Needs Glow on.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
           "min": 0,
           "max": 2,
-          "step": 0.05
+          "step": 0.05,
+          "disabledWhen": {
+            "prop": "glow",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
         }
       },
       {
         "name": "glowRadius",
         "type": "number",
         "default": 1,
-        "description": "Glow spread multiplier.",
+        "description": "Glow spread multiplier. Needs Glow on.",
         "remixer": {
           "control": "range",
           "group": "motion",
           "groupTitle": "Motion",
           "min": 0.25,
           "max": 3,
-          "step": 0.05
+          "step": 0.05,
+          "disabledWhen": {
+            "prop": "glow",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
         }
       },
       {
         "name": "fontSize",
         "type": "number | string",
-        "default": "12vw",
+        "default": "9vw",
         "description": "Font size for the text.",
         "remixer": {
           "control": "text",
@@ -14414,10 +15813,12 @@
         "remixer": {
           "control": "checkbox",
           "group": "motion",
-          "groupTitle": "Motion"
+          "groupTitle": "Motion",
+          "hideWhenReducedMotion": true
         }
       }
     ],
+    "fixedText": true,
     "remixer": {
       "enabled": true,
       "defaultOpenGroupId": "motion",
@@ -14436,6 +15837,200 @@
       }
     ],
     "registryPath": "registry/effects/text/flickering-text/registry.json"
+  },
+  {
+    "name": "flower-field",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Flower Field",
+    "description": "A 3D meadow of wood anemones that bloom and sway under the pointer.",
+    "category": "backgrounds",
+    "dependencies": [
+      "@react-three/fiber",
+      "@react-three/postprocessing",
+      "postprocessing",
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/flower-field",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "FlowerField",
+    "exportKind": "default",
+    "importPath": "@/components/effects/flower-field",
+    "target": "src/components/effects/flower-field",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/flower-field/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "follow",
+        "label": "Follow",
+        "type": "number",
+        "default": 1,
+        "description": "How strongly the pointer blows the flowers away from it, like a gust of air. 0 leaves them be.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "followRadius",
+        "label": "Reach",
+        "type": "number",
+        "default": 1.3,
+        "description": "Reach of the pointer, in world units.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.4,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "bloomOnHover",
+        "label": "Bloom on hover",
+        "type": "boolean",
+        "default": true,
+        "description": "Open buds as the pointer passes over them.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How quickly the flowers open, and how springy their stems are.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "breeze",
+        "label": "Breeze",
+        "type": "number",
+        "default": 1,
+        "description": "How much the breeze sways the flowers. 0 holds them still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "density",
+        "label": "Density",
+        "type": "number",
+        "default": 1,
+        "description": "How many flowers and buds grow across the frame. 1 is the reference meadow.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0.4,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "glow",
+        "label": "Glow",
+        "type": "number",
+        "default": 1,
+        "description": "Strength of the glow around the flowers.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "depthOfField",
+        "label": "Depth of field",
+        "type": "number",
+        "default": 1,
+        "description": "How blurred the flowers in front of and behind the focus are. 0 keeps everything sharp.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "mist",
+        "label": "Mist",
+        "type": "number",
+        "default": 1,
+        "description": "Strength of the mist along the ground.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.05,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/flower-field/registry.json"
   },
   {
     "name": "focus-text",
@@ -14708,13 +16303,14 @@
   },
   {
     "name": "glitchy-text",
-    "title": "Glitchy Text",
-    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers - two white and two yellow - out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
-    "category": "text",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-11-02",
+        "summary": "Hid the decorative glitch layers from screen readers so the phrase is read once.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-30",
@@ -14728,22 +16324,232 @@
         "breaking": false
       }
     ],
+    "type": "registry:component",
+    "title": "Glitchy Text",
+    "description": "GSAP SplitText effect that stagger-animates four overlapping char layers - two white and two yellow - out and in at slightly different delays, creating a chromatic glitch swap. Plays on mount and replays on button click.",
+    "category": "text",
     "dependencies": [
       "gsap"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/text/glitchy-text/registry.json",
     "previewUrl": "/demo/glitchy-text",
-    "main": "index.tsx",
+    "tier": "pro",
     "exportName": "GlitchyText",
     "exportKind": "default",
+    "main": "index.tsx",
+    "props": [
+      {
+        "name": "baseTextColor",
+        "type": "string",
+        "default": "#ffffff",
+        "description": "Base text layer color.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "glitchColor",
+        "type": "string",
+        "default": "#eab308",
+        "description": "Accent color for the glitch layers and replay button.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colors"
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.025,
+        "description": "Delay between consecutive characters in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.005,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.6,
+        "description": "Duration of each character's slide in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 2,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "ease",
+        "type": "string",
+        "default": "power2.inOut",
+        "description": "GSAP ease for the slide.",
+        "remixer": {
+          "control": "select",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "options": [
+            {
+              "value": "none",
+              "label": "none (linear)"
+            },
+            {
+              "value": "power1.in",
+              "label": "power1.in"
+            },
+            {
+              "value": "power1.out",
+              "label": "power1.out"
+            },
+            {
+              "value": "power1.inOut",
+              "label": "power1.inOut"
+            },
+            {
+              "value": "power2.in",
+              "label": "power2.in"
+            },
+            {
+              "value": "power2.out",
+              "label": "power2.out"
+            },
+            {
+              "value": "power2.inOut",
+              "label": "power2.inOut"
+            },
+            {
+              "value": "power3.in",
+              "label": "power3.in"
+            },
+            {
+              "value": "power3.out",
+              "label": "power3.out"
+            },
+            {
+              "value": "power3.inOut",
+              "label": "power3.inOut"
+            },
+            {
+              "value": "power4.in",
+              "label": "power4.in"
+            },
+            {
+              "value": "power4.out",
+              "label": "power4.out"
+            },
+            {
+              "value": "power4.inOut",
+              "label": "power4.inOut"
+            },
+            {
+              "value": "expo.in",
+              "label": "expo.in"
+            },
+            {
+              "value": "expo.out",
+              "label": "expo.out"
+            },
+            {
+              "value": "expo.inOut",
+              "label": "expo.inOut"
+            },
+            {
+              "value": "sine.in",
+              "label": "sine.in"
+            },
+            {
+              "value": "sine.out",
+              "label": "sine.out"
+            },
+            {
+              "value": "sine.inOut",
+              "label": "sine.inOut"
+            },
+            {
+              "value": "circ.in",
+              "label": "circ.in"
+            },
+            {
+              "value": "circ.out",
+              "label": "circ.out"
+            },
+            {
+              "value": "circ.inOut",
+              "label": "circ.inOut"
+            },
+            {
+              "value": "back.in",
+              "label": "back.in"
+            },
+            {
+              "value": "back.out",
+              "label": "back.out"
+            },
+            {
+              "value": "back.inOut",
+              "label": "back.inOut"
+            },
+            {
+              "value": "elastic.in",
+              "label": "elastic.in"
+            },
+            {
+              "value": "elastic.out",
+              "label": "elastic.out"
+            },
+            {
+              "value": "elastic.inOut",
+              "label": "elastic.inOut"
+            },
+            {
+              "value": "bounce.in",
+              "label": "bounce.in"
+            },
+            {
+              "value": "bounce.out",
+              "label": "bounce.out"
+            },
+            {
+              "value": "bounce.inOut",
+              "label": "bounce.inOut"
+            }
+          ],
+          "hideWhenReducedMotion": true
+        }
+      }
+    ],
+    "fixedText": true,
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "colors",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
-        "type": "registry:component",
         "target": "src/components/effects/glitchy-text/index.tsx"
       }
-    ]
+    ],
+    "importPath": "@/components/effects/glitchy-text",
+    "target": "src/components/effects/glitchy-text",
+    "registryPath": "registry/effects/text/glitchy-text/registry.json"
   },
   {
     "name": "globe",
@@ -15200,13 +17006,34 @@
   },
   {
     "name": "gooey-counter",
+    "version": "1.0.2",
+    "type": "registry:component",
     "title": "Gooey Counter",
     "description": "Canvas-based animated counter that morphs pixel-grid blocks between numbers 0–10 using an SVG gooey filter. Blocks scatter to a random layout between each number with eased transitions.",
     "category": "components",
-    "type": "registry:component",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/gooey-counter",
     "tier": "free",
-    "version": "1.0.1",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "GooeyCounter",
+    "exportKind": "default",
+    "importPath": "@/components/effects/gooey-counter",
+    "target": "src/components/effects/gooey-counter",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/gooey-counter/index.tsx"
+      }
+    ],
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-11-02",
+        "summary": "Hid the canvas from assistive tech and mirrored the current number as text.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-30",
@@ -15220,22 +17047,365 @@
         "breaking": false
       }
     ],
-    "dependencies": [],
+    "props": [
+      {
+        "name": "maxValue",
+        "type": "number",
+        "default": 100,
+        "description": "Upper bound of the looping 0..maxValue count sequence.",
+        "remixer": {
+          "control": "range",
+          "group": "controls",
+          "groupTitle": "Controls",
+          "min": 2,
+          "max": 100,
+          "step": 1
+        }
+      },
+      {
+        "name": "gridSize",
+        "type": "number",
+        "default": 22,
+        "description": "Number of grid columns used by the morphing counter.",
+        "remixer": {
+          "control": "range",
+          "group": "controls",
+          "groupTitle": "Controls",
+          "min": 12,
+          "max": 50,
+          "step": 1
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 1,
+        "description": "Pace multiplier for the count/morph animation (1 = default speed).",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "roundedness",
+        "type": "number",
+        "default": 0,
+        "description": "Corner rounding for each gooey grid cell.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 1,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "blobColor",
+        "type": "color",
+        "default": "#111111",
+        "description": "Color of the gooey animated blocks.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "type": "color",
+        "default": "#d1d1d1",
+        "description": "Background color behind the counter.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "controls",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/components/gooey-counter/registry.json"
+  },
+  {
+    "name": "grassy-background",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Grassy Background",
+    "description": "Wind-blown grass over slowly shifting rolling hills.",
+    "category": "backgrounds",
+    "dependencies": [
+      "three"
+    ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/gooey-counter/registry.json",
-    "importPath": "@/components/effects/gooey-counter",
-    "target": "src/components/effects/gooey-counter",
-    "previewUrl": "/demo/gooey-counter",
+    "previewUrl": "/demo/grassy-background",
+    "tier": "pro",
     "subfolder": true,
     "main": "index.tsx",
-    "exportName": "GooeyCounter",
+    "exportName": "GrassyBackground",
     "exportKind": "default",
+    "importPath": "@/components/effects/grassy-background",
+    "target": "src/components/effects/grassy-background",
     "files": [
       {
         "path": "index.tsx",
-        "target": "src/components/effects/gooey-counter/index.tsx"
+        "target": "src/components/effects/grassy-background/index.tsx"
       }
-    ]
+    ],
+    "props": [
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the wind moves through the grass and the hills slowly shift.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.1,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "wind",
+        "label": "Wind",
+        "type": "number",
+        "default": 0.6,
+        "description": "How far the blades lean when gusts roll across the field.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1.5,
+          "step": 0.1,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "hills",
+        "label": "Hills",
+        "type": "number",
+        "default": 1,
+        "description": "Height of the rolling hills. 0 gives a flat field.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0,
+          "max": 2,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "terrainScale",
+        "label": "Hill size",
+        "type": "number",
+        "default": 1,
+        "description": "How many hills fit on screen. Lower values give wider, softer hills.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "horizon",
+        "label": "Horizon",
+        "type": "number",
+        "default": 0.5,
+        "description": "Where the field sits on screen. Higher values tilt the view down so the grass fills more of it.",
+        "remixer": {
+          "control": "range",
+          "group": "shape",
+          "groupTitle": "Shape",
+          "min": 0,
+          "max": 1,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "density",
+        "label": "Density",
+        "type": "number",
+        "default": 1,
+        "description": "How many grass blades are drawn. Lower it for slower devices.",
+        "remixer": {
+          "control": "range",
+          "group": "grass",
+          "groupTitle": "Grass",
+          "min": 0.3,
+          "max": 1.5,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "bladeHeight",
+        "label": "Blade height",
+        "type": "number",
+        "default": 1,
+        "description": "How tall each grass blade stands above the ground.",
+        "remixer": {
+          "control": "range",
+          "group": "grass",
+          "groupTitle": "Grass",
+          "min": 0.2,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "bladeWidth",
+        "label": "Blade width",
+        "type": "number",
+        "default": 1,
+        "description": "How thick each grass blade is at the root.",
+        "remixer": {
+          "control": "range",
+          "group": "grass",
+          "groupTitle": "Grass",
+          "min": 0.5,
+          "max": 3,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "mouseInteractive",
+        "label": "Mouse",
+        "type": "boolean",
+        "default": true,
+        "description": "Grass parts around the cursor and gets swept along as it moves.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "mouseStrength",
+        "label": "Mouse strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far the grass bends away from the cursor. Needs Mouse on.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "min": 0,
+          "max": 2,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "mouseInteractive",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "mouseSize",
+        "label": "Mouse size",
+        "type": "number",
+        "default": 1,
+        "description": "Size of the patch of grass around the cursor that bends away. Needs Mouse on.",
+        "remixer": {
+          "control": "range",
+          "group": "interaction",
+          "groupTitle": "Interaction",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "mouseInteractive",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#000000",
+        "description": "Colour of the sky and the gaps between blades.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "shadowColor",
+        "label": "Shadow",
+        "type": "color",
+        "default": "#16260f",
+        "description": "Colour of the grass on slopes facing away from the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "grassColor",
+        "label": "Grass",
+        "type": "color",
+        "default": "#446f22",
+        "description": "Main colour of the grass.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      },
+      {
+        "name": "highlightColor",
+        "label": "Highlight",
+        "type": "color",
+        "default": "#b4ec5a",
+        "description": "Colour of the brightest grass on slopes facing the light.",
+        "remixer": {
+          "control": "color",
+          "group": "colors",
+          "groupTitle": "Colours"
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/grassy-background/registry.json"
   },
   {
     "name": "grid-lift",
@@ -16314,8 +18484,14 @@
   },
   {
     "name": "infinite-carousel",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "changelog": [
+      {
+        "version": "1.0.2",
+        "date": "2026-09-22",
+        "summary": "Changed slider logic and made it smoother.",
+        "breaking": false
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-28",
@@ -16331,7 +18507,7 @@
     ],
     "type": "registry:component",
     "title": "Infinite Carousel",
-    "description": "Infinitely looping horizontal carousel with GSAP Draggable + inertia, plus mobile-friendly wrap/swiper fallbacks.",
+    "description": "Infinitely looping card carousel with drag, snap, inertial easing, and an optional swipe tilt.",
     "category": "carousels",
     "dependencies": [
       "gsap",
@@ -16346,14 +18522,235 @@
     "exportKind": "default",
     "importPath": "@/components/effects/infinite-carousel",
     "target": "src/components/effects/infinite-carousel",
+    "props": [
+      {
+        "name": "infinite",
+        "type": "boolean",
+        "default": true,
+        "description": "Loops the carousel endlessly instead of stopping at the last card.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "snap",
+        "type": "boolean",
+        "default": true,
+        "description": "Settles the track on the nearest card after a drag or scroll.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "draggable",
+        "type": "boolean",
+        "default": true,
+        "description": "Allows dragging the carousel with pointer and touch input.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "showNav",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows or hides the previous and next arrow buttons.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "autoPlay",
+        "type": "boolean",
+        "default": false,
+        "description": "Automatically advances the carousel one card at a time.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "autoPlayInterval",
+        "type": "number",
+        "default": 3000,
+        "description": "Milliseconds between automatic slide advances. Needs Auto Play on.",
+        "remixer": {
+          "control": "range",
+          "group": "behavior",
+          "groupTitle": "Behavior",
+          "min": 1000,
+          "max": 8000,
+          "step": 100,
+          "disabledWhen": {
+            "prop": "autoPlay",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "tiltOnScroll",
+        "type": "boolean",
+        "default": false,
+        "description": "Leans the cards into a fast swipe, then springs them back to level.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "tiltStrength",
+        "type": "number",
+        "default": 4.2,
+        "description": "How far the cards lean when tilt on scroll is enabled. Needs Tilt On Scroll on.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 10,
+          "step": 0.1,
+          "disabledWhen": {
+            "prop": "tiltOnScroll",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "lerpFactor",
+        "type": "number",
+        "default": 0.12,
+        "description": "Easing factor for the track - lower glides longer, higher snaps tighter.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.02,
+          "max": 0.6,
+          "step": 0.01,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "dragSensitivity",
+        "type": "number",
+        "default": 0.005,
+        "description": "How far the track moves per pixel of drag. Needs Draggable on.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.001,
+          "max": 0.02,
+          "step": 0.001,
+          "disabledWhen": {
+            "prop": "draggable",
+            "equals": false
+          }
+        }
+      },
+      {
+        "name": "snapStrength",
+        "type": "number",
+        "default": 0.1,
+        "description": "How firmly the track is pulled towards the nearest card. Needs Snap on.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.02,
+          "max": 0.5,
+          "step": 0.01,
+          "disabledWhen": {
+            "prop": "snap",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "cardWidth",
+        "type": "number",
+        "default": 33.8,
+        "description": "Desktop card width in viewport width units. The default shows 2.8 cards at a time.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 14,
+          "max": 50,
+          "step": 0.5
+        }
+      },
+      {
+        "name": "cardHeight",
+        "type": "number",
+        "default": 60,
+        "description": "Card height in viewport height units.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 28,
+          "max": 85,
+          "step": 1
+        }
+      },
+      {
+        "name": "gap",
+        "type": "number",
+        "default": 1.9,
+        "description": "Spacing between cards in viewport width units.",
+        "remixer": {
+          "control": "range",
+          "group": "style",
+          "groupTitle": "Style",
+          "min": 0,
+          "max": 8,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "bgColor",
+        "type": "color",
+        "default": "#f4f0ea",
+        "description": "Background color behind the carousel.",
+        "remixer": {
+          "control": "color",
+          "group": "style",
+          "groupTitle": "Style",
+          "enabled": false
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/infinite-carousel/index.tsx"
-      },
-      {
-        "path": "InfiniteCarouselComp.tsx",
-        "target": "src/components/effects/infinite-carousel/InfiniteCarouselComp.tsx"
       }
     ],
     "registryPath": "registry/effects/carousels/infinite-carousel/registry.json"
@@ -16462,46 +18859,68 @@
   },
   {
     "name": "information-drawer",
+    "version": "1.0.1",
+    "type": "registry:component",
     "title": "Information Drawer",
     "description": "Team profile grid with an animated information drawer and editable panel styling",
     "category": "components",
-    "type": "registry:component",
-    "tier": "free",
-    "version": "1.0.0",
-    "changelog": [
-      {
-        "version": "1.0.0",
-        "date": "2026-08-21",
-        "summary": "Initial registry release with working drawer motion, panel color, text color, width, and overlay controls.",
-        "breaking": false
-      }
-    ],
     "dependencies": [
       "gsap",
       "lenis"
     ],
     "registryDependencies": [],
-    "registryPath": "registry/effects/components/information-drawer/registry.json",
-    "importPath": "@/components/effects/information-drawer",
-    "target": "src/components/effects/information-drawer",
     "previewUrl": "/demo/information-drawer",
+    "tier": "free",
     "subfolder": true,
     "main": "index.tsx",
     "exportName": "InformationDrawer",
     "exportKind": "default",
+    "importPath": "@/components/effects/information-drawer",
+    "target": "src/components/effects/information-drawer",
     "props": [
       {
         "name": "duration",
         "type": "number",
-        "default": 0.6,
-        "description": "Open and close animation duration in seconds.",
+        "default": 0.65,
+        "description": "Drawer panel and overlay slide duration in seconds.",
         "remixer": {
           "control": "range",
           "group": "timing",
           "groupTitle": "Timing",
           "min": 0.1,
           "max": 2,
-          "step": 0.05
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "contentDuration",
+        "type": "number",
+        "default": 0.25,
+        "description": "Duration in seconds of the content fade, staged after the panel opens and before it closes.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0.05,
+          "max": 1,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "contentDelay",
+        "type": "number",
+        "default": 0.4,
+        "description": "Delay in seconds before the staged content fades in, measured from when the drawer starts opening.",
+        "remixer": {
+          "control": "range",
+          "group": "timing",
+          "groupTitle": "Timing",
+          "min": 0,
+          "max": 2,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -16510,18 +18929,7 @@
         "default": "power2.inOut",
         "description": "GSAP easing used by the drawer panel and overlay.",
         "remixer": {
-          "control": "select",
-          "group": "timing",
-          "groupTitle": "Timing",
-          "options": [
-            "power1.out",
-            "power2.out",
-            "power2.in",
-            "power2.inOut",
-            "power3.inOut",
-            "expo.out",
-            "linear"
-          ]
+          "enabled": false
         }
       },
       {
@@ -16535,7 +18943,8 @@
           "groupTitle": "Timing",
           "min": 0,
           "max": 1,
-          "step": 0.05
+          "step": 0.05,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -16564,7 +18973,7 @@
         "name": "sidebarWidth",
         "type": "number | string",
         "default": 70,
-        "description": "Desktop drawer width. Numbers are treated as viewport-width percentages.",
+        "description": "Desktop drawer width. Numbers are applied as a percentage (70 renders as \"70%\").",
         "remixer": {
           "control": "range",
           "group": "layout",
@@ -16604,12 +19013,23 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/information-drawer/index.tsx"
+      }
+    ],
+    "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-02",
+        "summary": "Registry sidebarWidth default corrected to 70 (70%) to match the component.",
+        "breaking": false
       },
       {
-        "path": "InformationDrawerComp.tsx",
-        "target": "src/components/effects/information-drawer/InformationDrawerComp.tsx"
+        "version": "1.0.0",
+        "date": "2026-08-21",
+        "summary": "Initial release",
+        "breaking": false
       }
-    ]
+    ],
+    "registryPath": "registry/effects/components/information-drawer/registry.json"
   },
   {
     "name": "interactive-arrows",
@@ -16969,7 +19389,7 @@
     ],
     "type": "registry:component",
     "title": "Liquid Glass Cursor",
-    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, spring-smoothed tracking.",
+    "description": "Magnifying glass-lens cursor with chromatic-aberration SVG refraction over live wrapped content, hover shape morphing, and spring-smoothed tracking.",
     "category": "cursor",
     "dependencies": [
       "motion"
@@ -16986,7 +19406,7 @@
       {
         "name": "size",
         "type": "number",
-        "default": 150,
+        "default": 217,
         "description": "Diameter of the lens in pixels.",
         "remixer": {
           "control": "range",
@@ -17000,7 +19420,7 @@
       {
         "name": "magnification",
         "type": "number",
-        "default": 1.15,
+        "default": 1.06,
         "description": "Zoom level applied to the content copy under the lens.",
         "remixer": {
           "control": "range",
@@ -17012,9 +19432,51 @@
         }
       },
       {
+        "name": "textHoverSize",
+        "type": "number",
+        "default": 107,
+        "description": "Lens diameter when hovering a data-cursor=\"text\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "size",
+          "groupTitle": "Size",
+          "min": 60,
+          "max": 260,
+          "step": 1
+        }
+      },
+      {
+        "name": "maxButtonWidth",
+        "type": "number",
+        "default": 260,
+        "description": "Lens width when hovering a data-cursor=\"button\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "button",
+          "groupTitle": "Button Hover",
+          "min": 80,
+          "max": 420,
+          "step": 1
+        }
+      },
+      {
+        "name": "maxButtonHeight",
+        "type": "number",
+        "default": 110,
+        "description": "Lens height when hovering a data-cursor=\"button\" target.",
+        "remixer": {
+          "control": "range",
+          "group": "button",
+          "groupTitle": "Button Hover",
+          "min": 40,
+          "max": 240,
+          "step": 1
+        }
+      },
+      {
         "name": "distortion",
         "type": "number",
-        "default": 60,
+        "default": 36,
         "description": "SVG displacement strength for the glass refraction.",
         "remixer": {
           "control": "range",
@@ -17028,7 +19490,7 @@
       {
         "name": "aberration",
         "type": "number",
-        "default": 1,
+        "default": 0.2,
         "description": "Chromatic aberration amount - how far the R/G/B channels split at the rim.",
         "remixer": {
           "control": "range",
@@ -18042,6 +20504,293 @@
     "registryPath": "registry/effects/navigation/morphing-dock/registry.json"
   },
   {
+    "name": "moss-grid",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Moss Grid",
+    "description": "Rolling hills of shimmering grid lights revealed around the pointer.",
+    "category": "backgrounds",
+    "dependencies": [
+      "@react-three/fiber",
+      "@react-three/postprocessing",
+      "postprocessing",
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/moss-grid",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "MossGrid",
+    "exportKind": "default",
+    "importPath": "@/components/effects/moss-grid",
+    "target": "src/components/effects/moss-grid",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/moss-grid/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "mossColor",
+        "label": "Moss",
+        "type": "color",
+        "default": "#22331a",
+        "description": "Moss in the hollows and at the base of the strands.",
+        "remixer": {
+          "control": "color",
+          "group": "look",
+          "groupTitle": "Look"
+        }
+      },
+      {
+        "name": "mossHighlight",
+        "label": "Moss tips",
+        "type": "color",
+        "default": "#628c58",
+        "description": "Moss at the tips of the strands and on the crests.",
+        "remixer": {
+          "control": "color",
+          "group": "look",
+          "groupTitle": "Look"
+        }
+      },
+      {
+        "name": "dotColor",
+        "label": "Lights",
+        "type": "color",
+        "default": "#c3e4e0",
+        "description": "Colour of the lights.",
+        "remixer": {
+          "control": "color",
+          "group": "look",
+          "groupTitle": "Look"
+        }
+      },
+      {
+        "name": "dotSize",
+        "label": "Light size",
+        "type": "number",
+        "default": 1.5,
+        "description": "Size of each light, in px at the focus distance.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 1,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "dotGlow",
+        "label": "Light glow",
+        "type": "number",
+        "default": 1,
+        "description": "Brightness of the lights.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "depthOfField",
+        "label": "Depth of field",
+        "type": "number",
+        "default": 1,
+        "description": "How blurred the far hills are. 0 keeps everything sharp.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.09,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "look",
+          "groupTitle": "Look",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast everything moves. 0 holds it still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "undulate",
+        "label": "Roll",
+        "type": "number",
+        "default": 1,
+        "description": "How much the hills drift. 0 keeps the ground fixed.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Cursor",
+        "type": "boolean",
+        "default": true,
+        "description": "Light up the grid where the pointer moves, swell the ground under it and ripple the lights.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "autoplay",
+        "label": "Autoplay",
+        "type": "boolean",
+        "default": true,
+        "description": "Wander a light across the moss on its own when the pointer is away or still.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "idleDelay",
+        "label": "Idle delay",
+        "type": "number",
+        "default": 1.5,
+        "description": "Seconds the pointer can rest before the light wanders off on its own.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.2,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "revealRadius",
+        "label": "Reveal size",
+        "type": "number",
+        "default": 0.6,
+        "description": "Size of the pool of light around the pointer, in world units.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "trail",
+        "label": "Trail",
+        "type": "number",
+        "default": 1.2,
+        "description": "How long the trail of light behind the pointer lingers, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.1,
+          "max": 4,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ambient",
+        "label": "Ambient",
+        "type": "number",
+        "default": 0,
+        "description": "How visible the grid is away from the pointer. 0 hides it, so it shows only where the pointer is.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 1,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "cursorStrength",
+        "label": "Swell",
+        "type": "number",
+        "default": 1,
+        "description": "How strongly the pointer swells the ground.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "cursorRadius",
+        "label": "Swell reach",
+        "type": "number",
+        "default": 1.2,
+        "description": "How far the swell under the pointer reaches, in world units.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/moss-grid/registry.json"
+  },
+  {
     "name": "mouse-pixelation",
     "title": "Mouse Pixelation",
     "description": "Three R3F WebGL mouse-reactive pixelation effects behind a version-switcher header. V1: GLSL pixel-circle shader with animated orbiting circles and GSAP scroll pin. V2: image texture with velocity-driven block displacement. V3: extruded pixel trail grid paired with a deforming bloom-lit cube that auto-cycles neon colors.",
@@ -18099,6 +20848,264 @@
         "breaking": false
       }
     ]
+  },
+  {
+    "name": "neon-streak",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Neon Streak",
+    "description": "The pointer draws twisting pink-violet light streaks over drifting smoke; idle, it draws a neon ring.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/neon-streak",
+    "tier": "pro",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "NeonStreak",
+    "exportKind": "default",
+    "importPath": "@/components/effects/neon-streak",
+    "target": "src/components/effects/neon-streak",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/neon-streak/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "backgroundColor",
+        "label": "Background",
+        "type": "color",
+        "default": "#0b0b0b",
+        "description": "Canvas colour behind the smoke.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "hue",
+        "label": "Hue",
+        "type": "number",
+        "default": 0,
+        "description": "Turns every colour around the colour wheel, in degrees. 0 is the reference violet.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "saturation",
+        "label": "Saturation",
+        "type": "number",
+        "default": 1,
+        "description": "Colour strength. 0 is greyscale, 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "intensity",
+        "label": "Intensity",
+        "type": "number",
+        "default": 1,
+        "description": "Overall brightness of the light.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.2,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "glow",
+        "label": "Glow",
+        "type": "number",
+        "default": 1,
+        "description": "How wide the glow spreads around each strand.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0.3,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smoke",
+        "label": "Smoke",
+        "type": "number",
+        "default": 1,
+        "description": "How much grey smoke drifts behind the light. 0 leaves the background flat.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.04,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.2,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "thickness",
+        "label": "Thickness",
+        "type": "number",
+        "default": 1,
+        "description": "How thick the bright strands are.",
+        "remixer": {
+          "control": "range",
+          "group": "streak",
+          "groupTitle": "Streak",
+          "min": 0.3,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "weave",
+        "label": "Weave",
+        "type": "number",
+        "default": 1,
+        "description": "How far the strands weave apart and cross. 0 draws one line.",
+        "remixer": {
+          "control": "range",
+          "group": "streak",
+          "groupTitle": "Streak",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "trailLength",
+        "label": "Trail length",
+        "type": "number",
+        "default": 2.6,
+        "description": "Seconds a streak stays lit before it fades out.",
+        "remixer": {
+          "control": "range",
+          "group": "streak",
+          "groupTitle": "Streak",
+          "min": 0.4,
+          "max": 6,
+          "step": 0.1
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the smoke drifts and the strands twist. 0 holds them still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "ringSize",
+        "label": "Ring size",
+        "type": "number",
+        "default": 0.32,
+        "description": "Radius of the self-drawn ring, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 0.48,
+          "step": 0.01
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Draw with pointer",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer draw streaks of light.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "autoplay",
+        "label": "Autoplay",
+        "type": "boolean",
+        "default": true,
+        "description": "Draw the ring on its own when nobody is moving the pointer.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "idleDelay",
+        "label": "Idle delay",
+        "type": "number",
+        "default": 1.2,
+        "description": "Seconds after the pointer stops before the ring starts drawing itself again.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.2,
+          "max": 5,
+          "step": 0.1
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/neon-streak/registry.json"
   },
   {
     "name": "noise-ripple-cursor",
@@ -18252,6 +21259,228 @@
       }
     ],
     "registryPath": "registry/effects/loaders/numeric-tunnel/registry.json"
+  },
+  {
+    "name": "opal-flow",
+    "version": "1.0.0",
+    "changelog": [
+      {
+        "version": "1.0.0",
+        "date": "2026-11-02",
+        "summary": "Initial release",
+        "breaking": false
+      }
+    ],
+    "type": "registry:component",
+    "title": "Opal Flow",
+    "description": "A periwinkle ground with a pink-to-peach ribbon and cyan wisps that smear under the pointer.",
+    "category": "backgrounds",
+    "dependencies": [],
+    "registryDependencies": [],
+    "previewUrl": "/demo/opal-flow",
+    "tier": "free",
+    "subfolder": true,
+    "main": "index.tsx",
+    "exportName": "OpalFlow",
+    "exportKind": "default",
+    "importPath": "@/components/effects/opal-flow",
+    "target": "src/components/effects/opal-flow",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/opal-flow/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "baseColor",
+        "label": "Ground",
+        "type": "color",
+        "default": "#6a6cf6",
+        "description": "The periwinkle ground.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "wispColor",
+        "label": "Wisps",
+        "type": "color",
+        "default": "#8de0f1",
+        "description": "The cyan wisps.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "ribbonColor",
+        "label": "Ribbon",
+        "type": "color",
+        "default": "#fb9ce8",
+        "description": "The pink ribbon.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "highlightColor",
+        "label": "Highlight",
+        "type": "color",
+        "default": "#fccbbf",
+        "description": "The warm centre of the ribbon.",
+        "remixer": {
+          "control": "color",
+          "group": "colour",
+          "groupTitle": "Colour"
+        }
+      },
+      {
+        "name": "hue",
+        "label": "Hue",
+        "type": "number",
+        "default": 0,
+        "description": "Turns every colour around the colour wheel, in degrees. 0 is the reference palette.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": -180,
+          "max": 180,
+          "step": 1
+        }
+      },
+      {
+        "name": "saturation",
+        "label": "Saturation",
+        "type": "number",
+        "default": 1,
+        "description": "Colour strength. 0 is greyscale, 1 matches the reference.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 1.6,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "grain",
+        "label": "Grain",
+        "type": "number",
+        "default": 0.025,
+        "description": "Film grain strength. 0 turns it off.",
+        "remixer": {
+          "control": "range",
+          "group": "colour",
+          "groupTitle": "Colour",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "speed",
+        "label": "Speed",
+        "type": "number",
+        "default": 1,
+        "description": "How fast the paint flows. 0 holds it still.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 4,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "flow",
+        "label": "Flow",
+        "type": "number",
+        "default": 1,
+        "description": "How far the paint folds and curls.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "detail",
+        "label": "Detail",
+        "type": "number",
+        "default": 1,
+        "description": "How strongly the cyan wisps are combed into fine streaks.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 2.5,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "interactive",
+        "label": "Smear",
+        "type": "boolean",
+        "default": true,
+        "description": "Let the pointer stir the paint like ink in water.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "cursor",
+          "groupTitle": "Cursor"
+        }
+      },
+      {
+        "name": "smearStrength",
+        "label": "Strength",
+        "type": "number",
+        "default": 1,
+        "description": "How far a stroke drags the paint.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "smearRadius",
+        "label": "Brush size",
+        "type": "number",
+        "default": 0.1,
+        "description": "Width of the stroke, in canvas heights.",
+        "remixer": {
+          "control": "range",
+          "group": "cursor",
+          "groupTitle": "Cursor",
+          "min": 0.04,
+          "max": 0.4,
+          "step": 0.01
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "layout": "panel",
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/backgrounds/opal-flow/registry.json"
   },
   {
     "name": "orbit-flip-slider",
@@ -21786,45 +25015,109 @@
   },
   {
     "name": "strip-slider",
-    "title": "Strip Slider",
-    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.ts shader materials and GSAP",
-    "category": "webgl",
-    "type": "registry:component",
-    "tier": "pro",
-    "version": "1.0.0",
-    "dependencies": [
-      "three"
-    ],
-    "registryDependencies": [],
-    "registryPath": "registry/effects/webgl/strip-slider/registry.json",
-    "importPath": "@/components/effects/strip-slider",
-    "target": "src/components/effects/strip-slider",
-    "previewUrl": "/demo/strip-slider",
-    "main": "index.tsx",
-    "exportName": "StripSlider",
-    "exportKind": "default",
-    "files": [
-      {
-        "path": "index.tsx",
-        "target": "src/components/effects/strip-slider/index.tsx"
-      },
-      {
-        "path": "StripSliderComp.tsx",
-        "target": "src/components/effects/strip-slider/StripSliderComp.tsx"
-      },
-      {
-        "path": "createSuspendedRaf.ts",
-        "target": "src/components/effects/strip-slider/createSuspendedRaf.ts"
-      }
-    ],
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-11-02",
+        "summary": "Added a visually hidden list of the gallery's image labels for screen readers.",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-06-04",
         "summary": "Initial release",
         "breaking": false
       }
-    ]
+    ],
+    "type": "registry:component",
+    "title": "Strip Slider",
+    "description": "WebGL image slider that splits each slide into vertical strips, transitioning with a staggered wave distortion using Three.js shader materials and GSAP",
+    "category": "webgl",
+    "dependencies": [
+      "three"
+    ],
+    "registryDependencies": [],
+    "previewUrl": "/demo/strip-slider",
+    "tier": "pro",
+    "main": "index.tsx",
+    "exportName": "StripSlider",
+    "exportKind": "default",
+    "importPath": "@/components/effects/strip-slider",
+    "target": "src/components/effects/strip-slider",
+    "files": [
+      {
+        "path": "index.tsx",
+        "target": "src/components/effects/strip-slider/index.tsx"
+      }
+    ],
+    "props": [
+      {
+        "name": "dispScale",
+        "type": "number",
+        "default": 1,
+        "description": "Multiplier on the ripple/displacement wave strength across all gallery images (collapsed and expanded).",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 3,
+          "step": 0.05
+        }
+      },
+      {
+        "name": "cameraSway",
+        "type": "number",
+        "default": 0.03,
+        "description": "How much the camera drifts toward the pointer position.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.15,
+          "step": 0.005
+        }
+      },
+      {
+        "name": "hideCentralStrip",
+        "type": "boolean",
+        "default": false,
+        "description": "Hides the central white strip overlay around the active image.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "appearance",
+          "groupTitle": "Appearance"
+        }
+      },
+      {
+        "name": "imageSize",
+        "type": "number",
+        "default": 1,
+        "description": "Scales the strip gallery image group without recreating the WebGL scene.",
+        "remixer": {
+          "control": "range",
+          "group": "appearance",
+          "groupTitle": "Appearance",
+          "min": 0.5,
+          "max": 1.6,
+          "step": 0.05
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "motion",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
+    "registryPath": "registry/effects/webgl/strip-slider/registry.json"
   },
   {
     "name": "svg-brush-transition",

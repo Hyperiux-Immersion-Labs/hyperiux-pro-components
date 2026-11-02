@@ -8,7 +8,7 @@ import { forwardRef, useCallback, useEffect, useId, useLayoutEffect, useMemo, us
 
 // @ts-nocheck
 // Pure data/CSS-string-generation utility module (no React types involved).
-// Left untyped per the pragmatic-typing policy in typescript-migration-plan.md:
+// Left untyped on purpose (pragmatic typing for internal helpers):
 // hundreds of internal helper params here would need `any` anyway, so a
 // per-file escape is more honest than sprinkling explicit `any` everywhere.
 /**

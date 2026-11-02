@@ -1,0 +1,20 @@
+{
+  "name": "@hyperiux/flower-field",
+  "version": "1.0.0",
+  "description": "A 3D meadow of wood anemones that bloom and sway under the pointer.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {
+    "@react-three/fiber": "*",
+    "@react-three/postprocessing": "*",
+    "postprocessing": "*",
+    "three": "*"
+  }
+}

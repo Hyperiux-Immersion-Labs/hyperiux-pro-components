@@ -320,6 +320,8 @@ export default function GooeyCounter({
 }: GooeyCounterProps) {
  const canvasRef = useRef<any>(null);
  const stateRef = useRef<GooeyState | null>(null);
+ // The canvas is invisible to assistive tech, so the current number is mirrored here as text
+ const valueRef = useRef<HTMLSpanElement | null>(null);
  const gooeyFilterId = `gooey-${useId().replace(/:/g, "")}`;
 
  useEffect(() => {
@@ -381,6 +383,7 @@ export default function GooeyCounter({
    * @param {(() => void) | undefined} [onDone]
    */
   function goToNumber(n: number, onDone?: () => void) {
+   if (valueRef.current) valueRef.current.textContent = String(n);
    const targets = getNumberCells(n, sim.activeRows, sim.activeCols, sim.viewportWidth);
    while (sim.blocks.length < sim.maxBlocks) {
     const p = targets[Math.floor(Math.random() * targets.length)];
@@ -422,6 +425,7 @@ export default function GooeyCounter({
   function start() {
    if (sim.timer !== null) clearTimeout(sim.timer);
    sim.blocks = []; sim.nextNumber = RANGE_MIN + 1; sim.transition = null;
+   if (valueRef.current) valueRef.current.textContent = String(RANGE_MIN);
    const firstTargets = getNumberCells(RANGE_MIN, sim.activeRows, sim.activeCols, sim.viewportWidth);
    if (reduceMotion) {
     // Land on 0 immediately - no opening scatter morph.
@@ -582,7 +586,8 @@ export default function GooeyCounter({
      </filter>
     </defs>
    </svg>
-   <canvas ref={canvasRef} className=" h-[75%]! w-[80%]!  max-md:h-full! max-lg:w-[80%]! max-lg:h-[60%]! top-[53%] max-md:top-[62%] left-1/2 -translate-y-1/2 absolute -translate-x-1/2  "  />
+   <span ref={valueRef} className="sr-only">{RANGE_MIN}</span>
+   <canvas ref={canvasRef} aria-hidden="true" className=" h-[75%]! w-[80%]!  max-md:h-full! max-lg:w-[80%]! max-lg:h-[60%]! top-[53%] max-md:top-[62%] left-1/2 -translate-y-1/2 absolute -translate-x-1/2  "  />
    <button
     onClick={() => stateRef.current?.start?.()}
     className="absolute bottom-8 cursor-pointer left-1/2 -translate-x-1/2 py-[0.7vw] px-[1.5vw] text-black bg-white rounded-[0.4vw] max-lg:px-[5vw] max-lg:py-[1.5vw] max-lg:rounded-[1.5vw] max-lg:bottom-24 max-md:bottom-15 max-md:text-[4.5vw] max-lg:text-[3vw]"

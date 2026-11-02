@@ -108,7 +108,7 @@ export default function RootLayout({ children }) {
         <script id="intro-gate" dangerouslySetInnerHTML={{ __html: INTRO_GATE_SCRIPT }} />
         {/* <meta name="msvalidate.01" content="96AF31CC0830CC17D577425F2D8CEE36" /> */}
       </head>
-      <body className="min-h-svh text-foreground">
+      <body suppressHydrationWarning className="min-h-svh text-foreground">
         {/* Covers the page from first paint until it hydrates (then gsap.set to opacity 0) */}
         <PageLoadOverlay />
         <noscript>

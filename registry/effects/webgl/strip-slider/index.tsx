@@ -1398,49 +1398,56 @@ galleryContainer.add(mesh);
   }, [items]);
 
   return (
-    <canvas
-    ref={canvasRef}
-    aria-hidden="true"
-    style={{
-      display: "block",
-      width: "100%",
-      height: "100%",
-      background: "#000",
-      cursor: "pointer",
-      touchAction: "none",
-    }}
-  />
+    <>
+      <canvas
+        ref={canvasRef}
+        aria-hidden="true"
+        style={{
+          display: "block",
+          width: "100%",
+          height: "100%",
+          background: "#000",
+          cursor: "pointer",
+          touchAction: "none",
+        }}
+      />
+      {/* the canvas is hidden from assistive tech, so the gallery's labels are listed here as text */}
+      <ul className="sr-only" aria-label="Gallery images">
+        {(items ?? []).map((item) => (
+          <li key={item.id}>{item.text ?? item.id}</li>
+        ))}
+      </ul>
+    </>
   );
 }
 
 // Images load straight from the Vault asset bucket. It serves
 // Access-Control-Allow-Origin: *, so they work as WebGL textures with
 // crossOrigin="anonymous" - no proxy route or next.config needed.
-const imageUrl = (seed: string, portrait = false) =>
-  `https://picsum.photos/seed/assetsimages-${seed}/${portrait ? "1200/1600" : "1600/1200"}`;
+const B = "https://pub-8abee449136941f5b0a1cd2c014534e9.r2.dev/vault-listing-images/assets-images";
 
 const items = [
- { id:'item-0',  url:imageUrl("v-01", true), text:'Nature 1',  atlasIndex: 0,  colors: ['#333','#aaa'] },
- { id:'item-1',  url:imageUrl("v-02", true), text:'Nature 2',  atlasIndex: 1,  colors: ['#333','#aaa'] },
- { id:'item-2',  url:imageUrl("v-03", true), text:'Nature 3',  atlasIndex: 2,  colors: ['#333','#aaa'] },
- { id:'item-3',  url:imageUrl("v-04", true), text:'Nature 4',  atlasIndex: 3,  colors: ['#333','#aaa'] },
- { id:'item-4',  url:imageUrl("v-05", true), text:'Nature 5',  atlasIndex: 4,  colors: ['#333','#aaa'] },
- { id:'item-5',  url:imageUrl("v-06", true), text:'Nature 6',  atlasIndex: 5,  colors: ['#333','#aaa'] },
- { id:'item-6',  url:imageUrl("v-07", true), text:'Nature 7',  atlasIndex: 6,  colors: ['#333','#aaa'] },
- { id:'item-7',  url:imageUrl("v-08", true), text:'Nature 8',  atlasIndex: 7,  colors: ['#333','#aaa'] },
- { id:'item-8',  url:imageUrl("v-09", true), text:'Nature 9',  atlasIndex: 8,  colors: ['#333','#aaa'] },
- { id:'item-9',  url:imageUrl("v-10", true), text:'Nature 10', atlasIndex: 9,  colors: ['#333','#aaa'] },
- { id:'item-10', url:imageUrl("h-03"), text:'Nature 11', atlasIndex: 10, colors: ['#333','#aaa'] },
- { id:'item-11', url:imageUrl("h-05"), text:'Nature 12', atlasIndex: 11, colors: ['#333','#aaa'] },
- { id:'item-12', url:imageUrl("h-06"), text:'Nature 13', atlasIndex: 12, colors: ['#333','#aaa'] },
- { id:'item-13', url:imageUrl("h-07"), text:'Nature 14', atlasIndex: 13, colors: ['#333','#aaa'] },
- { id:'item-14', url:imageUrl("h-08"), text:'Image 1',   atlasIndex: 14, colors: ['#333','#aaa'] },
- { id:'item-15', url:imageUrl("h-09"), text:'Image 2',   atlasIndex: 15, colors: ['#333','#aaa'] },
- { id:'item-16', url:imageUrl("h-10"), text:'Image 3',   atlasIndex: 16, colors: ['#333','#aaa'] },
- { id:'item-17', url:imageUrl("h-11"), text:'Image 4',   atlasIndex: 17, colors: ['#333','#aaa'] },
- { id:'item-18', url:imageUrl("h-01"), text:'Image 5',   atlasIndex: 18, colors: ['#333','#aaa'] },
- { id:'item-19', url:imageUrl("h-13"), text:'Image 6',   atlasIndex: 19, colors: ['#333','#aaa'] },
- { id:'item-20', url:imageUrl("h-14"), text:'Image 7',   atlasIndex: 20, colors: ['#333','#aaa'] },
+ { id:'item-0',  url:`${B}/v-01.jpg`, text:'Nature 1',  atlasIndex: 0,  colors: ['#333','#aaa'] },
+ { id:'item-1',  url:`${B}/v-02.jpg`, text:'Nature 2',  atlasIndex: 1,  colors: ['#333','#aaa'] },
+ { id:'item-2',  url:`${B}/v-03.jpg`, text:'Nature 3',  atlasIndex: 2,  colors: ['#333','#aaa'] },
+ { id:'item-3',  url:`${B}/v-04.jpg`, text:'Nature 4',  atlasIndex: 3,  colors: ['#333','#aaa'] },
+ { id:'item-4',  url:`${B}/v-05.jpg`, text:'Nature 5',  atlasIndex: 4,  colors: ['#333','#aaa'] },
+ { id:'item-5',  url:`${B}/v-06.jpg`, text:'Nature 6',  atlasIndex: 5,  colors: ['#333','#aaa'] },
+ { id:'item-6',  url:`${B}/v-07.jpg`, text:'Nature 7',  atlasIndex: 6,  colors: ['#333','#aaa'] },
+ { id:'item-7',  url:`${B}/v-08.jpg`, text:'Nature 8',  atlasIndex: 7,  colors: ['#333','#aaa'] },
+ { id:'item-8',  url:`${B}/v-09.jpg`, text:'Nature 9',  atlasIndex: 8,  colors: ['#333','#aaa'] },
+ { id:'item-9',  url:`${B}/v-10.jpg`, text:'Nature 10', atlasIndex: 9,  colors: ['#333','#aaa'] },
+ { id:'item-10', url:`${B}/h-03.jpg`, text:'Nature 11', atlasIndex: 10, colors: ['#333','#aaa'] },
+ { id:'item-11', url:`${B}/h-05.jpg`, text:'Nature 12', atlasIndex: 11, colors: ['#333','#aaa'] },
+ { id:'item-12', url:`${B}/h-06.jpg`, text:'Nature 13', atlasIndex: 12, colors: ['#333','#aaa'] },
+ { id:'item-13', url:`${B}/h-07.jpg`, text:'Nature 14', atlasIndex: 13, colors: ['#333','#aaa'] },
+ { id:'item-14', url:`${B}/h-08.jpg`, text:'Image 1',   atlasIndex: 14, colors: ['#333','#aaa'] },
+ { id:'item-15', url:`${B}/h-09.jpg`, text:'Image 2',   atlasIndex: 15, colors: ['#333','#aaa'] },
+ { id:'item-16', url:`${B}/h-10.jpg`, text:'Image 3',   atlasIndex: 16, colors: ['#333','#aaa'] },
+ { id:'item-17', url:`${B}/h-11.jpg`, text:'Image 4',   atlasIndex: 17, colors: ['#333','#aaa'] },
+ { id:'item-18', url:`${B}/h-01.jpg`, text:'Image 5',   atlasIndex: 18, colors: ['#333','#aaa'] },
+ { id:'item-19', url:`${B}/h-13.jpg`, text:'Image 6',   atlasIndex: 19, colors: ['#333','#aaa'] },
+ { id:'item-20', url:`${B}/h-14.jpg`, text:'Image 7',   atlasIndex: 20, colors: ['#333','#aaa'] },
 ];
 
 const StripSlider = ({

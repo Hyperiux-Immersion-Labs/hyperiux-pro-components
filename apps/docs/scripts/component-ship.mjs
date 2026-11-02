@@ -37,6 +37,9 @@ const PACKAGE_IMPORT_IGNORE = new Set([
   "react", "react-dom", "next", "node:fs", "node:path", "node:process", "node:url",
 ]);
 const VAULT_HEADER_TEXT = "Built using Hyperiux Vault: https://vault.hyperiux.com";
+// Same stub build-registry.js writes: free code is only served to signed-in users, so the
+// public JSON carries this line instead of the source (see NO_ANONYMOUS_INSTALLS.md)
+const SIGN_IN_STUB = "// Sign in to install this effect: npx hyperiux@latest login, then npx hyperiux@latest add <effect>\n";
 
 // apps/docs/src/lib/motion.js is app-internal (not shipped in the registry
 // package), so any effect that imports from it in the docs/demo source needs
@@ -586,7 +589,7 @@ function buildPublicEffect(registryJson, effectDir, category) {
   }));
 
   const isPro = registryJson.tier === "pro" || registryJson.tier === "paid";
-  const publicFiles = isPro ? fileContents.map(({ content: _c, ...rest }) => rest) : fileContents;
+  const publicFiles = fileContents.map(({ content: _c, ...rest }) => (isPro ? rest : { ...rest, content: SIGN_IN_STUB }));
 
   const registryItem = {
     name: registryJson.name,

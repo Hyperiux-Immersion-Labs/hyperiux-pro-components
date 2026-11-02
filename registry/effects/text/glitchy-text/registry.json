@@ -1,7 +1,13 @@
 {
   "name": "glitchy-text",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "changelog": [
+    {
+      "version": "1.0.2",
+      "date": "2026-11-02",
+      "summary": "Hid the decorative glitch layers from screen readers so the phrase is read once.",
+      "breaking": false
+    },
     {
       "version": "1.0.1",
       "date": "2026-07-30",

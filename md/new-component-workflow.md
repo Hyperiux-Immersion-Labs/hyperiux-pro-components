@@ -1,11 +1,16 @@
 # End-to-End Component Workflow
 
-> **Status:** Finalized (doc only). This is the target pipeline;
-> `scripts/component-ship.mjs` has not been updated to match yet - that's
-> the next pass, once this doc is confirmed correct. Sanity is no longer
-> synced automatically by any command in this pipeline - it's always a
-> manual copy/paste + publish step in Sanity Studio, fed by files this
-> pipeline generates for that purpose.
+> **Status (checked 2026-11-02):** implemented in
+> `apps/docs/scripts/component-ship.mjs` (commands `registry`, `codegen`,
+> `update`, `revert`, `ship`). There is no npm script for it: run
+> `node scripts/component-ship.mjs <command> ...` from `apps/docs/` (or
+> `node apps/docs/scripts/component-ship.mjs ...` from the repo root; paths
+> resolve from the script's own location either way). Sanity is not synced
+> by any command in this pipeline. Effect content (summary, FAQ, code
+> blocks) lives in Sanity; code blocks can be pushed to a Sanity *draft*
+> separately with `npm run sanity:code:sync` (see
+> [`component-workflow-tooling.md`](./component-workflow-tooling.md) Part 2),
+> and publishing is always a manual step in Sanity Studio.
 
 ---
 
@@ -20,7 +25,7 @@ Phase 1  Registry sync            registry.json/package.json (props table, remix
    |                              copied into registry/effects/{category}/{slug}/; ONLY this
    |                              effect's public/r/{slug}.json is (re)built and public/r/index.json
    |                              is updated to add/refresh this effect's entry - no other effect's
-   |                              public files are touched
+   |                              public files are touched; this effect's dist tarball is re-packed
 Phase 2  Codegen                  for ONE named effect only, in one step since both halves touch
    |                              the registry anyway: (a) rewrites the demo page's local-remixer
    |                              usage to the shared global Remixer Panel, carrying over the
@@ -30,7 +35,7 @@ Phase 2  Codegen                  for ONE named effect only, in one step since b
    |                              they reflect the just-rewired demo/component; (c) writes a JSX
    |                              copy into a local codegen/{slug}/ folder for Sanity - only when
    |                              the `codegen` command itself is run, never from update/ship.
-Phase 3  Rollback-on-failure      auto-revert if a later phase fails after Phase 1 already wrote
+Phase 3  Rollback-on-failure      `ship` offers a revert if Phase 2 fails after Phase 1 already wrote
 ```
 
 `update` re-runs Phases 1–2 together for one already-shipped effect whose
@@ -57,7 +62,9 @@ walk through each phase by hand a second time.
 - [ ] The developer iterates using the local remixer until the
   props/defaults/ranges are settled. Those settled values are what Phase 1
   turns into `registry.json`'s `props` array, and what Phase 2 later wires
-  the *global* Remixer Panel to.
+  the *global* Remixer Panel to. Write the `props={[...]}` array as a
+  plain inline literal on the `<LocalRemixerDemo>` tag; see the Phase 1
+  note on what the script can and can't read.
 
 No automated check today - this is groundwork before Phase 1 runs.
 
@@ -66,38 +73,78 @@ No automated check today - this is groundwork before Phase 1 runs.
 ## Phase 1 - Registry sync (effect-scoped public/r rebuild)
 
 ```bash
+# brand-new component (no registry.json for the slug yet)
 node scripts/component-ship.mjs registry --slug {slug} --category {c} --tier {t} --title "..." --description "..."
+# already-shipped component
+node scripts/component-ship.mjs registry --slug {slug} --bump patch|minor|major --summary "..."
 # new component vs existing is auto-detected from whether a registry.json already exists for the slug
 ```
 
 What it does:
+- Requires `apps/docs/src/components/{slug}/` to exist. For a new
+  component it refuses to touch an existing `registry/effects/{category}/{slug}/`
+  folder unless `--overwrite` is passed. For an existing one it requires
+  `--bump`, `--version x.y.z` or `--no-version-bump`, plus `--summary`
+  whenever the version changes.
 - Discovers the component's distributable files, detects dependencies and
   the export name/kind.
 - Writes `registry.json` - including the `props` array with a `remixer`
   sub-block per prop (drafted from what was settled on with the Phase 0
-  local remixer) and a `changelog` entry for this version.
-- Writes `package.json`.
+  local remixer) and a `changelog` entry for this version. `remixer.enabled`
+  is set to `true` only when at least one drafted prop has a
+  `remixer.control`.
+- **How props are drafted (new components only).** `detectPropsFromLocalRemixer`
+  finds the first `.tsx`/`.jsx` file under the demo folder that mentions
+  `LocalRemixerDemo`, regex-matches the `props={[ ... ]}` attribute on the
+  `<LocalRemixerDemo>` tag, and evaluates that array text with
+  `new Function`. It is not a TypeScript/JSX parser and has no access to the
+  file's scope, so the array must be a self-contained plain JS literal.
+  Props built through helper functions (e.g. `props={[colorProp("tint"), ...]}`),
+  variables or imported constants (`props={DRAFT_PROPS}`, `...sharedProps`),
+  or TypeScript-only syntax (`as const`, type annotations) are **not** picked
+  up: evaluation fails or the match is skipped, and the effect ships with
+  `props: []` and `remixer.enabled: false`. There is no warning; the only
+  sign is that the output lacks the "props (N) drafted from LocalRemixerDemo
+  usage" line. If that happens, inline the literal and re-run with
+  `--overwrite`, or fill in `registry.json`'s `props` by hand. For an
+  existing component the `props`/`remixer` already in `registry.json` are
+  kept as they are and are not redrafted from the demo.
+- Writes `package.json` (version follows the registry version unless
+  `--package-version` is passed).
 - Copies the distributable files into `registry/effects/{category}/{slug}/`,
   with `// Built using Hyperiux Vault: https://vault.hyperiux.com` inserted
   as the first line of every distributable code file (`.ts`/`.tsx`/`.js`/
   `.jsx`/`.css`) - added if the source file doesn't already start with it,
   left as-is if it does (so re-running `registry`/`update` doesn't stack
-  duplicate headers).
+  duplicate headers). An import of `usePrefersReducedMotion`/
+  `prefersReducedMotion` from `@/lib/motion` is replaced in the copy with an
+  inlined `matchMedia` version, since `@/lib/motion` isn't shipped.
 - Updates the single entry for this slug in root `registry/index.json`
   (adds it if new, replaces it if existing - other entries untouched).
-- Free-mirror sync into `../hyperiux-components` if `tier: "free"`.
+- Free-mirror sync into `../hyperiux-components` if `tier: "free"`: the
+  registry folder is copied to
+  `../hyperiux-components/registry/effects/{category}/{slug}/` (override with
+  `--free-repo-path`, skip with `--skip-free-mirror`). The mirror's own
+  `registry/index.json` is not updated.
 - **Rebuilds `public/r` scoped to this effect only:** regenerates
   `public/r/{slug}.json` for this effect, and updates just this effect's
   entry inside `public/r/index.json` (add if new, refresh if existing).
   It does **not** re-run a full `build:registry` pass over every effect -
   only this slug's public JSON and this slug's entry in the shared index
-  file are touched.
-- Free tier: full source stays embedded in `public/r/{slug}.json`,
-  matching existing `build-registry.js` behavior (content stripped only
-  for `pro`/`paid` tiers).
+  file are touched. Skip with `--skip-public-rebuild`.
+- Re-packs this effect's tarball (`npm pack` in the registry folder, moved
+  into `registry/dist/`) and refreshes its entry in
+  `registry/dist/registry-index.json`. Skip with `--skip-tarball`.
+- Follows the same source rule as the full `npm run build:registry`
+  (see `apps/docs/NO_ANONYMOUS_INSTALLS.md`): free code files get the
+  one-line sign-in stub as `content`, pro files get no `content`, so no
+  effect's source is published in `public/r`. The full build also emits
+  `importPath`, `fixedText` and `undocumentedProps`, which the scoped
+  rebuild leaves out, so run `npm run build:registry` before committing
+  `public/r` if those fields matter for the effect.
 
 Stops the pipeline on failure; Phase 3 can revert what this phase wrote if
-a later phase fails.
+a later phase fails. `--dry-run` stops this phase before any write.
 
 ---
 
@@ -122,19 +169,29 @@ that would each re-sync the same files:
    present in `registry.json`'s `props` from Phase 1 - so the global
    Remixer Panel reads the same values from `registry.json` instead of
    local demo-page state. The demo page that ships never contains the
-   local remixer.
+   local remixer. Concretely (best-effort text rewrite, review the result):
+   in the first demo `.tsx`/`.jsx` that mentions `LocalRemixerDemo`, the
+   `@/components/local-remixer` import becomes
+   `import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo"`,
+   the tag loses its `name`/`category`/`props`/`remixer` attributes and gains
+   `registry={registry}` (other attributes such as `component`/`render` are
+   kept), a parameterless `export default function X()` becomes
+   `X({ registry }: any)`, and `page.tsx` gets an import of the effect's
+   `registry.json` passed as `<DemoContent registry={...} />`. If no
+   `LocalRemixerDemo` usage is found the swap is skipped.
 2. **Registry-side re-sync - only if something actually differs.** Before
    writing anything, diffs the current source in
    `apps/docs/src/components/{slug}/` against what's already copied into
-   `registry/effects/{category}/{slug}/`. If nothing differs (ignoring the
-   Vault header line), this step is a no-op - `registry.json`,
-   `package.json`, and the copied files are left untouched, no version
-   bump, no changelog entry. If one or more files differ, only those files
+   `registry/effects/{category}/{slug}/`. If no file differs (ignoring the
+   Vault header line, after the `@/lib/motion` inlining) and the detected
+   dependencies, file list and export are unchanged, this step is a no-op -
+   `registry.json`, `package.json`, and the copied files are left untouched,
+   no version bump, no changelog entry. Otherwise only the differing files
    are recopied (same Vault-header insertion rule as Phase 1), and
-   `registry.json`/`package.json` are only rewritten if the diff actually
-   changes something that affects them (e.g. a new/changed prop, a new
-   dependency, a different export) - not unconditionally regenerated every
-   `codegen` run.
+   `registry.json` (`dependencies`, `files`), `package.json` and the root
+   `registry/index.json` entry are rewritten, then this effect's
+   `public/r` JSON and tarball are rebuilt. `props`, `remixer` and the
+   version are never changed by this step.
 3. **Local JSX handoff - explicit `codegen` runs only.** Writes each registry
    code file into `codegen/{slug}/`: the type-stripped `.jsx`/`.js` copy for
    pasting into Sanity, plus the original `.tsx`/`.ts` alongside it. Only files
@@ -143,43 +200,60 @@ that would each re-sync the same files:
    this folder. `codegen/` is in `.gitignore`; delete `codegen/{slug}/` once
    Sanity is updated. (Removed on 2026-10-26, restored as opt-in on 2026-10-28.)
 
+`codegen` has no dry-run mode: `--dry-run` is ignored and it writes
+straight away.
+
 ---
 
 ## `update` - re-sync an already-shipped component
 
 ```bash
-node scripts/component-ship.mjs update --slug {slug} --summary "..." [--bump patch|minor|major | --version x.y.z]
+node scripts/component-ship.mjs update --slug {slug} --summary "..." (--bump patch|minor|major | --version x.y.z | --no-version-bump)
 ```
 
 For a component that's already been shipped once, whose demo/component
 code changed again later: `update` re-runs Phase 1 (registry sync,
-effect-scoped `public/r` rebuild) and Phase 2 (global-remixer swap +
-registry re-sync + codegen) together for that one effect, in one call.
+effect-scoped `public/r` rebuild, tarball) and Phase 2 (global-remixer swap +
+registry re-sync) together for that one effect, in one call. It fails if
+the slug has no `registry.json` yet (use `registry`/`ship` for a new one).
 
 - Scoped to the single `--slug` passed in - must not read, write, or
   delete anything belonging to any other component's registry entry,
   `public/r` files, or codegen output.
-- Only touches what actually changed: the registry-sync half only rewrites
-  `registry.json`/`package.json` fields that differ (new/changed props, a
-  new changelog entry when the version bumped, updated file list) rather
-  than blindly rewriting the whole file; the codegen half only re-syncs the
-  registry copy when the source changed. It writes no `codegen/` folder.
+- One of `--bump`, `--version` or `--no-version-bump` is required;
+  `--summary` is required whenever the version changes.
+- The registry-sync half rewrites `registry.json` from the existing file:
+  it keeps `props`, `remixer` and every other hand-authored field, and
+  refreshes `version`, `dependencies`, `files`, `main`, export fields,
+  `previewUrl`/`importPath`/`target`, plus a new changelog entry when the
+  version changed. Changes to the demo's props are **not** picked up; edit
+  `registry.json`'s `props` directly. The codegen half then only re-syncs
+  the registry copy if anything still differs. It writes no `codegen/` folder.
+- If the codegen half fails, `update` reports the failure but does not
+  offer a revert (only `ship` does); use `revert` by hand.
 
 ---
 
 ## Phase 3 - Rollback on partial failure
 
-If a later phase fails after Phase 1 has already written new
+If `ship`'s Phase 2 fails after Phase 1 has already written new
 registry/version data, the script doesn't leave the repo half-shipped:
 
-- Detects which tracked paths Phase 1 touched for this slug (registry
-  folder, the relevant `public/r/{slug}.json`, this slug's entry in
-  `public/r/index.json`, this slug's entry in root `registry/index.json`,
-  dist tarball).
 - Prompts once: "A later phase failed after the registry was already
   updated for `{slug}`. Revert the registry changes from this run? [y/N]"
-  - a `git restore` on just those tracked paths if confirmed.
+  - and on yes runs the same restore as `revert --yes`.
 - Never auto-reverts silently - always asks first.
+- `revert` collects these paths for the slug: the registry folder, root
+  `registry/index.json`, `public/r/{slug}.json`, `public/r/index.json`,
+  `registry/dist/hyperiux-{slug}-*.tgz` and `registry/dist/registry-index.json`.
+  It then `git restore`s the ones git tracks, as **whole files**: the shared
+  index files go back to their committed state, so any other uncommitted
+  changes in them are lost too.
+- Untracked paths are skipped, not deleted. For a brand-new component
+  (registry folder, public JSON and tarball never committed) the revert
+  therefore only restores the shared index files; remove the new files by
+  hand.
+- Without `--yes`, `revert` only prints the paths it would restore.
 
 ---
 
@@ -189,33 +263,52 @@ All commands are `node scripts/component-ship.mjs <command> --slug {slug} [flags
 
 | Command | What it does |
 |---|---|
-| `registry` | Phase 1: create (`new`) or update (`sync`) the registry entry - props table, remixer sub-blocks, changelog; rebuilds only this effect's `public/r/{slug}.json` and this effect's entry in `public/r/index.json`. |
+| `registry` | Phase 1: create (`new`) or update (`sync`) the registry entry - props table, remixer sub-blocks, changelog; rebuilds only this effect's `public/r/{slug}.json`, this effect's entry in `public/r/index.json`, and this effect's tarball. |
 | `codegen` | Phase 2: **requires `--slug`**, scoped to exactly that effect. Rewrites the demo to the global Remixer Panel, re-syncs that effect's registry-side files **only if they differ from source** (no-op otherwise). Writes the `codegen/{slug}/` JSX handoff folder - the only command that does. Never touches any other slug. |
 | `update` | Re-runs `registry` + `codegen` together for one already-shipped `--slug` whose demo/component changed again. Diff-scoped like `codegen`. |
-| `revert` | Standalone Phase 3: `git restore` the tracked distribution paths for a slug. |
-| `ship` | Runs Phase 1 (`registry`) then Phase 2 (`codegen`) for a slug end to end, stopping on failure, offering `revert` on failure. |
+| `revert` | Standalone Phase 3: `git restore` the tracked distribution paths for a slug (prints them only, unless `--yes`). |
+| `ship` | Runs Phase 1 (`registry`) then Phase 2 (`codegen`, without the `codegen/` folder) for a slug end to end, stopping on failure, offering `revert` if Phase 2 fails after Phase 1 wrote. |
 
-Common flags: `--slug` (required by every command), `--category`, `--tier`,
-`--title`, `--description` (required by `registry`/`ship` for a brand-new
-component), `--bump patch|minor|major` or `--version x.y.z` (for `registry`
-/`update` on an existing component), `--summary` (changelog entry text),
-`--dry-run` (print the plan, write nothing), `--yes` (apply without an
-extra confirm prompt, required for `revert`), `--no-props-ok` (acknowledge
-a component intentionally has no props).
+Flags (all read by `parseCli`; `--no-x` sets `x` to false):
+
+- `--slug` - required by every command.
+- `--category`, `--tier free|pro`, `--title`, `--description` - required by
+  `registry`/`ship` for a brand-new component; ignored for an existing one
+  (category and tier come from its `registry.json`).
+- `--bump patch|minor|major`, `--version x.y.z`, `--no-version-bump` - one is
+  required by `registry`/`update`/`ship` on an existing component. For a new
+  component `--version` sets the starting version (default `1.0.0`).
+- `--summary` - changelog text (defaults to "Initial release" for a new
+  component; required on an existing one when the version changes).
+- `--date YYYY-MM-DD` (changelog date, default today), `--breaking`
+  (changelog flag, defaults to true for `--bump major`).
+- `--overwrite` - let `registry` replace an existing registry folder for a
+  new slug.
+- `--dependencies a,b`, `--main`, `--export-name`, `--export-kind`,
+  `--package-version` - override auto-detection.
+- `--dry-run` - `registry` (and so `ship`/`update`) stops before writing;
+  `codegen` ignores it. With `ship --dry-run` on an existing component,
+  Phase 2 still runs and writes.
+- `--skip-public-rebuild`, `--skip-tarball` - skip the scoped `public/r`
+  rebuild or the tarball re-pack.
+- `--skip-free-mirror`, `--free-repo-path <path>` - free-tier mirror control.
+- `--yes` - required for `revert` to actually restore.
+
+There is no `--no-props-ok` flag; an effect with no props simply gets
+`props: []`.
 
 ---
 
-## Notes for the `component-ship.mjs` implementation pass
+## Implementation notes (`component-ship.mjs`)
 
-- The effect-scoped `public/r` rebuild in Phase 1/`update` replaces the
-  current behavior of shelling out to the full `build:registry` script for
-  both `apps/docs` and root - it needs its own targeted logic that writes
+- Done: the effect-scoped `public/r` rebuild (`buildPublicEffect`) writes
   one `public/r/{slug}.json` and patches one entry into `public/r/index.json`
-  without regenerating every other effect's file.
-- Phase 2's automated demo rewrite needs a defined contract for what the
-  Phase 0 local remixer's "settled values" look like (e.g. a props/defaults
-  object literal in the demo file) so the script can extract them
-  mechanically rather than guessing from arbitrary JSX.
+  instead of shelling out to the full `build:registry`. It writes the same
+  sign-in stub for free code files as the full build; see the Phase 1 note.
+- Done, with a narrow contract: the "settled values" are the inline
+  `props={[...]}` array literal on `<LocalRemixerDemo>`, evaluated with
+  `new Function` (see Phase 1). Helper-built, variable or TS-typed prop
+  arrays are not read and come out as `props: []`.
 - The shared local remixer component now exists at
   `apps/docs/src/components/local-remixer/LocalRemixerDemo.tsx` (barrel at
   `local-remixer/index.ts`) - a normal source component the developer
@@ -224,5 +317,6 @@ a component intentionally has no props).
   automated swap just needs to replace the `LocalRemixerDemo` import/JSX
   with `RegistryRemixerDemo` reading from the real `registry.json`,
   carrying over the same `props`/`render`/`children`/`component` values.
-- There is no `codegen/` output folder any more (removed 2026-10-26); the
-  folder name is in `.gitignore` in case an old copy of the script recreates it.
+- The `codegen/` output folder is written only by an explicit `codegen` run
+  (`writeCodegenOutput` -> `codegen/{slug}/`, type-stripped `.jsx`/`.js` plus
+  the original `.tsx`/`.ts`); `codegen/` is in `.gitignore`.

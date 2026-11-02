@@ -1,0 +1,15 @@
+{
+  "name": "@hyperiux/neon-streak",
+  "version": "1.0.0",
+  "description": "The pointer draws twisting pink-violet light streaks over drifting smoke; idle, it draws a neon ring.",
+  "main": "index.tsx",
+  "files": [
+    "index.tsx",
+    "registry.json"
+  ],
+  "keywords": [
+    "backgrounds",
+    "hyperiux"
+  ],
+  "dependencies": {}
+}

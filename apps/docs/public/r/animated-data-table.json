@@ -14,6 +14,7 @@
   "registryDependencies": [],
   "exportName": "AnimatedDataTable",
   "exportKind": "default",
+  "importPath": "@/components/effects/animated-data-table",
   "tier": "pro",
   "version": "1.0.1",
   "changelog": [

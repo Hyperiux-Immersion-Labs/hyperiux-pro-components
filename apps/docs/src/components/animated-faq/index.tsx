@@ -3,7 +3,7 @@
 
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { motion, type Transition, type Variants } from "motion/react";
-import React, { Children, createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
+import React, { Children, createContext, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent, type ReactNode } from "react";
 
 const useIsomorphicLayoutEffect =
   typeof window !== "undefined" ? useLayoutEffect : useEffect;
@@ -92,11 +92,9 @@ interface FAQContextValue {
   iconClassName: string;
   iconSize: number;
   iconStrokeWidth: number;
-  toggleOnTitle: boolean;
   preset: MotionPreset;
   reduceMotion: boolean;
   onToggle: () => void;
-  onKeyDown: (event: KeyboardEvent<HTMLDivElement>) => void;
 }
 
 const FAQContext = createContext<FAQContextValue | null>(null);
@@ -305,13 +303,6 @@ export function FAQWrapper({
     handleToggle();
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      event.preventDefault();
-      handleToggle();
-    }
-  };
-
   const value: FAQContextValue = {
     isOpen,
     contentId,
@@ -321,11 +312,9 @@ export function FAQWrapper({
     iconClassName,
     iconSize,
     iconStrokeWidth,
-    toggleOnTitle: toggleOn === "title",
     preset,
     reduceMotion,
     onToggle: handleToggle,
-    onKeyDown: handleKeyDown,
   };
 
   const wrapperProps = {
@@ -373,19 +362,11 @@ export function FAQWrapper({
     );
   }
 
+  // Clicking anywhere on the item toggles it as a pointer convenience; the title is the
+  // real button, so keyboard and screen-reader users get native button behaviour there
   return (
     <FAQContext.Provider value={value}>
-      <div
-        className={`cursor-pointer ${wrapperClassName}`}
-        role="button"
-        tabIndex={0}
-        aria-expanded={isOpen}
-        aria-controls={contentId}
-        id={buttonId}
-        onClick={handleWrapperClick}
-        onKeyDown={handleKeyDown}
-        {...wrapperProps}
-      >
+      <div className={`cursor-pointer ${wrapperClassName}`} onClick={handleWrapperClick} {...wrapperProps}>
         {decorations}
         {children}
       </div>
@@ -455,28 +436,14 @@ export function FAQTitle({
     iconStrokeWidth,
     contentId,
     buttonId,
-    toggleOnTitle,
     reduceMotion,
     onToggle,
-    onKeyDown,
   } = useFAQContext();
-
-  const triggerProps = toggleOnTitle
-    ? {
-        role: "button",
-        tabIndex: 0,
-        "aria-expanded": isOpen,
-        "aria-controls": contentId,
-        id: buttonId,
-        onClick: onToggle,
-        onKeyDown,
-      }
-    : {};
 
   const chevronClass = "transition-transform duration-300 ease-out motion-reduce:transition-none";
 
   const icon = showIcon ? (
-    <div className={`shrink-0 ${iconClassName}`}>
+    <span className={`block shrink-0 ${iconClassName}`}>
       {iconMode === "plus" ? (
         <MorphPlus open={isOpen} size={iconSize} strokeWidth={iconStrokeWidth} reduceMotion={reduceMotion} />
       ) : iconMode === "rotate-left-down" ? (
@@ -494,26 +461,30 @@ export function FAQTitle({
           aria-hidden="true"
         />
       )}
-    </div>
+    </span>
   ) : null;
 
   return (
-    <div
-      className={`flex w-full items-center justify-between gap-6 ${toggleOnTitle ? "cursor-pointer" : ""} ${titleClassName} ${className}`}
-      {...triggerProps}
+    <button
+      type="button"
+      id={buttonId}
+      aria-expanded={isOpen}
+      aria-controls={contentId}
+      onClick={onToggle}
+      className={`flex w-full cursor-pointer items-center justify-between gap-6 text-left ${titleClassName} ${className}`}
     >
       {iconPosition === "left" ? (
         <>
           {icon}
-          <div className="flex-1">{children}</div>
+          <span className="block flex-1">{children}</span>
         </>
       ) : (
         <>
-          <div className="flex-1">{children}</div>
+          <span className="block flex-1">{children}</span>
           {icon}
         </>
       )}
-    </div>
+    </button>
   );
 }
 

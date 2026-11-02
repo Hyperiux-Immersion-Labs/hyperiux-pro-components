@@ -5,6 +5,19 @@
 wired into automated tooling; this is the full gate a human (and eventually
 CI) runs before a Template is allowed to ship.*
 
+> **Where the data actually lives (2026-11-02):** templates did not end up
+> with a `registry/templates/**/template.json`. Each template is a folder
+> under `apps/docs/src/app/(marketing)/template-demo/<slug>/` (five today:
+> elenavoss, kyntra, lumera, oris-dental, the-missing-pixel). The fields this
+> checklist names are split across `apps/docs/src/lib/mock-templates.js`
+> `TEMPLATES` (title, category, tier, `pricing.standaloneOneTime`,
+> `pricing.includedInAnnualPro`, `previewHref`, tagline), the `TEMPLATES`
+> object in `apps/docs/scripts/package-template.mjs` (zip title, description,
+> `dependencies`, `extraFiles`) and `apps/docs/src/lib/template-scaffolds.js`
+> (the uploaded zip URL, i.e. `scaffoldAsset`). There is no `industry`,
+> `layout`, `sectionsUsed`, `pages`, `changelog` or `qc` field anywhere yet,
+> so the items that depend on them are checked by hand against the source.
+
 Every item is tagged **[BLOCK]** (fails QC, cannot ship until fixed) or
 **[WARN]** (flagged in the QC report, human judgment call, doesn't stop
 shipping on its own). A template must clear every [BLOCK] item across every
@@ -240,9 +253,12 @@ the new version shipped.
 
 ## 13. Pricing & access control
 
-- [ ] **[BLOCK]** `getTemplateAccessDecision` correctly grants access to
-      an annual-Pro test account and correctly denies a monthly-Pro test
-      account (must be manually verified per template release, since a
+- [ ] **[BLOCK]** `getTemplateAccessDecision` (`apps/docs/src/lib/template-access.js`)
+      correctly grants access to a legacy annual-Pro test account (a
+      subscription row with no `tier`) and correctly denies a monthly-Pro
+      one; Pro / Pro+ subscribers (rows with a `tier`) must get
+      `credit-or-purchase-required` and own a template only by buying it or
+      redeeming a template credit (must be manually verified per template release, since a
       template-specific pricing/tier misconfiguration is a real revenue
       leak, not just a display bug).
 - [ ] **[BLOCK]** A completed standalone one-time purchase grants download
@@ -273,7 +289,9 @@ the new version shipped.
 
 ## Sign-off
 
-A template ships only when every **[BLOCK]** item above is checked. Log the
-result in `template.json`'s `qc` field (`status`, `lastRunAt`,
-`gateVersion`) so drift is visible if the template is later modified
-without re-running this checklist.
+A template ships only when every **[BLOCK]** item above is checked. The
+plan was to log the result in `template.json`'s `qc` field (`status`,
+`lastRunAt`, `gateVersion`); that file doesn't exist (see the note at the
+top), so there is currently no in-repo record of a QC pass. Record it
+somewhere visible (e.g. the PR) so drift shows if the template is later
+modified without re-running this checklist.

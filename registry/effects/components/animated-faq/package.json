@@ -1,6 +1,6 @@
 {
   "name": "@hyperiux/animated-faq",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Accessible FAQ accordion with smooth or elastic Motion animations, staggered answers and fills",
   "main": "index.tsx",
   "files": [
