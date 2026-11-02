@@ -44,12 +44,23 @@ function trimToWords(label, maxWords) {
  *
  * @param {number} [maxWords] - clip the final crumb to this many words.
  * @param {boolean} [hideHome] - drop the leading Home crumb from the URL-driven list.
+ * @param {boolean} [compactBelowLg] - drop the Home crumb on tablet and mobile, so a
+ *   detail page reads "effects / name" there and "Home / effects / name" on desktop.
  * @param {{label: string, href: string}[]} [items] - crumbs to show instead of the URL's
  *   (e.g. the dashboard, whose URL carries a user ID).
  */
-export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, hideHome = false, items: givenItems }) {
+export function Breadcrumb({
+  className = "",
+  lastItemClassName = "",
+  maxWords,
+  hideHome = false,
+  compactBelowLg = false,
+  items: givenItems,
+}) {
   const pathname = usePathname();
   const items = givenItems || itemsFromPathname(pathname, hideHome);
+  // The first crumb shown below lg loses its leading slash there
+  const firstCompactIndex = compactBelowLg && items[0]?.href === "/" && items.length > 1 ? 1 : 0;
 
   return (
     <nav
@@ -67,9 +78,18 @@ export function Breadcrumb({ className = "", lastItemClassName = "", maxWords, h
         return (
           <span
             key={`${item.href}-${item.label}`}
-            className="flex items-center gap-[calc(var(--cvw)*0.5)] max-md:gap-[2vw]"
+            className={[
+              "flex items-center gap-[calc(var(--cvw)*0.5)] max-md:gap-[2vw]",
+              index < firstCompactIndex && "max-lg:hidden",
+            ]
+              .filter(Boolean)
+              .join(" ")}
           >
-            {index > 0 && <span className="text-foreground/25">/</span>}
+            {index > 0 && (
+              <span className={["text-foreground/25", index === firstCompactIndex && "max-lg:hidden"].filter(Boolean).join(" ")}>
+                /
+              </span>
+            )}
 
             {isLast ? (
               <span

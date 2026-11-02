@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useLenis } from "lenis/react";
+import { ArrowLeft } from "lucide-react";
 import { RouteFade } from "@/components/layout/RouteFade";
 import { useVaultLayout } from "@/components/layout/VaultLayout";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
@@ -43,10 +44,36 @@ function useDocMeta(containerRef, key) {
 }
 
 function DocsHero({ pathname, meta }) {
-  const hero = DOCS_HERO[pathname?.replace(/\/$/, "") || "/docs"];
+  const router = useRouter();
+  const docsPath = pathname?.replace(/\/$/, "") || "/docs";
+  const hero = DOCS_HERO[docsPath];
   return (
     <section id="docs-hero" className="mx-auto w-full section-x flex flex-col gap-7 pb-[calc(var(--cvw)*10)] max-md:pb-[20vw]">
-      <Breadcrumb />
+      {/* Back arrow on tablet and mobile, as on effect and template pages */}
+      <div className="flex min-w-0 items-center gap-4">
+        <button
+          id="docs-go-back"
+          type="button"
+          onClick={() => router.back()}
+          aria-label="Go back"
+          className="fadeup hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+        >
+          <ArrowLeft className="size-4" aria-hidden="true" />
+        </button>
+        <Breadcrumb
+          compactBelowLg
+          // The docs root is the Introduction page, so it gets its own crumb like the other docs pages
+          items={
+            docsPath === "/docs"
+              ? [
+                  { label: "Home", href: "/" },
+                  { label: "docs", href: "/docs" },
+                  { label: "introduction", href: "/docs" },
+                ]
+              : undefined
+          }
+        />
+      </div>
       {hero && (
         <div className="flex w-[65%] flex-col gap-[calc(var(--cvw)*1.5)] max-md:w-full max-md:gap-[4vw]">
           <h1 className="fadeup type-display text-foreground">{hero.title}</h1>

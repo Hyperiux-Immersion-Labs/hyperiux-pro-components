@@ -185,13 +185,6 @@ export function EffectDetailContent({
 
   const router = useRouter();
   const pathname = usePathname();
-  // Came from this effect's category listing (see VaultLayout's __hxPrevPath)
-  const [fromCategory, setFromCategory] = useState(false);
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setFromCategory(Boolean(categorySlug) && window.__hxPrevPath === `/effects/${categorySlug}`);
-  }, [categorySlug]);
-
   const [showSignInToCopyModal, setShowSignInToCopyModal] = useState(false);
   // "Get code" asks for Pro (a Pro effect, or the daily copy limit) through this modal.
   const [upgradeReason, setUpgradeReason] = useState(null);
@@ -321,8 +314,8 @@ export function EffectDetailContent({
             <div className="flex flex-col gap-[calc(var(--cvw)*5.5)] max-md:gap-[15vw]">
               <div className="flex flex-col gap-7">
               <section id="effect-hero" className="mx-auto w-full section-x flex flex-col gap-[calc(var(--cvw)*1.4)] max-md:gap-[5vw]">
-                {/* Back + breadcrumb, as on the dashboard: Home / effect, or category / effect
-                    when the visitor came from that category's listing */}
+                {/* Back + breadcrumb: Home / effects / effect on desktop, effects / effect
+                    with the back arrow on tablet and mobile */}
                 <div className="flex min-w-0 items-center gap-4">
                   <button
                     id="effect-detail-go-back"
@@ -334,10 +327,10 @@ export function EffectDetailContent({
                     <ArrowLeft className="size-4" aria-hidden="true" />
                   </button>
                   <Breadcrumb
+                    compactBelowLg
                     items={[
-                      ...(fromCategory
-                        ? [{ label: categorySlug.replace(/-/g, " "), href: `/effects/${categorySlug}` }]
-                        : []),
+                      { label: "Home", href: "/" },
+                      { label: "effects", href: "/effects" },
                       { label: pageTitle || safeEffect.title || slug, href: pathname },
                     ]}
                   />
@@ -449,8 +442,10 @@ export function EffectDetailContent({
                         {...relatedRowHandlers}
                         // data-cursor-drag: the site cursor shows its drag state over the row.
                         // overflow-y set explicitly so Lenis doesn't treat the row as a vertical scroller.
+                        // Padding gives the cards' hover shadow room inside the clipped row (it reaches
+                        // ~1.8cvw to the sides and ~3cvw below); the negative margins keep the cards in place.
                         data-cursor-drag
-                        className="flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden pb-4 touch-scrollbar max-lg:gap-[2vw] max-lg:overflow-x-auto max-md:gap-[4vw]"
+                        className="-mx-[calc(var(--cvw)*2)] -mt-[calc(var(--cvw)*1)] -mb-[calc(var(--cvw)*3.5)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden px-[calc(var(--cvw)*2)] pt-[calc(var(--cvw)*1)] pb-[calc(var(--cvw)*3.5)] touch-scrollbar max-lg:-mx-[2vw] max-lg:-mt-[2vw] max-lg:-mb-[4vw] max-lg:gap-[2vw] max-lg:overflow-x-auto max-lg:px-[2vw] max-lg:pt-[2vw] max-lg:pb-[4vw] max-md:-mx-[4vw] max-md:gap-[4vw] max-md:px-[4vw]"
                       >
                         {safeRelatedEffects.map((relatedEffect) => (
                           <div

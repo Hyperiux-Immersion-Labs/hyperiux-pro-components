@@ -297,7 +297,7 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
           </button>
-          <Breadcrumb hideHome />
+          <Breadcrumb compactBelowLg />
         </motion.div>
 
         <div className="flex items-start justify-between gap-12 max-lg:flex-col max-lg:gap-10">

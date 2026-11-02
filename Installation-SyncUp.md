@@ -91,7 +91,7 @@ limited, or attributed. No amount of work elsewhere changes that.
 > **Status (2026-11-02): done in code.** Free source now goes through
 > `/api/cli/effects/[effectSlug]` (sign-in required), and `scripts/build-registry.js`
 > replaces free code with a one-line sign-in stub in `public/r`. The free/pro counts
-> above are from the original audit; `public/r` now holds 74 free and 110 pro items.
+> above are from the original audit; `public/r` now holds 75 free and 110 pro items.
 
 **Fix:** route free-effect source through `/api/cli/effects/[effectSlug]` too. The route
 already handles free tier correctly (`effect-access.js:110` returns `allowed`), so

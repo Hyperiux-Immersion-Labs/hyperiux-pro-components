@@ -58,9 +58,9 @@ export default function RelatedBlogsSlider({ posts = [] }) {
         // data-cursor-drag: the site cursor shows its drag state over the row.
         // overflow-y set explicitly so Lenis doesn't treat the row as a vertical scroller.
         data-cursor-drag
-        // -m/p 1vw: room inside the clipped row for the cards' hover shadow and lift (as the
-        // effects listing's Trending row); the negative margin keeps the cards where they were.
-        className="-m-[calc(var(--cvw)*1)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden p-[calc(var(--cvw)*1)] touch-scrollbar max-lg:-m-[2vw] max-lg:gap-[2vw] max-lg:overflow-x-auto max-lg:p-[2vw] max-md:-m-[4vw] max-md:gap-[4vw] max-md:p-[4vw]"
+        // Padding gives the cards' hover shadow and lift room inside the clipped row (the shadow
+        // reaches ~1.8cvw to the sides and ~3cvw below); the negative margins keep the cards in place.
+        className="-mx-[calc(var(--cvw)*2)] -mt-[calc(var(--cvw)*1)] -mb-[calc(var(--cvw)*3.5)] flex cursor-grab select-none gap-[calc(var(--cvw)*1.5)] overflow-x-hidden overflow-y-hidden px-[calc(var(--cvw)*2)] pt-[calc(var(--cvw)*1)] pb-[calc(var(--cvw)*3.5)] touch-scrollbar max-lg:-m-[2vw] max-lg:gap-[2vw] max-lg:overflow-x-auto max-lg:p-[2vw] max-md:-m-[4vw] max-md:gap-[4vw] max-md:p-[4vw]"
       >
         {posts.map((post, index) => (
           <div

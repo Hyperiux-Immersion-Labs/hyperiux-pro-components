@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 import LineReveal from "@/components/Animations/LineReveal";
 import { useFadeUp } from "@/components/Animations/gsapAnimations";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
@@ -29,13 +30,26 @@ export default function LegalBody({ children }) {
   const contentRef = useRef(null);
   const pathname = usePathname()?.replace(/\/$/, "") || "/legal";
   const title = LEGAL_TITLES[pathname] || "Legal";
+  const router = useRouter();
 
   useFadeUp(rootRef, [pathname]);
 
   return (
     <main ref={rootRef} className="relative flex w-full flex-col gap-[calc(var(--cvw)*10)] pt-25 max-md:gap-[20vw] max-md:pt-36">
       <section id="legal-hero" className={`${WRAP} flex flex-col gap-[calc(var(--cvw)*1.4)] max-md:gap-[5vw]`}>
-        <Breadcrumb hideHome />
+        {/* Home / Legal / page on desktop; back arrow + Legal / page on tablet and mobile */}
+        <div className="flex min-w-0 items-center gap-4">
+          <button
+            id="legal-go-back"
+            type="button"
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="fadeup hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+          </button>
+          <Breadcrumb compactBelowLg />
+        </div>
         <LineReveal key={pathname} as="h1" className="type-h1 w-[70%] text-foreground max-lg:w-full">
           {title}
         </LineReveal>
