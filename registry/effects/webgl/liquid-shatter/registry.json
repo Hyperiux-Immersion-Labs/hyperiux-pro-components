@@ -1,7 +1,13 @@
 {
   "name": "liquid-shatter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-28",
+      "summary": "Moved from the Components category to WebGL",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-16",
@@ -12,7 +18,7 @@
   "type": "registry:component",
   "title": "Liquid Shatter",
   "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
-  "category": "components",
+  "category": "webgl",
   "dependencies": [
     "gsap",
     "three"

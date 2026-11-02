@@ -7,8 +7,8 @@ import { verifyCliToken } from "@/lib/cli-auth";
 // - token format
 // - token hash exists in Supabase
 // - token is not revoked
-// - user has active Pro subscription
-// - subscription has not expired
+// Free and Pro accounts both log in; the response says which plan the token
+// belongs to. Pro source is gated per effect by the delivery routes.
 export async function POST(request) {
   const body = await request.json().catch(() => null);
 
@@ -38,5 +38,6 @@ export async function POST(request) {
 
   return NextResponse.json({
     valid: true,
+    plan: verification.plan,
   });
 }

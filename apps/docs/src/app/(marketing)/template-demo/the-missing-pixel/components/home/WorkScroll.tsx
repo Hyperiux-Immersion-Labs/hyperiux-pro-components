@@ -226,12 +226,12 @@ const WorkScroll = () => {
               arrow
               className="font-mpx-head text-24 font-medium text-mpx-ink"
             >
-              View All Projects
+              View all projects
             </UnderlineLink>
           </FadeUp>
         </div>
 
-        <div className="max-lg:snap-x max-lg:snap-mandatory max-lg:scroll-px-[6vw] max-md:scroll-px-[7vw] max-lg:overflow-x-auto max-lg:py-2">
+        <div className="max-lg:snap-x max-lg:snap-mandatory max-lg:scroll-px-[6vw] max-md:scroll-px-[7vw] max-lg:overflow-x-auto max-lg:[scrollbar-width:none] max-lg:[&::-webkit-scrollbar]:hidden max-lg:py-2">
           <div
             ref={trackRef}
             className="flex w-max gap-[3.2vw] px-[5vw] will-change-transform max-lg:gap-6 max-lg:px-[6vw] max-md:gap-7 max-md:px-[7vw]"

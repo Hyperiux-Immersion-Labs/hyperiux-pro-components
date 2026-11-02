@@ -329,15 +329,15 @@ export function EffectDetailContent({
                     type="button"
                     onClick={() => router.back()}
                     aria-label="Go back"
-                    className="fadeup grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+                    className="fadeup hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
                   >
                     <ArrowLeft className="size-4" aria-hidden="true" />
                   </button>
                   <Breadcrumb
                     items={[
-                      fromCategory
-                        ? { label: categorySlug.replace(/-/g, " "), href: `/effects/${categorySlug}` }
-                        : { label: "Home", href: "/" },
+                      ...(fromCategory
+                        ? [{ label: categorySlug.replace(/-/g, " "), href: `/effects/${categorySlug}` }]
+                        : []),
                       { label: pageTitle || safeEffect.title || slug, href: pathname },
                     ]}
                   />
@@ -1042,6 +1042,7 @@ function buildMarkedChildren(block) {
   const markDefs = block.markDefs || [];
 
   return (block.children || []).map((child, index) => {
+    if (child?._type === "lineBreak") return <br key={child._key || index} />;
     if (!child?.text) return null;
 
     let node = child.text;

@@ -136,7 +136,7 @@ const Pricing = () => {
                       as="li"
                       key={feature}
                       delay={0.3 + featureIndex * 0.08}
-                      className="flex items-start gap-3 text-24"
+                      className="flex items-center gap-3 text-24"
                     >
                       <Check className="size-[1.2vw] shrink-0 text-mpx-accent max-lg:size-[2.2vw] max-md:size-[4.6vw]" />
                       {feature}

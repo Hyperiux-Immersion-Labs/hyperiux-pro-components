@@ -1,8 +1,9 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 "use client";
 
-import gsap from "gsap";
-import React, { useEffect, useId, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import { Tabs as TabsPrimitive } from "@base-ui/react/tabs";
+import { AnimatePresence, MotionConfig, motion, type Transition, type Variants } from "motion/react";
+import React, { useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from "react";
 
 export interface AnimatedTabItem {
   id?: string | number;
@@ -10,245 +11,334 @@ export interface AnimatedTabItem {
   content: ReactNode;
 }
 
+/** underline: a bar slides to the active tab. glide: a pill slides there. fade: the bar fades in place. */
+export type TabsIndicator = "underline" | "glide" | "fade";
+/** slide: content leaves one way and arrives from the other. fade: it fades out, then the next fades in. */
+export type TabsAnimation = "slide" | "fade" | "none";
+/** solid: the pill is filled with the accent colour. soft: a light tint of the text colour. */
+export type TabsPillStyle = "solid" | "soft";
+export type TabsRounded = "none" | "sm" | "md" | "lg" | "xl" | "full";
+
 export interface AnimatedTabsCompProps {
   tabs?: AnimatedTabItem[];
   defaultActiveIndex?: number;
   className?: string;
-  animationType?: 'fade' | 'slide';
+  /** How content changes when you switch tabs. */
+  animationType?: TabsAnimation;
+  /** How far the content slides, in px. */
   slideDistance?: number;
+  /** Active tab text, the indicator, the solid pill and the focus ring. */
   accentColor?: string;
+  /** Seconds. How long the indicator and the content take. */
   duration?: number;
+  /** Springiness of the indicator and the slide. */
+  bounce?: number;
+  indicator?: TabsIndicator;
+  /** Only used by the glide indicator. */
+  pillStyle?: TabsPillStyle;
+  /** A soft highlight follows the pointer over the tabs. */
+  hoverHighlight?: boolean;
+  /** The panel grows and shrinks to fit the content instead of jumping. */
+  smoothHeight?: boolean;
+  /** A line under the row of tabs. */
+  divider?: boolean;
+  /** A border around the row of tabs. */
+  listBorder?: boolean;
+  /** A border around the content. */
+  panelBorder?: boolean;
+  rounded?: TabsRounded;
+}
+
+const ROUNDED: Record<TabsRounded, string> = {
+  none: "rounded-none",
+  sm: "rounded-sm",
+  md: "rounded-md",
+  lg: "rounded-lg",
+  xl: "rounded-xl",
+  full: "rounded-full",
+};
+
+// The content panel is a tall box, so "full" would clip it into a capsule; it stops at 3xl
+const PANEL_ROUNDED: Record<TabsRounded, string> = { ...ROUNDED, full: "rounded-3xl" };
+
+// Slow at both ends, so the fade never looks like it starts or stops abruptly
+const fadeEase = [0.45, 0, 0.25, 1] as const;
+
+const cx = (...classes: (string | false | null | undefined)[]) => classes.filter(Boolean).join(" ");
+
+function usePrefersReducedMotion() {
+  const [reduce, setReduce] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
+    if (!mq) return;
+    const read = () => setReduce(mq.matches);
+    read();
+    mq.addEventListener?.("change", read);
+    return () => mq.removeEventListener?.("change", read);
+  }, []);
+  return reduce;
+}
+
+// Measures the content so the panel can grow and shrink to fit it
+function useHeight() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => setHeight(entry.borderBoxSize[0].blockSize));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, height] as const;
 }
 
 const AnimatedTabsComp = ({
- tabs = [],
- defaultActiveIndex = 0,
- className ="",
- animationType ="slide", //"fade" |"slide"
- slideDistance = 40,
- accentColor ="#ff6b00",
- duration = 0.35,
+  tabs = [],
+  defaultActiveIndex = 0,
+  className = "",
+  animationType = "slide",
+  slideDistance = 40,
+  accentColor = "#ff6b00",
+  duration = 0.35,
+  bounce = 0.15,
+  indicator = "underline",
+  pillStyle = "solid",
+  hoverHighlight = false,
+  smoothHeight = true,
+  divider = true,
+  listBorder = false,
+  panelBorder = false,
+  rounded = "md",
 }: AnimatedTabsCompProps) => {
- const safeDefaultIndex =
- tabs.length > 0
- ? Math.min(Math.max(defaultActiveIndex, 0), tabs.length - 1)
- : 0;
+  const safeDefaultIndex =
+    tabs.length > 0 ? Math.min(Math.max(defaultActiveIndex, 0), tabs.length - 1) : 0;
+  const values = tabs.map((tab, index) => String(tab.id ?? index));
 
- const [activeTab, setActiveTab] = useState(safeDefaultIndex);
- const labelRefs = useRef<(HTMLButtonElement | null)[]>([]);
- const contentRefs = useRef<(HTMLDivElement | null)[]>([]);
- const activeLineRef = useRef<HTMLDivElement | null>(null);
- const reduceMotionRef = useRef(
- typeof window !=="undefined" &&
- (window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false)
- );
- const baseId = useId();
- const safeDuration = Math.max(0.05, Number(duration) || 0.35);
+  const id = useId();
+  const reduceMotion = usePrefersReducedMotion();
+  const [active, setActive] = useState(values[safeDefaultIndex]);
+  // 1 when the new tab is further right, -1 when it is further left
+  const [direction, setDirection] = useState(1);
+  const [hovered, setHovered] = useState<string | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const seen = useRef(false);
+  const [measure, height] = useHeight();
 
- useEffect(() => {
- const mq = window.matchMedia?.("(prefers-reduced-motion: reduce)");
- if (!mq) return;
- const onChange = (event: MediaQueryListEvent) => {
- reduceMotionRef.current = event.matches;
- };
- reduceMotionRef.current = mq.matches;
- mq.addEventListener?.("change", onChange);
- return () => mq.removeEventListener?.("change", onChange);
- }, []);
+  const safeDuration = Math.max(0.05, Number(duration) || 0.35);
+  const pill = indicator === "glide";
+  const activeIndex = Math.max(values.indexOf(active), 0);
 
- const moveActiveLine = (index: number) => {
- const activeLabel = labelRefs.current[index];
- const activeLine = activeLineRef.current;
+  const still: Transition = { duration: 0 };
+  const move: Transition = reduceMotion ? still : { type: "spring", duration: safeDuration * 0.6, bounce };
+  const quick: Transition = reduceMotion ? still : { duration: 0.25, ease: fadeEase };
+  const grow: Transition = reduceMotion ? still : { type: "spring", duration: 0.4, bounce: 0 };
 
- if (!activeLabel || !activeLine) return;
+  // When the row scrolls, bring the tab you switched to into view
+  useEffect(() => {
+    if (!seen.current) {
+      seen.current = true;
+      return;
+    }
+    const el = tabRefs.current[activeIndex];
+    const scroller = scrollRef.current;
+    if (!el || !scroller) return;
+    const left = el.offsetLeft;
+    const right = left + el.offsetWidth;
+    if (left >= scroller.scrollLeft && right <= scroller.scrollLeft + scroller.clientWidth) return;
+    scroller.scrollTo({
+      left: left - (scroller.clientWidth - el.offsetWidth) / 2,
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, [activeIndex, reduceMotion]);
 
- gsap.to(activeLine, {
- x: activeLabel.offsetLeft,
- width: activeLabel.offsetWidth,
- duration: safeDuration,
- ease:"power3.out",
- });
- };
+  if (!tabs.length) return null;
 
- const animateContent = (currentIndex: number, nextIndex: number) => {
- const currentContent = contentRefs.current[currentIndex];
- const nextContent = contentRefs.current[nextIndex];
+  const slide = animationType === "slide" && !reduceMotion;
+  const instant = animationType === "none" || reduceMotion;
 
- if (!currentContent || !nextContent || currentIndex === nextIndex) return;
+  const variants: Variants = {
+    enter: (d: number) => ({ opacity: instant ? 1 : 0, x: slide ? d * slideDistance : 0 }),
+    center: {
+      opacity: 1,
+      x: 0,
+      transition: instant
+        ? still
+        : slide
+          ? { type: "spring", duration: safeDuration, bounce }
+          : { duration: safeDuration, ease: fadeEase },
+    },
+    exit: (d: number) => ({
+      opacity: instant ? 1 : 0,
+      x: slide ? -d * slideDistance : 0,
+      // Sliding out is quick so the switch never feels slow; a fade takes the same time each way
+      transition: instant
+        ? still
+        : slide
+          ? { duration: safeDuration * 0.5, ease: "easeIn" }
+          : { duration: safeDuration, ease: fadeEase },
+    }),
+  };
 
- const direction = nextIndex > currentIndex ? 1 : -1;
- // Reduced-motion: opacity fade only - no X slide.
- const useSlide =
- animationType ==="slide" && !reduceMotionRef.current;
+  const bar = "absolute inset-x-0 bottom-0 z-0 h-0.5 bg-(--tabs-accent) max-md:h-[0.4vw]";
+  const activeTab = tabs[activeIndex];
 
- gsap.killTweensOf([currentContent, nextContent]);
+  return (
+    <MotionConfig reducedMotion={reduceMotion ? "always" : "never"}>
+      <TabsPrimitive.Root
+        value={active}
+        onValueChange={(next) => {
+          const value = String(next);
+          setDirection(values.indexOf(value) >= values.indexOf(active) ? 1 : -1);
+          setActive(value);
+        }}
+        style={{ "--tabs-accent": accentColor } as CSSProperties}
+        className={`flex h-full w-full flex-col gap-[2vw] px-[7vw] py-[4vw] max-lg:gap-[4vw] max-lg:p-[6vw] max-md:gap-[5vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}
+      >
+        {/* A pill row or a bordered row gets some air above the divider, so the two lines never touch */}
+        <div className={cx("flex min-w-0 flex-col", (pill || listBorder) && "gap-[1vw] max-md:gap-[3vw]")}>
+          {/* On a narrow screen the row scrolls sideways, with no scrollbar, and is clipped at its border */}
+          <div
+            ref={scrollRef}
+            className={cx(
+              "w-fit max-w-full overflow-x-auto overscroll-x-contain scrollbar-none [&::-webkit-scrollbar]:hidden",
+              (pill || listBorder) && ROUNDED[rounded],
+              listBorder && "border border-current/10"
+            )}
+          >
+            <TabsPrimitive.List
+              // Arrow keys move to the next tab and show its content straight away
+              activateOnFocus
+              className={cx(
+                "relative flex w-max items-center",
+                pill ? "gap-1 p-1" : "gap-[2vw] max-lg:gap-[3vw] max-md:gap-[4vw]",
+                listBorder && !pill && "p-1"
+              )}
+            >
+              {tabs.map((tab, index) => {
+                const value = values[index];
+                const isActive = value === active;
 
- if (useSlide) {
- gsap.to(currentContent, {
- opacity: 0,
- x: -direction * slideDistance,
- duration: safeDuration * 0.75,
- ease:"power2.out",
- onComplete: () => {
- gsap.set(currentContent, {
- display:"none",
- pointerEvents:"none",
- x: 0,
- });
+                return (
+                  <TabsPrimitive.Tab
+                    key={value}
+                    ref={(el: HTMLButtonElement | null) => {
+                      tabRefs.current[index] = el;
+                    }}
+                    value={value}
+                    id={`${id}-tab-${index}`}
+                    aria-controls={isActive ? `${id}-panel-${index}` : undefined}
+                    onPointerEnter={() => setHovered(value)}
+                    onPointerLeave={() => setHovered(null)}
+                    className={cx(
+                      "relative flex shrink-0 cursor-pointer items-center justify-center whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] outline-none max-lg:px-[2.5vw] max-lg:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw]",
+                      "transition-colors duration-300 ease-in-out motion-reduce:transition-none",
+                      // Inside the tab, so the scrolling row doesn't clip the focus ring
+                      "focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--tabs-accent)",
+                      "data-disabled:cursor-not-allowed data-disabled:opacity-50",
+                      ROUNDED[rounded],
+                      isActive
+                        ? pill && pillStyle === "solid"
+                          ? "text-white"
+                          : "text-(--tabs-accent)"
+                        : "text-current/50 hover:text-current"
+                    )}
+                  >
+                    <AnimatePresence initial={false}>
+                      {hoverHighlight && hovered === value && !isActive && (
+                        <motion.span
+                          key="hover"
+                          aria-hidden
+                          layoutId={`${id}-hover`}
+                          className={cx("absolute inset-0 z-0 bg-current/8", ROUNDED[rounded])}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={move}
+                        />
+                      )}
+                    </AnimatePresence>
 
- gsap.set(nextContent, {
- display:"block",
- pointerEvents:"auto",
- opacity: 0,
- x: direction * slideDistance,
- });
+                    {pill && isActive && (
+                      <motion.span
+                        aria-hidden
+                        layoutId={`${id}-pill`}
+                        className={cx(
+                          "absolute inset-0 z-0",
+                          pillStyle === "solid" ? "bg-(--tabs-accent)" : "bg-current/8 ring-1 ring-current/10",
+                          ROUNDED[rounded]
+                        )}
+                        transition={move}
+                      />
+                    )}
 
- gsap.to(nextContent, {
- opacity: 1,
- x: 0,
- duration: safeDuration,
- ease:"power3.out",
- });
- },
- });
- } else {
- gsap.to(currentContent, {
- opacity: 0,
- duration: safeDuration * 0.65,
- ease:"power2.out",
- onComplete: () => {
- gsap.set(currentContent, {
- display:"none",
- pointerEvents:"none",
- x: 0,
- });
+                    {indicator === "underline" && isActive && (
+                      <motion.span aria-hidden layoutId={`${id}-line`} className={bar} transition={move} />
+                    )}
 
- gsap.set(nextContent, {
- display:"block",
- pointerEvents:"auto",
- opacity: 0,
- x: 0,
- });
+                    {indicator === "fade" && (
+                      <motion.span
+                        aria-hidden
+                        className={bar}
+                        initial={false}
+                        animate={{ opacity: isActive ? 1 : 0 }}
+                        transition={quick}
+                      />
+                    )}
 
- gsap.to(nextContent, {
- opacity: 1,
- duration: safeDuration,
- ease:"power2.out",
- });
- },
- });
- }
- };
+                    <span className="relative z-10 text-[1.2vw] font-medium max-lg:text-[2.2vw] max-md:text-[4vw]">
+                      {tab.label}
+                    </span>
+                  </TabsPrimitive.Tab>
+                );
+              })}
+            </TabsPrimitive.List>
+          </div>
+          {divider && <div aria-hidden className="h-px w-full bg-current/10" />}
+        </div>
 
- const handleTabClick = (index: number) => {
- if (index === activeTab) return;
-
- animateContent(activeTab, index);
- moveActiveLine(index);
- setActiveTab(index);
- };
-
- const handleTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
- const count = tabs.length;
- let nextIndex;
-
- switch (event.key) {
- case"ArrowRight":
- nextIndex = (index + 1) % count;
- break;
- case"ArrowLeft":
- nextIndex = (index - 1 + count) % count;
- break;
- case"Home":
- nextIndex = 0;
- break;
- case"End":
- nextIndex = count - 1;
- break;
- default:
- return;
- }
-
- event.preventDefault();
- labelRefs.current[nextIndex]?.focus();
- handleTabClick(nextIndex);
- };
-
- useLayoutEffect(() => {
- if (!tabs.length) return;
-
- const activeLabel = labelRefs.current[safeDefaultIndex];
- const activeLine = activeLineRef.current;
-
- if (activeLabel && activeLine) {
- gsap.set(activeLine, {
- x: activeLabel.offsetLeft,
- width: activeLabel.offsetWidth,
- });
- }
-
- contentRefs.current.forEach((content, index) => {
- if (!content) return;
-
- gsap.set(content, {
- display: index === safeDefaultIndex ?"block" :"none",
- opacity: index === safeDefaultIndex ? 1 : 0,
- pointerEvents: index === safeDefaultIndex ?"auto" :"none",
- x: 0,
- });
- });
- }, [tabs, safeDefaultIndex]);
-
- if (!tabs.length) return null;
-
- return (
- <div className={`h-full w-full px-[7vw] py-[7vw] max-lg:p-[6vw] max-md:px-[5vw] max-md:py-[8vw] ${className}`}>
- <div className="relative border-b  border-b-black/10">
- <div role="tablist" aria-orientation="horizontal" className="flex gap-[2vw] overflow-x-auto max-lg:gap-[3vw] max-md:gap-[4vw]">
- {tabs.map((tab, index) => (
- <button
- key={tab.id || index}
- ref={(el) => { labelRefs.current[index] = el; }}
- role="tab"
- id={`${baseId}-tab-${index}`}
- aria-selected={activeTab === index}
- aria-controls={`${baseId}-panel-${index}`}
- tabIndex={activeTab === index ? 0 : -1}
- onClick={() => handleTabClick(index)}
- onKeyDown={(event) => handleTabKeyDown(event, index)}
- className="relative cursor-pointer whitespace-nowrap border-none bg-transparent px-[2vw] py-[1vw] transition-colors duration-300 ease-in-out max-lg:px-[2.5vw] max-lg:py-[1.5vw] max-md:px-[3vw] max-md:py-[2.5vw]"
- style={{ color: activeTab === index ? accentColor : "rgba(0,0,0,0.5)" }}
- type="button"
- >
- <span className="text-[1.2vw] font-medium max-lg:text-[2.2vw] max-md:text-[4vw]">{tab.label}</span>
- </button>
- ))}
- </div>
-
- <div ref={activeLineRef} className="absolute bottom-0 left-0 h-0.5 max-md:h-[0.4vw]" style={{ backgroundColor: accentColor }} />
- </div>
-
- <div className="relative min-h-[24vw] w-full max-md:overflow-hidden pt-[2vw] max-lg:min-h-[32vw] max-lg:pt-[4vw] max-md:min-h-[48vw] max-md:pt-[5vw]">
- {tabs.map((tab, index) => (
- <div
- key={tab.id || index}
- ref={(el) => { contentRefs.current[index] = el; }}
- role="tabpanel"
- id={`${baseId}-panel-${index}`}
- aria-labelledby={`${baseId}-tab-${index}`}
- tabIndex={0}
- className="h-full w-full"
- style={{
- display: index === safeDefaultIndex ?"block" :"none",
- opacity: index === safeDefaultIndex ? 1 : 0,
- }}
- >
- {tab.content}
- </div>
- ))}
- </div>
- </div>
- );
+        <div
+          className={cx(
+            "relative w-full overflow-hidden",
+            panelBorder && "border border-current/10",
+            PANEL_ROUNDED[rounded]
+          )}
+        >
+          <motion.div
+            initial={false}
+            animate={{ height: smoothHeight && height !== null ? height : "auto" }}
+            transition={grow}
+          >
+            <div ref={measure}>
+              <AnimatePresence mode="wait" initial={false} custom={direction}>
+                <motion.div
+                  key={active}
+                  role="tabpanel"
+                  id={`${id}-panel-${activeIndex}`}
+                  aria-labelledby={`${id}-tab-${activeIndex}`}
+                  tabIndex={0}
+                  custom={direction}
+                  variants={variants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  className={cx(
+                    "h-full w-full outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-(--tabs-accent)",
+                    panelBorder && "p-[1.5vw] max-lg:p-[3vw] max-md:p-[4vw]"
+                  )}
+                >
+                  {activeTab.content}
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        </div>
+      </TabsPrimitive.Root>
+    </MotionConfig>
+  );
 };
 
 const tabsData = [
@@ -388,32 +478,14 @@ const tabsData = [
   },
 ];
 
-interface AnimatedTabsProps {
-  defaultActiveIndex?: number;
-  animationType?: "fade" | "slide";
-  slideDistance?: number;
-  accentColor?: string;
-  duration?: number;
-}
+export type AnimatedTabsProps = Omit<AnimatedTabsCompProps, "tabs" | "className">;
 
-export default function AnimatedTabs({
-  defaultActiveIndex = 0,
-  animationType = "slide",
-  slideDistance = 40,
-  accentColor = "#ff6b00",
-  duration = 0.35,
-}: AnimatedTabsProps) {
+export default function AnimatedTabs(props: AnimatedTabsProps) {
   return (
-    <section className="min-h-screen w-full bg-white">
-      <AnimatedTabsComp
-        key={`${defaultActiveIndex}-${animationType}-${slideDistance}`}
-        tabs={tabsData}
-        defaultActiveIndex={defaultActiveIndex}
-        animationType={animationType}
-        slideDistance={slideDistance}
-        accentColor={accentColor}
-        duration={duration}
-      />
+    <section className="w-full bg-white text-black">
+      <AnimatedTabsComp key={props.defaultActiveIndex ?? 0} tabs={tabsData} {...props} />
     </section>
   );
 }
+
+export { AnimatedTabsComp };

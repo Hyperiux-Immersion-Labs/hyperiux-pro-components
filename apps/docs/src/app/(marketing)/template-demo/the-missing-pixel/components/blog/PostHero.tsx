@@ -26,10 +26,10 @@ const PostHero = ({ post }: PostHeroProps) => {
       ]}
     />
     <header className="flex flex-col items-start gap-8 max-lg:gap-6">
-      <span className="inline-flex h-[4vh] items-center rounded-full bg-(--mpx-paper) px-[1vw] text-14 text-(color:--mpx-ink) max-lg:h-[3.4vh] max-lg:px-[2vw] max-md:h-[5vh] max-md:px-[4vw]">
+      <span className="inline-flex h-[4vh] items-center rounded-full bg-(--mpx-paper) px-[1vw] text-14 text-(--mpx-ink) max-lg:h-[3.4vh] max-lg:px-[2vw] max-md:h-[5vh] max-md:px-[4vw]">
         {post.category}
       </span>
-      <MaskReveal as="h1" delay={PAGE_DELAY} className="w-[75%] max-lg:w-full">
+      <MaskReveal as="h1" delay={PAGE_DELAY} className="w-[75%] tracking-[-0.25vw]! max-lg:w-full max-lg:tracking-[-0.5vw]! max-md:tracking-[-0.7vw]!">
         {lead && `${lead} `}
         <span className="text-mpx-accent">{tail}</span>
       </MaskReveal>

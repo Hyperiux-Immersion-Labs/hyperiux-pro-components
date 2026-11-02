@@ -334,14 +334,8 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
 }
 
 .mpx-page .mpx-hero-bg {
-  background: linear-gradient(
-    100deg,
-    color-mix(in srgb, var(--mpx-accent-deep) 25%, var(--mpx-ink)) 0%,
-    color-mix(in srgb, var(--mpx-accent-deep) 60%, var(--mpx-ink)) 30%,
-    var(--mpx-accent-deep) 58%,
-    var(--mpx-accent) 82%,
-    var(--mpx-accent-light) 100%
-  );
+  /* Black like the flow-field canvas, which is only 55vw tall */
+  background: #000000;
 }
 
 .mpx-page .mpx-hero-gradient::after {
@@ -466,9 +460,42 @@ html:has(.mpx-page) [data-mpx-journal-slider]::-webkit-scrollbar {
   }
 }
 
+/* The 404 stands alone: no footer CTA or footer. CSS, so it holds before hydration too */
+.mpx-page:has([data-mpx-404]) [data-mpx-chrome] {
+  display: none;
+}
+
+/* A light band sweeping across accent text, used on the 404 */
+.mpx-page .mpx-shimmer {
+  background-image: linear-gradient(
+    110deg,
+    var(--mpx-accent) 0%,
+    var(--mpx-accent) 38%,
+    color-mix(in srgb, var(--mpx-accent-light), #fff 60%) 50%,
+    var(--mpx-accent) 62%,
+    var(--mpx-accent) 100%
+  );
+  /* 300% wide so the band starts and ends fully off the text, keeping the loop seamless */
+  background-size: 300% 100%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: mpx-shimmer 5s linear infinite;
+}
+
+@keyframes mpx-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: 0% 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mpx-page .mpx-hero-blob,
-  .mpx-page .mpx-scroll-cue-arrow {
+  .mpx-page .mpx-scroll-cue-arrow,
+  .mpx-page .mpx-shimmer {
     animation: none;
   }
 }

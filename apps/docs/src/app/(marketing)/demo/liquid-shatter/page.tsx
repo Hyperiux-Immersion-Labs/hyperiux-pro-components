@@ -1,6 +1,6 @@
 import DemoContent from "./DemoContent";
 import { getDemoPageMetadata } from "@/lib/demo-metadata";
-import registry from "../../../../../../../registry/effects/components/liquid-shatter/registry.json";
+import registry from "../../../../../../../registry/effects/webgl/liquid-shatter/registry.json";
 
 export default function Page() {
   return <DemoContent registry={registry} />;

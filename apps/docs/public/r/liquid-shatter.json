@@ -10,10 +10,15 @@
   "registryDependencies": [],
   "exportName": "LiquidShatter",
   "exportKind": "default",
-  "importPath": "@/components/effects/liquid-shatter",
   "tier": "pro",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "changelog": [
+    {
+      "version": "1.0.1",
+      "date": "2026-10-28",
+      "summary": "Moved from the Components category to WebGL",
+      "breaking": false
+    },
     {
       "version": "1.0.0",
       "date": "2026-10-16",

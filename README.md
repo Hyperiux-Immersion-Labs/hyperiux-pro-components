@@ -303,7 +303,7 @@ All 95 pro effects with live previews, code previews, and installation names are
 
 **Carousels** - `clippath-slider` · `depth-card-stack` · `infinite-carousel` · `ring-carousel` · `webgl-slider`
 
-**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `globe` · `infinite-grid-gallery` · `liquid-shatter` · `shear-wipe` · `testimonial-swiper` · `video-player`
+**Components** - `animated-form` · `animated-modal` · `animated-tabs` · `card-drift` · `draggable-marquee` · `elastic-accordion` · `globe` · `infinite-grid-gallery` · `shear-wipe` · `testimonial-swiper` · `video-player`
 
 **Cursor** - `butterfly-trail-cursor` · `character-trail` · `coffee-bean-cursor` · `colorful-cursor-aura` · `cursor-move` · `fish-eye` · `full-screen-crosshair` · `inertia-img` · `interactive-arrows` · `magnetic-image-trail` · `noise-ripple-cursor` · `pixel-bloom` · `rope-cursor`
 
@@ -317,7 +317,7 @@ All 95 pro effects with live previews, code previews, and installation names are
 
 **Transitions** - `aperture-transition` · `ascend-transition` · `depth-shift-transition` · `page-flip-transition` · `pixel-transition` · `radial-slice-transition` · `svg-brush-transition` · `sweep-lift-transition`
 
-**WebGL** - `3d-portfolio-slider` · `book-flip` · `colliding-models` · `curved-plane` · `donut-particles` · `draggable-canvas` · `file-encryption` · `grid-tunnel` · `hero-banner-animated` · `hover-slider` · `hyperiux-glitter` · `mouse-pixelation` · `progressive-bloom-valley` · `strip-slider`
+**WebGL** - `3d-portfolio-slider` · `book-flip` · `colliding-models` · `curved-plane` · `donut-particles` · `draggable-canvas` · `file-encryption` · `grid-tunnel` · `hero-banner-animated` · `hover-slider` · `hyperiux-glitter` · `liquid-shatter` · `mouse-pixelation` · `progressive-bloom-valley` · `strip-slider`
 
 ---
 

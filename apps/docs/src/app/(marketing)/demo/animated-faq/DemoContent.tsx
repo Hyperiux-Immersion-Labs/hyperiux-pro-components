@@ -1,103 +1,20 @@
 "use client";
 
-import {
-  FAQContent,
-  FAQGroup,
-  FAQTitle,
-  FAQWrapper,
-} from "@/components/animated-faq";
+import AnimatedFaq from "@/components/animated-faq";
 import DemoHeader from "@/components/preview-chrome/DemoHeader";
 import RegistryRemixerDemo from "@/components/remixer-panel/RegistryRemixerDemo";
-
-const faqItems = [
-  {
-    id: "faq-1",
-    title: "What makes this FAQ package more reusable?",
-    content: (
-      <>
-        You are no longer locked into a plain data object. You can pass rich
-        JSX, custom markup, inline links, badges, icons, or even other
-        components inside the title and content.
-      </>
-    ),
-    defaultOpen: true,
-  },
-  {
-    id: "faq-2",
-    title: "Can I put custom content inside the answer?",
-    content: (
-      <div className="space-y-3">
-        <p>Yes. This content area accepts full React nodes, not just text.</p>
-        <ul className="list-disc pl-5 space-y-1">
-          <li>Paragraphs</li>
-          <li>Lists</li>
-          <li>Buttons</li>
-          <li>Inline links</li>
-        </ul>
-      </div>
-    ),
-    defaultOpen: false,
-  },
-  {
-    id: "faq-3",
-    title: "Does it use the ChevronBird trigger?",
-    content: (
-      <>
-        Yes. The open and close state is visually driven by ChevronBird, so your
-        motion language stays consistent across the whole system.
-      </>
-    ),
-    defaultOpen: false,
-  },
-];
-
-const defaultOpenItems = faqItems
-  .filter((item) => item.defaultOpen)
-  .map((item) => item.id);
 
 export default function DemoContent({ registry }: { registry: any }) {
   return (
     <RegistryRemixerDemo
       registry={registry}
-      render={(values: any) => (
-        <div className="mx-auto max-w-4xl space-y-4">
-          <FAQGroup
-            allowMultiple={Boolean(values.allowMultiple)}
-            defaultOpenItems={defaultOpenItems}
-          >
-            {faqItems.map((item) => (
-              <FAQWrapper
-                key={item.id}
-                itemId={item.id}
-                className="rounded-md border border-white/20 px-6 py-5"
-                titleClassName="text-[1.1rem] font-medium text-white"
-                iconSize={16}
-                iconStrokeWidth={2}
-                duration={Number(values.duration) || 0.5}
-              >
-                <FAQTitle
-                  className="pb-0"
-                  showIcon={Boolean(values.showIcon)}
-                  iconPosition={values.iconPosition === "left" ? "left" : "right"}
-                  iconMode={values.iconMode === "rotate-left-down" ? "rotate-left-down" : "rotate"}
-                >
-                  {item.title}
-                </FAQTitle>
-
-                <FAQContent className="pt-4 text-neutral-400">
-                  {item.content}
-                </FAQContent>
-              </FAQWrapper>
-            ))}
-          </FAQGroup>
-        </div>
-      )}
+      component={AnimatedFaq}
       copyCodeOptions={{ propsVariableName: "animatedFaqProps" }}
     >
       {({ effect }) => (
         <>
           <DemoHeader />
-          <section className="bg-black h-screen px-8 py-20 text-white">
+          <section className="bg-black min-h-screen px-8 py-20 text-white">
             <div className="max-w-5xl mx-auto text-center text-white mb-12">
               <h1 className="text-[5.5vw] max-sm:text-[11vw] max-md:text-[8vw]">
                 Animated Faq

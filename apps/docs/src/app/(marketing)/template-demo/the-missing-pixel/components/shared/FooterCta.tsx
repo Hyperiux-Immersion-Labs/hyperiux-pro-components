@@ -16,7 +16,7 @@ const FooterCta = () => (
         <UnderlineLink href="mailto:hello@themissingpixel.studio" className="font-mpx-head text-30">
           hello@themissingpixel.studio
         </UnderlineLink>
-        <PixelButton label="Start a Project" href={ROUTES.contact} icon />
+        <PixelButton label="Start a project" href={ROUTES.contact} icon />
       </FadeUp>
     </div>
     <PixelField />

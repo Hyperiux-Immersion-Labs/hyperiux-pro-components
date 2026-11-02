@@ -559,9 +559,9 @@ All are `free`, category `components`. "Deps" are the npm packages the single fi
 | Radio Group | `animated-radio-group` | 655 | 12 | motion | 1 |
 | Checkbox Group | `animated-checkbox-group` | 967 | 20 | motion | 1 |
 | Switch | `animated-switch` | 776 | 12 | @base-ui/react, motion | 1 |
-| Tabs Bar | `animated-tabs-bar` | 821 | 15 | @base-ui/react, motion | 1 |
+| Tabs Bar | `animated-tabs-bar` (merged into `animated-tabs`, 2026-10-28) | 821 | 15 | @base-ui/react, motion | 1 |
 | Slider | `animated-slider` | 1,327 | 18 | @base-ui/react, motion | 1 |
-| Accordion | `animated-accordion` | 914 | 15 | @base-ui/react, motion | 1 |
+| Accordion | `animated-accordion` (merged into `animated-faq`, 2026-10-28) | 914 | 15 | @base-ui/react, motion | 1 |
 | Tooltip | `animated-tooltip` | 1,019 | 16 | lucide-react, motion | 1 |
 | Button | `animated-button` | 1,539 | 16 | lucide-react, motion | 1 |
 | Skeleton | `animated-skeleton` | 777 | 10 | @base-ui/react, cva, lucide-react, motion | 2 |

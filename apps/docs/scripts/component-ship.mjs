@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Implements md/new-component-workflow.md: registry sync (Phase 1), codegen
-// (Phase 2 - global-remixer swap + registry re-sync; it no longer writes a codegen/ folder),
+// (Phase 2 - global-remixer swap + registry re-sync; the `codegen` command alone also writes
+// the codegen/ JSX handoff folder),
 // update (Phase 1 + 2 combined for an already-shipped effect), and revert
 // (Phase 3 rollback). Self-contained - does not shell out to
 // component-workflow.mjs or sanity-code-sync.mjs.
@@ -11,6 +12,7 @@ import path from "node:path";
 import process from "node:process";
 import readline from "node:readline";
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,6 +24,8 @@ const ROOT_INDEX_FILE = path.join(ROOT, "registry", "index.json");
 const DIST_DIR = path.join(ROOT, "registry", "dist");
 const DIST_INDEX_FILE = path.join(DIST_DIR, "registry-index.json");
 const DOCS_PUBLIC_REGISTRY_DIR = path.join(ROOT, "apps/docs", "public", "r");
+const CODEGEN_DIR = path.join(ROOT, "codegen");
+const requireFromScript = createRequire(import.meta.url);
 
 const COMMANDS = new Set(["registry", "codegen", "update", "revert", "ship"]);
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
@@ -42,6 +46,7 @@ const REDUCED_MOTION_LIB_IMPORT_RE = /import\s*\{\s*([^}]*?)\s*\}\s*from\s*["']@
 const REDUCED_MOTION_EXPORTS = new Set(["usePrefersReducedMotion", "prefersReducedMotion"]);
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 
+let cachedTs = null;
 
 // ---------------------------------------------------------------------------
 // Entry point
@@ -55,7 +60,8 @@ async function main() {
   }
 
   if (command === "registry") return void printResult("registry", options.slug, await runRegistry(options));
-  if (command === "codegen") return void printResult("codegen", options.slug, await runCodegen(options));
+  // Only an explicit `codegen` run writes the codegen/ folder; update and ship reuse runCodegen without it
+  if (command === "codegen") return void printResult("codegen", options.slug, await runCodegen({ ...options, writeCodegen: true }));
   if (command === "update") return void printResult("update", options.slug, await runUpdate(options));
   if (command === "revert") return void runRevert(options);
   if (command === "ship") return void (await runShip(options));
@@ -266,7 +272,8 @@ function findLocalRemixerUsageFile(demoDir) {
 }
 
 // ---------------------------------------------------------------------------
-// Phase 2 - Codegen (global-remixer swap + registry re-sync). No codegen/ output is written.
+// Phase 2 - Codegen (global-remixer swap + registry re-sync + JSX handoff, the last only
+// when the `codegen` command itself is run)
 // ---------------------------------------------------------------------------
 
 async function runCodegen(options) {
@@ -296,6 +303,11 @@ async function runCodegen(options) {
       if (tarballResult) details.push(`dist tarball rebuilt: ${relative(tarballResult.tarball)}`);
     }
 
+    // 3. Local JSX handoff folder, diffed against what's already there.
+    if (options.writeCodegen) {
+      const codegenResult = writeCodegenOutput(slug, current);
+      details.push(...codegenResult.details);
+    }
 
     return { ok: true, summary: "codegen complete", details };
   } catch (error) {
@@ -456,6 +468,86 @@ function runRegistryResyncIfChanged(existing) {
     changed: true,
     message: `registry-side re-sync: ${changedFiles.length || files.length} file(s) recopied, metadata refreshed (no version bump)`,
   };
+}
+
+function writeCodegenOutput(slug, component) {
+  const outDir = path.join(CODEGEN_DIR, slug);
+  fs.mkdirSync(outDir, { recursive: true });
+  const details = [];
+  let written = 0;
+
+  const codeFiles = readRegistryCodeFiles(component);
+  for (const file of codeFiles) {
+    const outputs = [{ filename: file.filename, content: file.content }];
+    // For .tsx/.ts sources, the original is written alongside the
+    // type-stripped .jsx/.js version - not instead of it.
+    if (file.tsxCode !== undefined) {
+      outputs.push({ filename: file.originalFilename, content: file.tsxCode });
+    }
+    for (const output of outputs) {
+      const destPath = path.join(outDir, output.filename);
+      if (fs.existsSync(destPath) && fs.readFileSync(destPath, "utf8") === output.content) continue;
+      fs.writeFileSync(destPath, output.content);
+      written += 1;
+    }
+  }
+
+  details.push(
+    written
+      ? `wrote ${written} changed file(s) into ${relative(outDir)} for manual Sanity paste`
+      : `${relative(outDir)} already up to date - nothing changed`
+  );
+  details.push(`once Sanity is updated, delete ${relative(outDir)} yourself`);
+  return { details };
+}
+
+function readRegistryCodeFiles(existing) {
+  const files = Array.isArray(existing.registry.files) ? existing.registry.files : [];
+  const codeFiles = files
+    .filter((file) => file.type !== "registry:asset")
+    .filter((file) => SOURCE_EXTENSIONS.has(path.extname(file.path || "")))
+    .map((file) => {
+      const sourcePath = path.join(existing.dir, file.path);
+      if (!fs.existsSync(sourcePath)) fail(`Registry file missing: ${relative(sourcePath)}`);
+      return makeCodeFileEntry(file.path, fs.readFileSync(sourcePath, "utf8"));
+    });
+  if (!codeFiles.length) fail(`No code files found in registry.json for "${existing.registry.name}".`);
+  return codeFiles;
+}
+
+function makeCodeFileEntry(relativePath, rawContent) {
+  const ext = path.extname(relativePath);
+  const isTsLike = ext === ".tsx" || ext === ".ts";
+  const strippedExt = ext === ".tsx" ? ".jsx" : ".js";
+  const originalFilename = path.basename(relativePath);
+  return {
+    path: slash(relativePath),
+    // Stripped filename for isTsLike sources (e.g. index.tsx -> index.jsx);
+    // original name unchanged for everything else (.css/.json pass through).
+    filename: isTsLike ? path.basename(relativePath, ext) + strippedExt : originalFilename,
+    originalFilename,
+    content: isTsLike ? stripTypesToJsx(rawContent) : rawContent,
+    tsxCode: isTsLike ? rawContent : undefined,
+  };
+}
+
+function stripTypesToJsx(source) {
+  const ts = loadTypeScript();
+  const result = ts.transpileModule(source, {
+    compilerOptions: {
+      jsx: ts.JsxEmit.Preserve,
+      target: ts.ScriptTarget.ESNext,
+      module: ts.ModuleKind.ESNext,
+      removeComments: false,
+    },
+  });
+  return result.outputText.replace(/\n{3,}/g, "\n\n").trimEnd() + "\n";
+}
+
+function loadTypeScript() {
+  if (cachedTs) return cachedTs;
+  cachedTs = requireFromScript(path.join(ROOT, "apps/docs/node_modules/typescript"));
+  return cachedTs;
 }
 
 // ---------------------------------------------------------------------------

@@ -7,7 +7,7 @@ import { preload } from "react-dom";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Download, Heart } from "lucide-react";
+import { ArrowLeft, Download, Heart } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useLenis } from "lenis/react";
 import HeadAnim from "@/components/Animations/HeadAnim";
@@ -287,8 +287,17 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
     >
       {/* ---------- hero ---------- */}
       <section id="template-hero" className={`${GUTTER} flex flex-col gap-10 pt-32 pb-16 max-lg:pt-32 max-md:pt-28`}>
-        <motion.div {...HERO_FADE}>
-          <Breadcrumb />
+        <motion.div {...HERO_FADE} className="flex min-w-0 items-center gap-4">
+          <button
+            id="template-detail-go-back"
+            type="button"
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+          </button>
+          <Breadcrumb hideHome />
         </motion.div>
 
         <div className="flex items-start justify-between gap-12 max-lg:flex-col max-lg:gap-10">

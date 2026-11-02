@@ -22,7 +22,7 @@ export function getCliTokenFromRequest(request) {
 // Lenient counterpart to verifyCliToken(): resolves whichever clerk_user_id
 // a token belongs to for *attribution* purposes (telemetry, install-limit
 // identity), without gating on plan/active-status the way content-access
-// decisions do. A free or expired-pro user's token should still correctly
+// decisions in effect-access.js do. A free or expired-pro user's token should still correctly
 // attribute their installs to them - only a missing/malformed/revoked token
 // resolves to no identity at all.
 export async function resolveClerkUserIdFromCliToken(token) {
@@ -44,6 +44,10 @@ export async function resolveClerkUserIdFromCliToken(token) {
   return data.clerk_user_id;
 }
 
+// Checks a token for `hyperiux login` / `whoami`: it must exist and not be
+// revoked. Any signed-in account can log in - free accounts get the higher
+// daily install limit - so the plan is reported, not required. Pro source is
+// gated separately, per effect, by getEffectAccessDecision().
 export async function verifyCliToken(token) {
   if (!token) {
     return {
@@ -97,25 +101,10 @@ export async function verifyCliToken(token) {
     };
   }
 
-  if (data.plan !== "pro" || !ACTIVE_PRO_STATUSES.includes(data.status)) {
-    return {
-      valid: false,
-      status: 403,
-      reason: "This token does not belong to an active Pro account.",
-    };
-  }
-
-  if (data.current_period_end) {
-    const periodEnd = new Date(data.current_period_end).getTime();
-
-    if (!Number.isNaN(periodEnd) && periodEnd <= Date.now()) {
-      return {
-        valid: false,
-        status: 403,
-        reason: "Your Pro subscription has expired.",
-      };
-    }
-  }
+  // an expired or cancelled Pro subscription logs in as free
+  const periodEnd = data.current_period_end ? new Date(data.current_period_end).getTime() : NaN;
+  const lapsed = !Number.isNaN(periodEnd) && periodEnd <= Date.now();
+  const plan = data.plan === "pro" && ACTIVE_PRO_STATUSES.includes(data.status) && !lapsed ? "pro" : "free";
 
   await supabase
     .from("subscriptions")
@@ -128,5 +117,6 @@ export async function verifyCliToken(token) {
     valid: true,
     status: 200,
     clerkUserId: data.clerk_user_id,
+    plan,
   };
 }

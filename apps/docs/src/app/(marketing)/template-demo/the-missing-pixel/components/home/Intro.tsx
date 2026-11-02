@@ -28,7 +28,7 @@ const Intro = () => (
         </MaskReveal>
         <FadeUp>
           <UnderlineLink href={ROUTES.about} persistent arrow className="font-mpx-head text-24 font-medium text-mpx-ink">
-            Meet the Studio
+            Meet the studio
           </UnderlineLink>
         </FadeUp>
       </div>

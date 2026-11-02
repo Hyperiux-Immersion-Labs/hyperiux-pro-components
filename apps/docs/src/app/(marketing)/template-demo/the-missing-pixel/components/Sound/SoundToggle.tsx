@@ -2,11 +2,11 @@
 
 "use client";
 
-import { useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { useMagnetic } from "../Animations/useMagnetic";
-import { isSoundOn, setSound, subscribeSound } from "./pixelSfx";
+import { isAudioRunning, isSoundOn, setSound, soundAllowed, subscribeSound } from "./pixelSfx";
 
 gsap.registerPlugin(useGSAP);
 
@@ -21,6 +21,26 @@ const SoundToggle = ({ inverted = false }: SoundToggleProps) => {
   const ref = useRef<HTMLButtonElement | null>(null);
   const barRefs = useRef<(HTMLElement | null)[]>([]);
   useMagnetic(ref, 0.35);
+
+  // Lives here, not in the lazy SoundController, so the very first click on the page already counts.
+  // Browsers only unlock audio inside a gesture, and they differ on which (Safari ignores pointerdown).
+  useEffect(() => {
+    const events = ["pointerdown", "pointerup", "click", "touchend", "keydown"] as const;
+    const stop = () => events.forEach((name) => window.removeEventListener(name, unlock, true));
+
+    function unlock(event: Event) {
+      if ((event.target as Element | null)?.closest?.("[data-sound-toggle]")) return;
+      if (!soundAllowed()) return stop();
+      // Must run inside the gesture itself; keep listening until the browser has really let audio run
+      setSound(true, false);
+      window.setTimeout(() => {
+        if (isAudioRunning()) stop();
+      }, 100);
+    }
+
+    if (soundAllowed()) events.forEach((name) => window.addEventListener(name, unlock, true));
+    return stop;
+  }, []);
 
   useGSAP(
     () => {

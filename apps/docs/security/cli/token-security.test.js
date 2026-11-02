@@ -105,7 +105,9 @@ describe("CLI token use against Pro source", () => {
 
   it("an active Pro token validates and receives source on both delivery routes", async () => {
     const token = await issueFor("user_pro");
-    expect((await validate(token)).status).toBe(200);
+    const login = await validate(token);
+    expect(login.status).toBe(200);
+    expect(await login.json()).toEqual({ valid: true, plan: "pro" });
 
     for (const route of [cliEffect, webEffect]) {
       const res = await fetchPro(token, route);
@@ -115,9 +117,11 @@ describe("CLI token use against Pro source", () => {
     }
   });
 
-  it("a Free account's token proves identity only - no Pro source", async () => {
+  it("a Free account's token logs in, but proves identity only - no Pro source", async () => {
     const token = await issueFor("user_free");
-    expect((await validate(token)).status).toBe(403);
+    const login = await validate(token);
+    expect(login.status).toBe(200);
+    expect(await login.json()).toEqual({ valid: true, plan: "free" });
 
     for (const route of [cliEffect, webEffect]) {
       const res = await fetchPro(token, route);
@@ -149,6 +153,8 @@ describe("CLI token use against Pro source", () => {
 
     row.current_period_end = new Date(Date.now() - 1000).toISOString();
     expect((await fetchPro(token)).status).toBe(403);
+    // it still logs in, as a free account
+    expect(await (await validate(token)).json()).toEqual({ valid: true, plan: "free" });
 
     row.current_period_end = FUTURE;
     row.status = "cancelled";

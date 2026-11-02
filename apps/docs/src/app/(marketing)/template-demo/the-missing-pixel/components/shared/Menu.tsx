@@ -211,9 +211,9 @@ const Menu = ({ open, onClose, instant = false }: MenuProps) => {
 
         <div className="flex flex-1 items-center justify-between gap-9 max-lg:flex-col max-lg:items-start max-lg:gap-16">
           <nav aria-label="Main" className="w-[62%] max-lg:w-full">
-            <ul className="flex flex-col" onPointerLeave={() => showPreview(-1)}>
+            <ul className="flex w-fit flex-col" onPointerLeave={() => showPreview(-1)}>
               {MENU_LINKS.map((link, index) => (
-                <li key={link.label} className="flex overflow-hidden py-[0.4vw] text-64 max-md:py-[0.6vw]">
+                <li key={link.label} className="flex w-fit overflow-hidden py-[0.4vw] text-64 max-md:py-[0.6vw]">
                   <Link
                     ref={(el) => {
                       linkRefs.current[index] = el;
@@ -229,7 +229,10 @@ const Menu = ({ open, onClose, instant = false }: MenuProps) => {
                       showPreview(index);
                     }}
                     onPointerLeave={() => rollLink(index, false)}
-                    onFocus={() => showPreview(index)}
+                    onFocus={(event) => {
+                      // The menu auto-focuses Home on open; only keyboard focus should dim the other links
+                      if (event.currentTarget.matches(":focus-visible")) showPreview(index);
+                    }}
                     className="font-mpx-head relative flex items-start gap-3 font-medium max-lg:gap-2 max-md:gap-1 leading-[1.1]"
                   >
                     <span className="relative block overflow-hidden px-[0.4vw] max-md:px-[0.6vw]">

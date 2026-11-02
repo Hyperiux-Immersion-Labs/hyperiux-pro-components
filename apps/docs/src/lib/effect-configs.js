@@ -122,7 +122,7 @@ export const effectConfigs = {
  iconSize: 14,
  },
  isContainer: true,
- note:"Accessible accordion component with smooth GSAP animations. Use FAQGroup, FAQWrapper, FAQTitle, and FAQContent.",
+ note:"Accessible accordion component with smooth or elastic Motion animations. Use FAQGroup, FAQWrapper, FAQTitle, and FAQContent.",
  },
 
 "char-stagger-button": {

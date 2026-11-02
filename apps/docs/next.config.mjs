@@ -120,6 +120,17 @@ const nextConfig = {
         destination: "/legal/license-agreement",
         permanent: false,
       },
+      // Tabs Bar and Accordion were merged into Animated Tabs and Animated FAQ.
+      {
+        source: "/demo/animated-tabs-bar",
+        destination: "/demo/animated-tabs",
+        permanent: true,
+      },
+      {
+        source: "/demo/animated-accordion",
+        destination: "/demo/animated-faq",
+        permanent: true,
+      },
       // The v4 listing preview became /effects itself.
       {
         source: "/effects-v4",
@@ -136,6 +147,16 @@ const nextConfig = {
         source: "/templates-v4/:slug",
         destination: "/templates/:slug",
         permanent: true,
+      },
+      {
+        source: "/effects/components/liquid-shatter",
+        destination: "/effects/webgl-effects/liquid-shatter",
+        permanent: false,
+      },
+      {
+        source: "/effects/components/liquid-shatter/preview",
+        destination: "/effects/webgl-effects/liquid-shatter/preview",
+        permanent: false,
       },
       {
         source: "/effects/components/book-flip",

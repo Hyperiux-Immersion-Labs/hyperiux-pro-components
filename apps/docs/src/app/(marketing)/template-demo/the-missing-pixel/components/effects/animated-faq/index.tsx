@@ -448,12 +448,12 @@ const AnimatedFaq = ({
           duration={0.5}
         >
           <FAQTitle
-            className="font-mpx-head py-[1.6vw] text-30 font-medium max-lg:py-[3vw] max-md:py-[5vw]"
+            className="font-mpx-head py-[1.6vw] text-30 font-medium max-lg:py-[3vw] max-md:py-[5vw] max-md:leading-[1.25]"
             iconMode="plus"
           >
             <FadeUp>{item.question}</FadeUp>
           </FAQTitle>
-          <FAQContent className="w-[70%] pb-[1.8vw] text-28 text-mpx-muted max-lg:w-[90%] max-lg:pb-[3vw] max-md:w-full max-md:pb-[5vw]">
+          <FAQContent className="w-[70%] pb-[1.8vw] text-28 text-mpx-muted max-lg:w-[90%] max-lg:pb-[3vw] max-md:w-full max-md:pb-[5vw] max-md:leading-[1.45]">
             <FadeUp>{item.answer}</FadeUp>
           </FAQContent>
           <RuleDraw syncWithFade className="absolute inset-x-0 bottom-0 h-px bg-(--mpx-ink)/10" />

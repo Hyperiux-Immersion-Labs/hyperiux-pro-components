@@ -143,7 +143,7 @@ const ContactForm = () => {
         <p className="text-28 text-mpx-muted">
           A partner will read this properly and reply within two working days. Probably sooner.
         </p>
-        <PixelButton label="Send Another" variant="outline" onClick={reset} />
+        <PixelButton label="Send another" variant="outline" onClick={reset} />
       </div>
     <form
       ref={formRef}
@@ -236,7 +236,7 @@ const ContactForm = () => {
         <p id="form-note" className="text-14 text-mpx-muted">
           Fields marked * are required.
         </p>
-        <PixelButton label="Send It" type="submit" icon />
+        <PixelButton label="Send it" type="submit" icon />
       </div>
     </form>
     </div>

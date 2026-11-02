@@ -45,7 +45,7 @@ const FeaturedPost = () => (
         </LineReveal>
         <FadeUp delay={0.2}>
           <UnderlineLink href={postPath(FEATURED_POST.slug)} persistent arrow className="font-mpx-head text-22 font-medium text-mpx-ink">
-            Read the Essay
+            Read the essay
           </UnderlineLink>
         </FadeUp>
       </div>

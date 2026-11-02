@@ -129,7 +129,7 @@ const WordmarkPixels = ({ innerRef, progressRef }: WordmarkPixelsProps) => {
     const frame = () => {
       if (!running) return;
       const now = (performance.now() - start) / 1000;
-      const progress = reduce ? 1 : clamp((progressRef.current - 0.5) / 0.5);
+      const progress = reduce ? 1 : clamp((progressRef.current - 0.25) / 0.75);
 
       rings = rings.filter((ring) => now - ring.time < 2.4);
 

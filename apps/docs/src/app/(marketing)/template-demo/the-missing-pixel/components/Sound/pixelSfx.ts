@@ -11,7 +11,8 @@ export type SoundName =
   | "tick"
   | "toggle";
 
-const STORAGE_KEY = "mpx-sound";
+// v2: older builds could save "off" without the visitor choosing it, so start fresh
+const STORAGE_KEY = "mpx-sound-v2";
 const BPM = 84;
 const SWING = 0.58;
 const SIXTEENTH = 60 / BPM / 4;
@@ -324,6 +325,9 @@ export const playSound = (name: SoundName) => {
 
 export const isSoundOn = () => enabled;
 
+// The browser only lets audio start inside a gesture it trusts; this reports whether it actually did
+export const isAudioRunning = () => ctx?.state === "running";
+
 export const subscribeSound = (listener: (on: boolean) => void) => {
   listeners.add(listener);
   return () => {
@@ -331,19 +335,22 @@ export const subscribeSound = (listener: (on: boolean) => void) => {
   };
 };
 
-export const readSoundPreference = () => {
+// True until the visitor switches sound off with the toggle; first visits count as on
+export const soundAllowed = () => {
   try {
-    return localStorage.getItem(STORAGE_KEY) === "on";
+    return localStorage.getItem(STORAGE_KEY) !== "off";
   } catch {
-    return false;
+    return true;
   }
 };
 
-export const setSound = (on: boolean, announce = true) => {
+export const setSound = (on: boolean, announce = true, persist = true) => {
   enabled = on;
-  try {
-    localStorage.setItem(STORAGE_KEY, on ? "on" : "off");
-  } catch {}
+  if (persist) {
+    try {
+      localStorage.setItem(STORAGE_KEY, on ? "on" : "off");
+    } catch {}
+  }
   listeners.forEach((listener) => listener(on));
 
   if (on) {

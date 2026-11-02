@@ -4435,14 +4435,14 @@
   },
   {
     "name": "animated-faq",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "type": "registry:component",
     "title": "Animated FAQ",
-    "description": "Accessible accordion-style FAQ component with smooth GSAP animations",
+    "description": "Accessible FAQ accordion with smooth or elastic Motion animations, staggered answers and fills",
     "category": "components",
     "dependencies": [
-      "gsap",
-      "lucide-react"
+      "lucide-react",
+      "motion"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/animated-faq",
@@ -4453,17 +4453,223 @@
     "exportKind": "default",
     "importPath": "@/components/effects/animated-faq",
     "target": "src/components/effects/animated-faq",
+    "props": [
+      {
+        "name": "allowMultiple",
+        "type": "boolean",
+        "default": false,
+        "description": "Lets more than one FAQ answer stay open at once.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "openOnHover",
+        "type": "boolean",
+        "default": false,
+        "description": "Answers open while a mouse rests on them and close when it leaves. Touch still uses taps.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "behavior",
+          "groupTitle": "Behavior"
+        }
+      },
+      {
+        "name": "fill",
+        "type": "string",
+        "default": "none",
+        "description": "A background that grows down from the top while an item is open.",
+        "remixer": {
+          "control": "select",
+          "group": "item",
+          "groupTitle": "Item",
+          "options": [
+            {
+              "label": "None",
+              "value": "none"
+            },
+            {
+              "label": "Muted",
+              "value": "muted"
+            },
+            {
+              "label": "Accent",
+              "value": "accent"
+            }
+          ]
+        }
+      },
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ff6b00",
+        "description": "Colour of the accent fill.",
+        "remixer": {
+          "control": "color",
+          "group": "item",
+          "groupTitle": "Item"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.45,
+        "description": "Open and close animation duration.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.1,
+          "max": 1.5,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "elastic",
+        "type": "boolean",
+        "default": false,
+        "description": "Springs instead of easing for the panel, fill, line and content.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "bounce",
+        "type": "number",
+        "default": 0.3,
+        "description": "How much the springs overshoot. Needs Elastic.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.8,
+          "step": 0.05,
+          "disabledWhen": {
+            "prop": "elastic",
+            "equals": false
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "delay",
+        "type": "number",
+        "default": 0.1,
+        "description": "Seconds before the answer starts to appear.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 1,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "stagger",
+        "type": "number",
+        "default": 0.05,
+        "description": "Seconds between each part of the answer appearing.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.3,
+          "step": 0.01,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "showIcon",
+        "type": "boolean",
+        "default": true,
+        "description": "Shows or hides the FAQ trigger icon.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "icon",
+          "groupTitle": "Icon"
+        }
+      },
+      {
+        "name": "iconPosition",
+        "type": "string",
+        "default": "right",
+        "description": "Side where the trigger icon is rendered.",
+        "remixer": {
+          "control": "select",
+          "group": "icon",
+          "groupTitle": "Icon",
+          "options": [
+            {
+              "value": "right",
+              "label": "Right"
+            },
+            {
+              "value": "left",
+              "label": "Left"
+            }
+          ]
+        }
+      },
+      {
+        "name": "iconMode",
+        "type": "string",
+        "default": "rotate",
+        "description": "Icon animation: a chevron that turns down or right, or a plus that turns into a minus.",
+        "remixer": {
+          "control": "select",
+          "group": "icon",
+          "groupTitle": "Icon",
+          "options": [
+            {
+              "value": "rotate",
+              "label": "Rotate Down"
+            },
+            {
+              "value": "rotate-left-down",
+              "label": "Rotate Right"
+            },
+            {
+              "value": "plus",
+              "label": "Plus / minus"
+            }
+          ]
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "behavior",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "files": [
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-faq/index.tsx"
-      },
-      {
-        "path": "AnimatedFaqComp.tsx",
-        "target": "src/components/effects/animated-faq/AnimatedFaqComp.tsx"
       }
     ],
     "changelog": [
+      {
+        "version": "2.0.0",
+        "date": "2026-10-28",
+        "breaking": true,
+        "summary": "Rebuilt on Motion with the Animated Accordion features: open on hover, elastic springs, delayed and staggered answers, muted or accent fill and a plus/minus icon. Replaces gsap with motion."
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-28",
@@ -8184,13 +8390,14 @@
   },
   {
     "name": "animated-tabs",
-    "version": "1.0.1",
+    "version": "2.0.0",
     "type": "registry:component",
     "title": "Tabs",
-    "description": "Animated tabs with a moving active indicator and panel transitions",
+    "description": "Animated tabs with a gliding pill or underline, directional content transitions and smooth panel height",
     "category": "components",
     "dependencies": [
-      "gsap"
+      "@base-ui/react",
+      "motion"
     ],
     "registryDependencies": [],
     "previewUrl": "/demo/animated-tabs",
@@ -8204,13 +8411,15 @@
       {
         "path": "index.tsx",
         "target": "src/components/effects/animated-tabs/index.tsx"
-      },
-      {
-        "path": "AnimatedTabsComp.tsx",
-        "target": "src/components/effects/animated-tabs/AnimatedTabsComp.tsx"
       }
     ],
     "changelog": [
+      {
+        "version": "2.0.0",
+        "date": "2026-10-28",
+        "breaking": true,
+        "summary": "Rebuilt on Motion and Base UI with the Animated Tabs Bar features: glide pill, slide or fade underline, hover highlight, smooth panel height, spring bounce, borders and roundness, and a None content animation. Replaces gsap with motion and @base-ui/react."
+      },
       {
         "version": "1.0.1",
         "date": "2026-07-31",
@@ -8224,6 +8433,273 @@
         "breaking": false
       }
     ],
+    "props": [
+      {
+        "name": "defaultActiveIndex",
+        "type": "number",
+        "default": 0,
+        "description": "Index of the initially active tab.",
+        "remixer": {
+          "control": "select",
+          "group": "tabs",
+          "groupTitle": "Tabs",
+          "options": [
+            {
+              "label": "Overview",
+              "value": 0
+            },
+            {
+              "label": "Services",
+              "value": 1
+            },
+            {
+              "label": "Contact",
+              "value": 2
+            }
+          ]
+        }
+      },
+      {
+        "name": "indicator",
+        "type": "string",
+        "default": "underline",
+        "description": "How the active tab is marked: an underline or pill that glides to it, or an underline that fades in.",
+        "remixer": {
+          "control": "select",
+          "group": "tabs",
+          "groupTitle": "Tabs",
+          "options": [
+            {
+              "label": "Slide underline",
+              "value": "underline"
+            },
+            {
+              "label": "Glide pill",
+              "value": "glide"
+            },
+            {
+              "label": "Fade underline",
+              "value": "fade"
+            }
+          ]
+        }
+      },
+      {
+        "name": "pillStyle",
+        "type": "string",
+        "default": "solid",
+        "description": "Solid fills the pill with the accent colour; Soft uses a light tint of the text colour. Only used by Glide pill.",
+        "remixer": {
+          "control": "select",
+          "group": "tabs",
+          "groupTitle": "Tabs",
+          "options": [
+            {
+              "label": "Solid",
+              "value": "solid"
+            },
+            {
+              "label": "Soft",
+              "value": "soft"
+            }
+          ],
+          "disabledWhen": {
+            "prop": "indicator",
+            "notEquals": "glide"
+          }
+        }
+      },
+      {
+        "name": "hoverHighlight",
+        "type": "boolean",
+        "default": false,
+        "description": "Highlights the tab under the pointer.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "tabs",
+          "groupTitle": "Tabs"
+        }
+      },
+      {
+        "name": "divider",
+        "type": "boolean",
+        "default": true,
+        "description": "Draws a line under the row of tabs.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "tabs",
+          "groupTitle": "Tabs"
+        }
+      },
+      {
+        "name": "listBorder",
+        "type": "boolean",
+        "default": false,
+        "description": "Draws a border around the row of tabs.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "tabs",
+          "groupTitle": "Tabs"
+        }
+      },
+      {
+        "name": "rounded",
+        "type": "string",
+        "default": "md",
+        "description": "Corner radius of the tabs, the pill and the borders.",
+        "remixer": {
+          "control": "select",
+          "group": "tabs",
+          "groupTitle": "Tabs",
+          "options": [
+            {
+              "label": "None",
+              "value": "none"
+            },
+            {
+              "label": "sm",
+              "value": "sm"
+            },
+            {
+              "label": "md",
+              "value": "md"
+            },
+            {
+              "label": "lg",
+              "value": "lg"
+            },
+            {
+              "label": "xl",
+              "value": "xl"
+            },
+            {
+              "label": "Full",
+              "value": "full"
+            }
+          ]
+        }
+      },
+      {
+        "name": "accentColor",
+        "type": "color",
+        "default": "#ff6b00",
+        "description": "Colour of the active tab, the indicator, the solid pill and the focus ring.",
+        "remixer": {
+          "control": "color",
+          "group": "tabs",
+          "groupTitle": "Tabs"
+        }
+      },
+      {
+        "name": "animationType",
+        "type": "string",
+        "default": "slide",
+        "description": "How content changes when you switch tabs. Slide follows the direction you moved.",
+        "remixer": {
+          "control": "select",
+          "group": "content",
+          "groupTitle": "Content",
+          "options": [
+            {
+              "label": "Slide",
+              "value": "slide"
+            },
+            {
+              "label": "Fade",
+              "value": "fade"
+            },
+            {
+              "label": "None",
+              "value": "none"
+            }
+          ],
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "slideDistance",
+        "type": "number",
+        "default": 40,
+        "description": "How far content slides when switching tabs, in pixels. Needs Content animation set to Slide.",
+        "remixer": {
+          "control": "range",
+          "group": "content",
+          "groupTitle": "Content",
+          "min": 0,
+          "max": 160,
+          "step": 5,
+          "disabledWhen": {
+            "prop": "animationType",
+            "notEquals": "slide"
+          },
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "smoothHeight",
+        "type": "boolean",
+        "default": true,
+        "description": "The content area animates to each tab's height instead of jumping.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "content",
+          "groupTitle": "Content",
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "panelBorder",
+        "type": "boolean",
+        "default": false,
+        "description": "Draws a border around the tab content.",
+        "remixer": {
+          "control": "checkbox",
+          "group": "content",
+          "groupTitle": "Content"
+        }
+      },
+      {
+        "name": "duration",
+        "type": "number",
+        "default": 0.35,
+        "description": "How long the indicator and the content take, in seconds.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0.05,
+          "max": 1.5,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      },
+      {
+        "name": "bounce",
+        "type": "number",
+        "default": 0.15,
+        "description": "Springiness of the indicator and the slide.",
+        "remixer": {
+          "control": "range",
+          "group": "motion",
+          "groupTitle": "Motion",
+          "min": 0,
+          "max": 0.6,
+          "step": 0.05,
+          "hideWhenReducedMotion": true
+        }
+      }
+    ],
+    "remixer": {
+      "enabled": true,
+      "defaultOpenGroupId": "tabs",
+      "layout": {
+        "buttonClassName": "right-4! top-25!",
+        "panelClassName": "right-0! top-[132px]! h-[calc(100%-132px)]! w-[344px]!"
+      },
+      "copyCode": {
+        "includeOnlyPublicProps": true
+      }
+    },
     "registryPath": "registry/effects/components/animated-tabs/registry.json"
   },
   {
@@ -16585,8 +17061,14 @@
   },
   {
     "name": "liquid-shatter",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "changelog": [
+      {
+        "version": "1.0.1",
+        "date": "2026-10-28",
+        "summary": "Moved from the Components category to WebGL",
+        "breaking": false
+      },
       {
         "version": "1.0.0",
         "date": "2026-10-16",
@@ -16597,7 +17079,7 @@
     "type": "registry:component",
     "title": "Liquid Shatter",
     "description": "Lacquered WebGL ribbon rings that swell under the pointer, carry running light streaks, and shatter into stirrable glowing shards on press and hold.",
-    "category": "components",
+    "category": "webgl",
     "dependencies": [
       "gsap",
       "three"
@@ -16723,7 +17205,8 @@
           "groupTitle": "Motion",
           "min": 0,
           "max": 3,
-          "step": 0.05
+          "step": 0.05,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -16738,7 +17221,8 @@
           "groupTitle": "Motion",
           "min": 0,
           "max": 4,
-          "step": 0.1
+          "step": 0.1,
+          "hideWhenReducedMotion": true
         }
       },
       {
@@ -16779,7 +17263,8 @@
         "remixer": {
           "control": "checkbox",
           "group": "motion",
-          "groupTitle": "Motion"
+          "groupTitle": "Motion",
+          "hideWhenReducedMotion": true
         },
         "label": "Intro Animation"
       },
@@ -16812,7 +17297,7 @@
         "type": "number",
         "default": 1.9,
         "label": "Hold Duration",
-        "description": "Seconds of holding needed to charge a shatter.",
+        "description": "Seconds of holding needed to charge a shatter. Needs Hold to Shatter on.",
         "remixer": {
           "control": "range",
           "group": "interaction",
@@ -16823,6 +17308,10 @@
           "visibleWhen": {
             "name": "holdToShatter",
             "eq": true
+          },
+          "disabledWhen": {
+            "prop": "holdToShatter",
+            "equals": false
           }
         }
       },
@@ -16903,7 +17392,7 @@
         "includeOnlyPublicProps": true
       }
     },
-    "registryPath": "registry/effects/components/liquid-shatter/registry.json"
+    "registryPath": "registry/effects/webgl/liquid-shatter/registry.json"
   },
   {
     "name": "magnetic-image-trail",

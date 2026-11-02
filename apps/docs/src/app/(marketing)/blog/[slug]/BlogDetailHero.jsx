@@ -23,21 +23,20 @@ export default function BlogDetailHero({ post }) {
   return (
     <div ref={heroRef} className="flex flex-col gap-[calc(var(--cvw)*3.5)] max-md:gap-0">
       <section id="blog-hero" className="site-container section-x flex flex-col gap-10 max-md:pb-[12%]">
-        {/* Back + breadcrumb, as on the dashboard and effect pages: Home / post */}
+        {/* Back + breadcrumb, as on the dashboard and effect pages: post */}
         <div className="flex min-w-0 items-center gap-4">
           <button
             id="blog-detail-go-back"
             type="button"
             onClick={() => router.back()}
             aria-label="Go back"
-            className="fadeup grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
+            className="fadeup hidden max-lg:grid size-(--vault-ctl-h) shrink-0 cursor-pointer place-items-center text-foreground/80 ring-1 ring-inset ring-foreground/20 backdrop-blur-lg duration-300 hover:bg-primary hover:text-background hover:ring-primary"
           >
             <ArrowLeft className="size-4" aria-hidden="true" />
           </button>
           <Breadcrumb
             maxWords={3}
             items={[
-              { label: "Home", href: "/" },
               { label: post.title, href: pathname },
             ]}
           />

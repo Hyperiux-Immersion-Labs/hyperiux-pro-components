@@ -3,25 +3,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { playSound, readSoundPreference, setSound, suspendSound } from "./pixelSfx";
+import { playSound, setSound, suspendSound } from "./pixelSfx";
 
 const INTERACTIVE = "a, button, summary, label";
 
 const SoundController = () => {
   useEffect(() => {
-    const resumeEvents = ["pointerdown", "keydown", "touchstart"] as const;
-
-    const resume = (event: Event) => {
-      const target = event.target as Element | null;
-      if (target?.closest?.("[data-sound-toggle]")) return;
-      setSound(true, false);
-      resumeEvents.forEach((name) => window.removeEventListener(name, resume, true));
-    };
-
-    if (readSoundPreference()) {
-      resumeEvents.forEach((name) => window.addEventListener(name, resume, true));
-    }
-
     let lastHover = 0;
     let lastElement: Element | null = null;
 
@@ -45,7 +32,7 @@ const SoundController = () => {
     const handleDown = (event: PointerEvent) => {
       const target = event.target as Element;
       if (target.closest("[data-sound-toggle], [data-menu-toggle]")) return;
-      if (target.closest(INTERACTIVE)) playSound("click");
+      playSound("click");
     };
 
     const handleVisibility = () => suspendSound(document.hidden);
@@ -56,12 +43,12 @@ const SoundController = () => {
     document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
-      resumeEvents.forEach((name) => window.removeEventListener(name, resume, true));
       document.removeEventListener("pointerover", handleOver);
       document.removeEventListener("pointerout", handleOut);
       document.removeEventListener("pointerdown", handleDown);
       document.removeEventListener("visibilitychange", handleVisibility);
-      setSound(false, false);
+      // Silence on unmount without saving it as the visitor's choice
+      setSound(false, false, false);
     };
   }, []);
 

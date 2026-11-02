@@ -9,7 +9,7 @@ export default function BlogAuthor({ author, className = "" }) {
   const designation = author.designation || author.role;
   const image = author.image || author.avatar;
   const avatarClassName =
-    "h-[calc(var(--cvw)*3.5)] w-[calc(var(--cvw)*3.5)] max-lg:h-[10vw] max-lg:w-[10vw] max-md:h-[14vw] max-md:w-[14vw] shrink-0 overflow-hidden";
+    "h-[calc(var(--cvw)*3.5)] w-[calc(var(--cvw)*3.5)] max-lg:h-[10vw] max-lg:w-[10vw] max-md:h-[14vw] max-md:w-[14vw] shrink-0 overflow-hidden rounded-full";
 
   return (
     <div className={`flex items-center gap-[calc(var(--cvw)*0.9)] max-lg:gap-4 ${className}`}>
