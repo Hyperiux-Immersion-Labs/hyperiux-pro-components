@@ -18,11 +18,11 @@ export const TEMPLATE_SCAFFOLD_BLOB_URLS = {
   lumera:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/lumera-9xHHgExiF2A9b1eMivlEdsht5jCR6Q.zip",
   "oris-dental":
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental-xdvj4nbtbMdg44rvYYZBIB2uFW4HhL.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/oris-dental.zip",
   kyntra:
     "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/kyntra-T304SvvfA02g1sS9t3Y8BUE1btcJn3.zip",
   "the-missing-pixel":
-    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/the-missing-pixel-0i4QsY3P51HdWWqbMgZZ54bOTUUrIt.zip",
+    "https://h1r7ltksnzlh2a5c.public.blob.vercel-storage.com/templates/the-missing-pixel.zip",
 };
 
 export function getTemplateScaffoldUrl(slug) {

@@ -1,0 +1,18 @@
+@import "tailwindcss";
+
+/* Theme values the template was designed against */
+@theme {
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 40px;
+  --radius-full: 100000px;
+  /* Tablet breakpoint at 1025px, so 1024px iPads use the tablet layout */
+  --breakpoint-lg: 1025px;
+}
+
+html,
+body {
+  margin: 0;
+}
