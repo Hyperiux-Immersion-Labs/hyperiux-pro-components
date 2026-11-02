@@ -39,9 +39,9 @@ const MAX_DPR = 1.5;
 const REF_ASPECT = 1.6;
 
 // Smear: how long a stir takes to settle, and how far it carries itself
-const SMEAR_HALF_LIFE = 0.7;
-const SMEAR_ADVECT = 3.2;
-const SMEAR_MAX = 0.45;
+const SMEAR_HALF_LIFE = 0.4;
+const SMEAR_ADVECT = 2;
+const SMEAR_MAX = 0.4;
 
 // ---------------------------------------------------------------------------
 // Shaders
@@ -73,7 +73,7 @@ void main() {
   float s = exp(-dot(d, d) / (uRadius * uRadius));
   // each side of the stroke curls the opposite way
   float across = dot(d, normalize(vec2(-uStir.y, uStir.x) + 1e-6)) / max(uRadius, 1e-3);
-  vec2 swirl = vec2(-uStir.y, uStir.x) * across * 0.35;
+  vec2 swirl = vec2(-uStir.y, uStir.x) * across * 0.2;
   vec2 next = carried + (uStir + swirl) * s;
   float m = length(next);
   if (m > ${SMEAR_MAX.toFixed(2)}) next *= ${SMEAR_MAX.toFixed(2)} / m;
@@ -334,7 +334,7 @@ export default function OpalFlow({
   grain = 0.025,
   interactive = true,
   smearStrength = 1,
-  smearRadius = 0.16,
+  smearRadius = 0.1,
   children,
   className = "",
 }: OpalFlowProps) {
@@ -532,7 +532,7 @@ export default function OpalFlow({
       gl.uniform1f(fieldU.advect, SMEAR_ADVECT * dt);
       gl.uniform1f(fieldU.decay, Math.pow(0.5, dt / SMEAR_HALF_LIFE));
       gl.uniform2f(fieldU.pointer, pointer.u, pointer.v);
-      const gain = moving ? cfg.smearStrength * 1.1 : 0;
+      const gain = moving ? cfg.smearStrength * 0.9 : 0;
       gl.uniform2f(fieldU.stir, pointer.dx * gain, pointer.dy * gain);
       gl.uniform1f(fieldU.radius, cfg.smearRadius * scale);
       gl.uniform1f(fieldU.aspect, aspect);

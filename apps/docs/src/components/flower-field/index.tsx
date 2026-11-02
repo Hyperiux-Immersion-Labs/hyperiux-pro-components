@@ -1,19 +1,10 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useGLTF } from "@react-three/drei";
 import { Bloom, ChromaticAberration, DepthOfField, EffectComposer, Noise, ToneMapping, Vignette } from "@react-three/postprocessing";
 import { BlendFunction, ToneMappingMode } from "postprocessing";
 import * as THREE from "three";
-import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
-
-// Flower model: "Wood anemone" by Skuft (https://sketchfab.com/3d-models/wood-anemone-cec4f820ad70467899c661498564a780),
-// licensed CC BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Only its petals and stamens are used;
-// they are re-centred, reshaded and animated here.
-const DEFAULT_MODEL = "/assets/flower-field/wood-anemone.glb";
-const PETAL_MATERIAL = "CartoonFFF2BC";
-const CENTRE_MATERIALS = ["CartoonE8D80C", "CartoonEBC7E4"];
 
 // ---------------------------------------------------------------------------
 // Reduced motion
@@ -54,6 +45,7 @@ interface Stem {
   /** Head offset from rest and its velocity: the spring the pointer and breeze push on */
   offset: THREE.Vector3;
   velocity: THREE.Vector3;
+  wind: number;
   /** How open the head is (0 = bud, 1 = open) and how fast it is opening */
   bloom: number;
   bloomV: number;
@@ -98,16 +90,17 @@ function random(seed: number) {
 }
 
 // Plants spread along the width: each has a curved main stem with a flower (or a bud) on top and a few
-// side shoots carrying buds and the odd small flower, like the sprays in the reference. Most stand in
-// the focused middle row; a few sit behind it and a few nearer the lens. Heads fill the lower half.
+// side shoots carrying buds and the odd small flower, like the sprays in the reference. They recede
+// from just in front of the focus plane far into the distance; a few sit nearer the lens.
 function grow(width: number, density: number): Stem[] {
   const rand = random(11);
   const stems: Stem[] = [];
-  const plants = Math.max(6, Math.min(32, Math.round(width * 2.1 * density)));
+  const plants = Math.max(8, Math.min(46, Math.round(width * 3 * density)));
   const base = () => ({
     seed: rand(),
     offset: new THREE.Vector3(),
     velocity: new THREE.Vector3(),
+    wind: 0,
     bloom: 0,
     bloomV: 0,
     hover: 0,
@@ -116,14 +109,15 @@ function grow(width: number, density: number): Stem[] {
   const scratch = new THREE.Vector3();
   let flowersSoFar = 0;
   for (let i = 0; i < plants; i++) {
-    const x = -width / 2 + ((i + 0.15 + rand() * 0.7) / plants) * width;
     const row = rand();
-    const z = row < 0.2 ? -1.4 - rand() * 1.2 : row > 0.88 ? 1.0 + rand() * 0.8 : (rand() - 0.5) * 1.2;
+    const z = row > 0.9 ? 0.8 + rand() * 0.9 : 0.6 - Math.pow(rand(), 0.9) * 8.6;
+    const spread = (CAMERA_POSITION.z - z) / CAMERA_POSITION.z;
+    const x = (-width / 2 + ((i + 0.15 + rand() * 0.7) / plants) * width) * spread;
     const flower = rand() < 0.75;
     const main: Stem = {
       ...base(),
-      root: new THREE.Vector3(x + (rand() - 0.5) * 0.4, -1.15, z),
-      rest: new THREE.Vector3(x, 0.05 + rand() * 1.45, z),
+      root: new THREE.Vector3(x + (rand() - 0.5) * 0.4, -6, z),
+      rest: new THREE.Vector3(x, -0.05 + rand() * 1.3 - Math.max(0, -z) * 0.1, z),
       size: flower ? 0.24 + rand() * 0.12 : 0.07 + rand() * 0.04,
       flower,
       opensAt: flower ? 0.4 + flowersSoFar++ * 0.2 + rand() * 0.6 : Infinity,
@@ -137,7 +131,7 @@ function grow(width: number, density: number): Stem[] {
 
     const shoots = 3 + Math.floor(rand() * 4);
     for (let k = 0; k < shoots; k++) {
-      const attach = 0.4 + rand() * 0.45;
+      const attach = 0.66 + rand() * 0.26;
       const side = rand() < 0.5 ? -1 : 1;
       const root = onCurve(main.root, mainBend, main.rest, attach, new THREE.Vector3());
       const length = 0.18 + rand() * 0.42;
@@ -171,6 +165,9 @@ function cosmosPetals(): THREE.BufferGeometry {
   const along = 14;
   const across = 9;
   const positions: number[] = [];
+  const petalIndex: number[] = [];
+  const alongPetal: number[] = [];
+  const acrossPetal: number[] = [];
   const indices: number[] = [];
   const base = 0.12;
   for (let p = 0; p < PETALS; p++) {
@@ -182,7 +179,7 @@ function cosmosPetals(): THREE.BufferGeometry {
       const u = i / along;
       // narrow base, widest about two thirds out, rounding off at the tip
       // broad and square-shouldered near the tip, so neighbouring petals just touch
-      const half = 0.05 + 0.35 * Math.pow(Math.sin(Math.PI * Math.min(Math.pow(u, 0.62), 0.99)), 0.32);
+      const half = 0.04 + 0.27 * Math.pow(Math.sin(Math.PI * Math.min(Math.pow(u, 0.62), 0.99)), 0.32);
       for (let j = 0; j <= across; j++) {
         const v = (j / across) * 2 - 1;
         // three soft notches along the tip
@@ -192,6 +189,9 @@ function cosmosPetals(): THREE.BufferGeometry {
         // a shallow saucer, tips lifting a touch, edges curling up
         const y = 0.24 * u * u + 0.06 * v * v * u;
         positions.push(c * radial - sn * side, y, sn * radial + c * side);
+        petalIndex.push(p);
+        alongPetal.push(u);
+        acrossPetal.push(v);
       }
     }
     for (let i = 0; i < along; i++) {
@@ -204,63 +204,19 @@ function cosmosPetals(): THREE.BufferGeometry {
   }
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute("position", new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setAttribute("aPetal", new THREE.Float32BufferAttribute(petalIndex, 1));
+  geometry.setAttribute("aAlong", new THREE.Float32BufferAttribute(alongPetal, 1));
+  geometry.setAttribute("aAcross", new THREE.Float32BufferAttribute(acrossPetal, 1));
   geometry.setIndex(indices);
   geometry.computeVertexNormals();
   return geometry;
 }
 
-// ---------------------------------------------------------------------------
-// Head geometry from the model
-
-interface HeadGeometry {
-  petals: THREE.BufferGeometry;
-  centre: THREE.BufferGeometry;
-}
-
-// Takes the stamens from the model for the centre: moves the flower's middle to the origin, turns it
-// so it opens toward +Y, and scales it so the model's own petals would reach a radius of 1. The
-// petals themselves are drawn as cosmos petals instead.
-function extractHead(scene: THREE.Object3D): HeadGeometry {
-  scene.updateMatrixWorld(true);
-  const petalParts: THREE.BufferGeometry[] = [];
-  const centreParts: THREE.BufferGeometry[] = [];
-  scene.traverse((node) => {
-    const mesh = node as THREE.Mesh;
-    if (!mesh.isMesh) return;
-    const name = (mesh.material as THREE.Material).name;
-    const geometry = mesh.geometry.clone().applyMatrix4(mesh.matrixWorld);
-    for (const key of Object.keys(geometry.attributes)) {
-      if (key !== "position" && key !== "normal") geometry.deleteAttribute(key);
-    }
-    if (name === PETAL_MATERIAL) petalParts.push(geometry);
-    else if (CENTRE_MATERIALS.includes(name)) centreParts.push(geometry);
-  });
-  const petals = mergeGeometries(petalParts)!;
-  const centre = mergeGeometries(centreParts)!;
-
-  centre.computeBoundingBox();
-  const middle = centre.boundingBox!.getCenter(new THREE.Vector3());
-  const pos = petals.attributes.position;
-  const facing = new THREE.Vector3();
-  for (let i = 0; i < pos.count; i++) facing.add(new THREE.Vector3().fromBufferAttribute(pos, i).sub(middle));
-  facing.normalize();
-
-  const turn = new THREE.Matrix4().makeRotationFromQuaternion(
-    new THREE.Quaternion().setFromUnitVectors(facing, new THREE.Vector3(0, 1, 0)),
-  );
-  const toOrigin = new THREE.Matrix4().makeTranslation(-middle.x, -middle.y, -middle.z);
-  for (const g of [petals, centre]) g.applyMatrix4(toOrigin).applyMatrix4(turn);
-
-  let reach = 0;
-  for (let i = 0; i < pos.count; i++) reach = Math.max(reach, Math.hypot(pos.getX(i), pos.getZ(i)));
-  const unit = new THREE.Matrix4().makeScale(1 / reach, 1 / reach, 1 / reach);
-  for (const g of [petals, centre]) {
-    g.applyMatrix4(unit);
-    g.computeVertexNormals();
-  }
-
-  petals.dispose();
-  return { petals: cosmosPetals(), centre };
+function centreDome(): THREE.BufferGeometry {
+  const geometry = new THREE.SphereGeometry(0.13, 24, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  geometry.scale(1, 0.45, 1);
+  geometry.deleteAttribute("uv");
+  return geometry;
 }
 
 // ---------------------------------------------------------------------------
@@ -281,12 +237,17 @@ vec3 linear(vec3 c) {
 const PETAL_VS = `
 attribute float aBloom;
 attribute float aSeed;
+attribute float aPetal;
+attribute float aAlong;
+attribute float aAcross;
 uniform float uTime;
 #define PETALS ${PETALS.toFixed(1)}
 varying vec3 vNormalW;
 varying vec3 vPosW;
 varying vec3 vLocal;
 varying float vSeed;
+varying float vAlong;
+varying float vAcross;
 // how far above (positive) or below the middle of its head this point sits, in head radii
 varying float vUp;
 
@@ -298,27 +259,28 @@ void main() {
   vec3 p = position;
   vec3 n = normal;
   vLocal = p;
-  float reach = length(p.xz);
+  vAlong = aAlong;
+  vAcross = aAcross;
 
-  // which petal this is, so each one opens in its own turn
-  float k = floor(atan(p.z, p.x) / (6.2832 / PETALS) + 0.5);
-  float r2 = reach;
+  float angle = aPetal / PETALS * 6.2832;
+  vec3 radial = vec3(cos(angle), 0.0, sin(angle));
+  vec3 hinge = vec3(-radial.z, 0.0, radial.x);
 
   // petals open one after another, in an order of their own for each flower
-  float order = fract(mod(k + PETALS, PETALS) * 0.618 + aSeed * 7.0);
-  float b = clamp(aBloom, 0.0, 1.15);
-  float pb = clamp((b - 0.2 - order * 0.3) / 0.5, 0.0, 1.15);
+  float order = fract(aPetal * 0.618 + aSeed * 7.0);
+  float over = max(aBloom - 1.0, 0.0);
+  float pb = smoothstep(0.0, 1.0, clamp((min(aBloom, 1.0) - order * 0.35) / 0.65, 0.0, 1.0));
 
-  vec3 radial = r2 > 1e-4 ? vec3(p.x, 0.0, p.z) / r2 : vec3(1.0, 0.0, 0.0);
-  // each petal hinges where it meets the centre; closed, its tip folds up toward the stem's axis
-  vec3 hinge = vec3(-radial.z, 0.0, radial.x);
-  float fold = (1.0 - min(pb, 1.0)) * 1.45 * smoothstep(0.05, 0.7, r2);
-  // the overshoot opens a petal just past flat, then it settles; open petals breathe, very slightly
-  fold += (pb - min(pb, 1.0)) * -0.8 * smoothstep(0.05, 0.7, r2) - 0.035 * sin(uTime * 0.9 + aSeed * 30.0) * min(pb, 1.0);
-  p = turn(p, hinge, fold);
+  // each petal hinges where it meets the centre and curls along its length; closed, the petals wrap into a bud
+  float curl = smoothstep(0.0, 0.8, aAlong);
+  float fold = ((1.0 - pb) * 1.35 - over * 0.9 - 0.035 * sin(uTime * 0.9 + aSeed * 30.0) * pb) * curl;
+  vec3 pivot = radial * 0.12;
+  p = pivot + turn(p - pivot, hinge, fold);
   n = turn(n, hinge, fold);
-  // petals emerge from inside the swelling bud, small, and grow as they unfold
-  p *= mix(0.12, 1.0, smoothstep(0.0, 0.8, min(pb, 1.0)));
+  float twist = (1.0 - pb) * 0.4;
+  p = turn(p, vec3(0.0, 1.0, 0.0), twist);
+  n = turn(n, vec3(0.0, 1.0, 0.0), twist);
+  p *= mix(0.4, 1.0, pb);
 
   vec4 world = modelMatrix * instanceMatrix * vec4(p, 1.0);
   vec4 middle = modelMatrix * instanceMatrix * vec4(0.0, 0.0, 0.0, 1.0);
@@ -338,6 +300,8 @@ varying vec3 vNormalW;
 varying vec3 vPosW;
 varying vec3 vLocal;
 varying float vSeed;
+varying float vAlong;
+varying float vAcross;
 varying float vUp;
 ${SPECTRUM}
 ${LINEAR}
@@ -347,12 +311,15 @@ void main() {
   vec3 n = normalize(vNormalW);
   float facing = abs(dot(n, view));
   float fres = pow(1.0 - facing, 2.0);
-  float r = length(vLocal.xz);
+  float r = vAlong;
   float a = atan(vLocal.z, vLocal.x);
 
   // crisp, cool white: a touch of blue at the base and on the lower petals
-  vec3 col = mix(vec3(0.74, 0.8, 1.0), vec3(0.98, 0.98, 1.0), smoothstep(0.1, 0.6, r));
+  vec3 col = mix(vec3(0.62, 0.68, 1.0), vec3(0.98, 0.98, 1.0), smoothstep(0.0, 0.55, r));
   col = mix(col, vec3(0.68, 0.76, 1.0), smoothstep(0.1, -0.7, vUp) * 0.4);
+  col *= 0.94 + 0.06 * cos(vAcross * 18.0) * smoothstep(0.1, 0.5, r);
+  col *= mix(1.0, 0.72, smoothstep(0.6, 1.0, abs(vAcross)) * smoothstep(0.0, 0.3, r));
+  col *= mix(0.86, 1.0, smoothstep(0.0, 0.25, abs(vAcross)) * 0.6 + 0.4);
   // soft light from above and in front shapes each petal
   float lit = 0.8 + 0.2 * abs(dot(n, normalize(vec3(0.25, 0.85, 0.45))));
   col *= lit;
@@ -366,8 +333,8 @@ void main() {
   neon = mix(neon, vec3(1.0, 0.85, 0.25), smoothstep(0.75, 1.0, side) * 0.6);
   // the colour has to survive tone mapping, so the rim band is wider and only moderately bright
   float rim = smoothstep(0.58, 1.0, r) * smoothstep(-0.2, 0.55, vUp);
-  vec3 lit2 = mix(body * 1.3, linear(neon) * 1.6, rim * 0.85);
-  gl_FragColor = vec4(lit2 + linear(neon) * rim * 0.9 * uGlow, 1.0);
+  vec3 lit2 = mix(body * 1.1, linear(neon) * 1.3, rim * 0.85);
+  gl_FragColor = vec4(lit2 + linear(neon) * rim * 0.3 * uGlow, 1.0);
 }`;
 
 const CENTRE_VS = `
@@ -375,8 +342,8 @@ attribute float aBloom;
 varying vec3 vLocal;
 void main() {
   vLocal = position;
-  // the centre sits a little larger than the model's, like the cosmos in the reference
-  float g = mix(0.2, 1.0, smoothstep(0.25, 0.9, min(aBloom, 1.0))) * 3.0;
+  // the centre grows in as the head opens
+  float g = mix(0.2, 1.0, smoothstep(0.25, 0.9, min(aBloom, 1.0))) * 2.2;
   gl_Position = projectionMatrix * viewMatrix * modelMatrix * instanceMatrix * vec4(position * g, 1.0);
 }`;
 
@@ -394,7 +361,7 @@ void main() {
   vec3 col = mix(vec3(0.15, 0.3, 1.0), vec3(0.1, 0.15, 0.7), h);
   col = mix(col, vec3(0.4, 1.0, 0.95), step(0.7, h));
   col = mix(col, vec3(1.0, 0.85, 0.3), step(0.9, h));
-  gl_FragColor = vec4(linear(col) * 1.6, 1.0);
+  gl_FragColor = vec4(linear(col) * 1.2, 1.0);
 }`;
 
 // Glowing buds with a thin-film rainbow skin; they shrink away as the petals unfurl out of them
@@ -508,7 +475,7 @@ void main() {
   vec2 p = vUv * vec2(6.0, 2.0) + vec2(uTime * 0.04 + uSeed * 10.0, 0.0);
   float n = noise(p) * 0.6 + noise(p * 2.3 - vec2(uTime * 0.06, 0.0)) * 0.4;
   float shape = smoothstep(0.0, 0.3, vUv.y) * smoothstep(0.75, 0.3, vUv.y) * smoothstep(0.0, 0.2, vUv.x) * smoothstep(1.0, 0.8, vUv.x);
-  float a = shape * (0.3 + 0.7 * n) * 0.3 * uMist;
+  float a = shape * (0.3 + 0.7 * n) * 0.18 * uMist;
   gl_FragColor = vec4(pow(vec3(0.6, 0.74, 1.0), vec3(2.2)) * 1.6, a);
 }`;
 
@@ -523,15 +490,14 @@ void main() {
   float low = 1.0 - vUv.y;
   float a = pow(smoothstep(0.76, 1.0, low), 1.5) * (0.8 + 0.4 * edge);
   a += pow(smoothstep(0.6, 1.0, edge), 2.0) * pow(smoothstep(0.42, 1.0, low), 1.4) * 0.85;
-  gl_FragColor = vec4(pow(vec3(0.72, 0.85, 1.0), vec3(2.2)) * 1.75, clamp(a * uMist, 0.0, 0.95));
+  gl_FragColor = vec4(pow(vec3(0.72, 0.85, 1.0), vec3(2.2)) * 1.4, clamp(a * 0.5 * uMist, 0.0, 0.6));
 }`;
 
-// Night sky behind everything, lifting to deep blue near the horizon
+// Plain night sky behind everything
 const SKY_FS = `
 varying vec2 vUv;
 void main() {
-  // deep navy, lifting toward blue behind the meadow
-  vec3 col = mix(vec3(0.1, 0.19, 0.32), vec3(0.05, 0.11, 0.17), smoothstep(0.32, 0.72, vUv.y));
+  vec3 col = vec3(0.06, 0.12, 0.2);
   gl_FragColor = vec4(pow(col, vec3(2.2)), 1.0);
 }`;
 
@@ -555,9 +521,8 @@ const CAMERA_TARGET = new THREE.Vector3(0, 1.25, 0);
 const UP = new THREE.Vector3(0, 1, 0);
 
 
-function Meadow({ model, settings }: { model: string; settings: Settings }) {
-  const { scene } = useGLTF(model);
-  const head = useMemo(() => extractHead(scene.clone(true)), [scene]);
+function Meadow({ settings }: { settings: Settings }) {
+  const head = useMemo(() => ({ petals: cosmosPetals(), centre: centreDome() }), []);
   const { camera, viewport, size, invalidate, gl } = useThree();
   const settingsRef = useRef(settings);
   useEffect(() => {
@@ -670,32 +635,36 @@ function Meadow({ model, settings }: { model: string; settings: Settings }) {
       const cfg = settingsRef.current;
       const { pointer: p, headAt, tmp } = simRef.current;
       const r2 = cfg.followRadius * cfg.followRadius;
+      const gust = THREE.MathUtils.clamp(p.velocity.x * 0.14, -1.2, 1.2);
       for (const s of simRef.current.stems) {
         headAt.copy(s.now.head.lengthSq() > 0 ? s.now.head : s.rest);
-        tmp.copy(p.at).sub(headAt);
+        tmp.copy(headAt).sub(p.at);
         tmp.z = 0;
-        const near = p.inside ? Math.exp(-tmp.lengthSq() / r2) : 0;
-        // the middle row responds most; the rows in front and behind less, which reads as depth
+        const d2 = tmp.lengthSq();
+        const near = p.inside ? Math.exp(-d2 / r2) : 0;
         const reach = cfg.follow * near * (1 - Math.min(Math.abs(s.rest.z) * 0.25, 0.6));
-        const lean = s.flower ? 0.3 : 0.42;
+        const push = reach * gust;
+        const rate = Math.abs(push) > Math.abs(s.wind) ? 5 : 0.9;
+        s.wind += (push - s.wind) * (1 - Math.exp(-dt * rate));
+
         const t = simRef.current.clock;
         const bx = cfg.breeze * (0.05 * Math.sin(t * 0.8 + s.seed * 20 + s.rest.x * 0.6) + 0.025 * Math.sin(t * 1.9 + s.seed * 7));
-        const tx = tmp.x * lean * reach + bx;
-        const ty = tmp.y * lean * 0.3 * reach;
-        const stiff = (s.flower ? 22 : 32) * cfg.speed;
-        const damp = (s.flower ? 4.8 : 6) * Math.sqrt(cfg.speed);
-        s.velocity.set(
-          s.velocity.x + ((tx - s.offset.x) * stiff - s.velocity.x * damp + p.velocity.x * reach * 0.5) * dt,
-          s.velocity.y + ((ty - s.offset.y) * stiff - s.velocity.y * damp + p.velocity.y * reach * 0.2) * dt,
-          0,
-        );
-        s.offset.addScaledVector(s.velocity, dt);
+        const flex = s.flower ? 0.8 : 0.9;
+        const tx = THREE.MathUtils.clamp(s.wind * flex, -0.9, 0.9) + bx;
+        const ease = (s.flower ? 3 : 4) * cfg.speed;
+        const before = s.offset.x;
+        s.offset.x += (tx - s.offset.x) * (1 - Math.exp(-dt * ease));
+        s.velocity.x = (s.offset.x - before) / Math.max(dt, 1e-4);
+        const length = Math.max(s.rest.distanceTo(s.root), 0.1);
+        s.offset.y = (-0.5 * s.offset.x * s.offset.x) / length;
 
         // open flowers unfurl once, on a stagger; buds open while the pointer is close, then close
         if (!s.flower) s.hover = cfg.bloomOnHover && near > 0.6 ? 2.2 : Math.max(s.hover - dt, 0);
         const target = s.flower ? (t >= s.opensAt ? 1 : 0) : s.hover > 0 ? 1 : 0;
         // a lightly damped spring, so petals overshoot a touch as they open
-        s.bloomV += ((target - s.bloom) * 3.2 * cfg.speed - s.bloomV * 2.4 * Math.sqrt(cfg.speed)) * dt;
+        const pull = s.flower ? 1.6 : 3.2;
+        const drag = s.flower ? 1.9 : 2.4;
+        s.bloomV += ((target - s.bloom) * pull * cfg.speed - s.bloomV * drag * Math.sqrt(cfg.speed)) * dt;
         s.bloom = Math.max(0, s.bloom + s.bloomV * dt);
       }
     };
@@ -731,7 +700,8 @@ function Meadow({ model, settings }: { model: string; settings: Settings }) {
         // heads look up and toward the camera, and tip the way their stem is bent
         // a three-quarter view: half toward the camera, half up, so the far petals rise behind the centre
       face.copy(CAMERA_POSITION).sub(headAt).normalize().multiplyScalar(1.05).add(UP).normalize();
-        face.x += s.offset.x * 1.4 + (s.seed - 0.5) * 0.5;
+        face.x += s.offset.x * 1.2 + (s.seed - 0.5) * 0.5;
+        face.z -= Math.abs(s.offset.x) * 0.3;
         face.normalize();
         quat.setFromUnitVectors(UP, face);
         // petals and centre are scaled by the head size; the bud by its own size, shrinking as it opens
@@ -742,7 +712,7 @@ function Meadow({ model, settings }: { model: string; settings: Settings }) {
         centre.setMatrixAt(i, matrix);
         // the bud swells first, then shrinks away as the petals push out of it
         const swell = 1 + 0.45 * THREE.MathUtils.smoothstep(open, 0, 0.25);
-        const budSize = (s.flower ? s.size * 0.3 : s.size) * swell * (1 - THREE.MathUtils.smoothstep(open, 0.3, 0.75));
+        const budSize = (s.flower ? s.size * 0.16 : s.size) * swell * (1 - THREE.MathUtils.smoothstep(open, 0.3, 0.75));
         scale.setScalar(Math.max(budSize, 1e-4));
         matrix.compose(headAt, quat, scale);
         buds.setMatrixAt(i, matrix);
@@ -752,7 +722,7 @@ function Meadow({ model, settings }: { model: string; settings: Settings }) {
         root.set([now.root.x, now.root.y, now.root.z], i * 3);
         bend.set([now.bend.x, now.bend.y, now.bend.z], i * 3);
         headArr.set([headAt.x, headAt.y - (s.flower ? s.size * 0.08 : s.size * 0.6), headAt.z], i * 3);
-        widthArr[i] = s.parent >= 0 ? 0.0035 : s.flower ? 0.0065 : 0.005;
+        widthArr[i] = (s.parent >= 0 ? 0.0035 : s.flower ? 0.0065 : 0.005) * (1 + Math.max(0, -s.rest.z) * 0.15);
       });
       for (const mesh of [petals, centre, buds]) mesh.instanceMatrix.needsUpdate = true;
       for (const attr of Object.values(buffers)) attr.needsUpdate = true;
@@ -769,7 +739,7 @@ function Meadow({ model, settings }: { model: string; settings: Settings }) {
       const { pointer: p, tmp } = simRef.current;
       if (p.inside && !p.fresh) {
         tmp.copy(p.at).sub(p.last).divideScalar(Math.max(elapsed, 1e-3));
-        p.velocity.lerp(tmp, Math.min(elapsed * 12, 1));
+        p.velocity.lerp(tmp, Math.min(elapsed * 6, 1));
       } else p.velocity.multiplyScalar(0.8);
       p.fresh = !p.inside;
       p.last.copy(p.at);
@@ -868,11 +838,9 @@ function CameraRig() {
 // Component
 
 export interface FlowerFieldProps {
-  /** The flower model the heads are made from. Its petals and stamens are used. */
-  model?: string;
   /** How many flowers and buds grow across the frame. 1 is the reference meadow. */
   density?: number;
-  /** How hard the flowers lean toward the pointer and get carried by it. 0 leaves them be. */
+  /** How strongly the pointer blows the flowers away from it, like a gust of air. 0 leaves them be. */
   follow?: number;
   /** Reach of the pointer, in world units. */
   followRadius?: number;
@@ -896,7 +864,6 @@ export interface FlowerFieldProps {
 }
 
 export default function FlowerField({
-  model = DEFAULT_MODEL,
   density = 1,
   follow = 1,
   followRadius = 1.3,
@@ -946,12 +913,10 @@ export default function FlowerField({
         camera={{ fov: 34, near: 0.1, far: 40, position: CAMERA_POSITION.toArray() }}
       >
         <CameraRig />
-        <Suspense fallback={null}>
-          <Meadow model={model} settings={settings} />
-        </Suspense>
+        <Meadow settings={settings} />
         <EffectComposer multisampling={0}>
           <DepthOfField worldFocusDistance={CAMERA_POSITION.z} worldFocusRange={3.4} bokehScale={1.6 * depthOfField} />
-          <Bloom intensity={1.1 * glow} luminanceThreshold={0.8} luminanceSmoothing={0.3} mipmapBlur radius={0.55} />
+          <Bloom intensity={1.1 * glow} luminanceThreshold={1.2} luminanceSmoothing={0.3} mipmapBlur radius={0.55} />
           <ToneMapping mode={ToneMappingMode.NEUTRAL} />
           <ChromaticAberration offset={fringe} radialModulation modulationOffset={0.25} />
           <Noise opacity={grain} blendFunction={BlendFunction.SOFT_LIGHT} />
@@ -963,4 +928,3 @@ export default function FlowerField({
   );
 }
 
-useGLTF.preload(DEFAULT_MODEL);

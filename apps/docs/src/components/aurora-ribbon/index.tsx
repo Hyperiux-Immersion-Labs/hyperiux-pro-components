@@ -67,8 +67,8 @@ const POOL_BEND_FROM = 2.6;
 const POOL_BEND_TO = 6.1;
 
 // Smear: how long a stir takes to settle, and how far it carries itself
-const SMEAR_HALF_LIFE = 0.55;
-const SMEAR_ADVECT = 3.2;
+const SMEAR_HALF_LIFE = 0.4;
+const SMEAR_ADVECT = 2;
 const SMEAR_MAX = 0.4;
 
 // ---------------------------------------------------------------------------
@@ -103,7 +103,7 @@ void main() {
   // a little sideways swirl off the stroke, so it reads as liquid rather than a straight drag
   // each side of the stroke curls the opposite way
   float across = dot(d, normalize(vec2(-uStir.y, uStir.x) + 1e-6)) / max(uRadius, 1e-3);
-  vec2 swirl = vec2(-uStir.y, uStir.x) * across * 0.35;
+  vec2 swirl = vec2(-uStir.y, uStir.x) * across * 0.2;
   vec2 next = carried + (uStir + swirl) * s;
   float m = length(next);
   if (m > ${SMEAR_MAX.toFixed(2)}) next *= ${SMEAR_MAX.toFixed(2)} / m;
@@ -334,7 +334,7 @@ export default function AuroraRibbon({
   grain = 0.06,
   interactive = true,
   smearStrength = 1,
-  smearRadius = 0.14,
+  smearRadius = 0.08,
   children,
   className = "",
 }: AuroraRibbonProps) {
@@ -576,7 +576,7 @@ export default function AuroraRibbon({
       gl.uniform1f(fieldU.advect, SMEAR_ADVECT * dt);
       gl.uniform1f(fieldU.decay, Math.pow(0.5, dt / SMEAR_HALF_LIFE));
       gl.uniform2f(fieldU.pointer, pointer.u, pointer.v);
-      const gain = moving ? cfg.smearStrength * 1.1 : 0;
+      const gain = moving ? cfg.smearStrength * 0.9 : 0;
       gl.uniform2f(fieldU.stir, pointer.dx * gain, pointer.dy * gain);
       gl.uniform1f(fieldU.radius, cfg.smearRadius * scale);
       gl.uniform1f(fieldU.aspect, aspect);

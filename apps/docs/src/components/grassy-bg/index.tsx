@@ -170,7 +170,9 @@ function buildWakeNode(u: GrassUniforms, wakeMap: TextureSampler) {
     const splat = shape.mul(u.wakeAmount);
     const direction = stroke.div(travel.add(0.00001));
 
-    const push = previous.rg.add(direction.mul(splat));
+    const turnToStroke = smoothstep(0, 0.15, splat);
+    const redirected = mix(previous.rg, direction.mul(length(previous.rg)), turnToStroke);
+    const push = redirected.add(direction.mul(splat));
     const pushLength = length(push);
     const limited = push.mul(min(pushLength, 1.2).div(pushLength.add(0.00001)));
     return vec4(limited, min(previous.b.add(splat), 1), 1);

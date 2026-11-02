@@ -44,7 +44,7 @@ export default function DemoContent() {
           remixer: { control: "checkbox", group: "cursor", groupTitle: "Cursor" },
         },
         range("smearStrength", "Strength", 1, "How far a stroke drags the light.", 0, 3, 0.05, "cursor", "Cursor"),
-        range("smearRadius", "Brush size", 0.14, "Width of the stroke, in canvas heights.", 0.04, 0.4, 0.01, "cursor", "Cursor"),
+        range("smearRadius", "Brush size", 0.1, "Width of the stroke, in canvas heights.", 0.04, 0.4, 0.01, "cursor", "Cursor"),
       ]}
     >
       {({ effect }) => (

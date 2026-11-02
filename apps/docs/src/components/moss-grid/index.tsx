@@ -50,8 +50,7 @@ const MOSS_DEPTH = 0.09;
 const DOT_SPACING = 0.075;
 const BACKGROUND = "#0d0d0d";
 // The lights show only around the pointer, and along a short trail behind it that fades out
-const TRAIL = 14;
-const TRAIL_STEP = 0.05;
+const TRAIL = 24;
 
 // ---------------------------------------------------------------------------
 // Shared GLSL
@@ -103,11 +102,13 @@ float hills(vec2 xz) {
   return h + swell(xz) * 0.3;
 }
 
-vec3 hillNormal(vec2 xz) {
+vec3 hillPoint(vec2 xz, out vec3 n) {
   float e = 0.03;
-  float hx = hills(xz + vec2(e, 0.0)) - hills(xz - vec2(e, 0.0));
-  float hz = hills(xz + vec2(0.0, e)) - hills(xz - vec2(0.0, e));
-  return normalize(vec3(-hx, 2.0 * e, -hz));
+  float h = hills(xz);
+  float hx = hills(xz + vec2(e, 0.0)) - h;
+  float hz = hills(xz + vec2(0.0, e)) - h;
+  n = normalize(vec3(-hx, e, -hz));
+  return vec3(xz.x, h, xz.y);
 }
 `;
 
@@ -138,8 +139,8 @@ ${TERRAIN}
 void main() {
   vec2 xz = position.xz;
   float layer = aLayer / ${(SHELLS - 1).toFixed(1)};
-  vec3 n = hillNormal(xz);
-  vec3 world = vec3(xz.x, hills(xz), xz.y) + n * layer * ${MOSS_DEPTH.toFixed(3)};
+  vec3 n;
+  vec3 world = hillPoint(xz, n) + n * layer * ${MOSS_DEPTH.toFixed(3)};
   vXZ = xz;
   vWorld = world;
   vNormal = n;
@@ -204,8 +205,7 @@ attribute float aSeed;
 uniform float uDotSize;
 uniform float uPixelRatio;
 uniform float uRipple;
-uniform vec3 uReveal;
-uniform vec3 uTrail[${TRAIL}];
+uniform vec3 uTrail[${TRAIL + 1}];
 uniform float uAmbient;
 uniform float uRevealRadius;
 varying float vGlow;
@@ -213,24 +213,38 @@ varying vec3 vWorld;
 ${TERRAIN}
 void main() {
   vec2 xz = position.xz;
+  // the grid shows only where the pointer is, or has just been: a soft, flat-topped pool of light
+  // around it, drawn out along the path behind it as one continuous ribbon that thins and fades
+  float shown = 0.0;
+  for (int i = 0; i < ${TRAIL}; i++) {
+    vec3 a = uTrail[i];
+    vec3 b = uTrail[i + 1];
+    if (a.z <= 0.0 && b.z <= 0.0) continue;
+    vec2 ab = b.xy - a.xy;
+    float h = clamp(dot(xz - a.xy, ab) / max(dot(ab, ab), 1e-6), 0.0, 1.0);
+    float gap = length(xz - a.xy - ab * h);
+    if (gap > uRevealRadius * 2.0) continue;
+    float s = mix(a.z, b.z, h);
+    s = s * s * (3.0 - 2.0 * s);
+    float r = uRevealRadius * (0.75 + 0.25 * s);
+    shown = max(shown, s * exp(-pow(gap / r, 2.6)));
+  }
+  shown = max(shown, uAmbient);
+  if (shown <= 0.001) {
+    vGlow = 0.0;
+    vWorld = vec3(0.0);
+    gl_PointSize = 0.0;
+    gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    return;
+  }
   // laid over the moss: just above the tips of the strands, following every rise and dip
-  vec3 world = vec3(xz.x, hills(xz), xz.y) + hillNormal(xz) * ${(MOSS_DEPTH * 1.15).toFixed(3)};
+  vec3 n;
+  vec3 world = hillPoint(xz, n) + n * ${(MOSS_DEPTH * 1.15).toFixed(3)};
   vec4 view = viewMatrix * vec4(world, 1.0);
   vWorld = world;
   float shimmer = 0.75 + 0.25 * sin(uTime * (1.5 + aSeed * 2.0) + aSeed * 40.0);
-  vec2 d = xz - uPointer.xy;
-  float dist = length(d);
+  float dist = length(xz - uPointer.xy);
   float ring = uRipple * uPointer.z * (0.5 + 0.5 * sin(dist * 9.0 - uTime * 5.0)) * exp(-dist * 0.9);
-  // the grid shows only where the pointer is, or has just been: a soft, flat-topped pool of light
-  // around it and a trail of fading pools behind
-  float r = uRevealRadius;
-  float shown = uReveal.z * exp(-pow(length(xz - uReveal.xy) / r, 2.6));
-  for (int i = 0; i < ${TRAIL}; i++) {
-    vec3 t = uTrail[i];
-    if (t.z <= 0.0) continue;
-    shown = max(shown, t.z * exp(-pow(length(xz - t.xy) / (r * 0.85), 2.6)));
-  }
-  shown = max(shown, uAmbient);
   vGlow = (shimmer + ring * 1.6 + swell(xz) * 0.8) * shown;
   // near the lens the lights stay small points instead of swelling into stripes
   gl_PointSize = min(uDotSize * (9.0 / -view.z), uDotSize * 2.2) * uPixelRatio * (1.0 + ring * 0.6);
@@ -282,8 +296,9 @@ interface Settings {
 
 // Colours go to the shaders as picked (sRGB); the shaders convert them to linear light themselves
 const srgb = new THREE.Color();
+const parsed = new THREE.Color();
 function hexToSrgb(hex: string, out: THREE.Vector3) {
-  new THREE.Color(hex).getRGB(srgb, THREE.SRGBColorSpace);
+  parsed.set(hex).getRGB(srgb, THREE.SRGBColorSpace);
   return out.set(srgb.r, srgb.g, srgb.b);
 }
 
@@ -295,7 +310,6 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
     invalidate();
   });
 
-  const mossMaterial = useRef<THREE.ShaderMaterial>(null);
   // the moss and the lights share one set of uniforms, so the heights always agree
   const uniforms = useMemo(
     () => ({
@@ -311,16 +325,30 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
       uDotSize: { value: 2.4 },
       uPixelRatio: { value: 1 },
       uRipple: { value: 1 },
-      uReveal: { value: new THREE.Vector3() },
-      uTrail: { value: new Float32Array(TRAIL * 3) },
+      uTrail: { value: new Float32Array((TRAIL + 1) * 3) },
       uAmbient: { value: 0 },
       uRevealRadius: { value: 0.6 },
     }),
     [],
   );
 
+  const mossMaterial = useMemo(() => new THREE.ShaderMaterial({ vertexShader: MOSS_VS, fragmentShader: MOSS_FS, uniforms }), [uniforms]);
+  const dotMaterial = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: DOT_VS,
+        fragmentShader: DOT_FS,
+        uniforms,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        blending: THREE.AdditiveBlending,
+      }),
+    [uniforms],
+  );
+
   const ground = useMemo(() => {
-    const g = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_DEPTH, 260, 244);
+    const g = new THREE.PlaneGeometry(GROUND_WIDTH, GROUND_DEPTH, 180, 160);
     g.rotateX(-Math.PI / 2);
     g.translate(0, 0, GROUND_Z);
     const layers = new Float32Array(SHELLS);
@@ -353,8 +381,10 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
     () => () => {
       ground.dispose();
       dots.dispose();
+      mossMaterial.dispose();
+      dotMaterial.dispose();
     },
-    [ground, dots],
+    [ground, dots, mossMaterial, dotMaterial],
   );
 
   // pointer on the ground plane, and how hard it is pressing (eases in and out)
@@ -362,11 +392,13 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
   const simRef = useRef({
     clock: 0,
     target: new THREE.Vector2(),
+    follow: new THREE.Vector2(),
     at: new THREE.Vector2(),
     pull: 0,
     presence: 0,
     inside: false,
     trail: new Float32Array(TRAIL * 3),
+    path: new Float32Array((TRAIL + 1) * 3),
     trailNext: 0,
     sinceDrop: 0,
     lastDrop: new THREE.Vector2(1e9, 1e9),
@@ -410,9 +442,7 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
   }, [camera, gl, raycaster, plane]);
 
   useFrame((_, delta) => {
-    const material = mossMaterial.current;
-    if (!material) return;
-    const u = material.uniforms;
+    const u = uniforms;
     const cfg = settingsRef.current;
     const sim = simRef.current;
     const dt = Math.min(delta, 0.1);
@@ -425,28 +455,34 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
       const pointerHere = cfg.interactive && sim.inside;
       const steering = pointerHere && sim.idle < cfg.idleDelay;
       const autoWant = cfg.autoplay && !steering ? 1 : 0;
-      // the hand-back is quick, the take-over gentle
-      sim.auto += (autoWant - sim.auto) * (1 - Math.exp(-dt * (autoWant ? 0.8 : 4)));
+      // the hand-back is quick, the take-over gentle; both ease in and out
+      const handoff = dt / (autoWant ? 1.5 : 0.6);
+      sim.auto = autoWant ? Math.min(sim.auto + handoff, 1) : Math.max(sim.auto - handoff, 0);
+      const blend = sim.auto * sim.auto * (3 - 2 * sim.auto);
       sim.autoClock += dt * cfg.speed;
       const t = sim.autoClock;
       sim.wander.set(
         Math.sin(t * 0.21) * 3 + Math.sin(t * 0.53 + 1.3) * 1.1,
         1.6 + Math.sin(t * 0.31 + 0.7) * 1.2 + Math.sin(t * 0.67) * 0.4,
       );
-      sim.goal.copy(sim.target).lerp(sim.wander, sim.auto);
+      sim.goal.copy(sim.target).lerp(sim.wander, blend);
 
-      // the swell drifts after the pointer and grows or fades over about half a second
-      sim.at.lerp(sim.goal, 1 - Math.exp(-dt * 5));
-      const want = (pointerHere ? cfg.cursorStrength : 0) * (1 - sim.auto) + cfg.cursorStrength * 0.6 * sim.auto;
+      // the swell drifts after the pointer through two easing stages, so it starts and stops softly,
+      // and grows or fades over about half a second
+      sim.follow.lerp(sim.goal, 1 - Math.exp(-dt * 12));
+      sim.at.lerp(sim.follow, 1 - Math.exp(-dt * 10));
+      const want = (pointerHere ? cfg.cursorStrength : 0) * (1 - blend) + cfg.cursorStrength * 0.6 * blend;
       sim.pull += (want - sim.pull) * (1 - Math.exp(-dt * 3));
-      const here = Math.max(pointerHere ? 1 - sim.auto : 0, sim.auto);
+      const here = Math.min((pointerHere ? 1 - blend : 0) + blend, 1);
       sim.presence += (here - sim.presence) * (1 - Math.exp(-dt * 6));
 
-      // drop a spot on the trail every so often while the pointer moves; every spot fades away
-      const fade = dt / Math.max(cfg.trail, 0.05);
+      // drop a point on the trail every so often while the pointer moves; the ring holds the whole
+      // trail length, so the tail fades out instead of being cut off
+      const life = Math.max(cfg.trail, 0.05);
+      const fade = dt / life;
       for (let i = 0; i < TRAIL; i++) sim.trail[i * 3 + 2] = Math.max(sim.trail[i * 3 + 2] - fade, 0);
       sim.sinceDrop += dt;
-      if (sim.presence > 0.05 && sim.sinceDrop >= TRAIL_STEP && sim.at.distanceTo(sim.lastDrop) > 0.05) {
+      if (sim.presence > 0.02 && sim.sinceDrop >= Math.max(life / (TRAIL - 1), 0.02) && sim.at.distanceTo(sim.lastDrop) > 0.02) {
         sim.trail.set([sim.at.x, sim.at.y, sim.presence], sim.trailNext * 3);
         sim.trailNext = (sim.trailNext + 1) % TRAIL;
         sim.sinceDrop = 0;
@@ -466,9 +502,21 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
     hexToSrgb(dotColor, u.uDotColor.value);
     u.uDotLight.value = cfg.dotLight;
     u.uDotSize.value = cfg.dotSize;
-    u.uReveal.value.set(sim.at.x, sim.at.y, sim.presence);
     u.uRevealRadius.value = cfg.revealRadius;
-    u.uTrail.value = sim.trail;
+    const path = sim.path;
+    path[0] = sim.at.x;
+    path[1] = sim.at.y;
+    path[2] = sim.presence;
+    let live = sim.presence > 0;
+    for (let k = 1; k <= TRAIL; k++) {
+      const src = ((sim.trailNext - k + TRAIL) % TRAIL) * 3;
+      const dst = k * 3;
+      live = live && sim.trail[src + 2] > 0;
+      path[dst] = live ? sim.trail[src] : path[dst - 3];
+      path[dst + 1] = live ? sim.trail[src + 1] : path[dst - 2];
+      path[dst + 2] = live ? sim.trail[src + 2] : 0;
+    }
+    u.uTrail.value = path;
     // with reduced motion there's no pointer reveal, so the whole grid shows, still
     u.uAmbient.value = cfg.reducedMotion ? 1 : cfg.ambient;
     u.uPixelRatio.value = gl.getPixelRatio();
@@ -477,22 +525,10 @@ function Ground({ settings, mossColor, mossLight, dotColor }: { settings: Settin
   return (
     <>
       {/* heights are computed on the GPU, so the bounds the CPU knows are wrong; skip culling */}
-      <instancedMesh args={[ground, undefined, SHELLS]} frustumCulled={false}>
-        <shaderMaterial ref={mossMaterial} vertexShader={MOSS_VS} fragmentShader={MOSS_FS} uniforms={uniforms} />
-      </instancedMesh>
+      <instancedMesh args={[ground, mossMaterial, SHELLS]} frustumCulled={false} />
       {/* the lights always draw over the moss: they lie on top of it, and these gentle hills seen
           from this low camera barely hide one another */}
-      <points geometry={dots} frustumCulled={false}>
-        <shaderMaterial
-          vertexShader={DOT_VS}
-          fragmentShader={DOT_FS}
-          uniforms={uniforms}
-          transparent
-          depthWrite={false}
-          depthTest={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </points>
+      <points geometry={dots} material={dotMaterial} frustumCulled={false} />
     </>
   );
 }
@@ -616,7 +652,7 @@ export default function MossGrid({
       <Canvas
         aria-hidden="true"
         style={{ position: "absolute", inset: 0 }}
-        dpr={[1, 1.5]}
+        dpr={[1, 1.25]}
         frameloop={reducedMotion ? "demand" : active ? "always" : "never"}
         gl={{ antialias: false, powerPreference: "high-performance" }}
         camera={{ fov: 38, near: 0.1, far: 40, position: CAMERA_POSITION.toArray() }}
