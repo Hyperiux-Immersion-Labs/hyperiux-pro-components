@@ -17,7 +17,7 @@ function resolveRegistryEffectDeps() {
         return null;
       }
       if (!importer.includes(registryEffectsPathSegment)) return null;
-      const resolved = await this.resolve(source, path.join(__dirname, "package.json"), {
+      const resolved = await this.resolve(source, path.join(import.meta.dirname, "package.json"), {
         skipSelf: true,
       });
       return resolved ?? null;
@@ -32,7 +32,7 @@ export default defineConfig({
     // the jsdom test environment loads modules through Vite's dev-server-like
     // fs allowlist, which otherwise refuses anything outside the root.
     fs: {
-      allow: [path.resolve(__dirname, "../..")],
+      allow: [path.resolve(import.meta.dirname, "../..")],
     },
   },
   test: {
@@ -46,29 +46,29 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(import.meta.dirname, "./src"),
       // server-only throws unconditionally outside Next.js's own build
       // pipeline - it has no meaning to a Node-based test runner, so it's
       // stubbed to a no-op rather than actually installing a fake module.
-      "server-only": path.resolve(__dirname, "./test/stubs/server-only.js"),
+      "server-only": path.resolve(import.meta.dirname, "./test/stubs/server-only.js"),
       // Pin react/react-dom to one exact resolved path. Without this, registry
       // effect files (resolved via the plugin above) and the test file itself
       // (resolved normally) can each get react from a different-but-equivalent
       // path, which Vite's module graph treats as two separate copies -
       // "Invalid hook call" follows since hooks need a single React instance.
-      react: path.resolve(__dirname, "./node_modules/react"),
-      "react-dom": path.resolve(__dirname, "./node_modules/react-dom"),
+      react: path.resolve(import.meta.dirname, "./node_modules/react"),
+      "react-dom": path.resolve(import.meta.dirname, "./node_modules/react-dom"),
       // Coordinates transitions with Next's app router, which doesn't exist
       // outside a real Next.js request tree - stubbed to render children
       // directly so the effects wrapping it can still be mount-tested.
       "next-transition-router": path.resolve(
-        __dirname,
+        import.meta.dirname,
         "./test/stubs/next-transition-router.js"
       ),
       // next/font's build-time font loading (downloading/subsetting/hashing
       // real font files) has no meaning to a Node-based test runner - see
       // the stub for what it actually returns.
-      "next/font/google": path.resolve(__dirname, "./test/stubs/next-font-google.js"),
+      "next/font/google": path.resolve(import.meta.dirname, "./test/stubs/next-font-google.js"),
     },
   },
 });

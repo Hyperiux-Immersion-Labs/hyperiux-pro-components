@@ -1120,23 +1120,10 @@ The current `effectCodeBlock` schema has:
 There is no registry-source marker today. That means the first implementation
 has to match Sanity code blocks to registry files by `filename`.
 
-## Reference Script
+## Credentials
 
-There is an existing script:
-
-```text
-hyperiux-vault/upload-missing-content.py
-```
-
-It is useful only as a reference for Sanity mutation shape. It should not be
-used directly for this workflow because:
-
-- it is a markdown content seeder, not a registry code sync tool
-- it uses broad `createOrReplace` document writes
-- it does not understand registry file lists
-- it contains a hardcoded Sanity token
-
-New automation must use environment variables for credentials.
+New automation must use environment variables for credentials. Never
+hardcode a Sanity token in a script.
 
 ## Proposed Commands
 

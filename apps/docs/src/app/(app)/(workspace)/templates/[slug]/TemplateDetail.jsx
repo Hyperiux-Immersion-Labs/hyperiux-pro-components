@@ -193,6 +193,8 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
   const closeGet = useCallback(() => setGetOpen(false), []);
 
   const download = () => {
+    // A document request, not router.push(): the API route answers with the zip file.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = downloadHref;
     showToast({ title: `${template.title} downloaded`, description: `${template.title} has been downloaded.` });
   };
@@ -226,6 +228,8 @@ export function TemplateDetail({ template, devices = {}, effects = [], stack = [
     markTemplateOwned(template.slug);
     setPaywallOpen(false);
     setAutoOpenCheckout(false);
+    // A document request, not router.push(): the API route answers with the zip file.
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination
     window.location.href = downloadHref;
     showToast({ title: `${template.title} purchased`, description: `${template.title} has been purchased and downloaded.` });
     router.refresh();
