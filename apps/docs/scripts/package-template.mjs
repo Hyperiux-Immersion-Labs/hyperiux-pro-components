@@ -288,6 +288,8 @@ const TEMPLATES = {
     // Root-level .ts/.tsx files (page, layout, metadata, routes, not-found) and these route
     // folders belong in src/app/; everything under components/ and assets/ maps as usual.
     multiPage: { routes: ["about", "blog", "contact", "services", "work"] },
+    // Font-and-color.md is an internal design note.
+    skip: ["Font-and-color.md"],
     // Keeps the template's own root layout (fonts, page transition, header, footer)
     // instead of the generic scaffold one; sourceRewrites below turn it into a root
     // layout. Its globals.css carries the template's theme (see template-scaffold/).
@@ -562,6 +564,7 @@ Then open **http://localhost:3000**.
 ├── Hero.tsx                    # 3D interactive tooth visualizer & intro copy
 ├── AboutOris.tsx                # Practice overview + animated slot counters
 ├── DentalTreatments.tsx         # Scroll-pinned stacked card deck of treatments
+├── WhyOris.tsx                  # Why choose us feature card with animated metrics
 ├── CareComfort.tsx              # Care & comfort feature section
 ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
 ├── Reviews.tsx                  # Ribbon review strips + section break
@@ -586,7 +589,7 @@ Then open **http://localhost:3000**.
 │   ├── DotsCanvas.tsx
 │   └── MouseTilt.tsx
 └── effects/                     # Extracted self-contained effects
-    ├── dot-fill-btn/
+    ├── dot-fill-button/
     ├── circular-button/
     ├── slot-counter/
     ├── text-fill/
@@ -612,6 +615,7 @@ The 3D tooth model itself ships as a static asset at \`Code/public/teeth-compres
     ├── Hero.tsx                    # 3D interactive tooth visualizer & intro copy
     ├── AboutOris.tsx                # Practice overview + animated slot counters
     ├── DentalTreatments.tsx         # Scroll-pinned stacked card deck of treatments
+    ├── WhyOris.tsx                  # Why choose us feature card with animated metrics
     ├── CareComfort.tsx              # Care & comfort feature section
     ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
     ├── Reviews.tsx                  # Ribbon review strips + section break
@@ -631,7 +635,7 @@ The 3D tooth model itself ships as a static asset at \`Code/public/teeth-compres
     │   ├── DotsCanvas.tsx
     │   └── MouseTilt.tsx
     └── effects/                     # Extracted self-contained effects
-        ├── dot-fill-btn/
+        ├── dot-fill-button/
         ├── circular-button/
         ├── slot-counter/
         ├── text-fill/

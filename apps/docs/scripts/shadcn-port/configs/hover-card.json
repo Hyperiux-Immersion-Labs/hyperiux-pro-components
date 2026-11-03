@@ -1,0 +1,131 @@
+{
+  "slug": "animated-hover-card",
+  "exportName": "AnimatedHoverCard",
+  "main": "components/ui/hover-card.tsx",
+  "demos": [
+    "app/components/(default)/hover-card/hover-card-demo.tsx"
+  ],
+  "demoFn": "HpxHoverCardDemo",
+  "title": "Animated Hover Card",
+  "subtitle": "A preview that appears when you hover a link.",
+  "patches": [
+    [
+      "      : fetch(`/api/link-preview?url=${encodeURIComponent(url)}`, { signal: controller.signal }).then(\n          async (response) => {\n            const body = await response.json()\n            if (!response.ok) throw new Error(body.error ?? \"Could not load that link\")\n            previewCache.set(url, body)\n            return body as LinkPreview\n          }\n        )",
+      "      : loadPreview(url).then((body) => {\n          previewCache.set(url, body)\n          return body\n        })"
+    ],
+    [
+      "const previewCache = new Map<string, LinkPreview>()",
+      "const previewCache = new Map<string, LinkPreview>()\n\nconst SAMPLE_PREVIEWS: Record<string, Pick<LinkPreview, \"title\" | \"description\" | \"siteName\">> = {\n  \"vault.hyperiux.com\": { title: \"Hyperiux Vault\", description: \"Animated components and effects, ready to install.\", siteName: \"Hyperiux\" },\n  \"nextjs.org\": { title: \"Next.js\", description: \"The React framework for the web.\", siteName: \"Next.js\" },\n  \"react.dev\": { title: \"React\", description: \"The library for web and native user interfaces.\", siteName: \"React\" },\n  \"tailwindcss.com\": { title: \"Tailwind CSS\", description: \"Rapidly build modern websites without ever leaving your HTML.\", siteName: \"Tailwind CSS\" },\n  \"github.com\": { title: \"GitHub\", description: \"Where the world builds software.\", siteName: \"GitHub\" },\n  \"wikipedia.org\": { title: \"Wikipedia\", description: \"The free encyclopedia.\", siteName: \"Wikipedia\" },\n  \"motion.dev\": { title: \"Motion\", description: \"A modern animation library for JavaScript and React.\", siteName: \"Motion\" },\n}\n\n// Swap for a fetch to your own preview endpoint\nfunction loadPreview(url: string): Promise<LinkPreview> {\n  const hostname = new URL(url).hostname.replace(/^www\\./, \"\")\n  const sample = SAMPLE_PREVIEWS[hostname]\n  return new Promise((resolve) =>\n    setTimeout(() =>\n      resolve({\n        url,\n        hostname,\n        title: sample?.title ?? hostname,\n        description: sample?.description ?? null,\n        siteName: sample?.siteName ?? null,\n        image: null,\n        favicon: null,\n      }), 400)\n  )\n}"
+    ],
+    [
+      "h-[12vh] rounded-md bg-(--hx-muted)",
+      "h-24 rounded-md bg-(--hx-muted)"
+    ],
+    [
+      "h-[12vh] w-full rounded-md",
+      "h-24 w-full rounded-md"
+    ],
+    [
+      "h-[8vh] rounded-md",
+      "h-16 rounded-md"
+    ],
+    [
+      "\"flex min-h-[40vh] items-center justify-center rounded-lg border px-6 text-sm\"",
+      "\"flex min-h-80 items-center justify-center px-6 text-sm\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\"",
+      "<p className=\"text-sm text-(--hx-muted-foreground) max-lg:hidden\""
+    ],
+    [
+      "    label: \"Open after\",\n    value: 0.4,",
+      "    label: \"Open after\",\n    value: 0.7,"
+    ],
+    [
+      "    label: \"Close after\",\n    value: 0.2,",
+      "    label: \"Close after\",\n    value: 0,"
+    ],
+    [
+      "label: \"Follow the pointer\", value: false",
+      "label: \"Follow the pointer\", value: true"
+    ],
+    [
+      "    label: \"Roundness\",\n    value: \"lg\",",
+      "    label: \"Roundness\",\n    value: \"md\","
+    ],
+    [
+      "  rounded = \"lg\",\n  open: openProp,",
+      "  rounded = \"md\",\n  open: openProp,"
+    ],
+    [
+      "            aria-label=\"Website\"\n            className=\"h-9\"",
+      "            aria-label=\"Website\"\n            className=\"h-11.5 rounded-md\""
+    ],
+    [
+      "<Button type=\"button\" variant=\"outline\" size=\"lg\" onClick={shuffle}>",
+      "<Button type=\"button\" variant=\"outline\" size=\"lg\" onClick={shuffle} className=\"h-11.5 rounded-md px-4\">"
+    ],
+    [
+      "const linkClass = values.underline ? \"font-medium\" : \"font-medium underline underline-offset-4\"",
+      "const linkClass = values.underline\n    ? \"font-medium text-(--hx-primary)\"\n    : \"font-medium text-(--hx-primary) underline underline-offset-4\""
+    ],
+    [
+      "<div className={`h-16 rounded-md ${roast.color}`} />",
+      "<div className={`h-28 rounded-md ${roast.color}`} />"
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground) max-lg:hidden\">",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) max-lg:hidden\">"
+    ],
+    [
+      "<p className=\"max-w-[60%] text-lg text-center leading-relaxed\">",
+      "<p className=\"max-w-[60%] text-lg text-center leading-relaxed max-lg:max-w-[85%] max-md:max-w-full max-md:text-base\">"
+    ],
+    [
+      "<p className=\"max-w-[70%] text-lg text-center leading-relaxed\">",
+      "<p className=\"max-w-[70%] text-lg text-center leading-relaxed max-lg:max-w-[85%] max-md:max-w-full max-md:text-base\">"
+    ],
+    [
+      "\"flex min-h-80 items-center justify-center px-6 text-sm\"",
+      "\"flex min-h-80 items-center justify-center px-6 text-sm max-md:min-h-64 max-md:px-0\""
+    ],
+    [
+      "\"transition-[opacity,scale,translate] duration-250 ease-[cubic-bezier(0.22,1,0.36,1)] data-ending-style:duration-150 data-ending-style:ease-in motion-reduce:transition-opacity\"",
+      "\"transition-[opacity,scale,translate] duration-350 ease-[cubic-bezier(0.32,0.72,0,1)] data-ending-style:duration-200 data-ending-style:ease-[cubic-bezier(0.4,0,1,1)] motion-reduce:transition-opacity\""
+    ],
+    [
+      "      duration: 350,\n      delay: 80,\n      easing: \"cubic-bezier(0.45, 0, 0.55, 1)\",",
+      "      duration: 300,\n      delay: 40,\n      easing: \"cubic-bezier(0.22, 1, 0.36, 1)\","
+    ],
+    [
+      "w-72 origin-(--transform-origin)",
+      "w-72 max-w-[calc(100vw-2rem)] origin-(--transform-origin)"
+    ],
+    [
+      "style={{ \"--hc-travel\": \"0.75rem\", \"--hc-scale\": scale } as React.CSSProperties}",
+      "style={{ \"--hc-travel\": \"0px\", \"--hc-scale\": scale } as React.CSSProperties}"
+    ]
+  ],
+  "descriptions": {
+    "site": "Website the card previews. Needs Card shows set to Website preview.",
+    "source": "What the card shows: a preview of the website or manually written details.",
+    "contentAnimation": "How the card appears: scales and fades, or only fades.",
+    "startScale": "Size the card starts from when it opens, as a fraction of full size.",
+    "fadeContent": "Fades the card contents in as it opens.",
+    "openDelay": "How long you hover before the card opens, in seconds.",
+    "closeDelay": "How long after leaving before the card closes, in seconds.",
+    "followCursor": "The card follows the pointer instead of staying put.",
+    "underline": "The link underline draws in on hover.",
+    "rounded": "Corner radius of the card."
+  },
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, card included. Its primary colour fills the card's button.",
+  "hideWhenReducedMotion": [
+    "contentAnimation",
+    "startScale",
+    "fadeContent",
+    "underline"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "defaultTheme": "valorant"
+}

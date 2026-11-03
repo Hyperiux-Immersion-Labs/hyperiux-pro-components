@@ -1,0 +1,185 @@
+{
+  "slug": "animated-input-otp",
+  "exportName": "AnimatedInputOtp",
+  "main": "components/ui/input-otp.tsx",
+  "demos": [
+    "app/components/(default)/input-otp/input-otp-demo.tsx"
+  ],
+  "demoFn": "HpxInputOTPDemo",
+  "title": "Animated Input OTP",
+  "subtitle": "One-time code boxes that fill, shake and confirm.",
+  "defaultMode": "dark",
+  "descriptions": {
+    "allowedCharacters": "Which characters the boxes accept; anything else is ignored as you type or paste.",
+    "glideRing": "One ring that slides from box to box as you type or move with the arrow keys. When off, each box just lights up on its own.",
+    "charAnimation": "How each character appears in its box.",
+    "pasteStagger": "Delay between characters when a whole code is pasted, in seconds. Needs Character in set to anything but None.",
+    "shakeOnError": "Shakes the boxes when the code is wrong or a blocked character is entered.",
+    "successWave": "A wave of the theme's success colour runs across the boxes when the code is right.",
+    "boxSize": "Size of each box, on Tailwind's spacing scale.",
+    "joined": "Joins the boxes into one bar with shared borders.",
+    "rounded": "Corner radius of the boxes. With Joined boxes on, only the outer corners round."
+  },
+  "labels": {
+    "successWave": "Success wave"
+  },
+  "patches": [
+    [
+      "data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) data-[active=true]:aria-invalid:border-(--hx-destructive)",
+      "data-[active=true]:z-10 data-[active=true]:border-(--hx-foreground) in-data-accent:data-[active=true]:border-(--hx-primary) data-[active=true]:aria-invalid:border-(--hx-destructive)"
+    ],
+    [
+      "\"pointer-events-none absolute -inset-px z-10 rounded-[inherit] border border-(--hx-foreground)\"",
+      "\"pointer-events-none absolute -inset-px z-10 rounded-[inherit] border border-(--hx-foreground) in-data-accent:border-(--hx-primary)\""
+    ],
+    [
+      "\"h-[45%] w-px animate-[hx-caret-blink_1.25s_ease-out_infinite] motion-reduce:animate-none bg-(--hx-foreground) duration-1000\"",
+      "\"h-[45%] w-px animate-[hx-caret-blink_1.25s_ease-out_infinite] motion-reduce:animate-none bg-(--hx-foreground) in-data-accent:bg-(--hx-primary) duration-1000\""
+    ],
+    [
+      "\"flex min-h-[40vh] flex-col items-center justify-center gap-4 rounded-lg border px-4\"",
+      "\"flex min-h-72 max-sm:min-h-56 flex-col items-center justify-center gap-4 px-4\""
+    ],
+    [
+      "<p className=\"text-sm text-(--hx-muted-foreground)\">\n        Tip:",
+      "<p className=\"text-center text-sm text-(--hx-muted-foreground) w-[70%] max-sm:w-full mx-auto\">\n        Tip:"
+    ],
+    [
+      "\"10\": \"size-10 text-base max-md:size-9\"",
+      "\"10\": \"size-10 text-base max-[360px]:size-9\""
+    ],
+    [
+      "\"11\": \"size-11 text-base max-md:size-9\"",
+      "\"11\": \"size-11 text-base max-sm:size-10 max-[360px]:size-9\""
+    ],
+    [
+      "\"12\": \"size-12 text-lg max-md:size-9 max-md:text-base\"",
+      "\"12\": \"size-12 text-lg max-sm:size-10 max-sm:text-base max-[360px]:size-9\""
+    ],
+    [
+      "\"14\": \"size-14 text-xl max-md:size-9 max-md:text-base\"",
+      "\"14\": \"size-14 text-xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"16\": \"size-16 text-2xl max-md:size-12 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"18\": \"size-18 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"20\": \"size-20 text-3xl max-md:size-14 max-sm:size-10 max-sm:text-base max-[360px]:size-9\",\n  \"24\": \"size-24 text-4xl max-md:size-16 max-sm:size-10 max-sm:text-base max-[360px]:size-9\""
+    ],
+    [
+      "import { AnimatePresence, MotionConfig, animate, motion, useReducedMotion, type TargetAndTransition } from \"motion/react\"",
+      "import { AnimatePresence, MotionConfig, animate, motion, type TargetAndTransition } from \"motion/react\""
+    ],
+    [
+      "  const reduceMotion = useReducedMotion()\n",
+      "  // Read here, not through motion's hook, so the demo's reduced-motion switch is honoured too\n  const [reduceMotion, setReduceMotion] = React.useState(false)\n  React.useEffect(() => {\n    const mq = window.matchMedia(\"(prefers-reduced-motion: reduce)\")\n    const read = () => setReduceMotion(mq.matches)\n    read()\n    mq.addEventListener?.(\"change\", read)\n    return () => mq.removeEventListener?.(\"change\", read)\n  }, [])\n"
+    ],
+    [
+      "      invalid: invalid || rejecting,\n      success,\n      pasteFrom,\n    }),\n    [",
+      "      invalid: invalid || rejecting,\n      success,\n      pasteFrom,\n      reduceMotion,\n    }),\n    ["
+    ],
+    [
+      "      success,\n      pasteFrom,\n    ]\n  )",
+      "      success,\n      pasteFrom,\n      reduceMotion,\n    ]\n  )"
+    ],
+    [
+      "    /** Where the latest paste starts. */\n    pasteFrom: number | null\n  }",
+      "    /** Where the latest paste starts. */\n    pasteFrom: number | null\n    /** Reduced motion: characters and the success colour just appear. */\n    reduceMotion: boolean\n  }"
+    ],
+    [
+      "  success: false,\n  pasteFrom: null,\n})",
+      "  success: false,\n  pasteFrom: null,\n  reduceMotion: false,\n})"
+    ],
+    [
+      "<MotionConfig reducedMotion=\"user\">",
+      "<MotionConfig reducedMotion=\"never\">"
+    ],
+    [
+      "                transition={{\n                  type: \"spring\",\n                  visualDuration: 0.3,\n                  bounce: 0.4,\n                  delay: maxLength * WAVE_GAP,\n                }}",
+      "                transition={\n                  reduceMotion\n                    ? { duration: 0 }\n                    : { type: \"spring\", visualDuration: 0.3, bounce: 0.4, delay: maxLength * WAVE_GAP }\n                }"
+    ],
+    [
+      "                  transition={{ duration: 0.35, ease: \"easeOut\", delay: maxLength * WAVE_GAP + 0.05 }}",
+      "                  transition={reduceMotion ? { duration: 0 } : { duration: 0.35, ease: \"easeOut\", delay: maxLength * WAVE_GAP + 0.05 }}"
+    ],
+    [
+      "      animate={waved ? { scale: [1, 1.1, 1] } : { scale: 1 }}\n      transition={{ duration: 0.3, delay: waved ? index * WAVE_GAP : 0 }}\n      style={{ transitionDelay: waved ? `${index * WAVE_GAP}s` : \"0s\" }}",
+      "      animate={waved && !options.reduceMotion ? { scale: [1, 1.1, 1] } : { scale: 1 }}\n      transition={{ duration: 0.3, delay: waved && !options.reduceMotion ? index * WAVE_GAP : 0 }}\n      style={{ transitionDelay: waved && !options.reduceMotion ? `${index * WAVE_GAP}s` : \"0s\" }}"
+    ],
+    [
+      "  const animation = options.charAnimation === \"none\" ? null : options.charAnimation",
+      "  // Reduced motion: the character appears at once, with no pop, roll, fade or paste delay\n  const animation = options.reduceMotion || options.charAnimation === \"none\" ? null : options.charAnimation"
+    ],
+    [
+      "type InputOTPSize = \"8\" | \"9\" | \"10\" | \"11\" | \"12\" | \"14\"",
+      "type InputOTPSize = \"8\" | \"9\" | \"10\" | \"11\" | \"12\" | \"14\" | \"16\" | \"18\" | \"20\" | \"24\""
+    ],
+    [
+      "      { label: \"14\", value: \"14\" },\n    ],",
+      "      { label: \"14\", value: \"14\" },\n      { label: \"16\", value: \"16\" },\n      { label: \"18\", value: \"18\" },\n      { label: \"20\", value: \"20\" },\n      { label: \"24\", value: \"24\" },\n    ],"
+    ],
+    [
+      "glideRing: { group: \"Typing\", type: \"checkbox\", label: \"Glide ring\", value: true }",
+      "glideRing: { group: \"Typing\", type: \"checkbox\", label: \"Glide ring\", value: false }"
+    ],
+    [
+      "    label: \"Box size\",\n    value: \"10\",",
+      "    label: \"Box size\",\n    value: \"16\","
+    ],
+    [
+      "    value: \"lg\",\n    options: [\n      { label: \"None\", value: \"none\" },",
+      "    value: \"md\",\n    options: [\n      { label: \"None\", value: \"none\" },"
+    ]
+  ],
+  "themeDescription": "Colour palette. Any theme but Default also tints the active box, the gliding ring and the caret.",
+  "defaultTheme": "ghibli",
+  "defaults": {
+    "glideRing": false,
+    "boxSize": "16",
+    "rounded": "md"
+  },
+  "hideWhenReducedMotion": [
+    "charAnimation",
+    "pasteStagger",
+    "shakeOnError",
+    "successWave"
+  ],
+  "options": {
+    "boxSize": [
+      {
+        "label": "8",
+        "value": "8"
+      },
+      {
+        "label": "9",
+        "value": "9"
+      },
+      {
+        "label": "10",
+        "value": "10"
+      },
+      {
+        "label": "11",
+        "value": "11"
+      },
+      {
+        "label": "12",
+        "value": "12"
+      },
+      {
+        "label": "14",
+        "value": "14"
+      },
+      {
+        "label": "16",
+        "value": "16"
+      },
+      {
+        "label": "18",
+        "value": "18"
+      },
+      {
+        "label": "20",
+        "value": "20"
+      },
+      {
+        "label": "24",
+        "value": "24"
+      }
+    ]
+  }
+}

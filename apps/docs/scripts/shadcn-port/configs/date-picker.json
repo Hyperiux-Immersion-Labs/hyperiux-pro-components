@@ -1,0 +1,204 @@
+{
+  "slug": "animated-date-picker",
+  "exportName": "AnimatedDatePicker",
+  "main": "components/ui/date-picker.tsx",
+  "deps": [
+    "hooks/use-prefers-reduced-motion.ts",
+    "components/animated-icons/calendar-range-icon.tsx",
+    "components/ui/button.tsx",
+    "components/ui/popover.tsx",
+    "components/ui/select.tsx",
+    "components/ui/calendar.tsx"
+  ],
+  "demos": [
+    "app/components/(default)/date-picker/page.tsx"
+  ],
+  "demoFn": "DatePickerPage",
+  "title": "Animated Date Picker",
+  "subtitle": "A button that opens a calendar to pick a date or a date range.",
+  "panelClass": "flex min-h-[70vh] items-start justify-center p-[3vw] max-md:p-[5vw]",
+  "schemaPrelude": "var { format } = require(\"date-fns\");",
+  "descriptions": {
+    "selectionMode": "Pick one date, or a start and an end date. A range shows two months side by side from tablet up.",
+    "showIcon": "Shows a calendar icon in the trigger button.",
+    "rollingText": "The button label rolls to a second copy on hover.",
+    "dateFormat": "How the chosen date is written in the trigger.",
+    "fromBehind": "The calendar grows out from behind the trigger instead of appearing below it.",
+    "contentAnimation": "How the calendar appears: scales and fades, or only fades.",
+    "startScale": "Size the calendar starts from when it opens, as a fraction of full size.",
+    "closeOnSelect": "Closes the calendar as soon as a date is picked. For a range, once both ends are picked.",
+    "captionLayout": "What the calendar header shows: month and year dropdowns, one of them, or a plain label.",
+    "yearsBefore": "How many years before this one the year dropdown goes back. Needs a Header with a year dropdown.",
+    "yearsAfter": "How many years after this one the year dropdown goes forward. Needs a Header with a year dropdown.",
+    "monthAnimation": "How the days change when you move to another month.",
+    "monthSlideDistance": "How far the days slide when the month changes, in pixels. Needs Month animation set to Slide + fade.",
+    "slideArrows": "The month arrows nudge in the direction they move.",
+    "hoverVariant": "Style of the day highlight: filled or outline.",
+    "hoverAnimation": "How the highlight moves between days: slides or fades.",
+    "hoverDuration": "How long the highlight takes to glide between days, in seconds.",
+    "hoverBounce": "How much the highlight overshoots when gliding. 0 is no bounce.",
+    "weekStartsOn": "First day of the week shown in the calendar.",
+    "onlyCurrentMonth": "Hides days that belong to the previous or next month.",
+    "fixedWeeks": "Always shows six weeks so the calendar keeps the same height.",
+    "disablePast": "Greys out dates before today so they can't be picked.",
+    "highlightToday": "Gives today's date its own highlight."
+  },
+  "defaultMode": "dark",
+  "themeDescription": "Colour palette, calendar included. The selected day and range take its primary colour.",
+  "hideWhenReducedMotion": [
+    "rollingText",
+    "fromBehind",
+    "contentAnimation",
+    "startScale",
+    "monthAnimation",
+    "monthSlideDistance",
+    "slideArrows",
+    "hoverAnimation",
+    "hoverDuration",
+    "hoverBounce"
+  ],
+  "width": "w-[60vw] max-lg:w-[85vw] max-md:w-full",
+  "patches": [
+    [
+      "justify-center rounded-lg border border-transparent",
+      "justify-center rounded-md border border-transparent"
+    ],
+    [
+      "in-data-[slot=button-group]:rounded-lg",
+      "in-data-[slot=button-group]:rounded-md"
+    ],
+    [
+      "rounded-[min(var(--radius-md),12px)]",
+      "rounded-md"
+    ],
+    [
+      "rounded-[min(var(--radius-md),10px)]",
+      "rounded-md"
+    ],
+    [
+      "flex-col gap-2.5 rounded-lg bg-(--hx-popover)",
+      "flex-col gap-2.5 rounded-md bg-(--hx-popover)"
+    ],
+    [
+      "justify-between gap-1.5 rounded-lg border border-(--hx-input)",
+      "justify-between gap-1.5 rounded-md border border-(--hx-input)"
+    ],
+    [
+      "overflow-y-auto rounded-lg bg-(--hx-popover)",
+      "overflow-y-auto rounded-md bg-(--hx-popover)"
+    ],
+    [
+      "          align=\"start\"\n          positionerClassName",
+      "          align=\"center\"\n          positionerClassName"
+    ],
+    [
+      "  variant,\n}: {\n  ref: React.Ref<HTMLDivElement>\n  variant: HoverStyle[\"variant\"]\n}) {",
+      "  variant,\n  className,\n}: {\n  ref: React.Ref<HTMLDivElement>\n  variant: HoverStyle[\"variant\"]\n  className?: string\n}) {"
+    ],
+    [
+      "\"pointer-events-none absolute top-0 left-0 rounded-md\",",
+      "\"pointer-events-none absolute top-0 left-0 rounded-md\",\n        className,"
+    ],
+    [
+      "<HoverSquare ref={dateHoverSquare} variant={hoverVariant} />",
+      "{/* Above the range band, below the day numbers. */}\n            <HoverSquare ref={dateHoverSquare} variant={hoverVariant} className=\"z-1\" />"
+    ],
+    [
+      "            onPointerLeave={dateHover.onPointerLeave}\n          >",
+      "            onPointerLeave={() => {\n              dateHover.onPointerLeave()\n              setHoverDay(undefined)\n            }}\n          >"
+    ],
+    [
+      "function DatePicker({\n  value,",
+      "type DateRange = { from: Date | undefined; to?: Date | undefined }\n\n// Two months sit side by side for a range from tablet up; phones get one.\nfunction useMinWidth(query: string) {\n  return React.useSyncExternalStore(\n    (onChange) => {\n      const list = window.matchMedia(query)\n      list.addEventListener(\"change\", onChange)\n      return () => list.removeEventListener(\"change\", onChange)\n    },\n    () => window.matchMedia(query).matches,\n    () => false\n  )\n}\n\n// One month view with its own month, arrows, dropdowns and slide. A range shows two side by side,\n// so each can be on any month or year (say 2027 on the left, 2029 on the right).\nfunction CalendarPanel({\n  initialMonth,\n  monthAnimation,\n  monthSlideDistance,\n  onChangeStart,\n  children,\n}: {\n  initialMonth: Date\n  monthAnimation: \"slide\" | \"fade\" | \"none\"\n  monthSlideDistance: number\n  onChangeStart: () => void\n  children: (month: Date, changeMonth: (next: Date) => void) => React.ReactNode\n}) {\n  const reduceMotion = usePrefersReducedMotion()\n  const box = React.useRef<HTMLDivElement>(null)\n  const [month, setMonth] = React.useState(initialMonth)\n  const pendingMonth = React.useRef<Date | null>(null)\n  const enterDirection = React.useRef<1 | -1 | null>(null)\n\n  const slideBy = (direction: number) =>\n    monthAnimation === \"slide\" ? `${direction * monthSlideDistance}%` : \"0%\"\n\n  const monthParts = () =>\n    box.current?.querySelectorAll(\".rdp-month_caption, .rdp-month_grid\") ?? []\n\n  const changeMonth = async (next: Date) => {\n    const step = differenceInCalendarMonths(next, month)\n    const alreadyAnimating = pendingMonth.current !== null\n    const target = addMonths(pendingMonth.current ?? month, step)\n\n    if (reduceMotion || monthAnimation === \"none\") {\n      setMonth(target)\n      return\n    }\n    pendingMonth.current = target\n    if (alreadyAnimating) return\n\n    onChangeStart()\n    const direction = step > 0 ? 1 : -1\n    await animate([...monthParts()], { x: slideBy(-direction), opacity: 0 }, { duration: 0.2, ease: \"easeIn\" })\n    const landing = pendingMonth.current\n    pendingMonth.current = null\n    enterDirection.current = differenceInCalendarMonths(landing, month) >= 0 ? 1 : -1\n    setMonth(landing)\n  }\n\n  React.useLayoutEffect(() => {\n    const direction = enterDirection.current\n    if (direction === null) return\n    enterDirection.current = null\n    animate([...monthParts()], { x: [slideBy(direction), \"0%\"], opacity: [0, 1] }, { duration: 0.3, ease: [0.16, 1, 0.3, 1] })\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [month])\n\n  return (\n    <div ref={box} className=\"min-w-0 flex-1\">\n      {/* eslint-disable-next-line react-hooks/refs -- changeMonth reads refs only when a month changes */}\n      {children(month, changeMonth)}\n    </div>\n  )\n}\n\nfunction DatePicker({\n  value,"
+    ],
+    [
+      "  placeholder = \"Pick a date\",\n  dateFormat = \"PPP\",",
+      "  placeholder,\n  dateFormat = \"PPP\","
+    ],
+    [
+      "  closeOnSelect = true,\n  className,\n}: {\n  value?: Date\n  onChange?: (date: Date | undefined) => void\n",
+      "  closeOnSelect = true,\n  selectionMode = \"range\",\n  range,\n  onRangeChange,\n  className,\n}: {\n  value?: Date\n  onChange?: (date: Date | undefined) => void\n  /** Pick one date, or a start and an end date. */\n  selectionMode?: \"single\" | \"range\"\n  range?: DateRange\n  onRangeChange?: (range: DateRange | undefined) => void\n"
+    ],
+    [
+      "  const label = value ? format(value, dateFormat) : placeholder\n",
+      "  const isRange = selectionMode === \"range\"\n  const wide = useMinWidth(\"(min-width: 768px)\")\n  const twoMonths = isRange && wide\n  const anchorDate = isRange ? range?.from : value\n  const label = isRange\n    ? range?.from\n      ? // While the end is still being picked (it equals the start), it reads as open.\n        `${format(range.from, dateFormat)} – ${range.to && range.to.toDateString() !== range.from.toDateString() ? format(range.to, dateFormat) : \"…\"}`\n      : (placeholder ?? \"Pick a date range\")\n    : value\n      ? format(value, dateFormat)\n      : (placeholder ?? \"Pick a date\")\n  const closeTimer = React.useRef<number>(undefined)\n  React.useEffect(() => () => window.clearTimeout(closeTimer.current), [])\n\n  // Picking the end: the start is set and the end isn't yet (or still equals it).\n  const [hoverDay, setHoverDay] = React.useState<Date>()\n  const sameDay = (a: Date, b: Date) => a.toDateString() === b.toDateString()\n  const picking = !!range?.from && (!range.to || sameDay(range.from, range.to))\n  const preview =\n    picking && range?.from && hoverDay && !sameDay(hoverDay, range.from)\n      ? hoverDay < range.from\n        ? { from: hoverDay, to: range.from }\n        : { from: range.from, to: hoverDay }\n      : null\n\n  const labelFrame = React.useRef<HTMLSpanElement>(null)\n  const labelBox = React.useRef<HTMLSpanElement>(null)\n  React.useLayoutEffect(() => {\n    const frame = labelFrame.current\n    const inner = labelBox.current\n    if (!frame || !inner) return\n    let first = true\n    const observer = new ResizeObserver(() => {\n      const width = inner.offsetWidth\n      if (first || reduceMotion) {\n        first = false\n        frame.style.width = `${width}px`\n        return\n      }\n      animate(frame, { width }, { type: \"spring\", visualDuration: 0.35, bounce: 0.15 })\n    })\n    observer.observe(inner)\n    return () => observer.disconnect()\n  }, [reduceMotion])\n"
+    ],
+    [
+      "  const [month, setMonth] = React.useState(() => value ?? new Date())\n  const pendingMonth = React.useRef<Date | null>(null)\n  const enterDirection = React.useRef<1 | -1 | null>(null)\n\n  const slideBy = (direction: number) =>\n    monthAnimation === \"slide\" ? `${direction * monthSlideDistance}%` : \"0%\"\n\n  const monthParts = () =>\n    calendarBox.current?.querySelectorAll(\n      \".rdp-month_caption, .rdp-month_grid\"\n    ) ?? []\n\n  const changeMonth = async (next: Date) => {\n    const step = differenceInCalendarMonths(next, month)\n    const alreadyAnimating = pendingMonth.current !== null\n    const target = addMonths(pendingMonth.current ?? month, step)\n\n    if (reduceMotion || monthAnimation === \"none\") {\n      setMonth(target)\n      return\n    }\n    pendingMonth.current = target\n    if (alreadyAnimating) return\n\n    dateHover.hide()\n    const direction = step > 0 ? 1 : -1\n    await animate(\n      [...monthParts()],\n      { x: slideBy(-direction), opacity: 0 },\n      { duration: 0.2, ease: \"easeIn\" }\n    )\n    const landing = pendingMonth.current\n    pendingMonth.current = null\n    enterDirection.current =\n      differenceInCalendarMonths(landing, month) >= 0 ? 1 : -1\n    setMonth(landing)\n  }\n\n  React.useLayoutEffect(() => {\n    const direction = enterDirection.current\n    if (direction === null) return\n    enterDirection.current = null\n    animate(\n      [...monthParts()],\n      { x: [slideBy(direction), \"0%\"], opacity: [0, 1] },\n      { duration: 0.3, ease: [0.16, 1, 0.3, 1] }\n    )\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [month])\n",
+      "  // The right-hand month starts on the range's end, or the month after the start.\n  const startMonth = anchorDate ?? new Date()\n  const endMonth =\n    range?.to && differenceInCalendarMonths(range.to, startMonth) > 0 ? range.to : addMonths(startMonth, 1)\n  const panels = twoMonths ? [startMonth, endMonth] : [startMonth]\n"
+    ],
+    [
+      "            setMonth(value ?? new Date())\n",
+      ""
+    ],
+    [
+      "              data-empty={!value}",
+      "              data-empty={!anchorDate}"
+    ],
+    [
+      "\"group/trigger h-11 w-[20rem] justify-start gap-2.5 px-3.5 text-left text-base font-normal data-[empty=true]:text-(--hx-muted-foreground) max-md:w-full\",",
+      "\"group/trigger h-11 w-fit max-w-full justify-start gap-2.5 px-3.5 text-left text-base font-normal data-[empty=true]:text-(--hx-muted-foreground)\","
+    ],
+    [
+      "          {rollingText ? (\n            <span className=\"relative block overflow-hidden\">",
+      "          {/* The label box springs to the width of the label inside it. */}\n          <span ref={labelFrame} className=\"relative block max-w-full overflow-hidden\">\n          <span ref={labelBox} className=\"block w-max\">\n          {rollingText ? (\n            <span className=\"relative block overflow-hidden\">"
+    ],
+    [
+      "            <span>{label}</span>\n          )}\n        </PopoverTrigger>",
+      "            <span className=\"block\">{label}</span>\n          )}\n          </span>\n          </span>\n        </PopoverTrigger>"
+    ],
+    [
+      "            \"w-(--anchor-width) p-0\",",
+      "            twoMonths ? \"w-[36rem]\" : \"w-[20rem]\",\n            \"max-w-[calc(100vw-2rem)] p-0\","
+    ],
+    [
+      "              mode=\"single\"\n              selected={value}\n              onSelect={(date) => {\n                onChange?.(date)\n                if (closeOnSelect) setOpen(false)\n              }}",
+      "              {...(isRange\n                ? {\n                    mode: \"range\" as const,\n                    selected: range,\n                    onDayMouseEnter: (day: Date) => setHoverDay(day),\n                    modifiers: preview\n                      ? {\n                          preview_start: preview.from,\n                          preview_middle: { after: preview.from, before: preview.to },\n                          preview_end: preview.to,\n                        }\n                      : undefined,\n                    modifiersClassNames: {\n                      preview_start: \"rounded-l-(--cell-radius) rounded-r-none! bg-(--hx-muted)!\",\n                      preview_middle: \"rounded-none! bg-(--hx-muted)!\",\n                      preview_end: \"rounded-r-(--cell-radius) rounded-l-none! bg-(--hx-muted)!\",\n                    },\n                    onSelect: (_: DateRange | undefined, day: Date) => {\n                      const from = range?.from\n                      const next =\n                        picking && from\n                          ? day < from\n                            ? { from: day, to: from }\n                            : { from, to: day }\n                          : { from: day, to: day }\n                      onRangeChange?.(next)\n                      window.clearTimeout(closeTimer.current)\n                      // Closes once both ends are picked, after the band has filled in.\n                      if (closeOnSelect && !sameDay(next.from, next.to)) {\n                        closeTimer.current = window.setTimeout(() => setOpen(false), reduceMotion ? 0 : 350)\n                      }\n                    },\n                  }\n                : {\n                    mode: \"single\" as const,\n                    selected: value,\n                    onSelect: (date: Date | undefined) => {\n                      onChange?.(date)\n                      if (closeOnSelect) setOpen(false)\n                    },\n                  })}"
+    ],
+    [
+      "\"w-full! p-3 [&_.rdp-weekdays]:gap-1.5 [&_.rdp-week]:mt-1.5 [&_.rdp-week]:gap-1.5\",",
+      "\"w-full! p-3 [&_.rdp-week]:mt-1.5\",\n                // A range reads as one band, so its days touch; single dates keep their gaps.\n                isRange\n                  ? cn(\n                      \"[&_.rdp-months]:gap-6 [&_.rdp-day]:transition-colors [&_.rdp-day]:duration-(--hover-duration) motion-reduce:[&_.rdp-day]:transition-none\",\n                      String.raw`[&_.rdp-range\\_start]:z-auto [&_.rdp-range\\_start]:isolation-auto [&_.rdp-range\\_end]:z-auto [&_.rdp-range\\_end]:isolation-auto`,\n                      String.raw`[&_.rdp-range\\_middle]:rounded-none! [&_.rdp-range\\_middle]:bg-(--hx-muted)! [&_.rdp-range\\_start]:bg-(--hx-muted)! [&_.rdp-range\\_end]:bg-(--hx-muted)! [&_button[data-range-middle=true]]:bg-transparent!`\n                    )\n                  : \"[&_.rdp-weekdays]:gap-1.5 [&_.rdp-week]:gap-1.5\","
+    ],
+    [
+      "  const [date, setDate] = React.useState<Date>()\n",
+      "  const [date, setDate] = React.useState<Date>()\n  const [range, setRange] = React.useState<DateRange>()\n"
+    ],
+    [
+      "          value={date}\n          onChange={setDate}\n",
+      "          value={date}\n          onChange={setDate}\n          selectionMode={values.selectionMode as DatePickerProps[\"selectionMode\"]}\n          range={range}\n          onRangeChange={setRange}\n"
+    ],
+    [
+      "  showIcon: { group: \"Trigger\", type: \"checkbox\", label: \"Icon\", value: true },",
+      "  selectionMode: {\n    group: \"Trigger\",\n    type: \"select\",\n    label: \"Selection\",\n    value: \"range\",\n    options: [\n      { label: \"Single date\", value: \"single\" },\n      { label: \"Date range\", value: \"range\" },\n    ],\n  },\n  showIcon: { group: \"Trigger\", type: \"checkbox\", label: \"Icon\", value: true },"
+    ],
+    [
+      "            <Calendar\n              {...(isRange",
+      "            {panels.map((initial, index) => (\n            <CalendarPanel\n              key={index}\n              initialMonth={initial}\n              monthAnimation={monthAnimation}\n              monthSlideDistance={monthSlideDistance}\n              onChangeStart={dateHover.hide}\n            >\n            {(month, changeMonth) => (\n            <Calendar\n              {...(isRange"
+    ],
+    [
+      "            />\n          </div>\n        </PopoverContent>",
+      "            />\n            )}\n            </CalendarPanel>\n            ))}\n          </div>\n        </PopoverContent>"
+    ],
+    [
+      "            ref={calendarBox}\n            className=\"relative overflow-hidden\"",
+      "            ref={calendarBox}\n            className=\"relative flex overflow-hidden\""
+    ],
+    [
+      "                \"hover:bg-(--hx-background)\",\n                fromBehind",
+      "                \"hover:bg-(--hx-background) aria-expanded:bg-(--hx-background)\",\n                fromBehind"
+    ],
+    [
+      "\"data-[side=bottom]:data-starting-style:-translate-y-12 data-closed:data-[side=bottom]:data-ending-style:-translate-y-12\"",
+      "\"data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4\""
+    ],
+    [
+      "\"data-[side=bottom]:data-starting-style:-translate-y-4 data-closed:data-[side=bottom]:data-ending-style:-translate-y-4\"\n          )}",
+      "\"data-[side=bottom]:data-starting-style:-translate-y-2 data-closed:data-[side=bottom]:data-ending-style:-translate-y-2\"\n          )}"
+    ],
+    [
+      "  // The right-hand month starts on the range's end, or the month after the start.\n  const startMonth = anchorDate ?? new Date()\n  const endMonth =\n    range?.to && differenceInCalendarMonths(range.to, startMonth) > 0 ? range.to : addMonths(startMonth, 1)\n  const panels = twoMonths ? [startMonth, endMonth] : [startMonth]\n",
+      "  // The right-hand month starts on the range's end, or the month after the start. Only worked\n  // out while open: reading today's date during render breaks prerendering (cacheComponents).\n  const panels: Date[] = []\n  if (open) {\n    const startMonth = anchorDate ?? new Date()\n    const endMonth =\n      range?.to && differenceInCalendarMonths(range.to, startMonth) > 0 ? range.to : addMonths(startMonth, 1)\n    panels.push(...(twoMonths ? [startMonth, endMonth] : [startMonth]))\n  }\n"
+    ]
+  ],
+  "defaultTheme": "vscode"
+}

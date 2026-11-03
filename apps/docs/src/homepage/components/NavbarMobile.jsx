@@ -456,7 +456,6 @@ export default function NavbarMobile({
                 href="/dashboard"
                 // A full page load so Clerk can refresh the stale session (see Navbar's account icon)
                 preventDefault
-                // eslint-disable-next-line @next/next/no-location-assign-relative-destination
                 onClick={() => window.location.assign("/dashboard")}
                 className="w-full max-lg:py-3 max-lg:text-[clamp(15px,1.8vw,17px)] max-md:py-[1.5vw] max-md:text-[4vw]"
               />

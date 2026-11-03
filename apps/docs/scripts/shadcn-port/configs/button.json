@@ -1,0 +1,11 @@
+{
+  "slug": "animated-button",
+  "exportName": "AnimatedButtonSet",
+  "main": "components/ui/animated-button.tsx",
+  "demos": [
+    "app/components/(default)/button/button-demo.tsx"
+  ],
+  "demoFn": "HpxButtonDemo",
+  "title": "Animated Button",
+  "subtitle": "Buttons with hover, press and loading animations."
+}
