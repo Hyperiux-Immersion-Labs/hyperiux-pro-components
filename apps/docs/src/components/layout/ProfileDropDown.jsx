@@ -155,6 +155,7 @@ export default function ProfileDropdown({ savedCount = 0, usage = null, plan = "
             onClick={() =>
               signOut(() => {
                 const onDashboard = window.location.pathname.startsWith("/dashboard");
+                // eslint-disable-next-line @next/next/no-location-assign-relative-destination
                 if (onDashboard) window.location.href = "/effects";
                 else window.location.reload();
               })

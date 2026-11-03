@@ -35,7 +35,6 @@ app/
 ├── Hero.tsx                    # 3D interactive tooth visualizer & intro copy
 ├── AboutOris.tsx                # Practice overview + animated slot counters
 ├── DentalTreatments.tsx         # Scroll-pinned stacked card deck of treatments
-├── WhyOris.tsx                  # Why choose us feature card with animated metrics
 ├── CareComfort.tsx              # Care & comfort feature section
 ├── ParallaxSectionBreak.tsx     # Full-bleed parallax statement break
 ├── Reviews.tsx                  # Ribbon review strips + section break
@@ -60,7 +59,7 @@ app/
 │   ├── DotsCanvas.tsx
 │   └── MouseTilt.tsx
 └── effects/                     # Extracted self-contained effects
-    ├── dot-fill-button/
+    ├── dot-fill-btn/
     ├── circular-button/
     ├── slot-counter/
     ├── text-fill/

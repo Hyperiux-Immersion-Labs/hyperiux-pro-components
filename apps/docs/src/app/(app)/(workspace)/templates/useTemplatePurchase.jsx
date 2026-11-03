@@ -33,6 +33,8 @@ export function useTemplatePurchase() {
 
   const buy = useCallback((t, owned = false) => {
     if (owned) {
+      // A document request, not router.push(): the API route answers with the zip file.
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = `/api/templates/${t.slug}/download`;
       return;
     }
@@ -69,6 +71,7 @@ export function useTemplatePurchase() {
         onClose={() => setPaywallOpen(false)}
         onPurchased={() => {
           setPaywallOpen(false);
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
           window.location.href = `/api/templates/${template.slug}/download`;
           markTemplateOwned(template.slug);
           showToast({ title: `${template.title} purchased`, description: `${template.title} has been purchased and downloaded.` });

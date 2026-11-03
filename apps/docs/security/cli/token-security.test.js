@@ -4,7 +4,6 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 // issue -> validate -> fetch Pro source -> revoke -> stolen copy is dead.
 // Supabase and Clerk are the in-memory fakes from route-harness.js; the
 // registry, effect-access and cli-auth logic are the real modules.
-// Report: security/reports/AUDIT-2026-10-14.md (L10).
 
 vi.mock("@/lib/supabase", async () => ({ supabase: (await import("../helpers/route-harness.js")).db }));
 vi.mock("@clerk/nextjs/server", async () => (await import("../helpers/route-harness.js")).clerkModule);

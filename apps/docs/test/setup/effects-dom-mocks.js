@@ -42,14 +42,23 @@ if (typeof window !== "undefined") {
     );
   }
 
-  const originalGetContext = HTMLCanvasElement.prototype.getContext;
-  HTMLCanvasElement.prototype.getContext = function (type, ...args) {
+  HTMLCanvasElement.prototype.getContext = function (type) {
     if (type === "2d") return make2dContextStub();
-    // webgl/webgl2/experimental-webgl deliberately fall through to jsdom's
-    // real (null) behavior - there's no GPU here, and faking one risks
-    // masking real bugs. See effect-harness.js for how webgl effects are handled.
-    return originalGetContext ? originalGetContext.call(this, type, ...args) : null;
+    // webgl/webgl2/experimental-webgl deliberately get jsdom's real (null)
+    // result - there's no GPU here, and faking one risks masking real bugs.
+    // Returned directly so jsdom doesn't log "Not implemented" on every call.
+    // See effect-harness.js for how webgl effects are handled.
+    return null;
   };
+  // jsdom's version logs "Not implemented" and returns null; same result, no log.
+  HTMLCanvasElement.prototype.toDataURL = () => null;
+
+  // Same "Not implemented" logs for scrolling and media playback, which
+  // effects call on mount (scroll resets, autoplaying preview videos).
+  window.scrollTo = noop;
+  HTMLMediaElement.prototype.play = () => Promise.resolve();
+  HTMLMediaElement.prototype.pause = noop;
+  HTMLMediaElement.prototype.load = noop;
 
   if (typeof window.ResizeObserver === "undefined") {
     window.ResizeObserver = class ResizeObserver {
