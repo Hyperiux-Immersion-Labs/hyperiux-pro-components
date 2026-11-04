@@ -477,7 +477,8 @@ export function EffectsListing({
       {/* ---------- hero ---------- */}
       <section id="effects-hero" className={`${WRAP} flex flex-col gap-7 pt-32 pb-20 max-lg:pt-32 max-lg:pb-14 max-md:pt-28`}>
         <div data-v4-fade>
-          <Breadcrumb />
+          {/* Category pages read "Home / effects / category", and "effects / category" below lg */}
+          <Breadcrumb compactBelowLg={!!scope} />
         </div>
 
         <div data-v4-hero className="flex justify-between gap-[calc(var(--cvw)*3)] max-lg:flex-col max-lg:items-stretch max-lg:gap-[5vw]">

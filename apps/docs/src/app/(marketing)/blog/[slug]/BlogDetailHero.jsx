@@ -23,7 +23,7 @@ export default function BlogDetailHero({ post }) {
   return (
     <div ref={heroRef} className="flex flex-col gap-[calc(var(--cvw)*3.5)] max-md:gap-0">
       <section id="blog-hero" className="site-container section-x flex flex-col gap-10 max-md:pb-[12%]">
-        {/* Back + breadcrumb, as on the dashboard and effect pages: post */}
+        {/* Back + breadcrumb, as on the effect page: Home / blog / post, and blog / post below lg */}
         <div className="flex min-w-0 items-center gap-4">
           <button
             id="blog-detail-go-back"
@@ -36,7 +36,10 @@ export default function BlogDetailHero({ post }) {
           </button>
           <Breadcrumb
             maxWords={3}
+            compactBelowLg
             items={[
+              { label: "Home", href: "/" },
+              { label: "blog", href: "/blog" },
               { label: post.title, href: pathname },
             ]}
           />
