@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Script from "next/script";
 import { isLighthouseOrHeadless, isSoftwareRenderer } from "@/lib/audit";
 
-// Tracking / session-recording scripts (Microsoft Clarity, reb2b)
+// Tracking / session-recording scripts (Microsoft Clarity, reb2b, Cloudflare)
 // keep the network continuously busy for lab audits. Skip under headless/audit
 // agents - including PSI's desktop crawler (plain Chrome UA, no webdriver),
 // caught via software WebGL renderer. Real visitors unchanged visually.
@@ -42,6 +42,13 @@ export default function DeferredAnalytics() {
         dangerouslySetInnerHTML={{
           __html: `!function(key){if(window.reb2b)return;window.reb2b={loaded:true};var s=document.createElement("script");s.async=true;s.src="https://ddwl4m2hdecbv.cloudfront.net/b/"+key+"/"+key+".js.gz";document.getElementsByTagName("script")[0].parentNode.insertBefore(s,document.getElementsByTagName("script")[0]);}("5NRP9H7J4EO1");`,
         }}
+      />
+      {/* Cloudflare Web Analytics (site: vault.hyperiux.com) */}
+      <Script
+        id="cloudflare-web-analytics"
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        strategy="lazyOnload"
+        data-cf-beacon='{"token": "953083b277fc424b98da03cb18773701"}'
       />
     </>
   );
