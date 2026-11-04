@@ -188,6 +188,8 @@ declare module 'next/font/google' {
   export const Fira_Code: FontLoader
   export const Host_Grotesk: FontLoader
   export const Work_Sans: FontLoader
+  export const Manrope: FontLoader
+  export const IBM_Plex_Mono: FontLoader
   const fontLoader: FontLoader
   export default fontLoader
 }

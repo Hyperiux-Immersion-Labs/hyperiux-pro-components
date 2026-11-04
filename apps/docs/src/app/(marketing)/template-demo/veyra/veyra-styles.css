@@ -1,0 +1,324 @@
+/* Built using Hyperiux Vault: https://vault.hyperiux.com */
+
+.vey-page,
+html:has(.vey-page) {
+  --vey-night: #0b1020;
+  --vey-deep: #202b4a;
+  --vey-lilac: #aeb8e8;
+  --vey-mist: #e8eaf5;
+  --vey-paper: #f7f7f5;
+  --vey-snow: #f5f6fa;
+  --vey-ink: #151927;
+  --vey-slate: #73798a;
+  --vey-line: #e2e4ec;
+  --vey-line-dark: rgba(255, 255, 255, 0.1);
+  --vey-dim: rgba(245, 246, 250, 0.62);
+  background-color: var(--vey-night);
+}
+
+.vey-page {
+  background-color: var(--vey-night);
+  color: var(--vey-snow);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.vey-page,
+.vey-page * {
+  font-family: var(--font-vey-body);
+}
+
+.vey-page h1,
+.vey-page h2,
+.vey-page h3,
+.vey-page h1 *,
+.vey-page h2 *,
+.vey-page h3 * {
+  font-family: var(--font-vey-body);
+  font-weight: 500;
+}
+
+.vey-page h1,
+.vey-page h2 {
+  line-height: 1.02;
+  text-wrap: balance;
+}
+
+.vey-page h3 {
+  line-height: 1.2;
+}
+
+.vey-page .font-vey-mono,
+.vey-page .font-vey-mono * {
+  font-family: var(--font-vey-mono);
+  letter-spacing: 0.02vw;
+}
+
+.vey-page h1,
+.vey-page .text-128 {
+  font-size: 6.4vw;
+  letter-spacing: -0.3vw;
+}
+
+.vey-page h2,
+.vey-page .text-64 {
+  font-size: 3.6vw;
+  letter-spacing: -0.14vw;
+}
+
+.vey-page .text-40 {
+  font-size: 2.1vw;
+  letter-spacing: -0.06vw;
+  line-height: 1.15;
+}
+
+.vey-page .text-30 {
+  font-size: 1.4vw;
+  letter-spacing: -0.03vw;
+}
+
+.vey-page .text-28 {
+  font-size: 1.2vw;
+}
+
+.vey-page .text-24 {
+  font-size: 1vw;
+}
+
+.vey-page .text-22 {
+  font-size: 0.9vw;
+}
+
+.vey-page .text-14 {
+  font-size: 0.8vw;
+}
+
+.vey-page .text-vey-dim {
+  color: var(--vey-dim);
+}
+
+.vey-page .text-vey-slate {
+  color: var(--vey-slate);
+}
+
+.vey-page .text-vey-ink {
+  color: var(--vey-ink);
+}
+
+.vey-page .text-vey-lilac {
+  color: var(--vey-lilac);
+}
+
+.vey-page .bg-vey-night {
+  background-color: var(--vey-night);
+}
+
+.vey-page .bg-vey-paper {
+  background-color: var(--vey-paper);
+}
+
+.vey-page .vey-container {
+  padding-inline: 5vw;
+}
+
+.vey-page .vey-section {
+  padding-block: 9vw;
+}
+
+.vey-page .vey-line {
+  padding-block: 0.12em;
+  margin-block: -0.12em;
+}
+
+.vey-page .vey-glass {
+  background: linear-gradient(160deg, rgba(174, 184, 232, 0.1), rgba(32, 43, 74, 0.25));
+  border: 1px solid var(--vey-line-dark);
+}
+
+.vey-page .vey-card-light {
+  background-color: #ffffff;
+  border: 1px solid var(--vey-line);
+  box-shadow:
+    0 1px 2px rgba(21, 25, 39, 0.04),
+    0 12px 32px -18px rgba(21, 25, 39, 0.18);
+}
+
+.vey-page .vey-glow {
+  background: radial-gradient(closest-side, rgba(174, 184, 232, 0.22), rgba(174, 184, 232, 0));
+}
+
+.vey-page .vey-plate {
+  transform: rotateX(58deg) rotateZ(45deg);
+}
+
+.vey-page .vey-scrollbar-none {
+  scrollbar-width: none;
+}
+
+.vey-page .vey-scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+html:has(.vey-page) {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(174, 184, 232, 0.55) #0b1020;
+}
+
+html:has(.vey-page)::-webkit-scrollbar {
+  width: 8px;
+  background-color: #0b1020;
+}
+
+html:has(.vey-page)::-webkit-scrollbar-thumb {
+  background-color: rgba(174, 184, 232, 0.55);
+  border-radius: 8px;
+  border: 2px solid #0b1020;
+}
+
+html:has(.vey-page)[data-vey-tone="light"] {
+  scrollbar-color: rgba(21, 25, 39, 0.35) #f7f7f5;
+}
+
+html:has(.vey-page)[data-vey-tone="light"]::-webkit-scrollbar {
+  background-color: #f7f7f5;
+}
+
+html:has(.vey-page)[data-vey-tone="light"]::-webkit-scrollbar-thumb {
+  background-color: rgba(21, 25, 39, 0.35);
+  border-color: #f7f7f5;
+}
+
+.vey-page ::selection {
+  background-color: var(--vey-lilac);
+  color: var(--vey-night);
+}
+
+.vey-page :focus-visible {
+  outline: 2px solid var(--vey-lilac);
+  outline-offset: 3px;
+}
+
+.vey-page .vey-pre {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .vey-page [data-line] {
+    transform: translateY(115%);
+  }
+
+  .vey-page [data-desc] {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+.vey-header[data-scrolled="true"] .vey-header-bar {
+  background-color: rgba(11, 16, 32, 0.62);
+  border-color: var(--vey-line-dark);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.vey-header[data-open="true"] .vey-header-bar {
+  background-color: transparent;
+  border-color: transparent;
+  backdrop-filter: none;
+}
+
+.vey-header[data-tone="light"]:not([data-open="true"]) .vey-header-bar {
+  background-color: rgba(247, 247, 245, 0.78);
+  border-color: var(--vey-line);
+  color: var(--vey-ink);
+}
+
+.vey-header[data-tone="light"]:not([data-open="true"]) .vey-header-link {
+  color: var(--vey-slate);
+}
+
+.vey-header[data-tone="light"]:not([data-open="true"]) .vey-header-link:hover,
+.vey-header[data-tone="light"]:not([data-open="true"]) .vey-header-link[aria-current="true"] {
+  color: var(--vey-ink);
+}
+
+.vey-header[data-tone="light"]:not([data-open="true"]) .vey-header-cta {
+  background-color: var(--vey-ink);
+  color: var(--vey-snow);
+}
+
+@media (max-width: 1025px) {
+  .vey-page h1,
+  .vey-page .text-128 {
+    font-size: 8.4vw;
+    letter-spacing: -0.34vw;
+  }
+  .vey-page h2,
+  .vey-page .text-64 {
+    font-size: 6vw;
+    letter-spacing: -0.22vw;
+  }
+  .vey-page .text-40 {
+    font-size: 3.6vw;
+    letter-spacing: -0.1vw;
+  }
+  .vey-page .text-30 {
+    font-size: 2.6vw;
+  }
+  .vey-page .text-28 {
+    font-size: 2.2vw;
+  }
+  .vey-page .text-24 {
+    font-size: 1.9vw;
+  }
+  .vey-page .text-22 {
+    font-size: 1.8vw;
+  }
+  .vey-page .text-14 {
+    font-size: 1.5vw;
+  }
+  .vey-page .vey-container {
+    padding-inline: 5vw;
+  }
+  .vey-page .vey-section {
+    padding-block: 13vw;
+  }
+}
+
+@media (max-width: 768px) {
+  .vey-page h1,
+  .vey-page .text-128 {
+    font-size: 11.6vw;
+    letter-spacing: -0.5vw;
+  }
+  .vey-page h2,
+  .vey-page .text-64 {
+    font-size: 9vw;
+    letter-spacing: -0.35vw;
+  }
+  .vey-page .text-40 {
+    font-size: 6.4vw;
+    letter-spacing: -0.2vw;
+  }
+  .vey-page .text-30 {
+    font-size: 5vw;
+  }
+  .vey-page .text-28 {
+    font-size: 4.1vw;
+  }
+  .vey-page .text-24 {
+    font-size: 3.7vw;
+  }
+  .vey-page .text-22 {
+    font-size: 3.7vw;
+  }
+  .vey-page .text-14 {
+    font-size: 3vw;
+  }
+  .vey-page .vey-container {
+    padding-inline: 5vw;
+  }
+  .vey-page .vey-section {
+    padding-block: 22vw;
+  }
+}
