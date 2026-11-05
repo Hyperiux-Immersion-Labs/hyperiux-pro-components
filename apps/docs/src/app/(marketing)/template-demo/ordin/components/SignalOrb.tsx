@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isMobile, prefersReducedMotion } from "./Animations/reducedMotion";
 import { useElementHeightKey, useResizeKey } from "./Animations/useResizeKey";
 import { intro } from "./Animations/intro";
+import { THEME, alpha, rgb } from "../theme";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -61,8 +62,8 @@ const MOBILE: Record<string, OrbStage> = {
   footer: { enter: pose({ scale: 0.9, opacity: 0, energy: 1 }) },
 };
 
-const MIST = [230, 236, 228];
-const PRIMARY = [110, 242, 177];
+const MIST = rgb(THEME.bone).split(",").map(Number);
+const PRIMARY = rgb(THEME.primaryLight).split(",").map(Number);
 const mix = (t: number) => MIST.map((v, i) => Math.round(PRIMARY[i] + (v - PRIMARY[i]) * t)).join(",");
 
 export function heroPose() {
@@ -70,7 +71,23 @@ export function heroPose() {
   return { x: (p.x * window.innerWidth) / 100, y: (p.y * window.innerHeight) / 100, scale: p.scale };
 }
 
-const SignalOrb = () => {
+// Inner pages keep the globe hidden until their closing call to action
+export const CTA_ONLY: { desktop: Record<string, OrbStage>; mobile: Record<string, OrbStage> } = {
+  desktop: {
+    hero: { enter: pose({ scale: 0.6, opacity: 0 }) },
+    cta: { enter: pose({ scale: 1.5, energy: 1 }) },
+    footer: { enter: pose({ scale: 1.1, opacity: 0, energy: 1 }) },
+  },
+  mobile: {
+    hero: { enter: pose({ scale: 0.5, opacity: 0 }) },
+    cta: { enter: pose({ scale: 1.2, energy: 1 }) },
+    footer: { enter: pose({ scale: 0.9, opacity: 0, energy: 1 }) },
+  },
+};
+
+type SignalOrbProps = { poses?: { desktop: Record<string, OrbStage>; mobile: Record<string, OrbStage> } };
+
+const SignalOrb = ({ poses }: SignalOrbProps) => {
   const wrapRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const state = useRef({ spread: 0, energy: 0.25 });
@@ -109,9 +126,9 @@ const SignalOrb = () => {
     const sctx = sprite.getContext("2d");
     if (sctx) {
       const g = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
-      g.addColorStop(0, "rgba(110,242,177,1)");
-      g.addColorStop(0.35, "rgba(110,242,177,0.35)");
-      g.addColorStop(1, "rgba(110,242,177,0)");
+      g.addColorStop(0, alpha(THEME.primaryLight, 1));
+      g.addColorStop(0.35, alpha(THEME.primaryLight, 0.35));
+      g.addColorStop(1, alpha(THEME.primaryLight, 0));
       sctx.fillStyle = g;
       sctx.fillRect(0, 0, 64, 64);
     }
@@ -164,9 +181,9 @@ const SignalOrb = () => {
       ctx.clearRect(0, 0, w, h);
 
       const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, w * 0.5);
-      glow.addColorStop(0, `rgba(115,190,161,${0.14 + energy * 0.1})`);
-      glow.addColorStop(0.5, "rgba(115,190,161,0.03)");
-      glow.addColorStop(1, "rgba(115,190,161,0)");
+      glow.addColorStop(0, `rgba(${rgb(THEME.primary)},${0.14 + energy * 0.1})`);
+      glow.addColorStop(0.5, alpha(THEME.primary, 0.03));
+      glow.addColorStop(1, alpha(THEME.primary, 0));
       ctx.fillStyle = glow;
       ctx.fillRect(0, 0, w, h);
 
@@ -244,10 +261,10 @@ const SignalOrb = () => {
             ctx.moveTo(pts2[o], pts2[o + 1]);
             ctx.lineTo(pts2[o + 3], pts2[o + 4]);
           }
-          ctx.shadowColor = "rgba(110,242,177,0.9)";
+          ctx.shadowColor = alpha(THEME.primaryLight, 0.9);
           ctx.shadowBlur = (front ? 10 : 6) * dpr;
           ctx.lineWidth = dpr;
-          ctx.strokeStyle = `rgba(110,242,177,${(front ? 0.2 : 0.1) * ea * ea})`;
+          ctx.strokeStyle = `rgba(${rgb(THEME.primaryLight)},${(front ? 0.2 : 0.1) * ea * ea})`;
           ctx.stroke();
           ctx.shadowBlur = 0;
           ctx.shadowColor = "transparent";
@@ -268,7 +285,7 @@ const SignalOrb = () => {
             ctx.moveTo(pts2[o], pts2[o + 1]);
             ctx.lineTo(pts2[o + 3], pts2[o + 4]);
             ctx.lineWidth = dpr * (1 + boost * 1.2);
-            ctx.strokeStyle = `rgba(110,242,177,${alpha})`;
+            ctx.strokeStyle = `rgba(${rgb(THEME.primaryLight)},${alpha})`;
             ctx.stroke();
           }
         }
@@ -322,7 +339,7 @@ const SignalOrb = () => {
         const glowA = (0.06 + depth * 0.16) * fade * e + heat * 0.75;
         if (glowA > 0.03) halos.push(px, py, size * (3.4 + heat * 4), Math.min(1, glowA));
         ctx.fillStyle = heat > 0.05
-          ? `rgba(110,242,177,${Math.min(1, 0.3 + depth * 0.6 + heat) * e})`
+          ? `rgba(${rgb(THEME.primaryLight)},${Math.min(1, 0.3 + depth * 0.6 + heat) * e})`
           : `rgba(${mix(depth * depth)},${Math.min(1, 0.32 + depth * 0.68) * fade * e})`;
         ctx.beginPath();
         ctx.arc(px, py, size / 2, 0, Math.PI * 2);
@@ -354,7 +371,7 @@ const SignalOrb = () => {
       if (links.length) {
         ctx.lineWidth = dpr * 0.6;
         for (let j = 0; j < links.length; j += 3) {
-          ctx.strokeStyle = `rgba(110,242,177,${links[j + 2] * 0.35})`;
+          ctx.strokeStyle = `rgba(${rgb(THEME.primaryLight)},${links[j + 2] * 0.35})`;
           ctx.beginPath();
           ctx.moveTo(pointer.x, pointer.y);
           ctx.lineTo(links[j], links[j + 1]);
@@ -384,7 +401,7 @@ const SignalOrb = () => {
     () => {
       const wrap = wrapRef.current;
       if (!wrap) return;
-      const stages = isMobile() ? MOBILE : DESKTOP;
+      const stages = poses ? (isMobile() ? poses.mobile : poses.desktop) : isMobile() ? MOBILE : DESKTOP;
       const vw = window.innerWidth / 100;
       const vh = window.innerHeight / 100;
       const place = (p: OrbPose) => ({ x: p.x * vw, y: p.y * vh, scale: p.scale, opacity: p.opacity });
@@ -446,3 +463,8 @@ const SignalOrb = () => {
 };
 
 export default SignalOrb;
+
+// The globe for inner pages: hidden until the closing call to action, where it grows behind the headline
+export function CtaOrb() {
+  return <SignalOrb poses={CTA_ONLY} />;
+}

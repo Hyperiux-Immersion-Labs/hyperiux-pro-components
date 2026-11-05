@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import { SplitText } from "gsap/SplitText";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 import { OrdButton } from "./Buttons";
+import { ROUTES } from "./nav";
 import { onIntroDone } from "./Animations/intro";
 
 gsap.registerPlugin(useGSAP, SplitText);
@@ -54,9 +55,9 @@ const Hero = () => {
     >
       <div className="relative flex w-[58%] flex-col gap-10 max-lg:w-[80%] max-md:w-full max-md:gap-6">
         <h1 data-ord-hero-title data-ord-hide className="ord-hero-title">
-          The operating layer
+          Agents that
           <br />
-          for <span className="text-ord-primary-light">autonomous work.</span>
+          <span className="text-ord-primary-light">finish the job.</span>
         </h1>
         <div data-ord-hide className="flex w-[70%] flex-col gap-8 max-md:w-full max-md:gap-6">
           <p data-ord-hero-copy className="text-28 text-ord-ash">
@@ -64,15 +65,15 @@ const Hero = () => {
             record.
           </p>
           <div data-ord-hero-fade className="flex flex-wrap gap-3">
-            <OrdButton href="#">Start building</OrdButton>
-            <OrdButton href="#" variant="line">
-              Read the docs
+            <OrdButton href={ROUTES.pricing}>Start building</OrdButton>
+            <OrdButton href={ROUTES.platform} variant="line">
+              See the platform
             </OrdButton>
           </div>
         </div>
       </div>
       <div data-ord-hide aria-hidden className="absolute inset-x-0 bottom-[5vh] ord-container max-md:bottom-[4vh]">
-        <span data-ord-hero-rule className="block h-px w-full origin-left bg-[#73bea1]/40" />
+        <span data-ord-hero-rule className="block h-px w-full origin-left bg-(--ord-primary)/40" />
       </div>
     </section>
   );

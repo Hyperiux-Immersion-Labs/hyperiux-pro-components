@@ -329,6 +329,63 @@ const TEMPLATES = {
     ],
     needsGlbLoader: false,
   },
+  // A multi-page AI/SaaS site (home, platform, agents, governance, pricing, 404) with an enquiry dialog
+  // with a shared layout, a block page transition and a WebGL hero on every page.
+  ordin: {
+    title: "Ordin - AI Agent Platform SaaS Template",
+    description:
+      "A multi-page, scroll-driven template for AI and SaaS products - a cursor-reactive particle globe, mint Arc Light shaders, pinned scroll scenes for agents and governance, live pricing estimator and a block page transition.",
+    dependencies: {
+      gsap: "^3.15.0",
+      "@gsap/react": "^2.1.2",
+      lenis: "^1.3.23",
+      motion: "^12.40.0",
+      "next-transition-router": "^0.2.11",
+      // effects/animated-data-table and effects/animated-chat-bubble
+      "@base-ui/react": "^1.8.0",
+      "class-variance-authority": "^0.7.1",
+      "lucide-react": "^0.577.0",
+      "tailwind-merge": "^3.6.0",
+    },
+    multiPage: { routes: ["platform", "agents", "governance", "pricing"] },
+    // Keeps Ordin's own layout (fonts, header, footer, smooth scroll, page transition)
+    ownLayout: true,
+    globalsCss: "ordin/globals.css",
+    extraFiles: [],
+    sourceRewrites: [
+      {
+        file: "components/nav.ts",
+        find: 'export const BASE = "/template-demo/ordin";',
+        replace:
+          '// Prefix for every internal link. Set it (e.g. "/ordin") to serve the site\n// under a sub-path, together with basePath in next.config.mjs.\nexport const BASE = "";',
+      },
+      { file: "components/nav.ts", find: "  home: BASE,", replace: '  home: BASE || "/",' },
+      {
+        file: "metadata.ts",
+        find: 'import ogImage from "../assets/ordin-og.jpg";\n',
+        replace:
+          'import ogImage from "../assets/ordin-og.jpg";\n\n// Your live domain. Used for canonical URLs and social previews - change it before deploying.\nexport const SITE_URL = "https://example.com";\n',
+      },
+      { file: "metadata.ts", find: "): Metadata => ({\n  title,", replace: "): Metadata => ({\n  metadataBase: new URL(SITE_URL),\n  title," },
+      {
+        file: "metadata.ts",
+        find: "canonical: `https://vault.hyperiux.com/templates/ordin${slug}`",
+        replace: "canonical: `${SITE_URL}${slug}`",
+      },
+      { file: "layout.tsx", find: 'import "./ordin-styles.css";', replace: 'import "./globals.css";\nimport "./ordin-styles.css";' },
+      {
+        file: "layout.tsx",
+        find: "  return (\n    <div className={`ord-page",
+        replace: '  return (\n    <html lang="en">\n      <body>\n    <div className={`ord-page',
+      },
+      {
+        file: "layout.tsx",
+        find: "    </div>\n  );\n};\n\nexport default layout;",
+        replace: "    </div>\n      </body>\n    </html>\n  );\n};\n\nexport default layout;",
+      },
+    ],
+    needsGlbLoader: false,
+  },
 };
 
 // Set per run by packageTemplate() for a multi-page template: its route folders, and the

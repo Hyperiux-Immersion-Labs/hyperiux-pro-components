@@ -8,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { onIntroDone } from "./Animations/intro";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
-import AuroraRibbon from "./effects/aurora-ribbon";
+import MintArc from "./MintArc";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -35,20 +35,11 @@ const HeroBackdrop = () => {
       ref={root}
       data-ord-hide
       aria-hidden
-      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen [mask-image:linear-gradient(to_bottom,#000_70%,transparent)]"
+      className="pointer-events-none absolute inset-x-0 top-0 z-0 h-screen [mask-image:linear-gradient(to_bottom,#000_55%,transparent_96%)]"
     >
       <div className="h-full w-full">
-        <div className="h-full w-full opacity-80 max-md:opacity-35">
-        <AuroraRibbon
-          backgroundColor="#0c1218"
-          haloColor="#13605d"
-          glowColor="#73bea1"
-          coreColor="#d9f7e8"
-          intensity={0.4}
-          softness={1.15}
-          speed={0.7}
-          grain={0.05}
-        />
+        <div className="h-full w-full max-md:opacity-50">
+          <MintArc speed={1} flow={1} softness={0.95} />
         </div>
       </div>
     </div>

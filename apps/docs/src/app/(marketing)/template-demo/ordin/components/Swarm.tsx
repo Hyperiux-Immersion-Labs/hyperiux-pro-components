@@ -10,6 +10,7 @@ import { isMobile, prefersReducedMotion } from "./Animations/reducedMotion";
 import { useResizeKey } from "./Animations/useResizeKey";
 import Spotlight from "./Animations/Spotlight";
 import LineReveal from "./Animations/LineReveal";
+import { THEME, alpha } from "../theme";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -144,13 +145,13 @@ const Swarm = () => {
   );
 
   return (
-    <section ref={root} data-ord-orb="swarm" className="relative h-[320vh]">
+    <section ref={root} id="agents" data-ord-orb="swarm" className="relative h-[320vh]">
       <div data-ord-stage className="sticky top-0 h-screen overflow-hidden">
         <svg aria-hidden className="absolute inset-0 h-full w-full max-md:hidden">
           {AGENTS.map((a) => (
             <g key={a.name}>
-              <path data-ord-wire d="" fill="none" stroke="rgba(115,190,161,0.45)" strokeWidth="1" />
-              <path data-ord-packet d="" fill="none" stroke="#6ef2b1" strokeWidth="2" strokeLinecap="round" opacity="0" />
+              <path data-ord-wire d="" fill="none" stroke={alpha(THEME.primary, 0.45)} strokeWidth="1" />
+              <path data-ord-packet d="" fill="none" stroke={THEME.primaryLight} strokeWidth="2" strokeLinecap="round" opacity="0" />
             </g>
           ))}
         </svg>
@@ -160,19 +161,19 @@ const Swarm = () => {
               One prompt. <span className="text-ord-stone">Six specialists.</span>
             </h2>
           </LineReveal>
-          <LineReveal className="w-[34%] max-lg:hidden" delay={0.15}>
+          <LineReveal className="w-[40%] max-lg:hidden" delay={0.15}>
             <p className="text-28 text-ord-ash">
               The core wakes only the agents a job needs, hands each a scoped brief and keeps them in one shared
               memory.
             </p>
           </LineReveal>
         </div>
-        <div className="max-md:absolute max-md:inset-x-[5vw] max-md:bottom-[5vh] max-md:grid max-md:grid-cols-2 max-md:gap-px max-md:bg-[#e6ece4]/10">
+        <div className="max-md:absolute max-md:inset-x-[5vw] max-md:bottom-[5vh] max-md:grid max-md:grid-cols-2 max-md:gap-px max-md:bg-(--ord-bone)/10">
           {AGENTS.map((a, i) => (
             <Spotlight
               key={a.name}
               data-ord-agent
-              className={`absolute flex w-[21vw] -translate-y-1/2 flex-col gap-3 border border-[#e6ece4]/12 bg-transparent px-[1.2vw] py-[1.8vh] opacity-0 max-lg:w-[28vw] max-lg:px-[2vw] max-md:static max-md:w-full max-md:translate-y-0 max-md:gap-2 max-md:border-0 max-md:px-[3vw] max-md:py-[1.6vh] hover:border-[#73bea1]/50 transition-colors duration-500 ${a.pos}`}
+              className={`absolute flex w-[21vw] -translate-y-1/2 flex-col gap-3 border border-(--ord-bone)/12 bg-transparent px-[1.2vw] py-[1.8vh] opacity-0 max-lg:w-[28vw] max-lg:px-[2vw] max-md:static max-md:w-full max-md:translate-y-0 max-md:gap-2 max-md:border-0 max-md:px-[3vw] max-md:py-[1.6vh] hover:border-(--ord-primary)/50 transition-colors duration-500 ${a.pos}`}
             >
               <div className="flex items-center justify-between ord-label text-14 uppercase text-ord-stone">
                 <span>{String(i + 1).padStart(2, "0")}</span>
@@ -185,8 +186,8 @@ const Swarm = () => {
               </div>
               <h3 className="text-30">{a.name}</h3>
               <p className="text-24 text-ord-stone max-md:hidden">{a.role}</p>
-              <span className="block h-px w-full bg-[#e6ece4]/10">
-                <span data-ord-rule className="block h-px w-full origin-left bg-[#73bea1] [transform:scaleX(0)]" />
+              <span className="block h-px w-full bg-(--ord-bone)/10">
+                <span data-ord-rule className="block h-px w-full origin-left bg-(--ord-primary) [transform:scaleX(0)]" />
               </span>
             </Spotlight>
           ))}
@@ -195,9 +196,9 @@ const Swarm = () => {
           data-ord-complete
           className="absolute left-1/2 top-[92vh] flex -translate-x-1/2 items-center gap-4 ord-label text-14 whitespace-nowrap uppercase text-ord-primary-light opacity-0 max-md:top-[47vh]"
         >
-          <span className="block h-px w-[4vw] bg-[#e6ece4]/30 max-md:w-[8vw]" />
+          <span className="block h-px w-[4vw] bg-(--ord-bone)/30 max-md:w-[8vw]" />
           Run complete / 4.2s / 0 errors
-          <span className="block h-px w-[4vw] bg-[#e6ece4]/30 max-md:w-[8vw]" />
+          <span className="block h-px w-[4vw] bg-(--ord-bone)/30 max-md:w-[8vw]" />
         </p>
       </div>
     </section>

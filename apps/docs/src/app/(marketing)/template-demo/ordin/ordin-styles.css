@@ -1,16 +1,8 @@
 /* Built using Hyperiux Vault: https://vault.hyperiux.com */
 
+/* The --ord-* colour tokens are generated from theme.ts and injected by layout.tsx */
 .ord-page,
 html:has(.ord-page) {
-  --ord-ink: #0c1218;
-  --ord-carbon: #121b22;
-  --ord-graphite: #1e2b31;
-  --ord-stone: #7d8f8a;
-  --ord-ash: #b3c2bc;
-  --ord-bone: #e6ece4;
-  --ord-primary: #73bea1;
-  --ord-primary-light: #6ef2b1;
-  --ord-primary-deep: #13605d;
   background-color: var(--ord-ink);
 }
 
@@ -40,7 +32,7 @@ html:has(.ord-page) {
 .ord-page h1,
 .ord-page h2,
 .ord-page h3 {
-  line-height: 1.2;
+  line-height: 1.15;
   text-wrap: balance;
 }
 
@@ -150,10 +142,6 @@ html:has(.ord-page) {
   padding-block: 9vw;
 }
 
-.ord-page .ord-line {
-  padding-block: 0.12em;
-  margin-block: -0.12em;
-}
 
 .ord-page .ord-noise {
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.5'/></svg>");
@@ -171,7 +159,7 @@ html:not(.ord-ready) .ord-page [data-ord-hide] {
 
 html:has(.ord-page) {
   scrollbar-width: thin;
-  scrollbar-color: #73bea1 #0c1218;
+  scrollbar-color: var(--ord-primary) var(--ord-ink);
 }
 
 html:has(.ord-page)::-webkit-scrollbar {
@@ -179,22 +167,22 @@ html:has(.ord-page)::-webkit-scrollbar {
 }
 
 html:has(.ord-page)::-webkit-scrollbar-track {
-  background: #0c1218;
+  background: var(--ord-ink);
 }
 
 html:has(.ord-page)::-webkit-scrollbar-thumb {
-  background: linear-gradient(to bottom, #13605d, #73bea1);
-  border: 0.15vw solid #0c1218;
+  background: linear-gradient(to bottom, var(--ord-primary-deep), var(--ord-primary));
+  border: 0.15vw solid var(--ord-ink);
   border-radius: 999px;
 }
 
 html:has(.ord-page)::-webkit-scrollbar-thumb:hover {
-  background: #6ef2b1;
+  background: var(--ord-primary-light);
 }
 
 .ord-page ::selection {
   background-color: var(--ord-primary);
-  color: #0c1218;
+  color: var(--ord-ink);
 }
 
 @media (max-width: 1025px) {
@@ -230,24 +218,35 @@ html:has(.ord-page)::-webkit-scrollbar-thumb:hover {
 /* Soft teal light behind the dark sections, so the page never reads as flat black */
 .ord-page .ord-glow {
   background:
-    radial-gradient(55% 45% at 88% 12%, rgba(19, 96, 93, 0.28), transparent 70%),
-    radial-gradient(45% 40% at 8% 92%, rgba(115, 190, 161, 0.09), transparent 70%),
-    radial-gradient(70% 60% at 50% 55%, rgba(30, 43, 49, 0.55), transparent 75%),
-    linear-gradient(180deg, #0c1218 0%, #0e171c 100%);
+    radial-gradient(55% 45% at 88% 12%, rgba(var(--ord-primary-deep-rgb), 0.28), transparent 70%),
+    radial-gradient(45% 40% at 8% 92%, rgba(var(--ord-primary-rgb), 0.09), transparent 70%),
+    radial-gradient(70% 60% at 50% 55%, rgba(var(--ord-graphite-rgb), 0.55), transparent 75%),
+    linear-gradient(180deg, var(--ord-ink) 0%, var(--ord-carbon) 100%);
 }
 
 /* Line icons redraw their stroke when their card or row is hovered */
+/* The gap is a touch longer than the path, so a hidden stroke leaves no round-cap dot at its start */
 .ord-page .ord-icon :is(path, circle, ellipse)[pathLength] {
-  stroke-dasharray: 1 1;
+  stroke-dasharray: 1 1.1;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .ord-page .ord-draw:hover .ord-icon :is(path, circle, ellipse)[pathLength] {
-    animation: ord-draw 1s cubic-bezier(0.7, 0, 0.2, 1) both;
+    animation: ord-draw var(--ord-draw-time, 0.8s) cubic-bezier(0.45, 0, 0.55, 1) both;
   }
 }
 
 @keyframes ord-draw {
-  from { stroke-dashoffset: 1; }
+  from { stroke-dashoffset: 1.05; }
   to { stroke-dashoffset: 0; }
+}
+
+
+/* Over light sections the mint hover would wash out, so header links hover in deep teal instead */
+.ord-page header[data-light] {
+  --scramble-hover-color: var(--ord-primary-deep) !important;
+}
+
+.ord-page header[data-light] a {
+  --scramble-hover-color: var(--ord-primary-deep) !important;
 }

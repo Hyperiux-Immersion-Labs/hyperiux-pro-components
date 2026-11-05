@@ -1,5 +1,7 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
+"use client";
+
 export type IconName =
   | "search"
   | "analyze"
@@ -35,10 +37,17 @@ const PATHS: Record<IconName, string> = {
 
 type Props = { name: IconName; className?: string };
 
+// Draw time follows the stroke's real length, so every icon draws at the same speed
+const timeDrawn = (path: SVGPathElement | null) => {
+  if (!path) return;
+  const seconds = Math.min(Math.max(path.getTotalLength() / 55, 0.45), 1.4);
+  path.style.setProperty("--ord-draw-time", `${seconds.toFixed(2)}s`);
+};
+
 export default function Icon({ name, className = "" }: Props) {
   return (
     <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={`ord-icon ${className}`}>
-      <path d={PATHS[name]} pathLength={1} />
+      <path ref={timeDrawn} d={PATHS[name]} pathLength={1} />
     </svg>
   );
 }

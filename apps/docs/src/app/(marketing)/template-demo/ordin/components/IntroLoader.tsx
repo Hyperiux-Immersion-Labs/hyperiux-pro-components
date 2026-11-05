@@ -2,13 +2,15 @@
 
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { finishIntro, intro } from "./Animations/intro";
 import { isMobile, prefersReducedMotion } from "./Animations/reducedMotion";
 import { scrambleTo } from "./effects/scramble-text";
+import Roll from "./Animations/Roll";
 import { heroPose } from "./SignalOrb";
+import { THEME, alpha } from "../theme";
 
 gsap.registerPlugin(useGSAP);
 
@@ -16,7 +18,7 @@ const STEPS = ["Booting runtime", "Loading memory", "Arming policies", "Waking a
 
 const IntroLoader = () => {
   const root = useRef<HTMLDivElement>(null);
-  const countRef = useRef<HTMLSpanElement>(null);
+  const [count, setCount] = useState(0);
   const lineRef = useRef<HTMLDivElement>(null);
   const fillRef = useRef<HTMLSpanElement>(null);
 
@@ -104,7 +106,8 @@ const IntroLoader = () => {
             onUpdate: () => {
               const p = progress.p;
               intro.assemble = p;
-              if (countRef.current) countRef.current.textContent = String(Math.round(p * 100)).padStart(3, "0");
+              const pct = Math.round(p * 100);
+              setCount((cur) => (cur === pct ? cur : pct));
               if (fillRef.current) gsap.set(fillRef.current, { scaleX: p });
               const next = Math.min(STEPS.length - 1, Math.floor(p * STEPS.length));
               if (next !== step) {
@@ -119,7 +122,7 @@ const IntroLoader = () => {
         .to(texts, { yPercent: -110, duration: 0.7, stagger: 0.025, ease: "expo.in" }, "+=0.15")
         .to(inner, { x: 0, y: 0, scale: 1, duration: 1.7, ease: "expo.inOut" }, "<0.2")
         .add(() => finishIntro(), "<0.7")
-        .to(fillRef.current, { backgroundColor: "rgba(115,190,161,0.4)", duration: 0.6 }, "<")
+        .to(fillRef.current, { backgroundColor: alpha(THEME.primary, 0.4), duration: 0.6 }, "<")
         .to(loader, { autoAlpha: 0, duration: 0.6, ease: "power2.out" }, "<0.3")
         .add(() => {
           unlock();
@@ -172,15 +175,15 @@ const IntroLoader = () => {
           </ul>
           <p className="block overflow-hidden">
             <span data-ord-loader-text className="flex items-start gap-2">
-              <span ref={countRef} className="text-128 leading-none font-light">
-                000
+              <span className="text-128 leading-none font-light">
+                <Roll value={String(count).padStart(3, "0")} />
               </span>
               <span className="ord-label text-14 text-ord-primary-light">%</span>
             </span>
           </p>
         </div>
-        <span className="block h-px w-full bg-[#e6ece4]/10">
-          <span ref={fillRef} className="block h-px w-full origin-left bg-[#73bea1] [transform:scaleX(0)]" />
+        <span className="block h-px w-full bg-(--ord-bone)/10">
+          <span ref={fillRef} className="block h-px w-full origin-left bg-(--ord-primary) [transform:scaleX(0)]" />
         </span>
         <div className="absolute inset-x-0 top-full flex justify-between py-[2vh] ord-label text-14 uppercase text-ord-stone">
           <span className="block overflow-hidden">

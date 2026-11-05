@@ -17,7 +17,7 @@ export type TabsIndicator = "underline" | "glide" | "fade";
 export type TabsAnimation = "slide" | "fade" | "none";
 /** solid: the pill is filled with the accent colour. soft: a light tint of the text colour. */
 export type TabsPillStyle = "solid" | "soft";
-export type TabsRounded = "none" | "sm" | "md" | "lg" | "xl" | "full";
+export type TabsRounded = "none" | "xs" | "sm" | "md" | "lg" | "xl" | "full";
 
 export interface AnimatedTabsCompProps {
   tabs?: AnimatedTabItem[];
@@ -51,6 +51,7 @@ export interface AnimatedTabsCompProps {
 
 const ROUNDED: Record<TabsRounded, string> = {
   none: "rounded-none",
+  xs: "rounded-xs",
   sm: "rounded-sm",
   md: "rounded-md",
   lg: "rounded-lg",

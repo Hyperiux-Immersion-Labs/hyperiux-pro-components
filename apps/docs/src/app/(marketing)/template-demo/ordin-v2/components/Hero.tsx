@@ -5,76 +5,75 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SplitText } from "gsap/SplitText";
-import { hero } from "../content";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
-import { ready, SCRUB } from "./Animations/scroll";
-import Button from "./Button";
-import ParticleGlobe, { globeDriver } from "./ParticleGlobe";
+import { OrdButton } from "./Buttons";
+import { ROUTES } from "./nav";
+import { onIntroDone } from "./Animations/intro";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText);
+gsap.registerPlugin(useGSAP, SplitText);
+
+export const PROMPT = "Reconcile Q3 invoices, flag anything over budget and draft the vendor emails.";
 
 const Hero = () => {
   const root = useRef<HTMLElement>(null);
-  const content = useRef<HTMLDivElement>(null);
-  const globe = useRef<HTMLDivElement>(null);
-  const driver = useRef(globeDriver());
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) {
-        driver.current.form = 1;
-        ready(root.current);
-        return;
-      }
+      if (prefersReducedMotion()) return;
 
-      const title = SplitText.create("[data-orn-split]", { type: "lines", mask: "lines", linesClass: "orn-line" });
-      ready(root.current);
-      const intro = gsap.timeline({ delay: 0.15 });
-      intro
-        .from(title.lines, { yPercent: 105, duration: 0.8, stagger: 0.1, ease: "power3.out" }, 0)
-        .from("[data-orn-fade]", { opacity: 0, y: 20, duration: 0.7, stagger: 0.1, ease: "power3.out" }, 0.3)
-        .to(driver.current, { form: 1, duration: 2, ease: "power2.inOut" }, 0);
+      const split = SplitText.create("[data-ord-hero-title]", { type: "lines", mask: "lines", linesClass: "ord-line" });
+      const copy = SplitText.create("[data-ord-hero-copy]", { type: "lines", mask: "lines", linesClass: "ord-line" });
+      const tl = gsap.timeline({ paused: true });
+      tl.from(split.lines, { yPercent: 105, duration: 1.4, stagger: 0.1, ease: "expo.out" }, 0)
+        .from(copy.lines, { yPercent: 105, duration: 1.4, stagger: 0.1, ease: "expo.out" }, 0.35)
+        .from("[data-ord-hero-fade]", { opacity: 0, y: 16, duration: 1.1, stagger: 0.08, ease: "power3.out" }, 0.6);
 
-      const exit = gsap.timeline({
-        defaults: { ease: "none" },
-        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: SCRUB },
+      gsap.to("[data-ord-hero-title]", {
+        yPercent: -18,
+        opacity: 0.2,
+        ease: "none",
+        scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
       });
-      exit
-        .to(content.current, { yPercent: -18, opacity: 0.15 }, 0)
-        .to(globe.current, { yPercent: 14, scale: 0.86 }, 0)
-        .to(driver.current, { spin: 1.4, glow: 0.6 }, 0);
 
-      return () => title.revert();
+      const stop = onIntroDone(() => tl.play());
+
+      return () => {
+        stop();
+        split.revert();
+        copy.revert();
+      };
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="top" data-orn-aurora className="orn-dark relative overflow-hidden">
-      <div aria-hidden className="orn-veil-hero absolute inset-0 -z-10" />
-      <div className="orn-container flex min-h-[94vh] items-center justify-between gap-10 py-[14vh] max-lg:min-h-0 max-lg:flex-col max-lg:items-start max-lg:py-[12vh] max-md:gap-6 max-md:py-[14vh]">
-        <div ref={content} className="flex w-[58%] flex-col gap-8 max-lg:w-[80%] max-md:w-full max-md:gap-6">
-          <h1 data-orn-split>
-            {hero.title[0]}
-            <br />
-            {hero.title[1]}
-            <span className="text-orn-mint">{hero.highlight}</span>
-          </h1>
-          <p data-orn-fade className="w-[70%] text-16 text-orn-paper-muted max-md:w-full">
-            {hero.copy[0]} {hero.copy[1]}
+    <section
+      ref={root}
+      data-ord-orb="hero"
+      className="relative flex h-screen items-center ord-container max-lg:items-end max-lg:pb-[14vh] max-md:pb-[12vh]"
+    >
+      <div className="relative flex w-[58%] flex-col gap-10 max-lg:w-[80%] max-md:w-full max-md:gap-6">
+        <h1 data-ord-hero-title data-ord-hide className="ord-hero-title">
+          Agents that
+          <br />
+          <span className="text-ord-primary-light">finish the job.</span>
+        </h1>
+        <div data-ord-hide className="flex w-[70%] flex-col gap-8 max-md:w-full max-md:gap-6">
+          <p data-ord-hero-copy className="text-28 text-ord-ash">
+            Ordin plans, routes, governs and ships agent work. One prompt in, a finished job out, every step on the
+            record.
           </p>
-          <div data-orn-fade className="flex flex-wrap gap-3">
-            <Button href={hero.primary.href}>{hero.primary.label}</Button>
-            <Button href={hero.secondary.href} variant="line">
-              {hero.secondary.label}
-            </Button>
+          <div data-ord-hero-fade className="flex flex-wrap gap-3">
+            <OrdButton href={ROUTES.pricing}>Start building</OrdButton>
+            <OrdButton href={ROUTES.platform} variant="line">
+              See the platform
+            </OrdButton>
           </div>
         </div>
-        <div ref={globe} className="w-[36vw] max-lg:w-[60vw] max-lg:self-center max-md:w-[64vw]">
-          <ParticleGlobe driver={driver} />
-        </div>
+      </div>
+      <div data-ord-hide aria-hidden className="absolute inset-x-0 bottom-[5vh] ord-container max-md:bottom-[4vh]">
+        <span data-ord-hero-rule className="block h-px w-full origin-left bg-(--ord-primary)/40" />
       </div>
     </section>
   );

@@ -4,6 +4,7 @@
 
 import { useRef } from "react";
 import { OrdButton } from "./Buttons";
+import { ENQUIRE } from "./nav";
 import { FAQContent, FAQGroup, FAQTitle, FAQWrapper } from "./effects/animated-faq";
 import LineReveal from "./Animations/LineReveal";
 import { useReveal } from "./Animations/useReveal";
@@ -31,28 +32,28 @@ const ITEMS = [
   },
 ];
 
-const LINE = "border-[#0c1218]/12";
+const LINE = "border-(--ord-ink)/12";
 
 const Faq = () => {
   const root = useRef<HTMLElement>(null);
   useReveal(root);
 
   return (
-    <section ref={root} data-ord-orb="faq" data-ord-light className="relative bg-[#eef2ec] text-ord-ink">
+    <section ref={root} data-ord-orb="faq" data-ord-light className="relative bg-(--ord-paper) text-ord-ink">
       <div className="flex justify-between gap-12 ord-container ord-section max-lg:flex-col max-md:gap-8">
         <div className="flex w-[32%] flex-col gap-6 max-lg:w-[70%] max-md:w-full">
           <LineReveal>
             <h2>
-              Questions, <span className="text-[#4d5f5a]">answered.</span>
+              Questions, <span className="text-(--ord-text-muted)">answered.</span>
             </h2>
           </LineReveal>
           <LineReveal delay={0.15}>
-            <p className="text-28 text-[#4d5f5a]">
+            <p className="text-28 text-(--ord-text-muted)">
               Still deciding? An engineer can walk your team through a live run in thirty minutes.
             </p>
           </LineReveal>
           <div data-ord-reveal>
-            <OrdButton href="#" variant="inkLine">
+            <OrdButton href={ENQUIRE.demo} variant="inkLine">
               Book a walkthrough
             </OrdButton>
           </div>
@@ -63,7 +64,7 @@ const Faq = () => {
               <div key={item.q} data-ord-reveal>
                 <FAQWrapper
                   itemId={`faq-${i}`}
-                  className={`group/faq border-t ${LINE} outline-none transition-colors duration-500 hover:border-[#13605d]`}
+                  className={`group/faq border-t ${LINE} outline-none transition-colors duration-500 hover:border-(--ord-primary-deep)`}
                   iconClassName="h-[2.6vh] aspect-square text-ord-primary-deep max-lg:h-[2vh] max-md:h-[2.8vh]"
                   duration={0.4}
                 >
@@ -75,13 +76,13 @@ const Faq = () => {
                       </h3>
                     </div>
                   </FAQTitle>
-                  <FAQContent innerClassName="w-[88%] pb-[1.4vw] text-24 text-[#4d5f5a] max-lg:pb-[2.4vw] max-md:w-full max-md:pb-[4vw]">
+                  <FAQContent innerClassName="w-[88%] pb-[1.4vw] text-24 text-(--ord-text-muted) max-lg:pb-[2.4vw] max-md:w-full max-md:pb-[4vw]">
                     <p>{item.a}</p>
                   </FAQContent>
                 </FAQWrapper>
               </div>
             ))}
-            <div aria-hidden className="h-px w-full bg-[#0c1218]/12" />
+            <div aria-hidden className="h-px w-full bg-(--ord-ink)/12" />
           </FAQGroup>
         </div>
       </div>

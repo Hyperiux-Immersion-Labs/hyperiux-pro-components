@@ -28,7 +28,7 @@ export default function BeamFrame({ children, className = "" }: { children: Reac
       <span
         data-ord-beam-spin
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-1/2 h-[220%] aspect-square -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0deg,transparent_250deg,#73bea1_320deg,#6ef2b1_350deg,transparent_360deg)] will-change-transform"
+        className="pointer-events-none absolute left-1/2 top-1/2 h-[220%] aspect-square -translate-x-1/2 -translate-y-1/2 bg-[conic-gradient(from_0deg,transparent_0deg,transparent_250deg,var(--ord-primary)_320deg,var(--ord-primary-light)_350deg,transparent_360deg)] will-change-transform"
       />
       <div className="relative h-full">{children}</div>
     </div>

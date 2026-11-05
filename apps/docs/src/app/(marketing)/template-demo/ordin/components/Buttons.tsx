@@ -4,12 +4,13 @@
 
 import { useRef, type ReactNode } from "react";
 import { useMagnetic } from "./Animations/useMagnetic";
+import { THEME } from "../theme";
 
 const VARIANTS = {
-  solid: "bg-[#73bea1] text-[#0c1218] hover:bg-[#8fd0b6]",
-  line: "border border-[#6ef2b1]/35 text-current hover:border-[#6ef2b1]",
-  ink: "bg-[#0c1218] text-[#e6ece4] hover:bg-[#13605d]",
-  inkLine: "border border-[#0c1218]/25 text-[#0c1218] hover:border-[#13605d]",
+  solid: "bg-(--ord-primary) text-(--ord-ink) hover:bg-(--ord-primary-hover)",
+  line: "border border-(--ord-primary-light)/35 text-current hover:border-(--ord-primary-light)",
+  ink: "bg-(--ord-ink) text-(--ord-bone) hover:bg-(--ord-primary-deep)",
+  inkLine: "border border-(--ord-ink)/25 text-(--ord-ink) hover:border-(--ord-primary-deep)",
 };
 
 type ButtonProps = { href: string; children: ReactNode; variant?: keyof typeof VARIANTS; className?: string };
@@ -17,8 +18,8 @@ type ButtonProps = { href: string; children: ReactNode; variant?: keyof typeof V
 export function OrdButton({ href, children, variant = "solid", className = "" }: ButtonProps) {
   const ref = useRef<HTMLAnchorElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
-  useMagnetic(ref, 0.22);
-  useMagnetic(labelRef, 0.12);
+  useMagnetic(ref, 0.08);
+  useMagnetic(labelRef, 0.05);
 
   return (
     <a
@@ -58,7 +59,7 @@ export function OrdMark() {
     >
       <circle cx="16" cy="16" r="14.5" fill="none" stroke="currentColor" strokeWidth="1" />
       <ellipse cx="16" cy="16" rx="14.5" ry="5.5" fill="none" stroke="currentColor" strokeWidth="1" />
-      <circle cx="16" cy="16" r="3.5" fill="#73bea1" />
+      <circle cx="16" cy="16" r="3.5" fill={THEME.primary} />
     </svg>
   );
 }

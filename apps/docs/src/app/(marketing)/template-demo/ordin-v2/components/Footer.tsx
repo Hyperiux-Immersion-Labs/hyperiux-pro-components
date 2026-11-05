@@ -1,91 +1,80 @@
 // Built using Hyperiux Vault: https://vault.hyperiux.com
 
-"use client";
+import { OrdMark } from "./Buttons";
+import { LINKS, ROUTES } from "./nav";
+import ColorfulCursorAura from "./effects/colorful-cursor-aura";
+import FooterParallax from "./effects/parallax-footer";
+import ScrambleLinkButton from "./effects/scramble-link-button";
+import { THEME } from "../theme";
 
-import { useRef } from "react";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
-import { brand, footer } from "../content";
-import { prefersReducedMotion } from "./Animations/reducedMotion";
-import { fade, ready, scene } from "./Animations/scroll";
-import { LogoMark, SocialIcon } from "./Icon";
-
-gsap.registerPlugin(useGSAP);
-
-const linkClass = "text-14 text-orn-muted transition-colors duration-200 hover:text-[var(--orn-text)]";
+const SOCIALS = [
+  { label: "X", href: "https://x.com" },
+  { label: "LinkedIn", href: "https://linkedin.com" },
+  { label: "GitHub", href: "https://github.com" },
+  { label: "YouTube", href: "https://youtube.com" },
+];
 
 const Footer = () => {
-  const root = useRef<HTMLElement>(null);
-
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) {
-        ready(root.current);
-        return;
-      }
-
-      const tl = scene(root.current, "top 90%", "top 40%");
-      fade(tl, "[data-orn-wordmark]", 0, 0, 32);
-      fade(tl, "[data-orn-col]", 0.2, 0.1, 16);
-    },
-    { scope: root },
-  );
-
   return (
-    <footer ref={root} id="footer" data-orn-tone="light" className="orn-light relative z-[1] bg-orn-light">
-      <div className="orn-container flex flex-col gap-16 py-[6vw] max-lg:py-[8vw] max-md:gap-12 max-md:py-[12vw]">
-        <div className="flex justify-between gap-12 max-lg:flex-col">
-          <a data-orn-wordmark data-orn-fade href={brand.homeHref} className="flex h-fit items-center gap-3 text-72 font-orn-display font-semibold">
-            <LogoMark className="h-[6vh] aspect-square max-lg:h-[4.4vh] max-md:h-[5.6vh]" />
-            {brand.name}
-          </a>
-          <div className="grid w-[56%] grid-cols-4 gap-8 max-lg:w-full max-md:grid-cols-2 max-md:gap-y-10">
-            {footer.groups.map((group) => (
-              <nav key={group.title} data-orn-col data-orn-fade aria-label={group.title} className="flex flex-col gap-4">
-                <h3 className="text-14 font-medium">{group.title}</h3>
-                <ul className="flex flex-col gap-3">
-                  {group.links.map((link) => (
-                    <li key={link.label}>
-                      <a href={link.href} className={linkClass}>
-                        {link.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ))}
-            <nav data-orn-col data-orn-fade aria-label={footer.social.title} className="flex flex-col gap-4">
-              <h3 className="text-14 font-medium">{footer.social.title}</h3>
-              <ul className="flex flex-col gap-3">
-                {footer.social.links.map((link) => (
-                  <li key={link.label}>
-                    <a href={link.href} target="_blank" rel="noreferrer" className={`flex items-center gap-2 ${linkClass}`}>
-                      <SocialIcon name={link.icon} className="h-[1.8vh] aspect-square max-lg:h-[1.4vh] max-md:h-[2vh]" />
-                      {link.label}
-                    </a>
+    <FooterParallax id="ord-footer" data-ord-orb="footer" data-ord-light footerClassName="bg-ord-bone text-ord-ink">
+      <div className="flex flex-col overflow-hidden ord-container pt-[5vw] pb-[1.4vw] max-lg:gap-[6vw] max-lg:pt-[8vw] max-md:gap-12 max-md:py-[12vw]">
+        <div className="flex items-start justify-between gap-10 max-md:flex-col">
+          <div className="flex w-[34%] flex-col gap-5 max-lg:w-[44%] max-md:w-full">
+            <a href={ROUTES.home} className="ord-draw group flex items-center gap-3">
+              <OrdMark />
+              <span className="text-30 font-medium">Ordin</span>
+            </a>
+            <p className="text-24 text-(--ord-text-muted)">The operating layer for autonomous work.</p>
+          </div>
+          <div className="flex gap-[6vw] max-md:w-full max-md:justify-between">
+            <div className="flex flex-col gap-4">
+              <p className="ord-label text-14 uppercase text-ord-primary-deep">Explore</p>
+              <ul className="flex flex-col gap-2">
+                {LINKS.map((l) => (
+                  <li key={l.label}>
+                    <ScrambleLinkButton href={l.href} text={l.label} hoverColor={THEME.primaryDeep} className="text-22 text-(--ord-ink)" />
                   </li>
                 ))}
               </ul>
-            </nav>
+            </div>
+            <div className="flex flex-col gap-4">
+              <p className="ord-label text-14 uppercase text-ord-primary-deep">Follow</p>
+              <ul className="flex flex-col gap-2">
+                {SOCIALS.map((s) => (
+                  <li key={s.label}>
+                    <ScrambleLinkButton
+                      href={s.href}
+                      text={s.label}
+                      target="_blank"
+                      rel="noreferrer"
+                      hoverColor={THEME.primaryDeep}
+                      className="text-22 text-(--ord-ink)"
+                    />
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-        <div className="flex flex-col gap-6">
-          <div className="h-px w-full bg-[var(--orn-border)]" />
-          <div className="flex items-center justify-between gap-6 max-md:flex-col max-md:items-start">
-            <p className="text-12 text-orn-muted">{footer.copyright}</p>
-            <ul className="flex gap-8">
-              {footer.legal.map((link) => (
-                <li key={link.label}>
-                  <a href={link.href} className={linkClass}>
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+        <ColorfulCursorAura
+          color1={THEME.primaryDeep}
+          color2={THEME.primary}
+          color3={THEME.primaryLight}
+          className="-mb-[1.6vw] cursor-crosshair select-none"
+          textClassName="text-[20vw] font-normal leading-[0.85] tracking-[-0.06em] text-(--ord-paper-deep)"
+        >
+          ordin
+        </ColorfulCursorAura>
+        <div className="flex justify-between gap-6 border-t border-(--ord-ink)/15 pt-[1.4vw] ord-label text-14 uppercase text-(--ord-text-muted) max-lg:pt-[3vw] max-md:flex-col max-md:pt-[5vw] mt-[4vw]">
+          <span>(c) 2026 Ordin Labs</span>
+          <span className="flex items-center gap-2">
+            <span className="h-[0.6vh] aspect-square rounded-full bg-(--ord-primary)" />
+            <span>All systems operational</span>
+          </span>
+          <span>Privacy / Terms</span>
         </div>
       </div>
-    </footer>
+    </FooterParallax>
   );
 };
 

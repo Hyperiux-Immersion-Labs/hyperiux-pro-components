@@ -11,6 +11,7 @@ import { useReveal } from "./Animations/useReveal";
 import LineReveal from "./Animations/LineReveal";
 import DraggableMarquee from "./effects/draggable-marquee";
 import Icon from "./Icon";
+import Roll from "./Animations/Roll";
 
 gsap.registerPlugin(useGSAP, SplitText);
 
@@ -40,7 +41,7 @@ const initialsOf = (name: string) =>
     .map((part) => part[0])
     .join("");
 
-const LINE = "border-[#0c1218]/12";
+const LINE = "border-(--ord-ink)/12";
 
 const Social = () => {
   const root = useRef<HTMLElement>(null);
@@ -113,7 +114,7 @@ const Social = () => {
               className="py-[3.4vh]"
               itemClassName="select-none"
               renderItem={(item) => (
-                <span className="text-30 whitespace-nowrap text-[#7d8f8a] transition-colors duration-300 hover:text-ord-primary-deep">
+                <span className="text-30 whitespace-nowrap text-(--ord-stone) transition-colors duration-300 hover:text-ord-primary-deep">
                   {item.title}
                 </span>
               )}
@@ -121,14 +122,14 @@ const Social = () => {
           </div>
           <figure
             data-ord-reveal
-            className={`flex flex-col gap-10 border ${LINE} bg-white/50 px-[2.4vw] py-[2.4vw] transition-colors duration-500 hover:border-[#73bea1] max-lg:px-[4vw] max-lg:py-[4vw] max-md:gap-6 max-md:px-[5vw] max-md:py-[6vw]`}
+            className={`flex flex-col gap-10 border ${LINE} bg-white/50 px-[2.4vw] py-[2.4vw] transition-colors duration-500 hover:border-(--ord-primary) max-lg:px-[4vw] max-lg:py-[4vw] max-md:gap-6 max-md:px-[5vw] max-md:py-[6vw]`}
           >
             <div className="flex items-start justify-between gap-4">
               <span aria-hidden className="text-64 leading-none text-ord-primary-deep">
                 &ldquo;
               </span>
-              <span className="ord-label text-14 text-[#4d5f5a]">
-                {String(index + 1).padStart(2, "0")} / {String(QUOTES.length).padStart(2, "0")}
+              <span className="ord-label text-14 text-(--ord-text-muted)">
+                <Roll value={String(index + 1).padStart(2, "0")} /> / {String(QUOTES.length).padStart(2, "0")}
               </span>
             </div>
             <div ref={quoteRef} aria-live="polite" className="flex flex-col gap-10 max-md:gap-6">
@@ -139,7 +140,7 @@ const Social = () => {
                 <span
                   data-ord-q-avatar
                   aria-hidden
-                  className="flex h-[5.4vh] aspect-square items-center justify-center bg-ord-ink text-22 text-[#6ef2b1] max-lg:h-[4vh] max-md:h-[6vh]"
+                  className="flex h-[5.4vh] aspect-square items-center justify-center bg-ord-ink text-22 text-(--ord-primary-light) max-lg:h-[4vh] max-md:h-[6vh]"
                 >
                   {initialsOf(quote.name)}
                 </span>
@@ -147,7 +148,7 @@ const Social = () => {
                   <span data-ord-q-split className="text-24 font-medium">
                     {quote.name}
                   </span>
-                  <span data-ord-q-split className="text-22 text-[#4d5f5a]">
+                  <span data-ord-q-split className="text-22 text-(--ord-text-muted)">
                     {quote.role}
                   </span>
                 </span>
@@ -160,7 +161,7 @@ const Social = () => {
                   type="button"
                   aria-label={step < 0 ? "Previous testimonial" : "Next testimonial"}
                   onClick={() => go(step)}
-                  className={`group/btn flex h-[5vh] aspect-square items-center justify-center border ${LINE} text-ord-ink transition-colors duration-300 hover:border-ord-ink hover:bg-ord-ink hover:text-[#6ef2b1] focus-visible:outline-2 focus-visible:outline-[#13605d] max-lg:h-[4vh] max-md:h-[5.6vh]`}
+                  className={`group/btn flex h-[5vh] aspect-square items-center justify-center border ${LINE} text-ord-ink transition-colors duration-300 hover:border-ord-ink hover:bg-ord-ink hover:text-(--ord-primary-light) focus-visible:outline-2 focus-visible:outline-(--ord-primary-deep) max-lg:h-[4vh] max-md:h-[5.6vh]`}
                 >
                   <Icon
                     name="arrow"

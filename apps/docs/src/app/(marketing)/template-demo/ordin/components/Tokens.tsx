@@ -10,6 +10,7 @@ import { isMobile, prefersReducedMotion } from "./Animations/reducedMotion";
 import { useResizeKey } from "./Animations/useResizeKey";
 import { PROMPT } from "./Hero";
 import LineReveal from "./Animations/LineReveal";
+import { THEME, alpha } from "../theme";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -34,7 +35,7 @@ const Tokens = () => {
       };
 
       if (prefersReducedMotion()) {
-        gsap.set(chips, { opacity: 1, borderColor: "rgba(115,190,161,0.3)", color: "#e6ece4" });
+        gsap.set(chips, { opacity: 1, borderColor: alpha(THEME.primary, 0.3), color: THEME.bone });
         gsap.set(ids, { opacity: 1 });
         gsap.set("[data-ord-parsed]", { opacity: 1 });
         counter.n = WORDS.length;
@@ -61,8 +62,8 @@ const Tokens = () => {
         // Start from the same mint at zero alpha: tweening from "transparent" passes through black and looks muddy
         .fromTo(
           chips,
-          { borderColor: "rgba(115,190,161,0)", color: "#7d8f8a" },
-          { borderColor: "rgba(115,190,161,0.2)", color: "#e6ece4", duration: 0.7, stagger: 0.05, ease: "power1.inOut" },
+          { borderColor: alpha(THEME.primary, 0), color: THEME.stone },
+          { borderColor: alpha(THEME.primary, 0.2), color: THEME.bone, duration: 0.7, stagger: 0.05, ease: "power1.inOut" },
           0.85,
         )
         .to(ids, { opacity: 1, duration: 0.3, stagger: 0.05 }, 1);
@@ -103,7 +104,7 @@ const Tokens = () => {
             <span
               key={i}
               data-ord-chip
-              className="relative rounded-xs border border-transparent opacity-0 px-[1vw] py-[0.4vh] text-[1vw] text-[#7d8f8a] max-lg:px-[1vw] max-md:px-[1.4vw]"
+              className="relative rounded-xs border border-transparent opacity-0 px-[1vw] py-[0.4vh] text-[1vw] text-(--ord-stone) max-lg:px-[1vw] max-md:px-[1.4vw]"
             >
               <span
                 data-ord-id

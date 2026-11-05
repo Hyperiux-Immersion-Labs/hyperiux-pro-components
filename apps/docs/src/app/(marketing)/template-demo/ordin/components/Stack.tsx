@@ -9,6 +9,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { isMobile, prefersReducedMotion } from "./Animations/reducedMotion";
 import { useResizeKey } from "./Animations/useResizeKey";
 import LineReveal from "./Animations/LineReveal";
+import { THEME } from "../theme";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -44,7 +45,7 @@ const Stack = () => {
       const faces = gsap.utils.toArray<HTMLElement>("[data-ord-face]", section);
       const items = gsap.utils.toArray<HTMLElement>("[data-ord-layer]", section);
       const vh = window.innerHeight / 100;
-      const gap = (isMobile() ? 6 : 10.5) * vh;
+      const gap = (isMobile() ? 4.5 : 7.5) * vh;
       const place = (i: number) => (2.5 - i) * gap;
       const last = slabs.length - 1;
 
@@ -52,8 +53,8 @@ const Stack = () => {
 
       if (prefersReducedMotion()) {
         slabs.forEach((s, i) => gsap.set(s, { y: place(i) }));
-        gsap.set(faces[last], { backgroundColor: "#73bea1", borderColor: "#73bea1", color: "#0c1218" });
-        gsap.set(faces.slice(0, last), { backgroundColor: "#0c1218", borderColor: "#0c1218", color: "#e6ece4" });
+        gsap.set(faces[last], { backgroundColor: THEME.primary, borderColor: THEME.primary, color: THEME.ink });
+        gsap.set(faces.slice(0, last), { backgroundColor: THEME.ink, borderColor: THEME.ink, color: THEME.bone });
         return;
       }
 
@@ -74,10 +75,10 @@ const Stack = () => {
       slabs.forEach((s, i) => {
         const at = 0.2 + i * step;
         tl.to(s, { y: place(i), opacity: 1, duration: 0.7 }, at)
-          .to(faces[i], { backgroundColor: "#73bea1", borderColor: "#73bea1", color: "#0c1218", duration: 0.3 }, at + 0.2)
+          .to(faces[i], { backgroundColor: THEME.primary, borderColor: THEME.primary, color: THEME.ink, duration: 0.3 }, at + 0.2)
           .fromTo(items[i], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.5 }, at + 0.3);
         if (i > 0) {
-          tl.to(faces[i - 1], { backgroundColor: "#0c1218", borderColor: "#0c1218", color: "#e6ece4", duration: 0.3 }, at + 0.2);
+          tl.to(faces[i - 1], { backgroundColor: THEME.ink, borderColor: THEME.ink, color: THEME.bone, duration: 0.3 }, at + 0.2);
         }
       });
 
@@ -99,11 +100,11 @@ const Stack = () => {
               <div data-ord-lift className="absolute inset-0">
                 <div
                   aria-hidden
-                  className={`absolute inset-0 rounded-sm border border-[#0c1218]/25 bg-[#bfccc1] ${FACE} [translate:0_0.8vh]`}
+                  className={`absolute inset-0 rounded-sm border border-(--ord-ink)/25 bg-[color-mix(in_srgb,var(--ord-paper-deep),var(--ord-ink)_10%)] ${FACE} [translate:0_0.8vh]`}
                 />
                 <div
                   data-ord-face
-                  className={`absolute inset-0 flex items-end justify-between rounded-sm border border-[#0c1218]/25 bg-[#d3ddd3] px-[1.2vw] py-[2vh] ord-label text-24 uppercase text-[#7d8f8a] ${FACE} max-md:px-[2vw] max-md:py-[1vh]`}
+                  className={`absolute inset-0 flex items-end justify-between rounded-sm border border-(--ord-ink)/25 bg-(--ord-paper-deep) px-[1.2vw] py-[2vh] ord-label text-24 uppercase text-(--ord-stone) ${FACE} max-md:px-[2vw] max-md:py-[1vh]`}
                 >
                   <span>{String(i + 1).padStart(2, "0")}</span>
                   <span>{l.name}</span>
@@ -119,7 +120,7 @@ const Stack = () => {
             </h2>
           </LineReveal>
           <LineReveal className="max-md:hidden" delay={0.15}>
-            <p className="text-28 text-[#4d5f5a]">
+            <p className="text-28 text-(--ord-text-muted)">
               Everything an autonomous system needs in production, in one place, so you never glue five vendors
               together with cron jobs again.
             </p>
@@ -131,14 +132,14 @@ const Stack = () => {
                 data-ord-layer
                 onPointerEnter={() => lift(i, true)}
                 onPointerLeave={() => lift(i, false)}
-                className="group/layer relative flex cursor-default flex-col gap-1 border-b border-[#0c1218]/15 py-[1.6vh]"
+                className="group/layer relative flex cursor-default flex-col gap-1 border-b border-(--ord-ink)/15 py-[1.6vh]"
               >
                 <span className="ord-label text-14 text-ord-primary-deep">{String(i + 1).padStart(2, "0")}</span>
                 <h3 className="text-30">{l.name}</h3>
-                <p className="text-24 text-[#4d5f5a] max-md:hidden">{l.body}</p>
+                <p className="text-24 text-(--ord-text-muted) max-md:hidden">{l.body}</p>
                 <span
                   aria-hidden
-                  className="absolute inset-x-0 -bottom-px block h-px origin-left bg-[#73bea1] [transform:scaleX(0)] transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.2,1)] group-hover/layer:[transform:scaleX(1)]"
+                  className="absolute inset-x-0 -bottom-px block h-px origin-left bg-(--ord-primary) [transform:scaleX(0)] transition-transform duration-700 ease-[cubic-bezier(0.7,0,0.2,1)] group-hover/layer:[transform:scaleX(1)]"
                 />
               </li>
             ))}

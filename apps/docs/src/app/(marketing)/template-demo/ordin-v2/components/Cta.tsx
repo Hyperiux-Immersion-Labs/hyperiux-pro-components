@@ -5,60 +5,54 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { cta } from "../content";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
-import { fade, lines, ready, scene } from "./Animations/scroll";
-import Button from "./Button";
-import ParticleGlobe, { globeDriver } from "./ParticleGlobe";
+import { OrdButton } from "./Buttons";
+import { ENQUIRE, ROUTES } from "./nav";
+import LineReveal from "./Animations/LineReveal";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 const Cta = () => {
   const root = useRef<HTMLElement>(null);
-  const driver = useRef(globeDriver());
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) {
-        driver.current.form = 1;
-        ready(root.current);
-        return;
-      }
-
-      const tl = scene(root.current, "top 75%", "center 50%");
-      const split = lines(tl, root.current?.querySelector("h2") ?? null, 0);
-      fade(tl, "[data-orn-copy]", 0.3);
-      fade(tl, "[data-orn-actions]", 0.45, 0, 16);
-      tl.to(driver.current, { form: 1, duration: 1.4, ease: "power2.out" }, 0);
-      tl.to(driver.current, { spin: 1.2, glow: 0.6, duration: 2 }, 0);
-
-      return () => split?.revert();
+      if (prefersReducedMotion()) return;
+      gsap.from("[data-ord-cta]", {
+        opacity: 0,
+        y: 16,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: root.current, start: "top 20%", once: true },
+      });
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} id="get-started" data-orn-aurora className="orn-dark relative overflow-hidden">
-      <div aria-hidden className="orn-veil-cta absolute inset-0 -z-10" />
-      <div className="orn-container orn-section flex items-center justify-between gap-10 max-lg:flex-col max-lg:items-start">
-        <div className="flex w-[50%] flex-col gap-6 max-lg:w-[80%] max-md:w-full">
-          <h2 data-orn-split className="text-72">
-            <span className="block">{cta.title[0]}</span>
-            <span className="block text-orn-mint">{cta.title[1]}</span>
-          </h2>
-          <p data-orn-copy data-orn-fade className="text-16 text-orn-paper-muted">
-            {cta.copy}
-          </p>
-          <div data-orn-actions data-orn-fade className="flex flex-wrap gap-3">
-            <Button href={cta.primary.href}>{cta.primary.label}</Button>
-            <Button href={cta.secondary.href} variant="line">
-              {cta.secondary.label}
-            </Button>
-          </div>
-        </div>
-        <div className="w-[30vw] max-lg:w-[50vw] max-lg:self-center max-md:w-[60vw]">
-          <ParticleGlobe driver={driver} density={0.8} />
-        </div>
+    <section
+      ref={root}
+      data-ord-orb="cta"
+      className="relative flex h-[120vh] flex-col items-center justify-center gap-12 ord-container text-center max-md:gap-8"
+    >
+      <LineReveal className="w-[64%] max-lg:w-full">
+        <h2 className="text-128">
+          Hand it the job. <span className="text-ord-primary-light">Keep the rules.</span>
+        </h2>
+      </LineReveal>
+      <LineReveal className="w-[30%] max-lg:w-[64%] max-md:w-full" delay={0.15}>
+        <p className="text-28 text-ord-ash">
+        Free for the first 10,000 runs. Bring your own model, keep your own data, ship your first agent this
+        afternoon.
+        </p>
+      </LineReveal>
+      <div data-ord-cta className="flex flex-wrap justify-center gap-3">
+        <OrdButton href={ROUTES.pricing}>Start building</OrdButton>
+        <OrdButton href={ENQUIRE.demo} variant="line">
+          Talk to an engineer
+        </OrdButton>
       </div>
     </section>
   );

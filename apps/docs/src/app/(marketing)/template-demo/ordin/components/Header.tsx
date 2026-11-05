@@ -3,6 +3,7 @@
 "use client";
 
 import { useRef } from "react";
+import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -12,7 +13,9 @@ import { prefersReducedMotion } from "./Animations/reducedMotion";
 import { useElementHeightKey } from "./Animations/useResizeKey";
 import ScrambleLinkButton from "./effects/scramble-link-button";
 import { scrambleTo } from "./effects/scramble-text";
-import { LINKS } from "./nav";
+import { LINKS, ROUTES } from "./nav";
+import MobileMenu from "./MobileMenu";
+import { THEME } from "../theme";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -37,19 +40,29 @@ const Header = () => {
   const headerRef = useRef<HTMLElement>(null);
   const chapterRef = useRef<HTMLDivElement>(null);
   const footerKey = useElementHeightKey("#ord-footer");
+  const pathname = usePathname();
 
   useGSAP(
     () =>
       onIntroDone(() => {
         if (prefersReducedMotion()) return;
-        gsap.from(headerRef.current, { yPercent: -100, opacity: 0, duration: 1.3, ease: "expo.out", delay: 0.4 });
-        gsap.from(chapterRef.current, { x: -20, opacity: 0, duration: 1.1, ease: "expo.out", delay: 0.8 });
+        // fromTo, not from: if this runs twice (React dev remounts) a from() would animate to a half-way value
+        gsap.fromTo(headerRef.current, { yPercent: -100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.3, ease: "expo.out", delay: 0.4 });
+        gsap.fromTo(chapterRef.current, { x: -20 }, { x: 0, duration: 1.1, ease: "expo.out", delay: 0.8 });
       }),
     [],
   );
 
   useGSAP(() => {
-    const keys = Object.keys(CHAPTERS);
+    // Numbered in the order this page actually shows them, so every page counts from 01
+    // A section can name its own chapter with data-ord-chapter, so new pages need no edits here
+    const names: Record<string, string> = {};
+    gsap.utils.toArray<HTMLElement>("[data-ord-orb]").forEach((el) => {
+      const key = el.dataset.ordOrb ?? "";
+      const name = el.dataset.ordChapter ?? CHAPTERS[key];
+      if (name) names[key] = name;
+    });
+    const keys = Object.keys(names);
     const set = (key: string) => {
       const i = keys.indexOf(key);
       gsap.to(chapterRef.current, { autoAlpha: i < 0 ? 0 : 1, duration: 0.4 });
@@ -62,7 +75,7 @@ const Header = () => {
           if (indexRef.current) indexRef.current.textContent = String(i + 1).padStart(2, "0");
         },
       });
-      scrambleTo(nameRef.current, CHAPTERS[key], 0.7);
+      scrambleTo(nameRef.current, names[key], 0.7);
     };
 
     const triggers = gsap.utils.toArray<HTMLElement>("[data-ord-orb]").map((el) =>
@@ -74,17 +87,20 @@ const Header = () => {
       }),
     );
 
+    // Declared first: a trigger can toggle while it is being created (a page that opens mid-section)
+    const tone: ScrollTrigger[] = [];
     const syncTone = () => {
       const light = tone.some((t) => t.isActive);
+      headerRef.current?.toggleAttribute("data-light", light);
       gsap.to([headerRef.current, chapterRef.current], {
-        color: light ? "#0c1218" : "#e6ece4",
+        color: light ? THEME.ink : THEME.bone,
         duration: 0.4,
         ease: "power2.out",
         overwrite: "auto",
       });
     };
-    const tone: ScrollTrigger[] = gsap.utils.toArray<HTMLElement>("[data-ord-light]").map((el) =>
-      ScrollTrigger.create({ trigger: el, start: "top 6%", end: "bottom 6%", onToggle: syncTone }),
+    gsap.utils.toArray<HTMLElement>("[data-ord-light]").forEach((el) =>
+      tone.push(ScrollTrigger.create({ trigger: el, start: "top 6%", end: "bottom 6%", onToggle: syncTone })),
     );
 
     const frame = requestAnimationFrame(() => {
@@ -98,7 +114,8 @@ const Header = () => {
         const r = el.getBoundingClientRect();
         return r.top <= window.innerHeight * 0.06 && r.bottom >= window.innerHeight * 0.06;
       });
-      gsap.set([headerRef.current, chapterRef.current], { color: lightNow ? "#0c1218" : "#e6ece4" });
+      gsap.set([headerRef.current, chapterRef.current], { color: lightNow ? THEME.ink : THEME.bone });
+      headerRef.current?.toggleAttribute("data-light", lightNow);
     });
 
     let hidden = false;
@@ -107,6 +124,8 @@ const Header = () => {
       end: "max",
       onUpdate: (self) => {
         if (barRef.current) gsap.set(barRef.current, { scaleX: self.progress });
+        // Past the top 30% of the hero the bar frosts, so links stay readable over any section
+        headerRef.current?.toggleAttribute("data-scrolled", self.scroll() > window.innerHeight * 0.3);
         const hide = self.direction === 1 && self.scroll() > window.innerHeight * 0.1;
         if (hide === hidden) return;
         hidden = hide;
@@ -126,46 +145,48 @@ const Header = () => {
       cancelAnimationFrame(frame);
       gsap.set(headerRef.current, { yPercent: 0 });
     };
-  }, { dependencies: [footerKey], revertOnUpdate: true });
+  }, { dependencies: [footerKey, pathname], revertOnUpdate: true });
 
   return (
     <div data-ord-hide>
-      <span aria-hidden className="fixed inset-x-0 top-0 z-50 block h-px bg-[#e6ece4]/10">
-        <span ref={barRef} className="block h-px w-full origin-left bg-[#73bea1] [transform:scaleX(0)]" />
+      <span aria-hidden className="fixed inset-x-0 top-0 z-50 block h-px bg-(--ord-bone)/10">
+        <span ref={barRef} className="block h-px w-full origin-left bg-(--ord-primary) [transform:scaleX(0)]" />
       </span>
-      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 flex items-center justify-between ord-container py-[1.6vw] text-[#e6ece4] max-lg:py-[2.4vw] max-md:py-[4.4vw]">
-        <a href="#" className="ord-draw group flex w-[20%] items-center gap-3 max-lg:w-auto">
+      <header ref={headerRef} className="fixed inset-x-0 top-0 z-50 flex items-center justify-between ord-container py-[1.6vw] text-(--ord-bone) transition-[background-color,backdrop-filter] duration-500 ease-out data-[scrolled]:bg-(--ord-ink)/45 data-[scrolled]:backdrop-blur-lg data-[scrolled]:data-[light]:bg-(--ord-bone)/55 max-lg:py-[2.4vw] max-md:py-[4.4vw]">
+        <a href={ROUTES.home} className="ord-draw group flex w-[20%] items-center gap-3 max-lg:w-auto">
           <OrdMark />
           <span className="text-30 font-medium">Ordin</span>
         </a>
         <nav className="flex items-center gap-10 max-lg:hidden">
           {LINKS.map((l) => (
             <ScrambleLinkButton
-              key={l}
-              href="#"
-              text={l}
-              hoverColor="#6ef2b1"
+              key={l.label}
+              href={l.href}
+              text={l.label}
+              hoverColor={THEME.primaryLight}
               showLine
               className="text-22 opacity-70 hover:opacity-100"
             />
           ))}
         </nav>
-        <div className="flex w-[20%] items-center justify-end gap-8 max-lg:w-auto">
-          <ScrambleLinkButton href="#" text="Sign in" hoverColor="#6ef2b1" className="text-22 max-md:hidden" />
-          <OrdButton href="#">Get started</OrdButton>
+        <div className="flex w-[20%] items-center justify-end gap-3 max-lg:w-auto">
+          <span className="max-md:hidden">
+            <OrdButton href={ROUTES.pricing}>Get started</OrdButton>
+          </span>
+          <MobileMenu />
         </div>
       </header>
       {/* <div
         ref={chapterRef}
         aria-hidden
-        className="fixed left-[5vw] bottom-[3vh] z-50 flex items-center gap-4 ord-label text-14 uppercase text-[#e6ece4] max-lg:left-[4vw] max-md:hidden"
+        className="fixed left-[5vw] bottom-[3vh] z-50 flex items-center gap-4 ord-label text-14 uppercase text-(--ord-bone) max-lg:left-[4vw] max-md:hidden"
       >
         <span className="block overflow-hidden">
-          <span ref={indexRef} className="block text-[#6ef2b1]">
+          <span ref={indexRef} className="block text-(--ord-primary-light)">
             01
           </span>
         </span>
-        <span className="block h-px w-[3vw] bg-[#73bea1]" />
+        <span className="block h-px w-[3vw] bg-(--ord-primary)" />
         <span className="block overflow-hidden">
           <span ref={nameRef} className="block">
             Overview

@@ -21,6 +21,7 @@ export default function Spotlight<T extends ElementType = "div">({
   const Tag = (as ?? "div") as any;
   const ref = useRef<HTMLElement | null>(null);
 
+  // Also runs on enter, so the glow fades in under the cursor instead of where it last left
   const onMove = (e: PointerEvent<HTMLElement>) => {
     const el = ref.current;
     if (!el) return;
@@ -31,14 +32,14 @@ export default function Spotlight<T extends ElementType = "div">({
 
   const glow =
     tone === "dark"
-      ? "bg-[radial-gradient(22vw_circle_at_var(--ord-mx)_var(--ord-my),rgba(115,190,161,0.16),transparent_65%)]"
-      : "bg-[radial-gradient(22vw_circle_at_var(--ord-mx)_var(--ord-my),rgba(115,190,161,0.1),transparent_65%)]";
+      ? "bg-[radial-gradient(22vw_circle_at_var(--ord-mx)_var(--ord-my),rgba(var(--ord-primary-rgb),0.16),transparent_65%)]"
+      : "bg-[radial-gradient(22vw_circle_at_var(--ord-mx)_var(--ord-my),rgba(var(--ord-primary-rgb),0.1),transparent_65%)]";
 
   return (
-    <Tag ref={ref} onPointerMove={onMove} className={`group/spot ${className}`} {...props}>
+    <Tag ref={ref} onPointerEnter={onMove} onPointerMove={onMove} className={`group/spot isolate ${className}`} {...props}>
       <span
         aria-hidden
-        className={`pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-500 group-hover/spot:opacity-100 ${glow}`}
+        className={`pointer-events-none absolute inset-0 -z-1 opacity-0 transition-opacity duration-700 ease-out group-hover/spot:opacity-100 ${glow}`}
       />
       {children}
     </Tag>

@@ -33,7 +33,7 @@ Swap the name, copy, numbers and logos and the structure carries any product tha
 | # | Section | What it shows | Signature interaction |
 |---|---|---|---|
 | 0 | **Loader** | A boot sequence: runtime, memory, policies, agents | The globe assembles from a point, a counter runs to 100, and the progress line becomes the hero rule |
-| 1 | **Hero** | "The operating layer for autonomous work." | Aurora Ribbon shader, a cursor-reactive particle globe, line-by-line text reveal |
+| 1 | **Hero** | "Agents that finish the job." | Mint Arc Light shader you can stir with the cursor, a cursor-reactive particle globe, line-by-line text reveal |
 | 2 | **Intake** | "Every job starts as a sentence." | The prompt splits into token chips that fly into the globe |
 | 3 | **Orchestrate** | "One prompt. Six specialists." | Wires draw from the globe to six agent cards, which appear as each wire arrives and flip from queued to done |
 | 4 | **Govern** | "Agents improvise. Policies don't." | Actions fly at a policy ring: safe ones pass, risky ones are denied, and each policy wires in as it is triggered |
@@ -48,12 +48,35 @@ Swap the name, copy, numbers and logos and the structure carries any product tha
 
 Site-wide details: a header that hides as you scroll down, returns as you scroll up and switches tone over light sections, a scroll progress line, a chapter indicator that names the current section, magnetic buttons, cursor spotlights on cards, and a themed scrollbar.
 
+## Pages
+
+| Route | Page | What's on it |
+|---|---|---|
+| `/` | **Home** | The full story above, from loader to footer |
+| `/platform` | **Platform** | Live run trace, pinned isometric tour of the six layers, capabilities grid, connector marquees, SDK code that types itself |
+| `/agents` | **Agents** | Agent handoff graph, "Ordin does..." text stream, horizontal relay of the six specialists, live agent chat, custom-agent code card |
+| `/governance` | **Governance** | Policy rings with a decision log, pinned policy gate that stamps each action, sortable audit-log table, compliance grid, policy-as-code card |
+| `/pricing` | **Pricing** | Live usage meter, cost estimator on the Animated Slider, plans with monthly and annual tabs, comparison table, FAQ |
+| any other URL | **404** | Branded not-found page |
+
+Every page shares one layout (header with a mobile menu, parallax footer, smooth scroll, grain, and the enquiry dialog) and moves between pages with the Hyperiux **Block Transition**. Every hero uses the same mint Arc Light shader, mirrored and paced differently per page, and every inner page ends with the particle globe behind the closing call to action.
+
+The inner pages are built from reusable, prop-driven sections in `components/pages/`, so a new page is mostly copy:
+
+- `PageHero` - headline, copy, buttons, an optional animated visual and an Arc Light shape
+- `Tour` - a pinned walk-through with a progress list (or an isometric tower) and swapping detail panels
+- `FeatureGrid` - a light, bordered grid whose cards wipe in and whose icons draw on hover
+- `CodeShowcase` - copy and points beside a code card that types itself as you scroll
+
+A section names its own chapter for the bottom-left indicator with `data-ord-chapter`.
+
+
 ## Design language
 
-- **Palette** - taken from the Hyperiux Aurora Ribbon's own colours and kept to one green family:
+- **Palette** - one mint-green family on a blue-black ink, all set in `theme.ts`:
   - `#0C1218` teal-black background
   - `#73BEA1` mint primary (buttons, lines, active states)
-  - `#6EF2B1` aurora green accent (highlights, numbers, statuses)
+  - `#6EF2B1` bright mint accent (highlights, numbers, statuses)
   - `#13605D` deep teal for accents on light sections
   - `#E6ECE4` pale mint paper for the light sections
 - **Type** - Geist throughout. Small labels, numbers and logs use Geist at medium weight with even-width digits. Headings use a 1.2 line height and paragraphs 1.5.
@@ -63,12 +86,22 @@ Site-wide details: a header that hides as you scroll down, returns as you scroll
 
 ```
 ordin/
-├── page.tsx                    # Metadata, fonts and section order
+├── layout.tsx                  # Fonts, header, footer, smooth scroll and page transition for every page
+├── page.tsx                    # Home: metadata and section order
+├── platform/ agents/ governance/ pricing/   # One page.tsx per route
+├── not-found.tsx               # Branded 404
+├── theme.ts                    # Every colour in the template
+├── metadata.ts                 # Per-page title, description, canonical URL
 ├── ordin-styles.css            # Colour tokens, type scale, spacing, scrollbar
 └── components/
     ├── IntroLoader.tsx          # Boot-sequence loader that hands off to the hero
     ├── SignalOrb.tsx            # Particle globe and the scroll timeline that moves it
-    ├── HeroBackdrop.tsx         # Aurora Ribbon shader behind the hero
+    ├── HeroBackdrop.tsx         # Arc Light shader behind the home hero
+    ├── MintArc.tsx              # The Arc Light in the theme colour, used by every hero
+    ├── MobileMenu.tsx           # Full-screen menu below 1025px
+    ├── nav.ts                   # Routes and nav links for header, menu and footer
+    ├── pages/                   # Reusable inner-page sections and their content.ts
+    ├── platform/                # Platform-only sections and content.ts
     ├── Header.tsx               # Nav, progress line, chapter indicator
     ├── Hero.tsx                 # Headline, copy and calls to action
     ├── Tokens.tsx               # Intake: prompt to tokens
@@ -95,7 +128,6 @@ ordin/
     │   ├── useResizeKey.ts      # Rebuilds scroll timelines on resize
     │   └── reducedMotion.tsx    # Reduced-motion and device helpers
     └── effects/                 # Hyperiux effects, adapted to the Ordin theme
-        ├── aurora-ribbon/
         ├── overflow-text-reveal/
         ├── text-fill-animation/
         ├── scramble-text/
@@ -135,29 +167,78 @@ ordin/
    npm start
    ```
 
-## Customizing content
+## Customizing
 
-- **Copy** - edit the text inside each section component. The demo prompt lives in `PROMPT` in `Hero.tsx` and is reused by the Intake section.
-- **Agents, policies and layers** - edit the `AGENTS` array in `Swarm.tsx`, `POLICIES` and `ACTIONS` in `Guardrails.tsx`, and `LAYERS` in `Stack.tsx`. The animations adapt to the items you provide.
-- **Metrics and report** - `STATS` and `REPORT` in `Metrics.tsx`.
-- **Logos and quote** - `LOGOS` and `QUOTE` in `Social.tsx`.
-- **Plans** - `PLANS` in `Pricing.tsx`; set `featured: true` on the plan that gets the highlight.
-- **Colours** - tokens live at the top of `ordin-styles.css` (`--ord-ink`, `--ord-primary`, `--ord-primary-light`, `--ord-primary-deep`, `--ord-bone`). The globe colours are `MIST` and `PRIMARY` in `SignalOrb.tsx`, and the shader colours are set in `HeroBackdrop.tsx`.
-- **Globe** - its position and size in each section are the `DESKTOP` and `MOBILE` pose tables in `SignalOrb.tsx`.
-- **Loader** - the boot steps are `STEPS` in `IntroLoader.tsx`.
-- **SEO** - title, description and canonical URL are in `page.tsx` (`export const metadata`).
-- **Section order** - sections are composed in `page.tsx`; reorder or remove them there.
+### Brand colours - one file
+
+Every colour lives in **`app/theme.ts`**. Change the values there and the whole site follows: the CSS, every Tailwind class (they read `--ord-*` custom properties generated from this file), the particle globe, the Arc Light shaders, the page transition and the data table and chat components.
+
+```ts
+export const THEME = {
+  ink: "#0c1218",          // page background
+  primary: "#73bea1",      // buttons, lines, active states
+  primaryLight: "#6ef2b1", // highlights, numbers, glows
+  primaryDeep: "#13605d",  // accents on light sections
+  // ...
+};
+```
+
+Pick `primary`, `primaryLight`, `primaryDeep` and `primaryHover` from one hue and the rest stays balanced. In your own components, use `bg-(--ord-primary)`, `text-(--ord-primary-light)/60` and so on, or import `THEME` / `alpha()` for canvas, SVG and GSAP values.
+
+### Navigation and links
+
+- **`components/nav.ts`** - the page routes and the links shown in the header, the mobile menu and the footer. Add a page here and it appears in all three.
+- `BASE` in the same file prefixes every internal link. Leave it empty to serve the site from `/`, or set it (with `basePath` in `next.config.mjs`) to serve it under a sub-path.
+
+### Copy
+
+- **Inner pages** - `components/pages/content.ts` (agents, policies, compliance, code samples, plan comparison) and `components/platform/content.ts` (layers, capabilities, connectors, SDK code).
+- **Home page** - each section keeps its list at the top of its own file: `AGENTS` in `Swarm.tsx`, `POLICIES` and `ACTIONS` in `Guardrails.tsx`, `LAYERS` in `Stack.tsx`, `STATS` and `REPORT` in `Metrics.tsx`, `PLANS` in `Pricing.tsx`, `QUOTES` and `LOGOS` in `Social.tsx`, `ITEMS` in `Faq.tsx`, and the demo prompt `PROMPT` in `Hero.tsx`.
+- **Page titles and descriptions** - each route's `page.tsx` calls `pageMetadata(title, description, slug)`. Set `SITE_URL` in `app/metadata.ts` to your domain.
+- **Numbers are samples.** Metrics, certifications, connector counts and prices are illustrative. Replace them with your own before launch.
+
+### The enquiry dialog
+
+There is no contact page: every "Talk to sales", "Talk to security" and "Book a walkthrough" opens `components/EnquiryDialog.tsx`, the Hyperiux Animated Dialog growing out of the button that was clicked. Point any link at `ENQUIRE.demo`, `ENQUIRE.sales` or `ENQUIRE.security` (from `nav.ts`) and it opens on that topic.
+
+The form validates and shows a success state, but has no backend. In `onSubmit`, replace the `setTimeout` with a `fetch` to your CRM, email service or API route, then call `setState("sent")` when it succeeds.
+
+### Rolling numbers
+
+Every number that reveals or changes (stats, prices, counters, the estimator, the usage meter, the trace clock, the loader) uses `components/Animations/Roll.tsx`, built on the Animated Slider's odometer digits. Use `<Roll value="2.4" reveal />` to roll up from zero on scroll, or pass changing values and it springs between them.
+
+### The pricing estimator
+
+The sample rates sit at the top of `components/pages/CostEstimator.tsx` (`FREE_RUNS`, `SCALE_RATE`, `ENTERPRISE_FROM`, `ENTERPRISE_RATE`). Change them to match your real pricing.
+
+### Layout limits worth knowing
+
+A few home-page set pieces are hand-placed for their sample content:
+
+- **Orchestrate** (`Swarm.tsx`) places exactly six agent cards; to change the count, add or remove entries and adjust each card's `pos`.
+- **Govern** (`Guardrails.tsx`) ties each action to a policy by index (`policy: 0..4`).
+- **The globe** moves between poses keyed by each home section's `data-ord-orb` name (the `DESKTOP` and `MOBILE` tables in `SignalOrb.tsx`). A section without a pose keeps the globe where it was, so give a new home section an entry, or a pose with `opacity: 0` to hide it.
+
+The inner-page sections (`Tour`, `FeatureGrid`, `CodeShowcase`, the relay, the policy gate and the audit table) adapt to however many items you pass them.
+
 
 ## Effects
 
 Hyperiux effects used in `components/effects/`:
 
-- **aurora-ribbon** - WebGL ribbon of light behind the hero that the pointer stirs
+- **arc-light** - WebGL arcs of light behind every hero (through `MintArc.tsx`), rendered in greyscale and tinted mint, mirrored per page, and stirred by the cursor
+- **block-transition** - blocks in the primary colour that cover and reveal the page between routes
+- **animated-slider** - the cost estimator's slider, and the odometer digits behind every rolling number
+- **animated-dialog** - the enquiry dialog
+- **animated-data-table** - the Governance audit log: sortable, filterable, rolling numbers, rows that open to their steps
+- **animated-chat-bubble** - the Agents handoff chat, with typing indicators and streamed replies
+- **typing-text** - the prompt that types itself into the Agents chat
+- **text-stream** - "Ordin" finishing one sentence many ways on the Agents page
+- **colorful-cursor-aura** - three trailing mint circles that show through the footer wordmark
 - **overflow-text-reveal** - masked line reveal used for every heading and paragraph
 - **text-fill-animation** - scroll-synced colour fill for the section break
 - **scramble-text** - scrambled reveal for labels, status lines and the chapter indicator
 - **scramble-link-button** - nav and footer links that scramble on hover
-- **number-counter** - rolling digit counters for the metrics
 - **draggable-marquee** - logo strip you can drag and throw
 - **animated-tabs** - monthly and annual pricing toggle
 - **animated-faq** - accordion for the questions section

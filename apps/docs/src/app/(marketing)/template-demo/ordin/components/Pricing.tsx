@@ -8,8 +8,11 @@ import BeamFrame from "./Animations/BeamFrame";
 import LineReveal from "./Animations/LineReveal";
 import { useReveal } from "./Animations/useReveal";
 import { OrdButton } from "./Buttons";
+import { ENQUIRE } from "./nav";
 import Icon, { type IconName } from "./Icon";
 import AnimatedTabs from "./effects/animated-tabs";
+import Roll from "./Animations/Roll";
+import { THEME } from "../theme";
 
 type Plan = {
   icon: IconName;
@@ -57,7 +60,7 @@ const PLANS: Plan[] = [
   },
 ];
 
-const LINE = "border-[#0c1218]/12";
+const LINE = "border-(--ord-ink)/12";
 
 const PlanCard = ({ plan, annual }: { plan: Plan; annual: boolean }) => {
   const price = annual ? plan.annual : plan.monthly;
@@ -65,7 +68,7 @@ const PlanCard = ({ plan, annual }: { plan: Plan; annual: boolean }) => {
     <Spotlight
       tone="light"
       className={`ord-draw relative flex h-full flex-col gap-8 border px-[1.8vw] py-[1.8vw] max-lg:px-[4vw] max-lg:py-[4vw] max-md:px-[5vw] max-md:py-[6vw] ${
-        plan.featured ? "border-transparent bg-[#dcebe2]" : `${LINE} bg-white/45`
+        plan.featured ? "border-transparent bg-[color-mix(in_srgb,var(--ord-primary)_18%,var(--ord-paper))]" : `${LINE} bg-white/45`
       }`}
     >
       <div className="relative flex items-start justify-between gap-4">
@@ -74,18 +77,21 @@ const PlanCard = ({ plan, annual }: { plan: Plan; annual: boolean }) => {
           className="h-[3vh] aspect-square text-ord-primary-deep max-lg:h-[2.2vh] max-md:h-[3.2vh]"
         />
         {plan.featured && (
-          <span className="bg-ord-ink px-[0.6vw] py-[0.3vw] ord-label text-14 uppercase text-[#6ef2b1] max-lg:px-[1.2vw] max-lg:py-[0.6vw] max-md:px-[2.4vw] max-md:py-[1vw]">
+          <span className="bg-ord-ink px-[0.6vw] py-[0.3vw] ord-label text-14 uppercase text-(--ord-primary-light) max-lg:px-[1.2vw] max-lg:py-[0.6vw] max-md:px-[2.4vw] max-md:py-[1vw]">
             Most teams
           </span>
         )}
       </div>
       <div className="relative flex flex-col gap-1">
         <h3 className="text-30">{plan.name}</h3>
-        <p className="text-22 text-[#4d5f5a]">{plan.blurb}</p>
+        <p className="text-22 text-(--ord-text-muted)">{plan.blurb}</p>
       </div>
       <div className="relative flex items-end gap-3">
-        <p className="text-64 leading-none">{price === "Custom" ? price : `$${price}`}</p>
-        <span className="ord-label text-14 uppercase text-[#4d5f5a]">{plan.unit}</span>
+        <p className="text-64 leading-none">
+          {/* Switching tabs mounts the other grid, so each price rolls over from the other billing period */}
+          {price === "Custom" ? price : <Roll value={`$${price}`} from={`$${annual ? plan.monthly : plan.annual}`} />}
+        </p>
+        <span className="ord-label text-14 uppercase text-(--ord-text-muted)">{plan.unit}</span>
       </div>
       <ul className={`relative flex flex-1 flex-col gap-3 border-t ${LINE} pt-[1.4vw] max-lg:pt-[3vw] max-md:pt-[5vw]`}>
         {plan.features.map((f) => (
@@ -96,14 +102,14 @@ const PlanCard = ({ plan, annual }: { plan: Plan; annual: boolean }) => {
         ))}
       </ul>
       <div className="relative">
-        <OrdButton href="#" variant={plan.featured ? "ink" : "inkLine"} className="w-full justify-between">
+        <OrdButton href={ENQUIRE.sales} variant={plan.featured ? "ink" : "inkLine"} className="w-full justify-between">
           {plan.cta}
         </OrdButton>
       </div>
     </Spotlight>
   );
 
-  return plan.featured ? <BeamFrame className="h-full bg-[#0c1218]/12">{card}</BeamFrame> : card;
+  return plan.featured ? <BeamFrame className="h-full bg-(--ord-ink)/12">{card}</BeamFrame> : card;
 };
 
 const Grid = ({ annual }: { annual: boolean }) => (
@@ -119,11 +125,11 @@ const Pricing = () => {
   useReveal(root);
 
   return (
-    <section ref={root} data-ord-orb="pricing" data-ord-light className="relative bg-[#eef2ec] text-ord-ink">
+    <section ref={root} id="pricing" data-ord-orb="pricing" data-ord-light className="relative bg-(--ord-paper) text-ord-ink">
       <div className="flex flex-col items-center gap-12 ord-container ord-section max-md:gap-8">
         <LineReveal className="text-center">
           <h2>
-            Priced per run. <span className="text-[#4d5f5a]">Not per prompt.</span>
+            Priced per run. <span className="text-(--ord-text-muted)">Not per prompt.</span>
           </h2>
         </LineReveal>
         <div data-ord-reveal className="w-full">
@@ -134,13 +140,13 @@ const Pricing = () => {
             ]}
             indicator="glide"
             pillStyle="solid"
-            accentColor="#0c1218"
-            rounded="none"
+            accentColor={THEME.ink}
+            rounded="xs"
             listBorder
             divider={false}
             hoverHighlight
-            animationType="slide"
-            slideDistance={24}
+            // The cards hold still on a switch; only the prices roll
+            animationType="none"
             className="text-22 text-ord-ink [&>div:first-child]:items-center"
           />
         </div>

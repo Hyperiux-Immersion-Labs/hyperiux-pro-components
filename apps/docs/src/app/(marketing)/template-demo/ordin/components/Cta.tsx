@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { prefersReducedMotion } from "./Animations/reducedMotion";
 import { OrdButton } from "./Buttons";
+import { ENQUIRE, ROUTES } from "./nav";
 import LineReveal from "./Animations/LineReveal";
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
@@ -48,8 +49,8 @@ const Cta = () => {
         </p>
       </LineReveal>
       <div data-ord-cta className="flex flex-wrap justify-center gap-3">
-        <OrdButton href="#">Start building</OrdButton>
-        <OrdButton href="#" variant="line">
+        <OrdButton href={ROUTES.pricing}>Start building</OrdButton>
+        <OrdButton href={ENQUIRE.demo} variant="line">
           Talk to an engineer
         </OrdButton>
       </div>
