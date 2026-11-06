@@ -33,6 +33,7 @@ const HEROES = {
   "admin-settings": ["Admin", "Settings.", "Install limits and internal emails and domains, without a redeploy."],
   "admin-roles": ["Admin", "Roles.", "Who can do what in the admin dashboard."],
   emails: ["Email", "Log.", "Every email Vault has sent, and whether it was delivered."],
+  "admin-campaigns": ["Email", "Campaigns.", "Test a mailer on the team, then send it to everyone signed up."],
 };
 
 function greeting(hour) {

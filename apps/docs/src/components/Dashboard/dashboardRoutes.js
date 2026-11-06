@@ -14,12 +14,13 @@ export const USER_TABS = [
 ];
 
 // The admin view's tabs. Activity and Users are every admin's;
-// the rest need a permission (lib/admin-permissions) - or, for Roles, the owner. The real
+// the rest need a permission (lib/admin-permissions) - or, for Campaigns and Roles, the owner. The real
 // gate is the API behind each one.
 export const ADMIN_TABS = [
   { key: "activity", label: "Activity", sub: "admin/activity", light: true },
   { key: "users", label: "Users", sub: "admin/users", light: true },
   { key: "emails", label: "Email Log", sub: "admin/emails", permission: "emails.view", light: true },
+  { key: "admin-campaigns", label: "Campaigns", sub: "admin/campaigns", owner: true, light: true },
   { key: "admin-effects", label: "Effects", sub: "admin/effects", permission: "effects.view", light: true },
   { key: "admin-invoicing", label: "Invoicing", sub: "admin/invoicing", permission: "finance.view", light: true },
   { key: "admin-log", label: "Admin Log", sub: "admin/log", permission: "log.view", light: true },

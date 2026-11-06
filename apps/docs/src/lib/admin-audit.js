@@ -31,6 +31,8 @@ export const ADMIN_ACTIONS = {
   "subscription.cancel_at_period_end": "Cancelled at period end",
   "subscription.sync": "Synced with Razorpay",
   "waitlist.invite": "Sent waitlist invites",
+  "campaign.test": "Sent a campaign test",
+  "campaign.send": "Sent a campaign",
   "credits.adjust": "Adjusted template credits",
   "template.give": "Gave a template",
   "installs.bonus": "Allowed extra installs today",
