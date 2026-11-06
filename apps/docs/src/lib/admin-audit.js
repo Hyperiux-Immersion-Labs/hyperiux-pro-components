@@ -33,6 +33,7 @@ export const ADMIN_ACTIONS = {
   "waitlist.invite": "Sent waitlist invites",
   "campaign.test": "Sent a campaign test",
   "campaign.send": "Sent a campaign",
+  "campaign.sync": "Synced users into Product Updates",
   "credits.adjust": "Adjusted template credits",
   "template.give": "Gave a template",
   "installs.bonus": "Allowed extra installs today",

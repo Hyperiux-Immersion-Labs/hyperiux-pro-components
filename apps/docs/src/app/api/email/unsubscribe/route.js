@@ -1,10 +1,11 @@
-import { forgetUnsubscribedEmails, setProductUpdates, verifyUnsubscribeToken } from "@/lib/email-unsubscribe";
+import { setProductUpdates, verifyUnsubscribeToken } from "@/lib/email-unsubscribe";
 
-// The unsubscribe link in campaign emails (lib/campaign-send). Opening it shows a
-// confirm button rather than unsubscribing at once, because mail scanners open every
-// link in an email. The button, and mail apps' own one-click unsubscribe
-// (List-Unsubscribe-Post), POST here. It turns off product updates, the same switch as the
-// dashboard's Settings, and needs no sign-in: the signed token is the proof.
+// The unsubscribe link in campaign test emails (lib/campaign-send); broadcasts use
+// Resend's own link, which sets the same flag. Opening it shows a confirm button rather
+// than unsubscribing at once, because mail scanners open every link in an email. The button POSTs here (as would a mail app's one-click unsubscribe,
+// if campaigns ever send the List-Unsubscribe header again). It turns off product
+// updates, the same switch as the dashboard's Settings, and needs no sign-in: the
+// signed token is the proof.
 
 const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
 
@@ -49,7 +50,6 @@ export async function POST(request) {
   if (!verifyUnsubscribeToken(email, token)) return invalid();
   try {
     await setProductUpdates(email, false);
-    forgetUnsubscribedEmails();
   } catch (error) {
     console.error("EMAIL_UNSUBSCRIBE_ERROR:", error);
     return page("Something went wrong", text("We couldn’t unsubscribe you just now. Please try again in a minute."), 502);

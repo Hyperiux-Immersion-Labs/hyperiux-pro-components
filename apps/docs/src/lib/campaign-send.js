@@ -1,35 +1,36 @@
 import "server-only";
-import { createHash } from "crypto";
 import { Resend } from "resend";
 import { render } from "@react-email/components";
-import { fetchAllRows, supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { getAudience } from "@/lib/admin-data";
-import { getUnsubscribedEmails, unsubscribeUrl } from "@/lib/email-unsubscribe";
+import { unsubscribeUrl } from "@/lib/email-unsubscribe";
 
-// Sending a campaign (lib/emails/campaigns) from the admin Campaigns tab. A test goes to
-// the internal team (or addresses typed in) and is logged as campaign_test:<id>; the real
-// send goes to every signed-up account that hasn't opted out of product updates, in
-// chunks the page asks for one after another, and is logged as campaign:<id>. Anyone
-// already logged as sent is skipped, so a send that stops halfway (closed tab, timeout,
-// a failed batch) picks up where it left off, and no one gets it twice.
+// Test sends of a campaign (lib/emails/campaigns) from the admin Campaigns tab: one email
+// per address to the internal team (or addresses typed in), through Resend's email API,
+// logged as campaign_test:<id>. That API shares the free plan's 100 emails a day with
+// every account email, so the real send to everyone goes out as a Resend Broadcast
+// instead (lib/campaign-broadcast).
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FROM_ADDRESS = process.env.RESEND_FROM_EMAIL || "Hyperiux Vault <hello@hyperiux.com>";
+// Campaigns go out from their own address, not hello@ that every account and billing email
+// uses: Gmail's tab sorting and spam scoring judge a sender by everything it sends, so
+// the two shouldn't share a reputation. Replies go to a real inbox. A campaign can set
+// its own `from` / `replyTo` (lib/emails/campaigns).
+const CAMPAIGN_FROM = "Team Hyperiux <team@vault.hyperiux.com>";
+const CAMPAIGN_REPLY_TO = "hello@hyperiux.com";
 
-// Resend takes up to 100 emails per batch call, at 2 calls a second
-const BATCH_SIZE = 100;
-const BATCH_GAP_MS = 600;
-// Accounts per request from the page, so one request stays well under the function timeout
-export const CHUNK_SIZE = 200;
 export const MAX_TEST_RECIPIENTS = 25;
 
-export const campaignType = (id) => `campaign:${id}`;
 export const testType = (id) => `campaign_test:${id}`;
+export const campaignSender = (campaign) => ({ from: campaign.from || CAMPAIGN_FROM, replyTo: campaign.replyTo || CAMPAIGN_REPLY_TO });
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PLACEHOLDER = "https://unsubscribe.placeholder.invalid/";
-const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// Where each recipient's first name goes: an email that greets you by name reads as
+// written to you, which Gmail weighs when picking Primary over Promotions
+const NAME_SLOT = "CampaignFirstNameSlot";
 const escapeAttr = (value) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+const escapeHtml = (value) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 export const isEmail = (value) => EMAIL_RE.test(value);
 
@@ -38,18 +39,21 @@ function primaryEmail(user) {
   return primary?.emailAddress?.trim().toLowerCase() || null;
 }
 
-// Signed-up accounts' primary emails: "internal" (the team, as the admin counts it) or
-// "all". Suspended accounts are left out.
-export async function getAccountEmails(audience) {
+// Signed-up accounts as { email, firstName }: "internal" (the team, as the admin counts
+// it) or "all". Suspended accounts are left out.
+export async function getAccounts(audience) {
   const { users } = await getAudience(audience === "internal" ? "internal" : "all");
-  const emails = users.filter((user) => !user.banned && !user.locked).map(primaryEmail).filter((email) => email && isEmail(email));
-  return [...new Set(emails)];
+  const accounts = new Map();
+  for (const user of users) {
+    const email = primaryEmail(user);
+    if (user.banned || user.locked || !email || !isEmail(email) || accounts.has(email)) continue;
+    accounts.set(email, { email, firstName: user.firstName?.trim() || null });
+  }
+  return [...accounts.values()];
 }
 
-// Everyone the campaign is already logged as delivered to (Resend accepted it)
-export async function getSentEmails(type) {
-  const rows = await fetchAllRows(() => supabase.from("sent_emails").select("id, recipient_email").eq("email_type", type).eq("status", "success"));
-  return new Set(rows.map((row) => row.recipient_email?.toLowerCase()));
+export async function getAccountEmails(audience) {
+  return (await getAccounts(audience)).map((account) => account.email);
 }
 
 export async function countLogged(type, status) {
@@ -64,20 +68,11 @@ export async function lastLogged(type) {
   return data?.[0]?.sent_at || null;
 }
 
-// Who the real send still has to reach, in a stable order
-export async function getRemainingRecipients(campaign) {
-  const [accounts, optedOut, sent] = await Promise.all([getAccountEmails("all"), getUnsubscribedEmails(), getSentEmails(campaignType(campaign.id))]);
-  const eligible = accounts.filter((email) => !optedOut.has(email));
-  return {
-    accounts: accounts.length,
-    optedOut: accounts.length - eligible.length,
-    remaining: eligible.filter((email) => !sent.has(email)).sort(),
-  };
-}
-
-// The email's HTML once, with a placeholder where each recipient's unsubscribe link goes
-export async function renderCampaign(campaign) {
-  return render(campaign.render({ unsubscribeUrl: PLACEHOLDER }));
+// The email's HTML once, with placeholders where each recipient's unsubscribe link and
+// first name go. `preview` fills them for the admin page.
+export async function renderCampaign(campaign, { preview = false } = {}) {
+  const html = await render(campaign.render({ unsubscribeUrl: PLACEHOLDER, firstName: NAME_SLOT }));
+  return preview ? html.split(NAME_SLOT).join("there") : html;
 }
 
 // Images an email loads from the live site: the ones that don't load yet
@@ -96,81 +91,50 @@ export async function missingAssets(campaign) {
 }
 
 /**
- * Send a campaign to `emails` through Resend's batch API and log every one to sent_emails
- * (awaited: the next chunk reads the log to skip who already has it).
- * Returns { sent: [email], failed: [{ email, error }], logFailed }.
+ * Send a test of a campaign to up to MAX_TEST_RECIPIENTS addresses in one Resend batch call,
+ * each with their own first name and unsubscribe link, and log each to sent_emails.
+ * Returns { sent: [email], failed: [{ email, error }] }.
  */
-export async function sendCampaign(campaign, emails, { test = false } = {}) {
-  const html = await renderCampaign(campaign);
-  const type = test ? testType(campaign.id) : campaignType(campaign.id);
-  const subject = test ? `[Test] ${campaign.subject}` : campaign.subject;
-  const sent = [];
-  const failed = [];
-  let logFailed = false;
+export async function sendTest(campaign, emails) {
+  const [html, accounts] = await Promise.all([renderCampaign(campaign), getAccounts("all")]);
+  const names = new Map(accounts.map((account) => [account.email, account.firstName]));
+  const subject = `[Test] ${campaign.subject}`;
+  const messages = emails.slice(0, MAX_TEST_RECIPIENTS).map((email) => {
+    const link = unsubscribeUrl(email);
+    const firstName = names.get(email) || null;
+    return {
+      ...campaignSender(campaign),
+      to: email,
+      subject,
+      html: html.split(PLACEHOLDER).join(escapeAttr(link)).split(NAME_SLOT).join(escapeHtml(firstName || "there")),
+      text: campaign.text({ unsubscribeUrl: link, firstName }),
+    };
+  });
 
-  for (let start = 0; start < emails.length; start += BATCH_SIZE) {
-    if (start > 0) await pause(BATCH_GAP_MS);
-    const group = emails.slice(start, start + BATCH_SIZE);
-    const messages = group.map((email) => {
-      const link = unsubscribeUrl(email);
-      const personal = html.split(PLACEHOLDER).join(escapeAttr(link));
-      return {
-        email,
-        payload: {
-          from: FROM_ADDRESS,
-          to: email,
-          subject,
-          html: personal,
-          text: campaign.text({ unsubscribeUrl: link }),
-          headers: { "List-Unsubscribe": `<${link}>`, "List-Unsubscribe-Post": "List-Unsubscribe=One-Click" },
-          tags: [{ name: "campaign", value: campaign.id.replace(/[^a-zA-Z0-9_-]/g, "_") }],
-        },
-      };
-    });
-
-    // The same recipients in the same campaign always get the same key, so a retried or
-    // doubled request (two tabs, a double click) is sent once by Resend
-    const key = createHash("sha256").update(`${type}:${group.join(",")}`).digest("hex").slice(0, 48);
-    let errorMessage = null;
-    try {
-      const { error } = await resend.batch.send(
-        messages.map((message) => message.payload),
-        { idempotencyKey: `${type}:${key}`.slice(0, 256) },
-      );
-      if (error) errorMessage = error.message || JSON.stringify(error);
-    } catch (error) {
-      errorMessage = error.message || "Unknown error";
-    }
-    if (errorMessage) console.error("CAMPAIGN_BATCH_ERROR:", campaign.id, errorMessage);
-
-    const { error: logError } = await supabase.from("sent_emails").insert(
-      messages.map((message) => ({
-        recipient_email: message.email,
-        subject,
-        html_content: message.payload.html,
-        text_content: message.payload.text,
-        email_type: type,
-        status: errorMessage ? "failed" : "success",
-        error_message: errorMessage,
-      })),
-    );
-    if (logError) {
-      console.error("CAMPAIGN_LOG_ERROR:", campaign.id, logError.message);
-      // The log is what stops a second send: without it, don't go on
-      logFailed = true;
-    }
-
-    for (const message of messages) {
-      if (errorMessage) failed.push({ email: message.email, error: errorMessage });
-      else sent.push(message.email);
-    }
-    // A batch Resend refused (bad key, rate limit, an unverified sender) will refuse the
-    // rest too: stop rather than log the same failure a hundred times over
-    if (errorMessage || logFailed) {
-      for (const email of emails.slice(start + BATCH_SIZE)) failed.push({ email, error: "Not attempted: the batch before it failed." });
-      break;
-    }
+  let errorMessage = null;
+  try {
+    const { error } = await resend.batch.send(messages);
+    if (error) errorMessage = error.message || JSON.stringify(error);
+  } catch (error) {
+    errorMessage = error.message || "Unknown error";
   }
+  if (errorMessage) console.error("CAMPAIGN_TEST_ERROR:", campaign.id, errorMessage);
 
-  return { sent, failed, logFailed };
+  const { error: logError } = await supabase.from("sent_emails").insert(
+    messages.map((message) => ({
+      recipient_email: message.to,
+      subject,
+      html_content: message.html,
+      text_content: message.text,
+      email_type: testType(campaign.id),
+      status: errorMessage ? "failed" : "success",
+      error_message: errorMessage,
+    })),
+  );
+  if (logError) console.error("CAMPAIGN_TEST_LOG_ERROR:", campaign.id, logError.message);
+
+  return {
+    sent: errorMessage ? [] : messages.map((message) => message.to),
+    failed: errorMessage ? messages.map((message) => ({ email: message.to, error: errorMessage })) : [],
+  };
 }

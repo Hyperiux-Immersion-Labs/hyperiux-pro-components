@@ -2,40 +2,23 @@ import { NextResponse } from "next/server";
 import { requireOwner } from "@/lib/admin";
 import { recordAdminAction } from "@/lib/admin-audit";
 import { CAMPAIGNS, getCampaign } from "@/lib/emails/campaigns";
-import {
-  CHUNK_SIZE,
-  MAX_TEST_RECIPIENTS,
-  campaignType,
-  countLogged,
-  getAccountEmails,
-  getRemainingRecipients,
-  isEmail,
-  lastLogged,
-  missingAssets,
-  renderCampaign,
-  sendCampaign,
-  testType,
-} from "@/lib/campaign-send";
-import { getUnsubscribedEmails } from "@/lib/email-unsubscribe";
+import { MAX_TEST_RECIPIENTS, countLogged, getAccountEmails, isEmail, lastLogged, missingAssets, renderCampaign, sendTest, testType } from "@/lib/campaign-send";
+import { getCampaignBroadcast, getSyncPlan, sendBroadcast, syncChunk } from "@/lib/campaign-broadcast";
 
-// The admin Campaigns tab (owner only): list campaigns with where each one stands,
-// preview one, send a test to the internal team, then send it to every signed-up account
-// one chunk per request (lib/campaign-send). The real send is refused until a test of
-// that campaign has gone out.
+// The admin Campaigns tab (owner only). GET: the campaigns, where each stands, and how the
+// Product Updates segment compares to the signed-up accounts (?preview=<id>: one
+// campaign's HTML). POST, by `mode`:
+//   test  - email the internal team (or typed addresses) a [Test] copy (lib/campaign-send)
+//   sync  - add signed-up accounts to Product Updates, one chunk per request (the page repeats it)
+//   send  - send the campaign as one Resend Broadcast to Product Updates
+//           (lib/campaign-broadcast), once a test has gone out and the sync is complete
 
 export const maxDuration = 60;
 
-async function campaignStatus(campaign) {
-  const [{ accounts, optedOut, remaining }, sent, failed, tested, lastTest, lastSent] = await Promise.all([
-    getRemainingRecipients(campaign),
-    countLogged(campaignType(campaign.id), "success"),
-    countLogged(campaignType(campaign.id), "failed"),
-    countLogged(testType(campaign.id), "success"),
-    lastLogged(testType(campaign.id)),
-    lastLogged(campaignType(campaign.id)),
-  ]);
-  return { id: campaign.id, name: campaign.name, subject: campaign.subject, accounts, optedOut, remaining: remaining.length, sent, failed, tested, lastTest, lastSent };
-}
+const campaignStatus = async (campaign) => {
+  const [tested, lastTest, broadcast] = await Promise.all([countLogged(testType(campaign.id), "success"), lastLogged(testType(campaign.id)), getCampaignBroadcast(campaign)]);
+  return { id: campaign.id, name: campaign.name, subject: campaign.subject, tested, lastTest, broadcast };
+};
 
 export async function GET(request) {
   if (!(await requireOwner())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -45,11 +28,19 @@ export async function GET(request) {
     if (previewId) {
       const campaign = getCampaign(previewId);
       if (!campaign) return NextResponse.json({ error: "No such campaign." }, { status: 404 });
-      return NextResponse.json({ html: await renderCampaign(campaign) });
+      return NextResponse.json({ html: await renderCampaign(campaign, { preview: true }) });
     }
 
-    const [campaigns, internal] = await Promise.all([Promise.all(CAMPAIGNS.map(campaignStatus)), getAccountEmails("internal")]);
-    return NextResponse.json({ campaigns, internal, chunkSize: CHUNK_SIZE });
+    const plan = await getSyncPlan();
+    const campaigns = [];
+    // One after another: each reads Resend, which allows 2 requests a second
+    for (const campaign of CAMPAIGNS) campaigns.push(await campaignStatus(campaign));
+    const internal = await getAccountEmails("internal");
+    return NextResponse.json({
+      campaigns,
+      internal,
+      segment: { accounts: plan.accounts, accountsInSegment: plan.accountsInSegment, optedOut: plan.optedOut, reach: plan.reach, pending: plan.pending },
+    });
   } catch (error) {
     console.error("ADMIN_CAMPAIGNS_READ_ERROR:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
@@ -60,10 +51,17 @@ export async function POST(request) {
   if (!(await requireOwner())) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
   const body = await request.json().catch(() => ({}));
-  const campaign = getCampaign(body.campaignId);
-  if (!campaign) return NextResponse.json({ error: "No such campaign." }, { status: 404 });
 
   try {
+    if (body.mode === "sync") {
+      const result = await syncChunk();
+      if (!result.pending) await recordAdminAction({ action: "campaign.sync", details: { segment: "Product Updates" } });
+      return NextResponse.json(result);
+    }
+
+    const campaign = getCampaign(body.campaignId);
+    if (!campaign) return NextResponse.json({ error: "No such campaign." }, { status: 404 });
+
     const missing = await missingAssets(campaign);
     if (missing.length) {
       return NextResponse.json({ error: `These images don't load on the live site yet, so the email would arrive broken. Deploy them first: ${missing.join(", ")}` }, { status: 409 });
@@ -79,7 +77,7 @@ export async function POST(request) {
         return NextResponse.json({ error: `A test goes to at most ${MAX_TEST_RECIPIENTS} addresses (${recipients.length} given).` }, { status: 400 });
       }
 
-      const result = await sendCampaign(campaign, recipients, { test: true });
+      const result = await sendTest(campaign, recipients);
       await recordAdminAction({ action: "campaign.test", details: { campaign: campaign.id, sent: result.sent, failed: result.failed.length } });
       return NextResponse.json(result);
     }
@@ -89,28 +87,21 @@ export async function POST(request) {
       if (!(await countLogged(testType(campaign.id), "success"))) {
         return NextResponse.json({ error: "Send a test to the internal team first." }, { status: 409 });
       }
-
-      // Opt-outs read fresh at the start of a send, then held for its later chunks
-      if (body.first) await getUnsubscribedEmails({ fresh: true });
-      const { remaining } = await getRemainingRecipients(campaign);
-      const chunk = remaining.slice(0, CHUNK_SIZE);
-      if (!chunk.length) return NextResponse.json({ sent: [], failed: [], remaining: 0 });
-
-      const result = await sendCampaign(campaign, chunk);
-      if (result.sent.length) {
-        await recordAdminAction({ action: "campaign.send", details: { campaign: campaign.id, sent: result.sent.length, failed: result.failed.length } });
+      const existing = await getCampaignBroadcast(campaign);
+      if (existing && existing.status !== "draft") {
+        return NextResponse.json({ error: `This campaign was already ${existing.status === "queued" ? "queued" : "sent"} as a broadcast.` }, { status: 409 });
       }
-      return NextResponse.json({
-        sent: result.sent,
-        failed: result.failed,
-        logFailed: result.logFailed,
-        remaining: remaining.length - result.sent.length,
-      });
+      const plan = await getSyncPlan();
+      if (plan.pending) return NextResponse.json({ error: `${plan.pending} signed-up accounts aren't in Product Updates yet. Sync first.` }, { status: 409 });
+
+      const broadcastId = await sendBroadcast(campaign);
+      await recordAdminAction({ action: "campaign.send", details: { campaign: campaign.id, broadcastId, reach: plan.reach } });
+      return NextResponse.json({ broadcastId, reach: plan.reach });
     }
 
-    return NextResponse.json({ error: "mode must be test or send." }, { status: 400 });
+    return NextResponse.json({ error: "mode must be test, sync or send." }, { status: 400 });
   } catch (error) {
-    console.error("ADMIN_CAMPAIGNS_SEND_ERROR:", campaign.id, error);
+    console.error("ADMIN_CAMPAIGNS_POST_ERROR:", body.mode, error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

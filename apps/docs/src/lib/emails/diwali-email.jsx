@@ -29,8 +29,10 @@ const socialLinks = [
 
 export const diwaliSubject = "Let’s brighten your brand together this Diwali 🪔";
 
-export function diwaliText({ unsubscribeUrl } = {}) {
+export function diwaliText({ unsubscribeUrl, firstName } = {}) {
   return `
+Hi ${firstName || "there"},
+
 Celebrating the Light of New Possibilities.
 
 The best things often begin with a spark. An idea worth pursuing. A vision worth believing in. An ambition worth bringing to life.
@@ -59,7 +61,7 @@ const bodyText = {
 
 const darkText = { ...bodyText, fontWeight: 500, color: "#1c1c1c" };
 
-export function DiwaliEmail({ unsubscribeUrl } = {}) {
+export function DiwaliEmail({ unsubscribeUrl, firstName } = {}) {
   return (
     <Html lang="en">
       <Head>
@@ -82,6 +84,7 @@ export function DiwaliEmail({ unsubscribeUrl } = {}) {
 
           {/* BODY */}
           <Section style={{ padding: "55px 48px 52px" }}>
+            {firstName && <Text style={{ ...darkText, marginBottom: "18px" }}>Hi {firstName},</Text>}
             <Heading
               as="h1"
               style={{
@@ -185,6 +188,6 @@ export function DiwaliEmail({ unsubscribeUrl } = {}) {
 
 export default DiwaliEmail;
 
-export function renderDiwaliEmail({ unsubscribeUrl } = {}) {
-  return <DiwaliEmail unsubscribeUrl={unsubscribeUrl} />;
+export function renderDiwaliEmail({ unsubscribeUrl, firstName } = {}) {
+  return <DiwaliEmail unsubscribeUrl={unsubscribeUrl} firstName={firstName} />;
 }

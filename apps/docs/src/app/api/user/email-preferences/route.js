@@ -1,6 +1,6 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { findContact, forgetUnsubscribedEmails, setProductUpdates } from "@/lib/email-unsubscribe";
+import { findContact, setProductUpdates } from "@/lib/email-unsubscribe";
 
 // "Product updates" in the dashboard's settings: the account's email as a Resend contact,
 // always listed in the Product Updates segment - subscribed when the switch is on,
@@ -40,7 +40,6 @@ export async function POST(request) {
 
   try {
     await setProductUpdates(email, productUpdates);
-    forgetUnsubscribedEmails();
     return NextResponse.json({ productUpdates });
   } catch (error) {
     console.error("EMAIL_PREFERENCES_WRITE_ERROR:", error);

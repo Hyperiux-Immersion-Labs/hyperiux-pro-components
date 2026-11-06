@@ -5,7 +5,7 @@ import { DiwaliEmail, diwaliSubject, diwaliText } from "@/lib/emails/diwali-emai
 // (app/api/admin/campaigns). To add one: write its template in lib/emails, upload its
 // images to public/emails/<folder> and deploy them (emails load images from the live
 // site), then list it here. `id` never changes once sent: it's how the log knows who
-// already has it.
+// already has it. Optional `from` / `replyTo` override the campaign sender (lib/campaign-send).
 export const CAMPAIGNS = [
   {
     id: "diwali-2026",
@@ -13,8 +13,8 @@ export const CAMPAIGNS = [
     subject: diwaliSubject,
     // Images the email loads from the live site, checked before anything is sent
     assets: ["diwali-hero.jpg", "icon-x.png", "icon-linkedin.png", "icon-github.png", "icon-instagram.png"].map((file) => `https://vault.hyperiux.com/emails/diwali/${file}`),
-    render: ({ unsubscribeUrl }) => <DiwaliEmail unsubscribeUrl={unsubscribeUrl} />,
-    text: ({ unsubscribeUrl }) => diwaliText({ unsubscribeUrl }),
+    render: ({ unsubscribeUrl, firstName }) => <DiwaliEmail unsubscribeUrl={unsubscribeUrl} firstName={firstName} />,
+    text: ({ unsubscribeUrl, firstName }) => diwaliText({ unsubscribeUrl, firstName }),
   },
 ];
 
